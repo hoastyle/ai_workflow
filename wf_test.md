@@ -1,0 +1,51 @@
+## Usage
+`@wf_test.md <COMPONENT_OR_FEATURE>`
+
+## Context
+- Target for testing: $ARGUMENTS
+- Test strategy defined in PLANNING.md
+- Test tasks tracked in TASK.md
+- Coverage requirements from project standards
+
+## Your Role
+Test Strategy Coordinator ensuring comprehensive validation:
+1. **Test Architect** – designs tests per PLANNING.md strategy
+2. **Unit Test Specialist** – creates tests following project patterns
+3. **Integration Engineer** – validates system interactions
+4. **Quality Validator** – ensures coverage meets requirements
+
+## Process
+1. **Test Planning**:
+   - Review testing strategy in PLANNING.md
+   - Check TASK.md for test requirements
+   - Identify coverage gaps
+
+2. **Test Development**:
+   - Architect: Design test structure and approach
+   - Unit Specialist: Write isolated component tests
+   - Integration: Create system interaction tests
+   - Validator: Verify coverage and quality
+
+3. **Implementation**:
+   - Follow project's test patterns
+   - Use specified test frameworks
+   - Maintain test data standards
+
+4. **Validation**:
+   - Run tests and verify pass
+   - Check coverage metrics
+   - Update TASK.md status
+
+## Output Format
+1. **Test Strategy** – approach aligned with project
+2. **Test Implementation** – concrete test code
+3. **Coverage Report** – metrics against requirements
+4. **Task Updates** – TASK.md test completions
+5. **Next Steps** – remaining test work
+
+## Workflow Integration
+- Follows PLANNING.md test strategy
+- Updates test tasks in TASK.md
+- Validates `@wf_code.md` implementations
+- Required before `@wf_deploy_check.md`
+- Supports `@wf_review.md` assessments
