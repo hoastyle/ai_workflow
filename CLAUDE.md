@@ -348,40 +348,18 @@ Follow the systematic approach in `wf_06_debug.md`:
 - **Mixed line endings**: Use `dos2unix` or configure editor to use Unix LF endings
 - **Formatting inconsistent**: Let `wf_11_commit.md` handle auto-formatting
 
-## Optimization History
+## Version Information
 
-**v2.3 (Current)**:
-- Enhanced Quick Start Guide with detailed Essential Commands (4 commands cover 80% workflows)
+**Current Version**: v2.3 (User Experience Optimization)
+**Last Updated**: 2024-12-19
+
+### Recent Improvements (v2.3)
+- Enhanced Quick Start Guide with detailed Essential Commands
 - Added Command Decision Tree for intuitive command selection
-- Created Common Scenarios guide with step-by-step command chains
-- Improved Workflow Patterns with emoji-enhanced visual clarity
-- Reorganized information hierarchy with most important content first
-- Added comprehensive code quality rules and enforcement mechanisms
+- Improved Workflow Patterns with visual clarity
+- Comprehensive code quality rules and enforcement
 
-**v2.2**:
-- Reorganized commands by workflow stages for better logical flow (Foundation → Development → Quality → Operations)
-- Added comprehensive Quick Start Guide with Essential Commands (80% use cases)
-- Fixed command reference inconsistencies throughout documentation
-- Improved command grouping with clear phase descriptions
-- Enhanced user onboarding with progressive learning path
-
-**v2.1**:
-- Enhanced debugging with comprehensive 6-step error analysis protocol
-- Integrated codebase review capabilities into architecture consultation
-- Added MCP tool integration (context7, brave-search) for better research
-- Improved error classification and systematic investigation methods
-- Enhanced TASK.md integration with priority-based issue tracking
-
-**v2.0**:
-- Reduced from 18 to 13 commands (-28% complexity)
-- Integrated formatting into commit workflow
-- Added CONTEXT.md for session continuity
-- Merged redundant commands:
-  - `wf_debug.md` absorbed `wf_fix.md`
-  - `wf_help.md` absorbed `wf_guide.md` and `wf_quick.md`
-  - `wf_test.md` absorbed `wf_coverage.md`
-  - `wf_commit.md` absorbed `wf_format.md`
-- Enhanced closed-loop automation
+For complete version history, optimization details, and development roadmap, see: **[CHANGELOG.md](./CHANGELOG.md)**
 
 ## Continuous Improvement
 
