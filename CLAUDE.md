@@ -22,6 +22,15 @@ The workflow system is designed to:
 
 All commands follow the `wf_` prefix (workflow) to distinguish from other command systems.
 
+### Command Usage Pattern
+
+Commands follow the format `wf_<number>_<name>.md <ARGUMENTS>` where:
+- Command files define specialized workflows and agent roles
+- Arguments specify the target scope (feature, component, error, etc.)
+- Multi-agent coordination patterns are used for complex tasks
+- Progressive development with validation at each step
+- Numbered prefixes indicate typical usage order in workflows
+
 ### Core Workflow Commands (3) - Ordered by Usage
 - `wf_01_planning.md` - Create/update project planning documentation (aligned with PRD.md)
 - `wf_02_task.md` - Manage task tracking and progress (mapped to PRD requirements)
@@ -49,37 +58,37 @@ All commands follow the `wf_` prefix (workflow) to distinguish from other comman
 
 ### Session Management
 ```
-1. Start: @wf_prime.md (load context from all core files)
-2. Work: @wf_code.md, @wf_test.md, etc.
-3. Save: @wf_task.md update, @wf_commit.md (auto-updates CONTEXT.md)
+1. Start: wf_03_prime.md (load context from all core files)
+2. Work: wf_05_code.md, wf_07_test.md, etc.
+3. Save: wf_02_task.md update, wf_11_commit.md (auto-updates CONTEXT.md)
 4. Clear: /clear (when context gets large)
-5. Resume: @wf_prime.md (reload and continue seamlessly)
+5. Resume: wf_03_prime.md (reload and continue seamlessly)
 ```
 
 ### Feature Development
 ```
-1. @wf_ask.md - Architecture consultation
-2. @wf_code.md - Implementation (auto-formatted)
-3. @wf_test.md - Test creation (with coverage analysis)
-4. @wf_review.md - Code review
-5. @wf_commit.md - Save progress (auto-updates context)
-6. @wf_task.md update - Track completion
+1. wf_04_ask.md - Architecture consultation
+2. wf_05_code.md - Implementation (auto-formatted)
+3. wf_07_test.md - Test creation (with coverage analysis)
+4. wf_08_review.md - Code review
+5. wf_11_commit.md - Save progress (auto-updates context)
+6. wf_02_task.md update - Track completion
 ```
 
 ### Bug Fixing
 ```
-1. @wf_debug.md - Analyze and fix issue (unified debug/fix)
-2. @wf_test.md - Verify fix
-3. @wf_commit.md - Commit solution (auto-formatted)
+1. wf_06_debug.md - Analyze and fix issue (unified debug/fix)
+2. wf_07_test.md - Verify fix
+3. wf_11_commit.md - Commit solution (auto-formatted)
 ```
 
 ### Refactoring
 ```
-1. @wf_review.md - Identify issues
-2. @wf_refactor.md - Improve code
-3. @wf_test.md - Ensure no regression (with coverage check)
-4. @wf_optimize.md - Performance tuning
-5. @wf_commit.md - Save improvements
+1. wf_08_review.md - Identify issues
+2. wf_09_refactor.md - Improve code
+3. wf_07_test.md - Ensure no regression (with coverage check)
+4. wf_10_optimize.md - Performance tuning
+5. wf_11_commit.md - Save improvements
 ```
 
 ## Key Files (Closed Loop)
@@ -128,52 +137,78 @@ Session state and progress summary containing:
 7. **Session Continuity**: wf_11_commit.md auto-updates CONTEXT.md for seamless wf_03_prime.md loading
 8. **Integrated Operations**: Formatting, coverage analysis, and fixing are integrated into main commands
 
+## Multi-Agent Coordination
+
+The cc_commands workflow system uses a multi-agent approach with specialized roles:
+
+- **Architect Agent** - High-level design and structure analysis
+- **Implementation Engineer** - Core functionality development following standards
+- **Integration Specialist** - System compatibility and dependency management
+- **Code Reviewer** - Quality validation and standards compliance
+- **Test Specialists** - Various testing strategies (unit, integration, coverage)
+- **Structure Analyst** - Code architecture evaluation and improvement
+- **Design Pattern Expert** - Pattern application for maintainability
+- **Debug Coordinator** - Systematic error analysis and resolution
+- **Performance Optimizer** - System performance analysis and tuning
+
+Each command orchestrates relevant specialists to ensure comprehensive coverage of development tasks while maintaining consistency with project standards and PRD requirements.
+
 ## Development Standards
 
 ### Code Quality
 - Follow patterns established in existing code
 - Maintain test coverage requirements
-- Auto-formatting applied by wf_commit.md (Python: black, JS/TS: prettier, C++: clang-format, Go: gofmt)
+- Auto-formatting applied by wf_11_commit.md (Python: black, JS/TS: prettier, C++: clang-format, Go: gofmt)
 - Document significant changes
 
 ### Git Workflow
-- Semantic commit messages
+- Semantic commit messages ([feat], [fix], [docs], [refactor])
 - Task references in commits
-- Auto-formatting integrated into wf_commit.md
+- Auto-formatting integrated into wf_11_commit.md
 - Auto-update TASK.md and CONTEXT.md after commits
+- Consider splitting logically separate changes into different commits
 
 ### Testing
 - Write tests for new features
-- Maintain coverage targets using wf_test.md --coverage
+- Maintain coverage targets using wf_07_test.md --coverage
 - Test before deployment
 - Document test strategy in PLANNING.md
 
+### Error Debugging Process
+Follow the systematic approach in `wf_06_debug.md`:
+1. Analyze complete error output with detailed classification
+2. Research using available tools (context7 MCP, brave-search MCP)
+3. Implement targeted fixes addressing root causes
+4. Verify fixes by re-running original commands
+5. Iterate if new errors appear
+6. Document solutions for future reference
+
 ## Best Practices
 
-1. **Start Sessions with Prime**: Always run `@wf_prime.md` after `/clear`
+1. **Start Sessions with Prime**: Always run `wf_03_prime.md` after `/clear`
 2. **Update Tasks Regularly**: Keep TASK.md current with progress
 3. **Document Decisions**: Update PLANNING.md with architectural changes
 4. **Test Continuously**: Run tests after significant changes
-5. **Review Before Commit**: Use `@wf_review.md` for quality checks
-6. **Let Commit Handle Formatting**: wf_commit.md auto-formats, no need for manual formatting
+5. **Review Before Commit**: Use `wf_08_review.md` for quality checks
+6. **Let Commit Handle Formatting**: wf_11_commit.md auto-formats, no need for manual formatting
 
 ## Troubleshooting
 
 ### Lost Context
-- Run `@wf_prime.md` to reload from all core files
+- Run `wf_03_prime.md` to reload from all core files
 - Check CONTEXT.md for latest session state
 - Review PLANNING.md for architecture
 - Review TASK.md for current state
 
 ### Unclear Requirements
-- Use `@wf_ask.md` for consultation
+- Use `wf_04_ask.md` for consultation
 - Update PLANNING.md with decisions
 - Create tasks in TASK.md
 
 ### Quality Issues
-- Run `@wf_review.md` for assessment
-- Apply `@wf_refactor.md` for improvements
-- Verify with `@wf_test.md --coverage`
+- Run `wf_08_review.md` for assessment
+- Apply `wf_09_refactor.md` for improvements
+- Verify with `wf_07_test.md --coverage`
 
 ## Optimization History
 
