@@ -12,7 +12,7 @@ This is an optimized closed-loop workflow command system for Claude Code that in
 
 The workflow system is designed to:
 1. **Maintain Context** - Use PLANNING.md, TASK.md, and CONTEXT.md as persistent context stores
-2. **Enable Continuity** - Allow work to continue across `/clear` boundaries via `@wf_prime.md`
+2. **Enable Continuity** - Allow work to continue across `/clear` boundaries via `wf_03_prime.md`
 3. **Track Progress** - Automatically update task status throughout development
 4. **Enforce Standards** - Apply consistent patterns and quality gates
 5. **Close the Loop** - Each command integrates with others for complete workflows
@@ -31,28 +31,56 @@ Commands follow the format `wf_<number>_<name>.md <ARGUMENTS>` where:
 - Progressive development with validation at each step
 - Numbered prefixes indicate typical usage order in workflows
 
-### Core Workflow Commands (3) - Ordered by Usage
+### Foundation Commands (1-3) - Project Infrastructure
 - `wf_01_planning.md` - Create/update project planning documentation (aligned with PRD.md)
-- `wf_02_task.md` - Manage task tracking and progress (mapped to PRD requirements)
+- `wf_02_task.md` - Manage task tracking and progress (mapped to PRD requirements)  
 - `wf_03_prime.md` - Load project context from PRD.md, PLANNING.md, TASK.md, and CONTEXT.md
 
-### Development Commands (4) - Ordered by Usage
+### Development Commands (4-6) - Implementation Phase
 - `wf_04_ask.md` - Architecture consultation within PRD and project context (includes comprehensive codebase review capabilities)
 - `wf_05_code.md` - Implement features aligned with PRD requirements (auto-formatting integrated)
 - `wf_06_debug.md` - Enhanced systematic debugging and fixing (integrated with advanced error analysis protocol)
-- `wf_09_refactor.md` - Code improvement maintaining PRD compliance
 
-### Quality Commands (3) - Ordered by Usage
+### Quality Assurance Commands (7-10) - Quality & Optimization Phase
 - `wf_07_test.md` - Test development and execution (coverage analysis integrated, PRD criteria validation)
 - `wf_08_review.md` - Code review against standards and PRD compliance
+- `wf_09_refactor.md` - Code improvement maintaining PRD compliance
 - `wf_10_optimize.md` - Performance optimization (meeting PRD performance requirements)
 
-### Operations Commands (2) - Ordered by Usage
+### Operations Commands (11-12) - Deployment & Maintenance Phase
 - `wf_11_commit.md` - Git commits with formatting and context updates (integrates wf_format.md)
 - `wf_12_deploy_check.md` - Deployment readiness validation (PRD criteria verification)
 
-### User Guidance Commands (1) - Always Available
+### Support Commands (99) - Always Available
 - `wf_99_help.md` - Complete help system (integrates guide, quick reference, and command help)
+
+## Quick Start Guide
+
+### 🚀 New to cc_commands? Start Here!
+
+For **new users**, focus on these **Essential Commands** (covers 80% of use cases):
+
+1. **Start a new project**: `wf_01_planning.md "<project_description>"`
+2. **Load context**: `wf_03_prime.md` (always run after `/clear`)
+3. **Implement features**: `wf_05_code.md "<feature_description>"`
+4. **Save progress**: `wf_11_commit.md "<commit_message>"`
+
+### 📈 Ready for More? Add These Commands:
+
+5. **Get help with decisions**: `wf_04_ask.md "<technical_question>"`
+6. **Add tests**: `wf_07_test.md "<component_to_test>"`
+7. **Review code quality**: `wf_08_review.md`
+8. **Track tasks**: `wf_02_task.md update "<task_description>"`
+
+### 🎯 Advanced Users: Full Workflow Commands
+
+Once comfortable with the basics, explore:
+- `wf_06_debug.md` - Systematic error resolution
+- `wf_09_refactor.md` - Code structure improvements  
+- `wf_10_optimize.md` - Performance tuning
+- `wf_12_deploy_check.md` - Deployment validation
+
+**💡 Pro Tip**: Each command follows the pattern `wf_XX_name.md "<description>"` and integrates automatically with your project files (PLANNING.md, TASK.md, CONTEXT.md).
 
 ## Workflow Patterns
 
@@ -212,7 +240,14 @@ Follow the systematic approach in `wf_06_debug.md`:
 
 ## Optimization History
 
-**v2.1 (Current)**:
+**v2.2 (Current)**:
+- Reorganized commands by workflow stages for better logical flow (Foundation → Development → Quality → Operations)
+- Added comprehensive Quick Start Guide with Essential Commands (80% use cases)
+- Fixed command reference inconsistencies throughout documentation
+- Improved command grouping with clear phase descriptions
+- Enhanced user onboarding with progressive learning path
+
+**v2.1**:
 - Enhanced debugging with comprehensive 6-step error analysis protocol
 - Integrated codebase review capabilities into architecture consultation
 - Added MCP tool integration (context7, brave-search) for better research
