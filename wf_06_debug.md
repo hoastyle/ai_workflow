@@ -18,26 +18,55 @@ Debug Coordinator orchestrating specialists within project context:
 ## Process
 
 ### Standard Debugging (default)
-1. **Initial Assessment**:
-   - Check if error relates to known issues in TASK.md
-   - Review relevant PLANNING.md sections
-   - Gather error context and logs
+1. **Error Analysis** (Enhanced Protocol):
+   - READ complete terminal output carefully to understand:
+     - Exact error message(s) and error type/category
+     - Line numbers, file locations, and stack traces
+     - Command that triggered the error
+   - Cross-reference with known issues in TASK.md
+   - Review relevant PLANNING.md sections for system context
 
-2. **Systematic Analysis**:
-   - Analyzer: Classify error within system context
-   - Inspector: Trace through project's code paths
-   - Checker: Verify against documented configs
-   - Strategist: Design fix per coding standards
+2. **Research and Investigation**:
+   - USE available tools for comprehensive understanding:
+     - `context7` MCP for codebase context and related files
+     - `brave-search` MCP for error-specific solutions and documentation
+     - Check official documentation for technology/framework involved
+     - Look for similar issues in project history
+   - Classify error by category:
+     - Dependency issues (missing packages, version conflicts)
+     - Configuration errors (environment variables, config files)
+     - Syntax errors (code formatting, typos, language-specific)
+     - Runtime errors (logic errors, null references, type mismatches)
+     - Permission errors (file access, execution permissions)
+     - Network/connectivity (API endpoints, database connections)
+     - Build/compilation (missing files, path issues, build tools)
 
-3. **Solution Implementation**:
-   - Fix following project patterns
+3. **Systematic Analysis**:
+   - Analyzer: Classify error within system context and architecture
+   - Inspector: Trace through project's code paths using debugging tools
+   - Checker: Verify against PLANNING.md specifications and configs
+   - Strategist: Design fix addressing root cause, not just symptoms
+
+4. **Solution Implementation**:
+   - Address root cause with minimal, targeted changes
+   - Follow project patterns and coding standards
+   - Consider multiple potential solutions if first attempt fails
+   - Backup or note original state before making changes
    - Update error handling if needed
-   - Document in TASK.md
 
-4. **Validation**:
-   - Verify fix resolves issue
-   - Ensure no regression
-   - Update documentation
+5. **Verification and Iteration**:
+   - RE-RUN original command to verify fix resolves specific error
+   - Check that no new errors were introduced
+   - Validate expected functionality still works
+   - IF new errors appear: REPEAT entire process from step 1
+   - Consider if new errors relate to previous fix
+   - Document error sequence for pattern recognition
+
+6. **Documentation and Prevention**:
+   - Update TASK.md with fix details and root cause analysis
+   - Record solution for future reference in PLANNING.md if systemic
+   - Document what caused error and preventive measures
+   - Update error handling patterns if needed
 
 ### Quick Fix Mode (--quick flag)
 1. **Rapid Assessment**:

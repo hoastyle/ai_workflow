@@ -28,9 +28,9 @@ All commands follow the `wf_` prefix (workflow) to distinguish from other comman
 - `wf_03_prime.md` - Load project context from PRD.md, PLANNING.md, TASK.md, and CONTEXT.md
 
 ### Development Commands (4) - Ordered by Usage
-- `wf_04_ask.md` - Architecture consultation within PRD and project context
+- `wf_04_ask.md` - Architecture consultation within PRD and project context (includes comprehensive codebase review capabilities)
 - `wf_05_code.md` - Implement features aligned with PRD requirements (auto-formatting integrated)
-- `wf_06_debug.md` - Systematic debugging and fixing (merged with wf_fix.md)
+- `wf_06_debug.md` - Enhanced systematic debugging and fixing (integrated with advanced error analysis protocol)
 - `wf_09_refactor.md` - Code improvement maintaining PRD compliance
 
 ### Quality Commands (3) - Ordered by Usage
@@ -177,7 +177,14 @@ Session state and progress summary containing:
 
 ## Optimization History
 
-**v2.0 (Current)**:
+**v2.1 (Current)**:
+- Enhanced debugging with comprehensive 6-step error analysis protocol
+- Integrated codebase review capabilities into architecture consultation
+- Added MCP tool integration (context7, brave-search) for better research
+- Improved error classification and systematic investigation methods
+- Enhanced TASK.md integration with priority-based issue tracking
+
+**v2.0**:
 - Reduced from 18 to 13 commands (-28% complexity)
 - Integrated formatting into commit workflow
 - Added CONTEXT.md for session continuity
