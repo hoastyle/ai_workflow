@@ -1,11 +1,12 @@
 ## Usage
-`@wf_debug.md <ERROR_DESCRIPTION>`
+`@wf_debug.md <ERROR_DESCRIPTION> [--quick]`
 
 ## Context
 - Error description: $ARGUMENTS
 - Debug within project's architecture from PLANNING.md
 - Track debugging work in TASK.md
 - Follow project's error handling patterns
+- Use `--quick` flag for immediate fixes of simple issues
 
 ## Your Role
 Debug Coordinator orchestrating specialists within project context:
@@ -15,6 +16,8 @@ Debug Coordinator orchestrating specialists within project context:
 4. **Fix Strategist** – proposes solutions maintaining standards
 
 ## Process
+
+### Standard Debugging (default)
 1. **Initial Assessment**:
    - Check if error relates to known issues in TASK.md
    - Review relevant PLANNING.md sections
@@ -35,6 +38,20 @@ Debug Coordinator orchestrating specialists within project context:
    - Verify fix resolves issue
    - Ensure no regression
    - Update documentation
+
+### Quick Fix Mode (--quick flag)
+1. **Rapid Assessment**:
+   - Identify if it's a common/simple error
+   - Check for obvious syntax, import, or config issues
+
+2. **Immediate Fix**:
+   - Apply standard fixes for common issues
+   - Focus on getting the code working quickly
+   - Minimal documentation overhead
+
+3. **Fast Validation**:
+   - Quick test to ensure fix works
+   - Update TASK.md with brief fix note
 
 ## Output Format
 1. **Debug Analysis** – root cause within system context

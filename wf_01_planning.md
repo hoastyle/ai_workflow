@@ -9,18 +9,21 @@ Create or update PLANNING.md to establish comprehensive project documentation th
 - Maintains project continuity across sessions
 
 ## Process
-1. **Initial Assessment**:
+1. **Requirements Analysis**:
+   - Read PRD.md for official project requirements (read-only, never modify)
    - Check for existing PLANNING.md
    - Analyze project structure and codebase
    - Identify technology stack and frameworks
    - Review existing documentation
+   - Ensure all PRD requirements are addressed in planning
 
 2. **Document Structure Creation**:
    ### Project Overview
-   - Purpose and goals
-   - Target audience/users
-   - Key features and functionality
-   - Success criteria
+   - Purpose and goals (derived from PRD.md)
+   - Target audience/users (per PRD requirements)
+   - Key features and functionality (aligned with PRD)
+   - Success criteria (mapped from PRD objectives)
+   - PRD compliance checklist
 
    ### Architecture
    - System design and patterns
