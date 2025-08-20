@@ -4,11 +4,22 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repository Overview
 
-This is an optimized closed-loop workflow command system for Claude Code that integrates project planning, task management, and development workflows. The system uses PLANNING.md, TASK.md, and CONTEXT.md as central coordination documents to maintain context across sessions and enable efficient development with minimal context overhead.
+This is an optimized closed-loop workflow command system for Claude Code that integrates project planning, task management, and development workflows.
 
-**Recent Optimization**: Streamlined from 18 to 13 commands by eliminating redundancies and integrating related functions.
+**🚀 Quick Start**: New users can be productive with just 4 Essential Commands (80% of use cases)
+**🔄 Context Continuity**: Uses PLANNING.md, TASK.md, and CONTEXT.md to maintain context across `/clear` boundaries
+**⚡ Streamlined**: 13 commands organized by development lifecycle stages
+**🛡️ Quality Gates**: Built-in formatting, testing, and validation
 
-## Core Philosophy
+## Command Overview
+
+All commands follow the `wf_<number>_<name>.md <ARGUMENTS>` format where:
+- **Numbered prefixes** indicate typical usage order in workflows
+- **Arguments** specify the target scope (feature, component, error, etc.)
+- **Multi-agent coordination** used for complex tasks with specialized roles
+- **Progressive development** with validation at each step
+
+### Core Philosophy
 
 The workflow system is designed to:
 1. **Maintain Context** - Use PLANNING.md, TASK.md, and CONTEXT.md as persistent context stores
@@ -17,19 +28,6 @@ The workflow system is designed to:
 4. **Enforce Standards** - Apply consistent patterns and quality gates
 5. **Close the Loop** - Each command integrates with others for complete workflows
 6. **Reduce Redundancy** - Consolidate similar functions into unified commands
-
-## Command Architecture
-
-All commands follow the `wf_` prefix (workflow) to distinguish from other command systems.
-
-### Command Usage Pattern
-
-Commands follow the format `wf_<number>_<name>.md <ARGUMENTS>` where:
-- Command files define specialized workflows and agent roles
-- Arguments specify the target scope (feature, component, error, etc.)
-- Multi-agent coordination patterns are used for complex tasks
-- Progressive development with validation at each step
-- Numbered prefixes indicate typical usage order in workflows
 
 ### Foundation Commands (1-3) - Project Infrastructure
 - `wf_01_planning.md` - Create/update project planning documentation (aligned with PRD.md)
@@ -58,19 +56,53 @@ Commands follow the format `wf_<number>_<name>.md <ARGUMENTS>` where:
 
 ### 🚀 New to cc_commands? Start Here!
 
-For **new users**, focus on these **Essential Commands** (covers 80% of use cases):
+#### Essential Commands (80% of workflows)
+These 4 commands handle most development scenarios:
 
-1. **Start a new project**: `wf_01_planning.md "<project_description>"`
-2. **Load context**: `wf_03_prime.md` (always run after `/clear`)
-3. **Implement features**: `wf_05_code.md "<feature_description>"`
-4. **Save progress**: `wf_11_commit.md "<commit_message>"`
+**1. 📋 Project Setup** - `wf_01_planning.md "<project_description>"`
+- Creates PLANNING.md with architecture, tech stack, standards
+- Establishes PRD alignment and development guidelines
+- **When to use**: Starting new projects or major feature planning
+- **Example**: `wf_01_planning.md "E-commerce API with user authentication"`
 
-### 📈 Ready for More? Add These Commands:
+**2. 🔄 Context Loading** - `wf_03_prime.md`
+- Loads all project context (PRD.md, PLANNING.md, TASK.md, CONTEXT.md)
+- **CRITICAL**: Always run after `/clear` or session restart
+- **When to use**: Session start, after context loss, resuming work
+- **Example**: Simply run `wf_03_prime.md` (no arguments needed)
 
-5. **Get help with decisions**: `wf_04_ask.md "<technical_question>"`
-6. **Add tests**: `wf_07_test.md "<component_to_test>"`
-7. **Review code quality**: `wf_08_review.md`
-8. **Track tasks**: `wf_02_task.md update "<task_description>"`
+**3. 💻 Feature Implementation** - `wf_05_code.md "<feature_description>"`
+- Multi-agent development with auto-formatting
+- Follows project standards and PRD requirements
+- **When to use**: Implementing new features or major functionality
+- **Example**: `wf_05_code.md "User login with JWT token validation"`
+
+**4. 💾 Save Progress** - `wf_11_commit.md "<commit_message>"`
+- Quality gates, auto-formatting, context updates
+- Updates TASK.md and CONTEXT.md automatically
+- **When to use**: After completing work, before `/clear`
+- **Example**: `wf_11_commit.md "Add user authentication system"`
+
+#### Intermediate Commands (Cover remaining 15%)
+Ready to expand? Add these workflow enhancers:
+
+**5. 🤔 Decision Support** - `wf_04_ask.md "<technical_question>"`
+- Architecture consultation with optional codebase review
+- **Flag**: Use `--review-codebase` for comprehensive analysis
+- **Example**: `wf_04_ask.md "Should I use Redis or database caching?"`
+
+**6. 🧪 Testing** - `wf_07_test.md "<component_to_test>"`
+- Test development with coverage analysis
+- **Flag**: Use `--coverage` for detailed coverage reports
+- **Example**: `wf_07_test.md "UserService authentication methods"`
+
+**7. 🔍 Quality Review** - `wf_08_review.md`
+- Code review against standards and PRD compliance
+- **Example**: `wf_08_review.md` (reviews current codebase)
+
+**8. 📝 Task Management** - `wf_02_task.md update "<task_description>"`
+- Dynamic task tracking with PRD traceability
+- **Example**: `wf_02_task.md update "Complete user registration API"`
 
 ### 🎯 Advanced Users: Full Workflow Commands
 
@@ -80,43 +112,94 @@ Once comfortable with the basics, explore:
 - `wf_10_optimize.md` - Performance tuning
 - `wf_12_deploy_check.md` - Deployment validation
 
+## Command Decision Tree
+
+### 🤔 Which Command Should I Use?
+
+**Start here** → What do you want to do?
+
+```
+🆕 Starting fresh?
+├── 📋 New project → wf_01_planning.md "project description"
+└── 🔄 Resume work → wf_03_prime.md
+
+💻 Building features?
+├── 🤔 Need guidance → wf_04_ask.md "technical question"
+├── 💻 Write code → wf_05_code.md "feature description"
+├── 🐛 Fix bugs → wf_06_debug.md "error description"
+└── 🧪 Add tests → wf_07_test.md "component name"
+
+🔍 Improving quality?
+├── 👀 Review code → wf_08_review.md
+├── 🔧 Refactor → wf_09_refactor.md "component to improve"
+└── ⚡ Optimize → wf_10_optimize.md "performance target"
+
+💾 Finishing work?
+├── 📝 Update tasks → wf_02_task.md update "task description"
+├── 💾 Commit changes → wf_11_commit.md "commit message"
+└── 🚀 Check deployment → wf_12_deploy_check.md
+
+❓ Need help → wf_99_help.md
+```
+
+### 🎯 Common Scenarios
+
+**"I'm new and don't know where to start"**
+→ `wf_01_planning.md` → `wf_03_prime.md` → `wf_05_code.md` → `wf_11_commit.md`
+
+**"I just opened Claude Code"**
+→ `wf_03_prime.md` (loads all context)
+
+**"I want to implement a feature"**
+→ `wf_04_ask.md` (get guidance) → `wf_05_code.md` → `wf_07_test.md` → `wf_11_commit.md`
+
+**"Something is broken"**
+→ `wf_06_debug.md` → `wf_07_test.md` → `wf_11_commit.md`
+
+**"Code quality needs improvement"**
+→ `wf_08_review.md` → `wf_09_refactor.md` → `wf_07_test.md` → `wf_11_commit.md`
+
 **💡 Pro Tip**: Each command follows the pattern `wf_XX_name.md "<description>"` and integrates automatically with your project files (PLANNING.md, TASK.md, CONTEXT.md).
 
-## Workflow Patterns
+## Complete Workflow Patterns
 
-### Session Management
+### 🔄 Session Management
+**Essential for context continuity:**
 ```
-1. Start: wf_03_prime.md (load context from all core files)
-2. Work: wf_05_code.md, wf_07_test.md, etc.
-3. Save: wf_02_task.md update, wf_11_commit.md (auto-updates CONTEXT.md)
-4. Clear: /clear (when context gets large)
-5. Resume: wf_03_prime.md (reload and continue seamlessly)
-```
-
-### Feature Development
-```
-1. wf_04_ask.md - Architecture consultation
-2. wf_05_code.md - Implementation (auto-formatted)
-3. wf_07_test.md - Test creation (with coverage analysis)
-4. wf_08_review.md - Code review
-5. wf_11_commit.md - Save progress (auto-updates context)
-6. wf_02_task.md update - Track completion
+📱 Session Start   → wf_03_prime.md (load all context)
+⚡  Active Work     → wf_05_code.md, wf_07_test.md, etc.
+💾 Save Progress   → wf_11_commit.md (auto-updates CONTEXT.md)
+🔄 Memory Reset    → /clear (when context gets large)
+🚀 Resume Work     → wf_03_prime.md (reload and continue)
 ```
 
-### Bug Fixing
+### 🏗️ Feature Development (Complete)
+**Full development lifecycle:**
 ```
-1. wf_06_debug.md - Analyze and fix issue (unified debug/fix)
-2. wf_07_test.md - Verify fix
-3. wf_11_commit.md - Commit solution (auto-formatted)
+🤔 Plan           → wf_04_ask.md "architecture guidance"
+💻 Implement      → wf_05_code.md "feature description"
+🧪 Test           → wf_07_test.md "component name"
+👀 Review         → wf_08_review.md
+💾 Commit         → wf_11_commit.md "feature completed"
+📝 Track          → wf_02_task.md update "task status"
 ```
 
-### Refactoring
+### 🐛 Bug Fixing (Streamlined)
+**Efficient problem resolution:**
 ```
-1. wf_08_review.md - Identify issues
-2. wf_09_refactor.md - Improve code
-3. wf_07_test.md - Ensure no regression (with coverage check)
-4. wf_10_optimize.md - Performance tuning
-5. wf_11_commit.md - Save improvements
+🔍 Debug          → wf_06_debug.md "error description"
+✅ Verify Fix     → wf_07_test.md "affected component"
+💾 Commit         → wf_11_commit.md "fix applied"
+```
+
+### 🔧 Quality Improvement (Advanced)
+**Code quality enhancement:**
+```
+📊 Analyze        → wf_08_review.md
+🔧 Refactor       → wf_09_refactor.md "component to improve"
+⚡  Optimize       → wf_10_optimize.md "performance target"
+🧪 Test           → wf_07_test.md --coverage "ensure no regression"
+💾 Commit         → wf_11_commit.md "quality improvements"
 ```
 
 ## Key Files (Closed Loop)
@@ -267,7 +350,15 @@ Follow the systematic approach in `wf_06_debug.md`:
 
 ## Optimization History
 
-**v2.2 (Current)**:
+**v2.3 (Current)**:
+- Enhanced Quick Start Guide with detailed Essential Commands (4 commands cover 80% workflows)
+- Added Command Decision Tree for intuitive command selection
+- Created Common Scenarios guide with step-by-step command chains
+- Improved Workflow Patterns with emoji-enhanced visual clarity
+- Reorganized information hierarchy with most important content first
+- Added comprehensive code quality rules and enforcement mechanisms
+
+**v2.2**:
 - Reorganized commands by workflow stages for better logical flow (Foundation → Development → Quality → Operations)
 - Added comprehensive Quick Start Guide with Essential Commands (80% use cases)
 - Fixed command reference inconsistencies throughout documentation
