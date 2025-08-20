@@ -33,7 +33,7 @@ Commands follow the format `wf_<number>_<name>.md <ARGUMENTS>` where:
 
 ### Foundation Commands (1-3) - Project Infrastructure
 - `wf_01_planning.md` - Create/update project planning documentation (aligned with PRD.md)
-- `wf_02_task.md` - Manage task tracking and progress (mapped to PRD requirements)  
+- `wf_02_task.md` - Manage task tracking and progress (mapped to PRD requirements)
 - `wf_03_prime.md` - Load project context from PRD.md, PLANNING.md, TASK.md, and CONTEXT.md
 
 ### Development Commands (4-6) - Implementation Phase
@@ -76,7 +76,7 @@ For **new users**, focus on these **Essential Commands** (covers 80% of use case
 
 Once comfortable with the basics, explore:
 - `wf_06_debug.md` - Systematic error resolution
-- `wf_09_refactor.md` - Code structure improvements  
+- `wf_09_refactor.md` - Code structure improvements
 - `wf_10_optimize.md` - Performance tuning
 - `wf_12_deploy_check.md` - Deployment validation
 
@@ -187,14 +187,34 @@ Each command orchestrates relevant specialists to ensure comprehensive coverage 
 - Follow patterns established in existing code
 - Maintain test coverage requirements
 - Auto-formatting applied by wf_11_commit.md (Python: black, JS/TS: prettier, C++: clang-format, Go: gofmt)
+- **No trailing whitespace**: All files must be free of trailing spaces and tabs
+- **Consistent line endings**: Use Unix-style line endings (LF)
 - Document significant changes
+
+### Pre-commit Quality Checks
+Before any commit, run these validation commands:
+```bash
+# Check for trailing whitespace
+grep -n " $" *.md && echo "❌ Found trailing whitespace" || echo "✅ No trailing whitespace"
+
+# Check for mixed line endings
+file *.md | grep -v "ASCII text" && echo "❌ Non-standard file format" || echo "✅ Clean file formats"
+```
 
 ### Git Workflow
 - Semantic commit messages ([feat], [fix], [docs], [refactor])
 - Task references in commits
+- **Mandatory quality checks**: Run pre-commit validation before every commit
 - Auto-formatting integrated into wf_11_commit.md
 - Auto-update TASK.md and CONTEXT.md after commits
 - Consider splitting logically separate changes into different commits
+
+### Quality Gate Enforcement
+The `wf_11_commit.md` command MUST include these checks:
+1. **Whitespace validation**: Reject commits with trailing whitespace
+2. **File format validation**: Ensure consistent line endings
+3. **Auto-formatting**: Apply language-specific formatters
+4. **Lint checks**: Run relevant linters before commit
 
 ### Testing
 - Write tests for new features
@@ -218,7 +238,8 @@ Follow the systematic approach in `wf_06_debug.md`:
 3. **Document Decisions**: Update PLANNING.md with architectural changes
 4. **Test Continuously**: Run tests after significant changes
 5. **Review Before Commit**: Use `wf_08_review.md` for quality checks
-6. **Let Commit Handle Formatting**: wf_11_commit.md auto-formats, no need for manual formatting
+6. **Quality First**: Run pre-commit checks to catch whitespace, formatting issues
+7. **Let Commit Handle Everything**: wf_11_commit.md includes quality gates, formatting, and validation
 
 ## Troubleshooting
 
@@ -237,6 +258,12 @@ Follow the systematic approach in `wf_06_debug.md`:
 - Run `wf_08_review.md` for assessment
 - Apply `wf_09_refactor.md` for improvements
 - Verify with `wf_07_test.md --coverage`
+
+### Code Quality Problems
+- **Trailing whitespace found**: Run `grep -n " $" *.md` to identify, then clean manually
+- **Commit rejected by quality gates**: Fix whitespace and formatting issues first
+- **Mixed line endings**: Use `dos2unix` or configure editor to use Unix LF endings
+- **Formatting inconsistent**: Let `wf_11_commit.md` handle auto-formatting
 
 ## Optimization History
 
