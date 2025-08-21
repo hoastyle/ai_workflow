@@ -46,7 +46,7 @@ The workflow system is designed to:
 - `wf_10_optimize.md` - Performance optimization (meeting PRD performance requirements)
 
 ### Operations Commands (11-12) - Deployment & Maintenance Phase
-- `wf_11_commit.md` - Git commits with formatting and context updates (integrates wf_format.md)
+- `wf_11_commit.md` - Git commits with formatting and context updates (auto-formatting integrated)
 - `wf_12_deploy_check.md` - Deployment readiness validation (PRD criteria verification)
 
 ### Support Commands (99) - Always Available

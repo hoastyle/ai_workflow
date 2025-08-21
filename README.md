@@ -16,26 +16,26 @@ This command suite provides a structured workflow that:
 
 1. **Initialize a Project**
    ```bash
-   @wf_planning.md MyProject
-   @wf_task.md create
+   @wf_01_planning.md MyProject
+   @wf_02_task.md create
    ```
 
 2. **Start a Work Session**
    ```bash
-   @wf_prime.md  # Load project context
+   @wf_03_prime.md  # Load project context
    ```
 
 3. **Develop Features**
    ```bash
-   @wf_code.md implement user authentication  # Auto-formatted
-   @wf_test.md authentication module          # With coverage analysis
-   @wf_commit.md                              # Auto-updates context
+   @wf_05_code.md implement user authentication  # Auto-formatted
+   @wf_07_test.md authentication module          # With coverage analysis
+   @wf_11_commit.md                              # Auto-updates context
    ```
 
 4. **Continue After Break**
    ```bash
    /clear  # Clear context when it gets large
-   @wf_prime.md  # Reload and continue seamlessly
+   @wf_03_prime.md  # Reload and continue seamlessly
    ```
 
 ## 📁 Optimized Command Architecture (13 Commands)
@@ -78,50 +78,50 @@ This command suite provides a structured workflow that:
 ### Complete Feature Development
 ```bash
 # 1. Architecture consultation
-@wf_ask.md How should I structure the authentication system?
+@wf_04_ask.md How should I structure the authentication system?
 
 # 2. Implementation (auto-formatted)
-@wf_code.md Implement JWT-based authentication
+@wf_05_code.md Implement JWT-based authentication
 
 # 3. Testing (with coverage analysis)
-@wf_test.md authentication endpoints
+@wf_07_test.md authentication endpoints
 
 # 4. Review
-@wf_review.md authentication module
+@wf_08_review.md authentication module
 
 # 5. Commit (auto-formats, updates context)
-@wf_commit.md feat: add JWT authentication
+@wf_11_commit.md feat: add JWT authentication
 
 # 6. Update tasks (auto-updated by commit)
-@wf_task.md update
+@wf_02_task.md update
 ```
 
 ### Bug Fix Workflow
 ```bash
 # 1. Debug and fix (unified command)
-@wf_debug.md Users getting 500 error on login
+@wf_06_debug.md Users getting 500 error on login
 
 # 2. Test fix
-@wf_test.md concurrent login scenarios
+@wf_07_test.md concurrent login scenarios
 
 # 3. Commit (auto-formatted, context updated)
-@wf_commit.md fix: resolve login race condition
+@wf_11_commit.md fix: resolve login race condition
 ```
 
 ### Session Management
 ```bash
 # Start of day
-@wf_prime.md              # Loads all context including CONTEXT.md
-@wf_task.md review
+@wf_03_prime.md              # Loads all context including CONTEXT.md
+@wf_02_task.md review
 
 # ... work on features ...
 
 # Before break
-@wf_commit.md              # Auto-updates CONTEXT.md
+@wf_11_commit.md              # Auto-updates CONTEXT.md
 
 # After break (new session)
 /clear
-@wf_prime.md              # Seamlessly resumes from CONTEXT.md
+@wf_03_prime.md              # Seamlessly resumes from CONTEXT.md
 # Continue where you left off
 ```
 
@@ -129,7 +129,7 @@ This command suite provides a structured workflow that:
 
 ### PRD.md
 The requirements source document containing:
-- Official project requirements and specifications  
+- Official project requirements and specifications
 - Business objectives and success criteria
 - Stakeholder requirements and constraints
 - **CRITICAL**: Read-only, never automatically modified
@@ -146,7 +146,7 @@ The technical architecture document containing:
 The dynamic progress tracker containing:
 - Categorized task lists (mapped to PRD requirements)
 - Current status and progress
-- Dependencies and blockers  
+- Dependencies and blockers
 - Completion history
 - PRD requirement traceability
 
@@ -169,35 +169,35 @@ The session state manager containing:
 
 3. **Initialize your project:**
    ```bash
-   @wf_planning.md YourProjectName
-   @wf_task.md create
+   @wf_01_planning.md YourProjectName
+   @wf_02_task.md create
    ```
 
 4. **Start developing!**
 
 ## 💡 Best Practices
 
-1. **Always prime after clearing context** - Run `@wf_prime.md` after `/clear`
-2. **Let automation work for you** - `@wf_commit.md` handles formatting and context updates
-3. **Use unified commands** - `@wf_debug.md` for both debugging and fixing
-4. **Test with coverage** - `@wf_test.md --coverage` for coverage analysis
-5. **Get help easily** - `@wf_help.md quick` for command reference
+1. **Always prime after clearing context** - Run `@wf_03_prime.md` after `/clear`
+2. **Let automation work for you** - `@wf_11_commit.md` handles formatting and context updates
+3. **Use unified commands** - `@wf_06_debug.md` for both debugging and fixing
+4. **Test with coverage** - `@wf_07_test.md --coverage` for coverage analysis
+5. **Get help easily** - `@wf_99_help.md quick` for command reference
 
 ## 🔍 v2.0 Optimization Summary
 
 ### Eliminated Commands (5)
-- ❌ `wf_fix.md` → Merged into `wf_debug.md`
-- ❌ `wf_format.md` → Integrated into `wf_commit.md`
-- ❌ `wf_coverage.md` → Merged into `wf_test.md`
-- ❌ `wf_guide.md` → Merged into `wf_help.md`
-- ❌ `wf_quick.md` → Merged into `wf_help.md`
+- ❌ `wf_fix.md` → Merged into `wf_06_debug.md`
+- ❌ `wf_format.md` → Integrated into `wf_11_commit.md`
+- ❌ `wf_coverage.md` → Merged into `wf_07_test.md`
+- ❌ `wf_guide.md` → Merged into `wf_99_help.md`
+- ❌ `wf_quick.md` → Merged into `wf_99_help.md`
 
 ### Enhanced Commands
-- ✅ **wf_commit.md**: Auto-formatting + CONTEXT.md updates
-- ✅ **wf_prime.md**: Reads CONTEXT.md for session continuity
-- ✅ **wf_debug.md**: Unified debugging and fixing with `--quick` mode
-- ✅ **wf_test.md**: Integrated coverage analysis with `--coverage` flag
-- ✅ **wf_help.md**: Complete help system with quick/guide modes
+- ✅ **wf_11_commit.md**: Auto-formatting + CONTEXT.md updates
+- ✅ **wf_03_prime.md**: Reads CONTEXT.md for session continuity
+- ✅ **wf_06_debug.md**: Unified debugging and fixing with `--quick` mode
+- ✅ **wf_07_test.md**: Integrated coverage analysis with `--coverage` flag
+- ✅ **wf_99_help.md**: Complete help system with quick/guide modes
 
 ### New Features
 - 🆕 **CONTEXT.md**: Automatic session state management
@@ -217,30 +217,30 @@ The session state manager containing:
 
 ### Lost Context?
 ```bash
-@wf_prime.md  # Reload everything from all core files
+@wf_03_prime.md  # Reload everything from all core files
 ```
 
 ### Unclear Requirements?
 ```bash
-@wf_ask.md [your question]
+@wf_04_ask.md [your question]
 ```
 
 ### Need Quality Check?
 ```bash
-@wf_review.md [scope]
-@wf_test.md --coverage
+@wf_08_review.md [scope]
+@wf_07_test.md --coverage
 ```
 
 ### Ready to Deploy?
 ```bash
-@wf_deploy_check.md production
+@wf_12_deploy_check.md production
 ```
 
 ### Get Help?
 ```bash
-@wf_help.md           # Main help menu
-@wf_help.md quick     # Command reference
-@wf_help.md guide     # Workflow scenarios
+@wf_99_help.md           # Main help menu
+@wf_99_help.md quick     # Command reference
+@wf_99_help.md guide     # Workflow scenarios
 ```
 
 ## 📈 Continuous Improvement
