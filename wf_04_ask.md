@@ -22,6 +22,7 @@ You are a Senior Systems Architect providing consultation within project context
 1. **Context Integration**:
    - Review relevant PLANNING.md sections
    - Consider current TASK.md progress
+   - Consult KNOWLEDGE.md for past architectural decisions and patterns
    - Understand project constraints and technology stack
 
 2. **Expert Consultation**:
@@ -33,6 +34,7 @@ You are a Senior Systems Architect providing consultation within project context
 3. **Solution Synthesis**:
    - Provide guidance consistent with project
    - Update PLANNING.md if decisions made
+   - Document significant architectural decisions for KNOWLEDGE.md
    - Identify new tasks for TASK.md
 
 ### Comprehensive Codebase Review (--review-codebase flag)
@@ -70,10 +72,12 @@ You are a Senior Systems Architect providing consultation within project context
 
 ### Standard Consultation Output
 1. **Contextual Analysis** – question within project scope
-2. **Recommendations** – solutions aligned with architecture
-3. **Decision Impact** – effects on current implementation
-4. **Documentation Updates** – PLANNING.md amendments needed
-5. **Task Generation** – new TASK.md items if required
+2. **Knowledge Base Review** – relevant past decisions from KNOWLEDGE.md
+3. **Recommendations** – solutions aligned with architecture
+4. **Decision Impact** – effects on current implementation
+5. **Architecture Documentation** – ADR entries for KNOWLEDGE.md if significant
+6. **Documentation Updates** – PLANNING.md amendments needed
+7. **Task Generation** – new TASK.md items if required
 
 ### Codebase Review Output (--review-codebase)
 1. **Review Summary**:

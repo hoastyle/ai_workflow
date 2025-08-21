@@ -24,6 +24,7 @@ Debug Coordinator orchestrating specialists within project context:
      - Line numbers, file locations, and stack traces
      - Command that triggered the error
    - Cross-reference with known issues in TASK.md
+   - Check KNOWLEDGE.md for similar problem-solution patterns
    - Review relevant PLANNING.md sections for system context
 
 2. **Research and Investigation**:
@@ -85,13 +86,16 @@ Debug Coordinator orchestrating specialists within project context:
 ## Output Format
 1. **Debug Analysis** – root cause within system context
 2. **Fix Implementation** – solution following standards
-3. **Task Updates** – TASK.md entries for fixes
-4. **Prevention Notes** – updates for PLANNING.md
-5. **Test Requirements** – validation needed
+3. **Knowledge Capture** – new problem-solution patterns for KNOWLEDGE.md
+4. **Task Updates** – TASK.md entries for fixes
+5. **Prevention Notes** – updates for PLANNING.md
+6. **Test Requirements** – validation needed
 
 ## Workflow Integration
 - References PLANNING.md for system design
+- Leverages KNOWLEDGE.md for past solutions
 - Updates TASK.md with debugging work
+- Contributes new patterns to KNOWLEDGE.md
 - May trigger `@wf_test.md` for validation
 - Can lead to `@wf_refactor.md` if needed
-- Documents lessons for future debugging
+- Documents lessons for future debugging sessions

@@ -7,6 +7,7 @@ Create git commits with integrated formatting, validation, and context updates:
 - Auto-format code before commit
 - Update TASK.md task completion status
 - Auto-update CONTEXT.md with work summary
+- Identify and suggest KNOWLEDGE.md updates
 - Maintain commit message conventions
 - Ensure full traceability
 
@@ -32,6 +33,7 @@ Create git commits with integrated formatting, validation, and context updates:
    - Identify completed tasks
    - Check for excluded files
    - Validate code formatting applied
+   - Analyze changes for knowledge extraction opportunities
 
 4. **Commit Preparation**:
    - Stage formatted files
@@ -47,9 +49,16 @@ Create git commits with integrated formatting, validation, and context updates:
      * Next priority items
    - Include progress summary
 
-6. **Post-Commit Actions**:
+6. **Knowledge Extraction**:
+   - Identify architectural decisions worthy of ADR documentation
+   - Detect new problem-solution patterns
+   - Recognize reusable code patterns or conventions
+   - Suggest KNOWLEDGE.md updates if applicable
+
+7. **Post-Commit Actions**:
    - Update TASK.md with completions
    - Document significant changes
+   - Update KNOWLEDGE.md if new patterns or decisions identified
    - Prepare for next work cycle
 
 ## Commit Message Format
@@ -74,18 +83,21 @@ Types:
 ## Output Format
 1. **Formatting Report** – auto-formatting applied
 2. **Change Summary** – files and modifications
-3. **Commit Message** – formatted message
-4. **Task Updates** – TASK.md completions
-5. **Context Update** – CONTEXT.md refresh
-6. **Commit Result** – success confirmation
-7. **Next Steps** – remaining work items
+3. **Knowledge Extraction** – identified patterns and decisions
+4. **Commit Message** – formatted message
+5. **Task Updates** – TASK.md completions
+6. **Context Update** – CONTEXT.md refresh
+7. **Knowledge Updates** – KNOWLEDGE.md suggestions or updates
+8. **Commit Result** – success confirmation
+9. **Next Steps** – remaining work items
 
 ## Workflow Integration
 - Validates against PLANNING.md standards
 - Auto-formats code (integrates wf_format.md functionality)
 - Updates completed tasks in TASK.md
 - Auto-updates CONTEXT.md for session continuity
+- Enhances KNOWLEDGE.md with accumulated wisdom
 - Follows after `@wf_review.md` approval
 - Triggers task status updates
 - Maintains complete project history and context
-- Enables seamless `@wf_prime.md` context loading
+- Enables seamless `@wf_prime.md` context loading with long-term memory

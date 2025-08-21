@@ -18,6 +18,7 @@ Code Review Coordinator ensuring project standards:
 1. **Review Preparation**:
    - Load standards from PLANNING.md
    - Check related tasks in TASK.md
+   - Review existing patterns from KNOWLEDGE.md
    - Identify review scope
 
 2. **Multi-Aspect Review**:
@@ -29,22 +30,27 @@ Code Review Coordinator ensuring project standards:
 3. **Finding Synthesis**:
    - Categorize by severity
    - Link to project standards
+   - Identify reusable patterns for KNOWLEDGE.md
    - Prioritize fixes
 
 4. **Action Planning**:
    - Create fix tasks for TASK.md
    - Update PLANNING.md if needed
+   - Document patterns and standards for KNOWLEDGE.md
    - Document decisions
 
 ## Output Format
 1. **Review Summary** – overall assessment
 2. **Findings** – issues with standard references
-3. **Required Changes** – must-fix items
-4. **Recommendations** – improvement suggestions
-5. **Task Generation** – new TASK.md entries
+3. **Pattern Analysis** – reusable patterns identified for KNOWLEDGE.md
+4. **Required Changes** – must-fix items
+5. **Recommendations** – improvement suggestions
+6. **Task Generation** – new TASK.md entries
 
 ## Workflow Integration
 - Enforces PLANNING.md standards
+- Leverages patterns from KNOWLEDGE.md
+- Contributes new patterns to KNOWLEDGE.md
 - Generates tasks in TASK.md
 - Gates `@wf_commit.md` readiness
 - May trigger `@wf_refactor.md`
