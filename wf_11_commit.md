@@ -18,7 +18,7 @@ Create git commits with integrated formatting, validation, and context updates:
    - Validate against PLANNING.md standards
    - Check related tasks in TASK.md
 
-2. **Auto-Formatting**:
+2. **Auto-Formatting & Time Sync**:
    - Apply language-specific formatting:
      * Python: black formatter
      * JavaScript/TypeScript: prettier
@@ -27,6 +27,12 @@ Create git commits with integrated formatting, validation, and context updates:
      * Other: project-specific formatters
    - Remove trailing whitespace and tabs
    - Ensure consistent line endings
+   - **Auto-Update Maintenance Dates**:
+     * Update "最后更新" fields to current date: `$(date +%Y-%m-%d)`
+     * Update "Last Updated" fields to current date: `$(date +%Y-%m-%d)`
+     * Preserve historical dates (创建日期、发布日期、决策日期)
+     * Validate date format consistency across all .md files
+     * Check for and flag any outdated year references
 
 3. **Change Analysis**:
    - Group related changes
@@ -34,6 +40,7 @@ Create git commits with integrated formatting, validation, and context updates:
    - Check for excluded files
    - Validate code formatting applied
    - Analyze changes for knowledge extraction opportunities
+   - **Time Point Validation**: Verify all dates are current and accurate
 
 4. **Commit Preparation**:
    - Stage formatted files

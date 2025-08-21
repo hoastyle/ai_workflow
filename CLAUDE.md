@@ -348,6 +348,49 @@ Follow the systematic approach in `wf_06_debug.md`:
 - **Mixed line endings**: Use `dos2unix` or configure editor to use Unix LF endings
 - **Formatting inconsistent**: Let `wf_11_commit.md` handle auto-formatting
 
+### 时间点管理规范
+
+**核心原则**: 绝不手动输入日期，总是使用命令动态获取
+
+#### 标准时间获取命令
+```bash
+# 基础日期格式
+TODAY=$(date +%Y-%m-%d)              # 今天: 2025-08-21
+YESTERDAY=$(date -d 'yesterday' +%Y-%m-%d)  # 昨天: 2025-08-20
+TIMESTAMP=$(date +%Y-%m-%d\ %H:%M:%S)       # 完整时间戳
+
+# 中文格式（用于文档）
+TODAY_CN=$(date +%Y年%m月%d日)        # 2025年08月21日
+WEEK_CN=$(date +%Y年第%U周)           # 2025年第34周
+```
+
+#### 日期类型与使用规则
+1. **历史日期** (创建时间、发布日期)
+   - 创建时使用: `$(date +%Y-%m-%d)`
+   - 一旦确定，永不修改
+   
+2. **维护日期** (最后更新、修改时间)
+   - 总是使用: `$(date +%Y-%m-%d)`
+   - 每次修改时自动更新
+
+3. **ADR决策日期** (架构决策记录)
+   - 决策当天: `$(date +%Y-%m-%d)`
+   - 体现决策制定的具体时间
+
+#### 文档模板示例
+```markdown
+**创建日期**: $(date +%Y-%m-%d)      # 项目启动时固定
+**最后更新**: $(date +%Y-%m-%d)      # 每次编辑自动更新
+**版本发布**: $(date +%Y-%m-%d)      # 版本发布时固定
+**决策日期**: $(date +%Y-%m-%d)      # ADR决策时固定
+```
+
+#### 预防时间错误的强制规则
+- ❌ **禁止**: 手动输入任何形式的日期
+- ✅ **必须**: 使用bash命令获取当前时间
+- ✅ **必须**: 在wf_11_commit.md中验证日期正确性
+- ✅ **必须**: 区分历史日期和维护日期的处理方式
+
 ## Version Information
 
 **Current Version**: v2.3 (User Experience Optimization)
