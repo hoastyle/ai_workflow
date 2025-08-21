@@ -11,112 +11,112 @@
 ```
 🚀 Claude Code 工作流帮助系统
 
-═══════════════════════════════════════
+═══════════════════════════════════════════════════════════════
 
 🏁 快速入门 (3步开始)
-1️⃣ @wf_planning.md 项目名称    # 创建项目规划
-2️⃣ @wf_task.md create         # 生成任务列表  
-3️⃣ @wf_prime.md               # 开始工作！
+1️⃣ @wf_01_planning.md 项目名称                    # 创建项目规划
+2️⃣ @wf_02_task.md create                          # 生成任务列表
+3️⃣ @wf_03_prime.md                                # 加载项目上下文
 
 📋 常用命令
-• @wf_code.md <功能>           # 实现功能
-• @wf_debug.md <错误> [--quick] # 调试修复  
-• @wf_test.md <模块>           # 创建测试
-• @wf_commit.md                # 提交代码
+• @wf_05_code.md <功能描述>                        # 实现功能
+• @wf_06_debug.md <错误描述> [--quick]             # 调试修复
+• @wf_07_test.md <模块名称>                        # 创建测试
+• @wf_11_commit.md [提交消息]                      # 提交代码
 
 🔄 会话管理
-• /clear → @wf_prime.md        # 清理并重新加载
+• /clear → @wf_03_prime.md                         # 清理并重新加载
 
-═══════════════════════════════════════
+═══════════════════════════════════════════════════════════════
 
 📖 获取更多帮助:
-@wf_help.md quick      # 命令速查表
-@wf_help.md guide      # 场景流程指导
-@wf_help.md <命令名>    # 具体命令帮助
+@wf_99_help.md quick                               # 命令速查表
+@wf_99_help.md guide                               # 场景流程指导
+@wf_99_help.md <命令名>                            # 具体命令帮助
 ```
 
 ### quick - 显示命令速查表
 ```
 📋 WF_ 命令速查表 (13个核心命令)
 
-══════════════════════════════════════════════════
+═══════════════════════════════════════════════════════════════════════════
 
-🔄 核心流程
-@wf_prime.md                  # 加载项目上下文
-@wf_planning.md <项目名>      # 创建/更新项目规划
-@wf_task.md <action>          # 任务管理(create/review/update)
+🔄 核心流程 (Foundation Commands 1-3)
+@wf_01_planning.md <项目名称>                       # 创建/更新项目规划
+@wf_02_task.md <action>                             # 任务管理(create/review/update)
+@wf_03_prime.md                                     # 加载项目上下文
 
-💻 开发命令  
-@wf_code.md <功能描述>        # 实现功能(含格式化)
-@wf_ask.md <架构问题>         # 架构咨询
-@wf_debug.md <错误> [--quick] # 调试修复(合并fix功能)
-@wf_refactor.md <目标>        # 代码重构
+💻 开发命令 (Development Commands 4-6)
+@wf_04_ask.md <架构问题>                            # 架构咨询与代码审查
+@wf_05_code.md <功能描述>                           # 实现功能(含格式化)
+@wf_06_debug.md <错误描述> [--quick]                # 调试修复(系统化分析)
 
-✅ 质量保证
-@wf_test.md <模块>            # 测试开发(含覆盖率)
-@wf_review.md <范围>          # 代码审查(含格式验证)
-@wf_optimize.md <目标>        # 性能优化
+✅ 质量保证 (Quality Commands 7-10)
+@wf_07_test.md <模块名称>                           # 测试开发(含覆盖率)
+@wf_08_review.md [范围]                             # 代码审查(PRD合规性)
+@wf_09_refactor.md <目标组件>                       # 代码重构改进
+@wf_10_optimize.md <性能目标>                       # 性能优化调优
 
-🔧 操作命令
-@wf_commit.md [消息]          # 提交(含格式化+上下文更新)
-@wf_deploy_check.md <环境>    # 部署检查
+🔧 操作命令 (Operations Commands 11-12)
+@wf_11_commit.md [提交消息]                         # 提交(含格式化+上下文更新)
+@wf_12_deploy_check.md <环境名称>                   # 部署就绪检查
 
-📚 帮助
-@wf_help.md [选项]            # 帮助系统(整合版)
+📚 帮助系统 (Support Commands 99)
+@wf_99_help.md [选项]                               # 完整帮助系统
 
-══════════════════════════════════════════════════
+═══════════════════════════════════════════════════════════════════════════
 
 💡 黄金法则:
-1. 永远先 @wf_prime.md
-2. 经常 @wf_task.md update  
-3. 遇事不决 @wf_ask.md
+1. 永远先 @wf_03_prime.md                          # 会话开始加载上下文
+2. 经常 @wf_02_task.md update                      # 保持任务状态同步
+3. 遇事不决 @wf_04_ask.md                          # 架构咨询解决问题
 ```
 
 ### guide - 显示场景工作流指导
 ```
 🔄 工作流场景指导
 
-══════════════════════════════════════════════════
+═══════════════════════════════════════════════════════════════════════════
 
 🆕 【新项目开始】
-1. @wf_planning.md <项目名>     # 创建项目架构
-2. @wf_task.md create           # 生成初始任务
-3. @wf_prime.md                 # 准备开发环境
+1. @wf_01_planning.md <项目名称>                        # 创建项目架构
+2. @wf_02_task.md create                                # 生成初始任务
+3. @wf_03_prime.md                                      # 加载项目上下文
 
 🏗️ 【功能开发】(标准流程)
-1. @wf_ask.md 如何实现XX功能？   # 架构咨询
-2. @wf_code.md 实现XX功能        # 开发实现  
-3. @wf_test.md XX模块            # 创建测试
-4. @wf_review.md XX模块          # 代码审查
-5. @wf_commit.md                 # 提交(自动格式化)
-6. @wf_task.md update            # 更新进度
+1. @wf_04_ask.md 如何实现XX功能？                       # 架构咨询
+2. @wf_05_code.md 实现XX功能                            # 开发实现
+3. @wf_07_test.md XX模块                                # 创建测试
+4. @wf_08_review.md XX模块                              # 代码审查
+5. @wf_11_commit.md                                     # 提交(自动格式化)
+6. @wf_02_task.md update                                # 更新进度
 
 🐛 【问题修复】
-• 复杂问题: @wf_debug.md <详细错误描述>
-• 简单问题: @wf_debug.md <错误> --quick  
-• 验证修复: @wf_test.md <相关模块>
-• 提交修复: @wf_commit.md
+• 复杂问题: @wf_06_debug.md <详细错误描述>               # 系统化调试
+• 简单问题: @wf_06_debug.md <错误描述> --quick          # 快速修复
+• 验证修复: @wf_07_test.md <相关模块>                   # 测试验证
+• 提交修复: @wf_11_commit.md                            # 提交修复
 
 🔧 【代码改进】
-1. @wf_review.md                # 识别改进点
-2. @wf_refactor.md <目标代码>    # 重构改进
-3. @wf_optimize.md <性能目标>    # 性能优化
-4. @wf_test.md                   # 回归测试
-5. @wf_commit.md                 # 提交改进
+1. @wf_08_review.md                                     # 识别改进点
+2. @wf_09_refactor.md <目标组件>                        # 重构改进
+3. @wf_10_optimize.md <性能目标>                        # 性能优化
+4. @wf_07_test.md                                       # 回归测试
+5. @wf_11_commit.md                                     # 提交改进
 
 📦 【部署准备】
-1. @wf_test.md --coverage        # 检查测试覆盖率
-2. @wf_review.md --final         # 最终代码审查
-3. @wf_deploy_check.md <环境>    # 部署就绪检查
+1. @wf_07_test.md --coverage                            # 检查测试覆盖率
+2. @wf_08_review.md --final                             # 最终代码审查
+3. @wf_12_deploy_check.md <环境名称>                    # 部署就绪检查
 
 💼 【会话管理】
-启动: @wf_prime.md              # 每个会话开始
-工作: 各种开发命令...            # 正常开发流程
-保存: @wf_commit.md + @wf_task.md update
-清理: /clear                    # 上下文过大时
-恢复: @wf_prime.md              # 重新加载继续
+启动: @wf_03_prime.md                                   # 每个会话开始
+工作: 各种开发命令...                                   # 正常开发流程
+保存: @wf_11_commit.md + @wf_02_task.md update         # 保存进度
+清理: /clear                                           # 上下文过大时
+恢复: @wf_03_prime.md                                   # 重新加载继续
 
-══════════════════════════════════════════════════
+═══════════════════════════════════════════════════════════════════════════
 
 📊 闭环追踪:
 PRD.md → PLANNING.md → TASK.md → CONTEXT.md → Git提交
@@ -134,14 +134,14 @@ PRD.md → PLANNING.md → TASK.md → CONTEXT.md → Git提交
 用法: @{COMMAND_NAME} <参数说明>
 功能: {详细功能描述}
 
-🎯 使用示例  
+🎯 使用示例
 • @{COMMAND_NAME} {示例1}
-• @{COMMAND_NAME} {示例2} 
+• @{COMMAND_NAME} {示例2}
 • @{COMMAND_NAME} {示例3}
 
 🔗 集成关系
 读取文件: {相关输入文件}
-更新文件: {相关输出文件}  
+更新文件: {相关输出文件}
 前置命令: {建议的前置命令}
 后续命令: {建议的后续命令}
 
@@ -165,19 +165,19 @@ PRD.md → PLANNING.md → TASK.md → CONTEXT.md → Git提交
 当请求具体命令帮助时，提供以下标准化信息：
 
 ### 核心命令信息模板
-- **wf_prime.md**: 会话初始化，加载项目上下文
-- **wf_planning.md**: 项目规划管理，创建架构文档  
-- **wf_task.md**: 任务跟踪，管理开发进度
-- **wf_code.md**: 功能实现，集成自动格式化
-- **wf_ask.md**: 架构咨询，设计决策支持
-- **wf_debug.md**: 调试修复，支持快速和深度模式
-- **wf_refactor.md**: 代码重构，结构改进
-- **wf_test.md**: 测试开发，集成覆盖率分析
-- **wf_review.md**: 代码审查，质量验证
-- **wf_optimize.md**: 性能优化，效率提升
-- **wf_deploy_check.md**: 部署检查，上线准备
-- **wf_commit.md**: 代码提交，集成格式化和上下文更新
-- **wf_help.md**: 帮助系统，整合所有指导功能
+- **wf_01_planning.md**: 项目规划管理，创建架构文档，对齐PRD要求
+- **wf_02_task.md**: 任务跟踪，管理开发进度，映射PRD需求
+- **wf_03_prime.md**: 会话初始化，加载项目上下文(PRD+PLANNING+TASK+CONTEXT)
+- **wf_04_ask.md**: 架构咨询，设计决策支持，可选代码库审查
+- **wf_05_code.md**: 功能实现，集成自动格式化，多代理协作
+- **wf_06_debug.md**: 调试修复，系统化错误分析，支持快速和深度模式
+- **wf_07_test.md**: 测试开发，集成覆盖率分析，PRD标准验证
+- **wf_08_review.md**: 代码审查，质量验证，PRD合规性检查
+- **wf_09_refactor.md**: 代码重构，结构改进，保持PRD合规
+- **wf_10_optimize.md**: 性能优化，效率提升，满足PRD性能要求
+- **wf_11_commit.md**: 代码提交，集成格式化和上下文更新，自动更新CONTEXT.md
+- **wf_12_deploy_check.md**: 部署检查，上线准备，PRD标准验证
+- **wf_99_help.md**: 完整帮助系统，整合指导、速查、命令帮助
 
 ## Output Format
 根据参数返回相应的帮助信息：
