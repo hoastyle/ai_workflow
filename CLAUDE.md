@@ -351,7 +351,7 @@ Follow the systematic approach in `wf_06_debug.md`:
 ## Version Information
 
 **Current Version**: v2.3 (User Experience Optimization)
-**Last Updated**: 2024-12-19
+**Last Updated**: 2025-08-21
 
 ### Recent Improvements (v2.3)
 - Enhanced Quick Start Guide with detailed Essential Commands
