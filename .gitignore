@@ -54,3 +54,6 @@ config.local.json
 PLANNING.md
 TASK.md
 *.local.md
+
+# System
+tags
