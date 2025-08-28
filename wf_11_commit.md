@@ -7,6 +7,7 @@ Create git commits with integrated formatting, validation, and context updates:
 - Auto-format code before commit
 - Update TASK.md task completion status
 - Auto-update CONTEXT.md with work summary
+- **Auto-update README.md when important work completed**
 - Identify and suggest KNOWLEDGE.md updates
 - Maintain commit message conventions
 - Ensure full traceability
@@ -39,16 +40,37 @@ Create git commits with integrated formatting, validation, and context updates:
    - Identify completed tasks
    - Check for excluded files
    - Validate code formatting applied
+   - **README Update Assessment**: Check if changes trigger README update:
+     * New core features (feat commits affecting main files)
+     * PLANNING.md architecture changes
+     * API/interface modifications
+     * Dependency or installation requirement changes
+     * Major version milestones
    - Analyze changes for knowledge extraction opportunities
    - **Time Point Validation**: Verify all dates are current and accurate
 
-4. **Commit Preparation**:
-   - Stage formatted files
+4. **README Update (If Triggered)**:
+   - **Content Generation**: Generate updated README.md:
+     * Project overview from PLANNING.md
+     * Installation requirements from dependencies
+     * Core usage examples from available commands
+     * Feature list from completed TASK.md items
+     * Architecture overview from PLANNING.md
+     * Troubleshooting from KNOWLEDGE.md
+   - **Quality Validation**: Ensure README meets standards:
+     * No trailing whitespace
+     * Valid markdown formatting
+     * Working internal links
+     * Current date references
+   - **Integration**: Include updated README in commit
+
+5. **Commit Preparation**:
+   - Stage formatted files (including README if updated)
    - Generate semantic commit message
    - Link to TASK.md items
    - Add task references
 
-5. **Context Update**:
+6. **Context Update**:
    - Create/update CONTEXT.md with:
      * Work completed this session
      * Tasks finished and remaining
@@ -56,13 +78,13 @@ Create git commits with integrated formatting, validation, and context updates:
      * Next priority items
    - Include progress summary
 
-6. **Knowledge Extraction**:
+7. **Knowledge Extraction**:
    - Identify architectural decisions worthy of ADR documentation
    - Detect new problem-solution patterns
    - Recognize reusable code patterns or conventions
    - Suggest KNOWLEDGE.md updates if applicable
 
-7. **Post-Commit Actions**:
+8. **Post-Commit Actions**:
    - Update TASK.md with completions
    - Document significant changes
    - Update KNOWLEDGE.md if new patterns or decisions identified
@@ -90,21 +112,24 @@ Types:
 ## Output Format
 1. **Formatting Report** – auto-formatting applied
 2. **Change Summary** – files and modifications
-3. **Knowledge Extraction** – identified patterns and decisions
-4. **Commit Message** – formatted message
-5. **Task Updates** – TASK.md completions
-6. **Context Update** – CONTEXT.md refresh
-7. **Knowledge Updates** – KNOWLEDGE.md suggestions or updates
-8. **Commit Result** – success confirmation
-9. **Next Steps** – remaining work items
+3. **README Update Report** – README generation details (if triggered)
+4. **Knowledge Extraction** – identified patterns and decisions
+5. **Commit Message** – formatted message
+6. **Task Updates** – TASK.md completions
+7. **Context Update** – CONTEXT.md refresh
+8. **Knowledge Updates** – KNOWLEDGE.md suggestions or updates
+9. **Commit Result** – success confirmation
+10. **Next Steps** – remaining work items
 
 ## Workflow Integration
 - Validates against PLANNING.md standards
 - Auto-formats code (integrates wf_format.md functionality)
+- **Auto-updates README.md for important work completions**
 - Updates completed tasks in TASK.md
 - Auto-updates CONTEXT.md for session continuity
 - Enhances KNOWLEDGE.md with accumulated wisdom
 - Follows after `@wf_review.md` approval
 - Triggers task status updates
 - Maintains complete project history and context
+- **Ensures README stays synchronized with project state**
 - Enables seamless `@wf_prime.md` context loading with long-term memory
