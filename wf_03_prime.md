@@ -1,7 +1,7 @@
-## Usage
+##                                                                                     Usage
 `@wf_prime.md`
 
-## Purpose
+##                                                                                     Purpose
 Prime the AI assistant with comprehensive project context by reading core project files to understand:
 - Current project state and architecture
 - Completed work and remaining tasks
@@ -9,7 +9,7 @@ Prime the AI assistant with comprehensive project context by reading core projec
 - Active working context
 - Accumulated project knowledge and patterns
 
-## Process
+##                                                                                     Process
 1. **Read Core Documentation**:
    - Check for existence of PRD.md, PLANNING.md, TASK.md, and KNOWLEDGE.md
    - Read PRD.md for project requirements (read-only, never modify)
@@ -42,7 +42,7 @@ Prime the AI assistant with comprehensive project context by reading core projec
    - Reference architectural decisions for consistency
    - Prepare for continuation of work with enhanced context
 
-## Output Format
+##                                                                                     Output Format
 1. **Requirements Overview** - Key requirements from PRD.md (read-only reference)
 2. **Project Summary** - Brief overview from PLANNING.md aligned with PRD
 3. **Knowledge Base Summary** - Key patterns and decisions from KNOWLEDGE.md
@@ -51,7 +51,7 @@ Prime the AI assistant with comprehensive project context by reading core projec
 6. **Applicable Solutions** - Relevant past solutions and patterns for current context
 7. **Ready Status** - Confirmation of context loading and readiness to continue
 
-## Integration Notes
+##                                                                                     Integration Notes
 - Run after `/clear` to restore working context
 - Use before starting new related work sessions
 - Loads CONTEXT.md for session continuity (updated by wf_commit.md)

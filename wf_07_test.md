@@ -1,21 +1,21 @@
-## Usage
+##                                                                                   Usage
 `@wf_test.md <COMPONENT_OR_FEATURE> [--coverage]`
 
-## Context
+##                                                                                   Context
 - Target for testing: $ARGUMENTS
 - Test strategy defined in PLANNING.md
 - Test tasks tracked in TASK.md
 - Coverage requirements from project standards
 - Use `--coverage` flag to focus on coverage analysis and improvement
 
-## Your Role
+##                                                                                   Your Role
 Test Strategy Coordinator ensuring comprehensive validation:
 1. **Test Architect** – designs tests per PLANNING.md strategy
 2. **Unit Test Specialist** – creates tests following project patterns
 3. **Integration Engineer** – validates system interactions
 4. **Quality Validator** – ensures coverage meets requirements
 
-## Process
+##                                                                                   Process
 
 ### Standard Testing (default)
 1. **Test Planning**:
@@ -60,7 +60,7 @@ Test Strategy Coordinator ensuring comprehensive validation:
    - Document coverage improvements
    - Update coverage requirements if needed
 
-## Output Format
+##                                                                                   Output Format
 
 ### Standard Testing Output
 1. **Test Strategy** – approach aligned with project
@@ -76,7 +76,7 @@ Test Strategy Coordinator ensuring comprehensive validation:
 4. **Improvement Plan** – tests to add for better coverage
 5. **Coverage Trends** – comparison with previous runs
 
-## Workflow Integration
+##                                                                                   Workflow Integration
 - Follows PLANNING.md test strategy
 - Updates test tasks in TASK.md
 - Validates `@wf_code.md` implementations

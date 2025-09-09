@@ -1,49 +1,145 @@
 # Pre-commit configuration for cc_commands workflow system
-# This configuration ensures code quality standards are enforced before commits
+# Enhanced with auto-repair capabilities for better user experience
+# This configuration ensures code quality standards are enforced and auto-fixed before commits
 
 repos:
   - repo: local
     hooks:
-      # Trailing whitespace check - critical quality gate
-      - id: trailing-whitespace
-        name: Trim Trailing Whitespace
-        entry: bash -c 'grep -n " $" *.md && echo "❌ Found trailing whitespace" && exit 1 || echo "✅ No trailing whitespace" && exit 0'
-        language: system
-        files: \.md$
-        always_run: true
-        fail_fast: true
-
-      # File format validation - ensure consistent file formats
-      - id: file-format
-        name: Check File Format
-        entry: bash -c 'file *.md | grep -E "(CRLF|binary|executable)" && echo "❌ Non-standard file format detected" && exit 1 || echo "✅ Clean file formats" && exit 0'
+      # === AUTO-REPAIR HOOKS (100% Safe Operations) ===
+      
+      # Auto-fix trailing whitespace - completely safe operation
+      - id: auto-fix-whitespace
+        name: Auto-fix Trailing Whitespace
+        entry: bash -c 'echo "🔧 Checking for trailing whitespace..."; if find . -name "*.md" -exec grep -l " $" {} \; 2>/dev/null | grep -q .; then echo "⚠️  Found trailing whitespace - auto-fixing..."; find . -name "*.md" -exec sed -i "s/[[:space:]]*$//" {} \; 2>/dev/null; if find . -name "*.md" -exec grep -l " $" {} \; 2>/dev/null | grep -q .; then echo "❌ Some trailing whitespace remains - manual review needed"; exit 1; else echo "✅ Successfully fixed all trailing whitespace"; fi; else echo "✅ No trailing whitespace found"; fi'
         language: system
         files: \.md$
         always_run: true
 
-      # Line ending validation - ensure Unix line endings
-      - id: line-endings
-        name: Check Line Endings
-        entry: bash -c 'find . -name "*.md" -exec file {} \; | grep CRLF && echo "❌ Found CRLF line endings" && exit 1 || echo "✅ Unix line endings (LF)" && exit 0'
+      # Auto-fix line endings - completely safe operation
+      - id: auto-fix-line-endings
+        name: Auto-fix Line Endings
+        entry: >-
+          bash -c 'echo "🔧 Checking line endings...";
+          if find . -name "*.md" -exec file {} \; 2>/dev/null | grep -q CRLF;
+          then echo "⚠️  Found CRLF line endings - auto-fixing...";
+          if command -v dos2unix >/dev/null 2>&1;
+          then find . -name "*.md" -exec dos2unix {} \; 2>/dev/null;
+          echo "✅ Successfully fixed line endings using dos2unix";
+          else echo "⚠️  dos2unix not available, using sed fallback...";
+          find . -name "*.md" -exec sed -i "s/\r$//" {} \;
+          echo "✅ Successfully fixed line endings using sed";
+          fi;
+          else echo "✅ All files have Unix line endings (LF)";
+          fi'
         language: system
         files: \.md$
         always_run: true
 
-      # Markdown link validation - ensure all links work
-      - id: markdown-links
+      # Auto-fix basic markdown formatting - safe operations
+      - id: auto-fix-markdown-formatting
+        name: Auto-fix Basic Markdown Formatting
+        entry: >-
+          bash -c 'echo "🔧 Checking basic markdown formatting...";
+          changes_made=false;
+          if find . -name "*.md" -exec bash -c "tail -n 5 {} | grep -q \"^$\"" \; 2>/dev/null | grep -q .;
+          then echo "  📝 Fixing excessive blank lines at end of files...";
+          find . -name "*.md" -exec bash -c "sed -i -e :a -e '\''/^\\n*$/$d;N;ba'\'' -e '\''}'\'' {}" \; 2>/dev/null;
+          changes_made=true;
+          fi;
+          if find . -name "*.md" -exec grep -H "^##[^# ]" {} \; 2>/dev/null | grep -q .;
+          then echo "  📝 Ensuring consistent header spacing...";
+          find . -name "*.md" -exec sed -i "s/^##\([^# ]\)/## \1/g" {} \; 2>/dev/null;
+          changes_made=true;
+          fi;
+          if [ "$changes_made" = true ];
+          then echo "✅ Applied basic markdown formatting fixes";
+          else echo "✅ Basic markdown formatting is correct";
+          fi'
+        language: system
+        files: \.md$
+        always_run: true
+
+      # === VALIDATION HOOKS (Quality Assurance) ===
+      
+      # Validate file formats after auto-repair
+      - id: file-format-validation
+        name: Validate File Format
+        entry: >-
+          bash -c 'echo "🔍 Validating file formats...";
+          if file *.md 2>/dev/null | grep -E "(CRLF|binary|executable)" | grep -q .;
+          then echo "❌ Found non-standard file formats:";
+          file *.md | grep -E "(CRLF|binary|executable)";
+          echo "   Manual intervention required for these files";
+          exit 1;
+          else echo "✅ All file formats are valid";
+          fi'
+        language: system
+        files: \.md$
+        always_run: true
+
+      # Validate line endings after auto-repair
+      - id: line-ending-validation
+        name: Validate Line Endings
+        entry: >-
+          bash -c 'echo "🔍 Validating line endings...";
+          if find . -name "*.md" -exec file {} \; 2>/dev/null | grep -q CRLF;
+          then echo "❌ Still found CRLF line endings after auto-fix:";
+          find . -name "*.md" -exec file {} \; | grep CRLF;
+          echo "   Manual intervention required";
+          exit 1;
+          else echo "✅ All files have correct Unix line endings (LF)";
+          fi'
+        language: system
+        files: \.md$
+        always_run: true
+
+      # Enhanced markdown link validation
+      - id: markdown-links-validation
         name: Validate Markdown Links
-        entry: bash -c 'grep -r "http" *.md | grep -E "\[.*\]\(http" && echo "ℹ️  Found external links - manual review recommended" || echo "✅ No external links found"'
+        entry: >-
+          bash -c 'echo "🔍 Validating markdown links...";
+          if grep -r "http" *.md 2>/dev/null | grep -E "\[.*\]\(http" | grep -q .;
+          then echo "ℹ️  Found external links - manual review recommended:";
+          grep -r "http" *.md 2>/dev/null | grep -E "\[.*\]\(http" | head -5;
+          echo "   (showing first 5 links)";
+          else echo "✅ No external links found";
+          fi'
         language: system
         files: \.md$
         always_run: false
 
-      # Command reference validation - ensure internal consistency
-      - id: command-references
+      # Enhanced command reference validation
+      - id: command-references-validation
         name: Validate Command References
-        entry: bash -c 'grep -r "wf_.*\.md" *.md | grep -v "wf_99_help.md" && echo "ℹ️  Found command references - checking consistency..." || echo "✅ No command references found"'
+        entry: >-
+          bash -c 'echo "🔍 Validating command references...";
+          if grep -r "wf_.*\.md" *.md 2>/dev/null | grep -v "wf_99_help.md" | grep -q .;
+          then echo "ℹ️  Found command references - checking consistency...";
+          grep -r "wf_.*\.md" *.md 2>/dev/null | grep -v "wf_99_help.md" | sort | uniq;
+          echo "   Please verify these references are correct";
+          else echo "✅ No command references found";
+          fi'
         language: system
         files: \.md$
         always_run: false
+
+      # Final quality validation
+      - id: final-quality-check
+        name: Final Quality Validation
+        entry: >-
+          bash -c 'echo "🎯 Performing final quality validation...";
+          if find . -name "*.md" -exec grep -l " $" {} \; 2>/dev/null | grep -q .;
+          then echo "❌ Quality check failed: trailing whitespace still present";
+          exit 1;
+          fi;
+          if find . -name "*.md" -exec file {} \; 2>/dev/null | grep -q CRLF;
+          then echo "❌ Quality check failed: CRLF line endings still present";
+          exit 1;
+          fi;
+          echo "✅ All quality checks passed - ready for commit!"'
+        language: system
+        files: \.md$
+        always_run: true
 
 # Default settings for all hooks
 default_language_version:

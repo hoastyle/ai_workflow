@@ -1,10 +1,10 @@
-## Usage
+##                                                                                     Usage
 `@wf_help.md [command|guide|quick]`
 
-## Purpose
+##                                                                                     Purpose
 提供工作流命令的完整帮助系统，整合快速参考、场景指导和命令详情
 
-## Process
+##                                                                                     Process
 根据参数提供不同级别的帮助：
 
 ### 无参数 - 显示主菜单和快速入门
@@ -161,7 +161,7 @@ PRD.md → PLANNING.md → TASK.md → CONTEXT.md → Git提交
 @wf_ask.md <问题>    # 针对具体问题咨询
 ```
 
-## Command Map
+##                                                                                     Command Map
 当请求具体命令帮助时，提供以下标准化信息：
 
 ### 核心命令信息模板
@@ -179,14 +179,14 @@ PRD.md → PLANNING.md → TASK.md → CONTEXT.md → Git提交
 - **wf_12_deploy_check.md**: 部署检查，上线准备，PRD标准验证
 - **wf_99_help.md**: 完整帮助系统，整合指导、速查、命令帮助
 
-## Output Format
+##                                                                                     Output Format
 根据参数返回相应的帮助信息：
 - 使用清晰的ASCII分隔线和表情符号
 - 提供结构化的信息布局
 - 包含实用的示例和最佳实践
 - 支持中文界面的友好交互
 
-## Integration
+##                                                                                     Integration
 - 不需要项目上下文，可随时调用
 - 整合原有guide和quick功能
 - 提供完整的命令学习路径

@@ -1,14 +1,14 @@
-## Usage
+##                                                                                      Usage
 `@wf_planning.md <PROJECT_NAME>`
 
-## Purpose
+##                                                                                      Purpose
 Create or update PLANNING.md to establish comprehensive project documentation that:
 - Defines project architecture and technical decisions
 - Documents development workflow and standards
 - Provides context for AI assistants and developers
 - Maintains project continuity across sessions
 
-## Process
+##                                                                                      Process
 1. **Requirements Analysis**:
    - Read PRD.md for official project requirements (read-only, never modify)
    - Check for existing PLANNING.md
@@ -85,13 +85,13 @@ Create or update PLANNING.md to establish comprehensive project documentation th
    - Establish update procedures
    - Define review cycles
 
-## Output Format
+##                                                                                      Output Format
 1. **PLANNING.md File** - Complete project planning document
 2. **Summary Report** - Key decisions and action items
 3. **Next Steps** - Immediate tasks based on planning
 4. **Integration Guide** - How to use with other workflow commands
 
-## Workflow Integration
+##                                                                                      Workflow Integration
 - Creates foundation for `@wf_task.md`
 - Referenced by `@wf_prime.md` for context loading
 - Updated through `@wf_review.md` cycles

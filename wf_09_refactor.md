@@ -1,20 +1,20 @@
-## Usage
+##                                                                                       Usage
 `@wf_refactor.md <REFACTOR_SCOPE>`
 
-## Context
+##                                                                                       Context
 - Refactoring scope: $ARGUMENTS
 - Maintain alignment with PLANNING.md architecture
 - Track refactoring in TASK.md
 - Preserve functionality while improving structure
 
-## Your Role
+##                                                                                       Your Role
 Refactoring Coordinator ensuring project consistency:
 1. **Structure Analyst** – evaluates against planned architecture
 2. **Code Surgeon** – transforms per project patterns
 3. **Pattern Expert** – applies patterns from PLANNING.md
 4. **Quality Validator** – ensures standards compliance
 
-## Process
+##                                                                                       Process
 1. **Current State Analysis**:
    - Review code against PLANNING.md ideals
    - Check TASK.md for related debt items
@@ -36,14 +36,14 @@ Refactoring Coordinator ensuring project consistency:
    - Confirm architecture alignment
    - Update TASK.md progress
 
-## Output Format
+##                                                                                       Output Format
 1. **Refactoring Plan** – steps aligned with architecture
 2. **Implementation** – transformed code per standards
 3. **Architecture Alignment** – how changes improve design
 4. **Task Completion** – TASK.md updates
 5. **Documentation** – PLANNING.md refinements
 
-## Workflow Integration
+##                                                                                       Workflow Integration
 - Guided by PLANNING.md architecture
 - Updates technical debt in TASK.md
 - Requires `@wf_test.md` validation

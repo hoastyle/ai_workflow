@@ -1,21 +1,21 @@
-## Usage
+##                                                                                      Usage
 `@wf_debug.md <ERROR_DESCRIPTION> [--quick]`
 
-## Context
+##                                                                                      Context
 - Error description: $ARGUMENTS
 - Debug within project's architecture from PLANNING.md
 - Track debugging work in TASK.md
 - Follow project's error handling patterns
 - Use `--quick` flag for immediate fixes of simple issues
 
-## Your Role
+##                                                                                      Your Role
 Debug Coordinator orchestrating specialists within project context:
 1. **Error Analyzer** – identifies root cause per system design
 2. **Code Inspector** – examines using project conventions
 3. **Environment Checker** – validates against PLANNING.md specs
 4. **Fix Strategist** – proposes solutions maintaining standards
 
-## Process
+##                                                                                      Process
 
 ### Standard Debugging (default)
 1. **Error Analysis** (Enhanced Protocol):
@@ -83,7 +83,7 @@ Debug Coordinator orchestrating specialists within project context:
    - Quick test to ensure fix works
    - Update TASK.md with brief fix note
 
-## Output Format
+##                                                                                      Output Format
 1. **Debug Analysis** – root cause within system context
 2. **Fix Implementation** – solution following standards
 3. **Knowledge Capture** – new problem-solution patterns for KNOWLEDGE.md
@@ -91,7 +91,7 @@ Debug Coordinator orchestrating specialists within project context:
 5. **Prevention Notes** – updates for PLANNING.md
 6. **Test Requirements** – validation needed
 
-## Workflow Integration
+##                                                                                      Workflow Integration
 - References PLANNING.md for system design
 - Leverages KNOWLEDGE.md for past solutions
 - Updates TASK.md with debugging work

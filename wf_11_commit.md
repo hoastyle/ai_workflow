@@ -1,7 +1,7 @@
-## Usage
+##                                                                                    Usage
 `@wf_commit.md [message]`
 
-## Purpose
+##                                                                                    Purpose
 Create git commits with integrated formatting, validation, and context updates:
 - Validate changes against standards
 - Auto-format code before commit
@@ -12,16 +12,16 @@ Create git commits with integrated formatting, validation, and context updates:
 - Maintain commit message conventions
 - Ensure full traceability
 
-## Process
-1. **Pre-Commit Validation**:
+##                                                                                    Process
+1. **Pre-Commit Auto-Repair & Validation**:
    - Check git status for changes
    - Identify files for staging
-   - **Run pre-commit hooks for quality gates**:
-     * Trailing whitespace detection (fail if found)
-     * File format validation (ensure consistent formats)
-     * Line ending validation (Unix LF only)
-     * Markdown link validation
-     * Command reference consistency checks
+   - **Run enhanced pre-commit hooks with auto-repair**:
+     * **Auto-fix Trailing Whitespace**: 100% safe, automatic removal
+     * **Auto-fix Line Endings**: Convert CRLF to Unix LF automatically
+     * **Auto-fix Markdown Formatting**: Basic formatting improvements
+     * **Enhanced Validation**: Comprehensive quality checks after auto-repair
+     * **Link & Reference Validation**: Manual review recommendations
    - Validate against PLANNING.md standards
    - Check related tasks in TASK.md
 
@@ -32,7 +32,7 @@ Create git commits with integrated formatting, validation, and context updates:
      * C++: clang-format
      * Go: gofmt
      * Other: project-specific formatters
-   - **Pre-commit hooks ensure**: No trailing whitespace, consistent line endings
+   - **Pre-commit auto-repair ensures**: Zero trailing whitespace, consistent line endings
    - **Auto-Update Maintenance Dates**:
      * Update "最后更新" fields to current date: `$(date +%Y-%m-%d)`
      * Update "Last Updated" fields to current date: `$(date +%Y-%m-%d)`
@@ -69,14 +69,13 @@ Create git commits with integrated formatting, validation, and context updates:
      * Current date references
    - **Integration**: Include updated README in commit
 
-5. **Final Pre-Commit Check**:
-   - **Run pre-commit hooks** on all staged files:
-     * Trailing whitespace validation (zero tolerance)
-     * File format consistency checks
-     * Line ending validation (Unix LF)
-     * Markdown link and reference validation
-   - **If hooks fail**: Fix issues and retry
-   - **If hooks pass**: Proceed to commit
+5. **Final Pre-Commit Validation**:
+   - **Run enhanced pre-commit validation** on all staged files:
+     * **Auto-repair hooks**: Fix trailing whitespace, line endings, basic formatting
+     * **Validation hooks**: Verify fixes were successful, check remaining quality gates
+     * **Final quality check**: Comprehensive validation ensuring all standards met
+   - **If validation fails**: Review specific error messages, manual intervention if needed
+   - **If validation passes**: All auto-repairs completed successfully, proceed to commit
 
 6. **Commit Preparation**:
    - Stage formatted files (including README if updated)
@@ -104,7 +103,7 @@ Create git commits with integrated formatting, validation, and context updates:
    - Update KNOWLEDGE.md if new patterns or decisions identified
    - Prepare for next work cycle
 
-## Commit Message Format
+##                                                                                    Commit Message Format
 ```
 [<type>][(<scope>)] <subject>
 
@@ -123,21 +122,24 @@ Types:
 - perf: Performance improvements
 - chore: Maintenance tasks
 
-## Output Format
-1. **Pre-commit Validation Report** – quality gate checks and results
-2. **Formatting Report** – auto-formatting applied
-3. **Change Summary** – files and modifications
-4. **README Update Report** – README generation details (if triggered)
-5. **Knowledge Extraction** – identified patterns and decisions
-6. **Commit Message** – formatted message
-7. **Task Updates** – TASK.md completions
-8. **Context Update** – CONTEXT.md refresh
-9. **Knowledge Updates** – KNOWLEDGE.md suggestions or updates
-10. **Commit Result** – success confirmation
-11. **Next Steps** – remaining work items
+##                                                                                    Output Format
+1. **Auto-Repair Report** – automatic fixes applied (whitespace, line endings, formatting)
+2. **Pre-commit Validation Report** – quality gate checks and results
+3. **Formatting Report** – language-specific auto-formatting applied
+4. **Change Summary** – files and modifications
+5. **README Update Report** – README generation details (if triggered)
+6. **Knowledge Extraction** – identified patterns and decisions
+7. **Commit Message** – formatted message
+8. **Task Updates** – TASK.md completions
+9. **Context Update** – CONTEXT.md refresh
+10. **Knowledge Updates** – KNOWLEDGE.md suggestions or updates
+11. **Commit Result** – success confirmation
+12. **Next Steps** – remaining work items
 
-## Workflow Integration
-- **Quality Gates**: Enforced through pre-commit hooks (zero whitespace, consistent formatting)
+##                                                                                    Workflow Integration
+- **Auto-Repair System**: Automatically fixes trailing whitespace, line endings, basic formatting
+- **Quality Gates**: Enforced through enhanced pre-commit hooks with validation
+- **User Experience**: Reduces manual fixes, provides clear feedback on auto-repairs
 - Validates against PLANNING.md standards
 - Auto-formats code (integrates wf_format.md functionality)
 - **Auto-updates README.md for important work completions**
@@ -150,7 +152,7 @@ Types:
 - **Ensures README stays synchronized with project state**
 - Enables seamless `@wf_prime.md` context loading with long-term memory
 
-## Pre-commit Framework Integration
+##                                                                                    Pre-commit Framework Integration
 
 ### Installation & Setup
 ```bash
@@ -167,25 +169,34 @@ pre-commit run --all-files
 pre-commit run
 ```
 
+### Auto-Repair Capabilities
+- **Trailing Whitespace**: 100% safe automatic removal using sed
+- **Line Endings**: Automatic CRLF to Unix LF conversion (dos2unix or sed fallback)
+- **Markdown Formatting**: Basic formatting improvements (blank lines, header spacing)
+- **Smart Detection**: Only attempts repairs when issues are found
+- **Clear Feedback**: Detailed reporting of what was fixed
+
 ### Quality Gates Enforced
-- **Trailing Whitespace**: Zero tolerance - commits fail if found
+- **Post-Repair Validation**: Ensures all auto-repairs were successful
 - **File Format Validation**: Ensures consistent file formats across the project
-- **Line Endings**: Enforces Unix LF line endings
+- **Line Ending Verification**: Confirms Unix LF line endings after conversion
 - **Markdown Links**: Validates external and internal links
 - **Command References**: Ensures consistent command references across documentation
+- **Final Quality Check**: Comprehensive validation ensuring all standards met
 
-### Hook Configuration
+### Enhanced Hook Configuration
 The `.pre-commit-config.yaml` file contains:
-- Trailing whitespace detection with immediate failure
-- File format validation for consistency
-- Line ending validation (Unix LF only)
-- Markdown link validation
-- Command reference consistency checks
-- Fail-fast behavior to stop on first error
+- **Auto-repair hooks**: 3 safe automatic repair operations
+- **Validation hooks**: 4 comprehensive quality validation steps
+- **Progressive reporting**: Clear feedback on each operation
+- **Fallback mechanisms**: Multiple tools available for each repair type
+- **Fail-fast behavior**: Stops on critical errors that cannot be auto-repaired
 
 ### Integration Benefits
-- **Automated Quality Control**: No manual checks needed
+- **Automated Quality Control**: No manual checks needed for common issues
+- **Instant Fixes**: Most formatting problems resolved automatically
+- **User-Friendly**: Clear feedback on what was repaired
 - **Consistent Standards**: Enforced across all commits
-- **Early Detection**: Issues caught before commit
-- **Reduced Overhead**: Integrated into existing workflow
-- **Reliable Enforcement**: Zero tolerance for quality issues
+- **Early Detection**: Issues caught and fixed before commit
+- **Reduced Overhead**: Minimal user intervention required
+- **Reliable Enforcement**: Zero tolerance for remaining quality issues
