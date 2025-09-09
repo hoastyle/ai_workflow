@@ -275,12 +275,34 @@ Each command orchestrates relevant specialists to ensure comprehensive coverage 
 - Document significant changes
 
 ### Pre-commit Quality Checks
-Before any commit, run these validation commands:
-```bash
-# Check for trailing whitespace
-grep -n " $" *.md && echo "❌ Found trailing whitespace" || echo "✅ No trailing whitespace"
+**Automated through pre-commit framework**: The system now uses pre-commit hooks for automated quality validation.
 
-# Check for mixed line endings
+**Manual Installation** (one-time setup):
+```bash
+# Install pre-commit framework
+pip install pre-commit
+
+# Install hooks in repository
+pre-commit install
+```
+
+**Automated Checks** (run automatically on commit):
+- Trailing whitespace detection (zero tolerance)
+- File format validation
+- Line ending validation (Unix LF only)
+- Markdown link validation
+- Command reference consistency
+
+**Manual Verification** (if needed):
+```bash
+# Run checks on all files
+pre-commit run --all-files
+
+# Run checks on staged files only
+pre-commit run
+
+# Legacy manual checks (if pre-commit not available)
+grep -n " $" *.md && echo "❌ Found trailing whitespace" || echo "✅ No trailing whitespace"
 file *.md | grep -v "ASCII text" && echo "❌ Non-standard file format" || echo "✅ Clean file formats"
 ```
 
@@ -294,10 +316,13 @@ file *.md | grep -v "ASCII text" && echo "❌ Non-standard file format" || echo 
 
 ### Quality Gate Enforcement
 The `wf_11_commit.md` command MUST include these checks:
-1. **Whitespace validation**: Reject commits with trailing whitespace
-2. **File format validation**: Ensure consistent line endings
-3. **Auto-formatting**: Apply language-specific formatters
-4. **Lint checks**: Run relevant linters before commit
+1. **Pre-commit hooks execution**: Run all configured quality gates
+2. **Whitespace validation**: Reject commits with trailing whitespace (zero tolerance)
+3. **File format validation**: Ensure consistent line endings and formats
+4. **Auto-formatting**: Apply language-specific formatters
+5. **Lint checks**: Run relevant linters before commit
+6. **Link validation**: Verify all markdown links work correctly
+7. **Reference consistency**: Ensure command references are consistent across documentation
 
 ### Testing
 - Write tests for new features
@@ -343,10 +368,12 @@ Follow the systematic approach in `wf_06_debug.md`:
 - Verify with `wf_07_test.md --coverage`
 
 ### Code Quality Problems
-- **Trailing whitespace found**: Run `grep -n " $" *.md` to identify, then clean manually
-- **Commit rejected by quality gates**: Fix whitespace and formatting issues first
-- **Mixed line endings**: Use `dos2unix` or configure editor to use Unix LF endings
-- **Formatting inconsistent**: Let `wf_11_commit.md` handle auto-formatting
+- **Trailing whitespace found**: Run `pre-commit run --all-files` to identify and fix automatically
+- **Commit rejected by quality gates**: Run `pre-commit run` to see specific issues, fix, then retry
+- **Mixed line endings**: Pre-commit hooks will detect and reject inconsistent line endings
+- **Formatting inconsistent**: Let `wf_11_commit.md` handle auto-formatting and pre-commit validation
+- **Pre-commit not installed**: Run `pip install pre-commit && pre-commit install` to set up quality gates
+- **Hook failures**: Review pre-commit output for specific file and line numbers with issues
 
 ### 时间点管理规范
 

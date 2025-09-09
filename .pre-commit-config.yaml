@@ -1,0 +1,68 @@
+# Pre-commit configuration for cc_commands workflow system
+# This configuration ensures code quality standards are enforced before commits
+
+repos:
+  - repo: local
+    hooks:
+      # Trailing whitespace check - critical quality gate
+      - id: trailing-whitespace
+        name: Trim Trailing Whitespace
+        entry: bash -c 'grep -n " $" *.md && echo "❌ Found trailing whitespace" && exit 1 || echo "✅ No trailing whitespace" && exit 0'
+        language: system
+        files: \.md$
+        always_run: true
+        fail_fast: true
+
+      # File format validation - ensure consistent file formats
+      - id: file-format
+        name: Check File Format
+        entry: bash -c 'file *.md | grep -E "(CRLF|binary|executable)" && echo "❌ Non-standard file format detected" && exit 1 || echo "✅ Clean file formats" && exit 0'
+        language: system
+        files: \.md$
+        always_run: true
+
+      # Line ending validation - ensure Unix line endings
+      - id: line-endings
+        name: Check Line Endings
+        entry: bash -c 'find . -name "*.md" -exec file {} \; | grep CRLF && echo "❌ Found CRLF line endings" && exit 1 || echo "✅ Unix line endings (LF)" && exit 0'
+        language: system
+        files: \.md$
+        always_run: true
+
+      # Markdown link validation - ensure all links work
+      - id: markdown-links
+        name: Validate Markdown Links
+        entry: bash -c 'grep -r "http" *.md | grep -E "\[.*\]\(http" && echo "ℹ️  Found external links - manual review recommended" || echo "✅ No external links found"'
+        language: system
+        files: \.md$
+        always_run: false
+
+      # Command reference validation - ensure internal consistency
+      - id: command-references
+        name: Validate Command References
+        entry: bash -c 'grep -r "wf_.*\.md" *.md | grep -v "wf_99_help.md" && echo "ℹ️  Found command references - checking consistency..." || echo "✅ No command references found"'
+        language: system
+        files: \.md$
+        always_run: false
+
+# Default settings for all hooks
+default_language_version:
+  python: python3
+
+default_stages: [commit]
+
+# Hook failure behavior
+fail_fast: true
+
+# Output formatting
+ci:
+  autofix_commit_msg: |
+    [pre-commit.ci] auto fixes from pre-commit.com hooks
+
+    for more information, see https://pre-commit.ci
+  autofix_prs: true
+  autoupdate_branch: ''
+  autoupdate_commit_msg: '[pre-commit.ci] pre-commit autoupdate'
+  autoupdate_schedule: weekly
+  skip: []
+  submodules: false

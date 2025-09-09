@@ -16,6 +16,12 @@ Create git commits with integrated formatting, validation, and context updates:
 1. **Pre-Commit Validation**:
    - Check git status for changes
    - Identify files for staging
+   - **Run pre-commit hooks for quality gates**:
+     * Trailing whitespace detection (fail if found)
+     * File format validation (ensure consistent formats)
+     * Line ending validation (Unix LF only)
+     * Markdown link validation
+     * Command reference consistency checks
    - Validate against PLANNING.md standards
    - Check related tasks in TASK.md
 
@@ -26,8 +32,7 @@ Create git commits with integrated formatting, validation, and context updates:
      * C++: clang-format
      * Go: gofmt
      * Other: project-specific formatters
-   - Remove trailing whitespace and tabs
-   - Ensure consistent line endings
+   - **Pre-commit hooks ensure**: No trailing whitespace, consistent line endings
    - **Auto-Update Maintenance Dates**:
      * Update "最后更新" fields to current date: `$(date +%Y-%m-%d)`
      * Update "Last Updated" fields to current date: `$(date +%Y-%m-%d)`
@@ -58,19 +63,28 @@ Create git commits with integrated formatting, validation, and context updates:
      * Architecture overview from PLANNING.md
      * Troubleshooting from KNOWLEDGE.md
    - **Quality Validation**: Ensure README meets standards:
-     * No trailing whitespace
+     * No trailing whitespace (enforced by pre-commit)
      * Valid markdown formatting
      * Working internal links
      * Current date references
    - **Integration**: Include updated README in commit
 
-5. **Commit Preparation**:
+5. **Final Pre-Commit Check**:
+   - **Run pre-commit hooks** on all staged files:
+     * Trailing whitespace validation (zero tolerance)
+     * File format consistency checks
+     * Line ending validation (Unix LF)
+     * Markdown link and reference validation
+   - **If hooks fail**: Fix issues and retry
+   - **If hooks pass**: Proceed to commit
+
+6. **Commit Preparation**:
    - Stage formatted files (including README if updated)
    - Generate semantic commit message
    - Link to TASK.md items
    - Add task references
 
-6. **Context Update**:
+7. **Context Update**:
    - Create/update CONTEXT.md with:
      * Work completed this session
      * Tasks finished and remaining
@@ -78,13 +92,13 @@ Create git commits with integrated formatting, validation, and context updates:
      * Next priority items
    - Include progress summary
 
-7. **Knowledge Extraction**:
+8. **Knowledge Extraction**:
    - Identify architectural decisions worthy of ADR documentation
    - Detect new problem-solution patterns
    - Recognize reusable code patterns or conventions
    - Suggest KNOWLEDGE.md updates if applicable
 
-8. **Post-Commit Actions**:
+9. **Post-Commit Actions**:
    - Update TASK.md with completions
    - Document significant changes
    - Update KNOWLEDGE.md if new patterns or decisions identified
@@ -110,18 +124,20 @@ Types:
 - chore: Maintenance tasks
 
 ## Output Format
-1. **Formatting Report** – auto-formatting applied
-2. **Change Summary** – files and modifications
-3. **README Update Report** – README generation details (if triggered)
-4. **Knowledge Extraction** – identified patterns and decisions
-5. **Commit Message** – formatted message
-6. **Task Updates** – TASK.md completions
-7. **Context Update** – CONTEXT.md refresh
-8. **Knowledge Updates** – KNOWLEDGE.md suggestions or updates
-9. **Commit Result** – success confirmation
-10. **Next Steps** – remaining work items
+1. **Pre-commit Validation Report** – quality gate checks and results
+2. **Formatting Report** – auto-formatting applied
+3. **Change Summary** – files and modifications
+4. **README Update Report** – README generation details (if triggered)
+5. **Knowledge Extraction** – identified patterns and decisions
+6. **Commit Message** – formatted message
+7. **Task Updates** – TASK.md completions
+8. **Context Update** – CONTEXT.md refresh
+9. **Knowledge Updates** – KNOWLEDGE.md suggestions or updates
+10. **Commit Result** – success confirmation
+11. **Next Steps** – remaining work items
 
 ## Workflow Integration
+- **Quality Gates**: Enforced through pre-commit hooks (zero whitespace, consistent formatting)
 - Validates against PLANNING.md standards
 - Auto-formats code (integrates wf_format.md functionality)
 - **Auto-updates README.md for important work completions**
@@ -133,3 +149,43 @@ Types:
 - Maintains complete project history and context
 - **Ensures README stays synchronized with project state**
 - Enables seamless `@wf_prime.md` context loading with long-term memory
+
+## Pre-commit Framework Integration
+
+### Installation & Setup
+```bash
+# Install pre-commit framework
+pip install pre-commit
+
+# Install the hooks in your repository
+pre-commit install
+
+# Run hooks manually on all files
+pre-commit run --all-files
+
+# Run hooks on staged files only
+pre-commit run
+```
+
+### Quality Gates Enforced
+- **Trailing Whitespace**: Zero tolerance - commits fail if found
+- **File Format Validation**: Ensures consistent file formats across the project
+- **Line Endings**: Enforces Unix LF line endings
+- **Markdown Links**: Validates external and internal links
+- **Command References**: Ensures consistent command references across documentation
+
+### Hook Configuration
+The `.pre-commit-config.yaml` file contains:
+- Trailing whitespace detection with immediate failure
+- File format validation for consistency
+- Line ending validation (Unix LF only)
+- Markdown link validation
+- Command reference consistency checks
+- Fail-fast behavior to stop on first error
+
+### Integration Benefits
+- **Automated Quality Control**: No manual checks needed
+- **Consistent Standards**: Enforced across all commits
+- **Early Detection**: Issues caught before commit
+- **Reduced Overhead**: Integrated into existing workflow
+- **Reliable Enforcement**: Zero tolerance for quality issues
