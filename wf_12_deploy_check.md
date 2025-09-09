@@ -1,20 +1,20 @@
-##                                                                                       Usage
+## Usage
 `@wf_deploy_check.md <DEPLOYMENT_TARGET>`
 
-##                                                                                       Context
+## Context
 - Deployment target: $ARGUMENTS
 - Deployment requirements from PLANNING.md
 - Deployment tasks in TASK.md
 - Production readiness criteria
 
-##                                                                                       Your Role
+## Your Role
 Deployment Readiness Coordinator ensuring safe deployment:
 1. **Quality Agent** – validates code and test completeness
 2. **Security Auditor** – ensures security compliance
 3. **Operations Engineer** – verifies infrastructure readiness
 4. **Risk Assessor** – evaluates deployment risks
 
-##                                                                                       Process
+## Process
 1. **Readiness Assessment**:
    - Check deployment criteria in PLANNING.md
    - Review completed tasks in TASK.md
@@ -36,14 +36,14 @@ Deployment Readiness Coordinator ensuring safe deployment:
    - Define rollback procedures
    - Set monitoring requirements
 
-##                                                                                       Output Format
+## Output Format
 1. **Readiness Report** – comprehensive assessment
 2. **Risk Analysis** – identified risks and mitigations
 3. **Deployment Plan** – step-by-step procedure
 4. **Monitoring Setup** – post-deployment checks
 5. **Task Updates** – deployment task status
 
-##                                                                                       Workflow Integration
+## Workflow Integration
 - Validates against PLANNING.md requirements
 - Checks TASK.md completeness
 - Requires passing `@wf_test.md`

@@ -1,20 +1,20 @@
-##                                                                                      Usage
+## Usage
 `@wf_review.md <CODE_SCOPE>`
 
-##                                                                                      Context
+## Context
 - Code scope for review: $ARGUMENTS
 - Standards defined in PLANNING.md
 - Review tasks tracked in TASK.md
 - Quality gates from project requirements
 
-##                                                                                      Your Role
+## Your Role
 Code Review Coordinator ensuring project standards:
 1. **Quality Auditor** – checks against coding standards
 2. **Security Analyst** – validates security guidelines
 3. **Performance Reviewer** – assesses efficiency targets
 4. **Architecture Assessor** – verifies design alignment
 
-##                                                                                      Process
+## Process
 1. **Review Preparation**:
    - Load standards from PLANNING.md
    - Check related tasks in TASK.md
@@ -39,7 +39,7 @@ Code Review Coordinator ensuring project standards:
    - Document patterns and standards for KNOWLEDGE.md
    - Document decisions
 
-##                                                                                      Output Format
+## Output Format
 1. **Review Summary** – overall assessment
 2. **Findings** – issues with standard references
 3. **Pattern Analysis** – reusable patterns identified for KNOWLEDGE.md
@@ -47,7 +47,7 @@ Code Review Coordinator ensuring project standards:
 5. **Recommendations** – improvement suggestions
 6. **Task Generation** – new TASK.md entries
 
-##                                                                                      Workflow Integration
+## Workflow Integration
 - Enforces PLANNING.md standards
 - Leverages patterns from KNOWLEDGE.md
 - Contributes new patterns to KNOWLEDGE.md

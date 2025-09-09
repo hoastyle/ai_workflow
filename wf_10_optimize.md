@@ -1,20 +1,20 @@
-##                                                                                       Usage
+## Usage
 `@wf_optimize.md <PERFORMANCE_TARGET>`
 
-##                                                                                       Context
+## Context
 - Performance target: $ARGUMENTS
 - Performance requirements from PLANNING.md
 - Optimization tasks in TASK.md
 - System constraints and targets
 
-##                                                                                       Your Role
+## Your Role
 Performance Optimization Coordinator achieving project targets:
 1. **Profiler Analyst** – measures against requirements
 2. **Algorithm Engineer** – optimizes per constraints
 3. **Resource Manager** – manages within limits
 4. **Scalability Architect** – ensures target scale
 
-##                                                                                       Process
+## Process
 1. **Performance Baseline**:
    - Review targets in PLANNING.md
    - Check optimization tasks in TASK.md
@@ -36,14 +36,14 @@ Performance Optimization Coordinator achieving project targets:
    - Ensure targets met
    - Update documentation
 
-##                                                                                       Output Format
+## Output Format
 1. **Performance Analysis** – current vs. target metrics
 2. **Optimization Plan** – improvement strategy
 3. **Implementation** – optimized code
 4. **Results** – achieved improvements
 5. **Task Updates** – TASK.md completions
 
-##                                                                                       Workflow Integration
+## Workflow Integration
 - Targets from PLANNING.md requirements
 - Updates optimization tasks in TASK.md
 - May trigger `@wf_refactor.md` for structure

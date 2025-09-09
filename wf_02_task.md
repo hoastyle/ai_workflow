@@ -1,14 +1,14 @@
-##                                                                                      Usage
+## Usage
 `@wf_task.md [update|create|review]`
 
-##                                                                                      Purpose
+## Purpose
 Manage TASK.md to track project progress and maintain task continuity:
 - Create comprehensive task lists from PLANNING.md
 - Update task status and add new tasks
 - Review progress and identify blockers
 - Maintain context across development sessions
 
-##                                                                                      Process
+## Process
 ### Create Mode
 1. **Read PLANNING.md** thoroughly
 2. **Generate Task Categories**:
@@ -60,7 +60,7 @@ Manage TASK.md to track project progress and maintain task continuity:
    - Risk assessment
    - Recommendations
 
-##                                                                                      Output Format
+## Output Format
 ### Create/Update
 1. **TASK.md File** - Updated task document
 2. **Change Summary** - What was added/modified
@@ -73,21 +73,21 @@ Manage TASK.md to track project progress and maintain task continuity:
 3. **Recommendations** - Process improvements
 4. **Next Sprint** - Suggested task prioritization
 
-##                                                                                      Integration Notes
+## Integration Notes
 - Depends on PLANNING.md for initial creation
 - Used by `@wf_prime.md` to understand current state
 - Updated after each `@wf_code.md` completion
 - Reviewed before `@wf_commit.md` operations
 - Drives sprint planning and daily work
 
-##                                                                                      Task State Transitions
+## Task State Transitions
 ```
 Not Started → In Progress → Review → Done
            ↓                ↓
          Blocked         Rework
 ```
 
-##                                                                                      Priority Matrix
+## Priority Matrix
 - **High**: Core functionality, blockers, security
 - **Medium**: Features, improvements, tests
 - **Low**: Nice-to-have, optimizations, debt

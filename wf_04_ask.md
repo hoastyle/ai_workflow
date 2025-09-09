@@ -1,14 +1,14 @@
-##                                                                                 Usage
+## Usage
 `@wf_ask.md <TECHNICAL_QUESTION> [--review-codebase]`
 
-##                                                                                 Context
+## Context
 - Technical question or challenge: $ARGUMENTS
 - PLANNING.md provides system architecture context
 - TASK.md shows current development state
 - Decisions should align with project guidelines
 - Use `--review-codebase` flag for comprehensive codebase analysis before answering
 
-##                                                                                 Your Role
+## Your Role
 You are a Senior Systems Architect providing consultation within project context:
 1. **Systems Designer** – evaluates within existing architecture
 2. **Technology Strategist** – recommends aligned with tech stack
@@ -16,7 +16,7 @@ You are a Senior Systems Architect providing consultation within project context
 4. **Risk Analyst** – identifies impacts on current implementation
 5. **Code Reviewer** – (when --review-codebase) performs comprehensive codebase analysis
 
-##                                                                                 Process
+## Process
 
 ### Standard Consultation (default)
 1. **Context Integration**:
@@ -68,7 +68,7 @@ You are a Senior Systems Architect providing consultation within project context
    - Include impact assessment and estimated effort
    - Follow priority-based task format with clear labels
 
-##                                                                                 Output Format
+## Output Format
 
 ### Standard Consultation Output
 1. **Contextual Analysis** – question within project scope
@@ -100,7 +100,7 @@ You are a Senior Systems Architect providing consultation within project context
    - Each task includes impact, solution, and effort estimate
    - Tasks categorized by priority with clear labels
 
-##                                                                                 Workflow Integration
+## Workflow Integration
 - Consults PLANNING.md for context
 - May trigger PLANNING.md updates
 - Can generate new tasks in TASK.md

@@ -2,7 +2,7 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-##                                                                               Repository Overview
+## Repository Overview
 
 This is an optimized closed-loop workflow command system for Claude Code that integrates project planning, task management, and development workflows.
 
@@ -11,7 +11,7 @@ This is an optimized closed-loop workflow command system for Claude Code that in
 **⚡ Streamlined**: 13 commands organized by development lifecycle stages
 **🛡️ Quality Gates**: Built-in formatting, testing, and validation
 
-##                                                                               Command Overview
+## Command Overview
 
 All commands follow the `wf_<number>_<name>.md <ARGUMENTS>` format where:
 - **Numbered prefixes** indicate typical usage order in workflows
@@ -52,7 +52,7 @@ The workflow system is designed to:
 ### Support Commands (99) - Always Available
 - `wf_99_help.md` - Complete help system (integrates guide, quick reference, and command help)
 
-##                                                                               Quick Start Guide
+## Quick Start Guide
 
 ### 🚀 New to cc_commands? Start Here!
 
@@ -112,7 +112,7 @@ Once comfortable with the basics, explore:
 - `wf_10_optimize.md` - Performance tuning
 - `wf_12_deploy_check.md` - Deployment validation
 
-##                                                                               Command Decision Tree
+## Command Decision Tree
 
 ### 🤔 Which Command Should I Use?
 
@@ -161,7 +161,7 @@ Once comfortable with the basics, explore:
 
 **💡 Pro Tip**: Each command follows the pattern `wf_XX_name.md "<description>"` and integrates automatically with your project files (PLANNING.md, TASK.md, CONTEXT.md).
 
-##                                                                               Complete Workflow Patterns
+## Complete Workflow Patterns
 
 ### 🔄 Session Management
 **Essential for context continuity:**
@@ -202,7 +202,7 @@ Once comfortable with the basics, explore:
 💾 Commit         → wf_11_commit.md "quality improvements"
 ```
 
-##                                                                               Key Files (Closed Loop)
+## Key Files (Closed Loop)
 
 ### PRD.md (Requirements Source)
 Project Requirements Document - read-only reference containing:
@@ -237,7 +237,7 @@ Session state and progress summary containing:
 - Next priority items
 - Auto-updated by wf_11_commit.md for seamless session continuity
 
-##                                                                               Command Integration Rules
+## Command Integration Rules
 
 1. **PRD Compliance**: All commands must reference and align with PRD.md requirements (read-only, never modify)
 2. **Context Loading**: Commands should read PRD.md for requirements, PLANNING.md for standards, TASK.md for status, and CONTEXT.md for session state
@@ -248,7 +248,7 @@ Session state and progress summary containing:
 7. **Session Continuity**: wf_11_commit.md auto-updates CONTEXT.md for seamless wf_03_prime.md loading
 8. **Integrated Operations**: Formatting, coverage analysis, and fixing are integrated into main commands
 
-##                                                                               Multi-Agent Coordination
+## Multi-Agent Coordination
 
 The cc_commands workflow system uses a multi-agent approach with specialized roles:
 
@@ -264,7 +264,7 @@ The cc_commands workflow system uses a multi-agent approach with specialized rol
 
 Each command orchestrates relevant specialists to ensure comprehensive coverage of development tasks while maintaining consistency with project standards and PRD requirements.
 
-##                                                                               Development Standards
+## Development Standards
 
 ### Code Quality
 - Follow patterns established in existing code
@@ -339,7 +339,7 @@ Follow the systematic approach in `wf_06_debug.md`:
 5. Iterate if new errors appear
 6. Document solutions for future reference
 
-##                                                                               Best Practices
+## Best Practices
 
 1. **Start Sessions with Prime**: Always run `wf_03_prime.md` after `/clear`
 2. **Update Tasks Regularly**: Keep TASK.md current with progress
@@ -349,7 +349,7 @@ Follow the systematic approach in `wf_06_debug.md`:
 6. **Quality First**: Run pre-commit checks to catch whitespace, formatting issues
 7. **Let Commit Handle Everything**: wf_11_commit.md includes quality gates, formatting, and validation
 
-##                                                                               Troubleshooting
+## Troubleshooting
 
 ### Lost Context
 - Run `wf_03_prime.md` to reload from all core files
@@ -418,7 +418,7 @@ WEEK_CN=$(date +%Y年第%U周)           # 2025年第34周
 - ✅ **必须**: 在wf_11_commit.md中验证日期正确性
 - ✅ **必须**: 区分历史日期和维护日期的处理方式
 
-##                                                                               Version Information
+## Version Information
 
 **Current Version**: v2.3 (User Experience Optimization)
 **Last Updated**: 2025-08-21
@@ -431,7 +431,7 @@ WEEK_CN=$(date +%Y年第%U周)           # 2025年第34周
 
 For complete version history, optimization details, and development roadmap, see: **[CHANGELOG.md](./CHANGELOG.md)**
 
-##                                                                               Continuous Improvement
+## Continuous Improvement
 
 The workflow system evolves through:
 - Regular PLANNING.md updates

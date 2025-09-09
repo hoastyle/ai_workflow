@@ -1,7 +1,7 @@
-##                                                                                    Usage
+## Usage
 `@wf_commit.md [message]`
 
-##                                                                                    Purpose
+## Purpose
 Create git commits with integrated formatting, validation, and context updates:
 - Validate changes against standards
 - Auto-format code before commit
@@ -12,7 +12,7 @@ Create git commits with integrated formatting, validation, and context updates:
 - Maintain commit message conventions
 - Ensure full traceability
 
-##                                                                                    Process
+## Process
 1. **Pre-Commit Auto-Repair & Validation**:
    - Check git status for changes
    - Identify files for staging
@@ -103,7 +103,7 @@ Create git commits with integrated formatting, validation, and context updates:
    - Update KNOWLEDGE.md if new patterns or decisions identified
    - Prepare for next work cycle
 
-##                                                                                    Commit Message Format
+## Commit Message Format
 ```
 [<type>][(<scope>)] <subject>
 
@@ -122,7 +122,7 @@ Types:
 - perf: Performance improvements
 - chore: Maintenance tasks
 
-##                                                                                    Output Format
+## Output Format
 1. **Auto-Repair Report** – automatic fixes applied (whitespace, line endings, formatting)
 2. **Pre-commit Validation Report** – quality gate checks and results
 3. **Formatting Report** – language-specific auto-formatting applied
@@ -136,7 +136,7 @@ Types:
 11. **Commit Result** – success confirmation
 12. **Next Steps** – remaining work items
 
-##                                                                                    Workflow Integration
+## Workflow Integration
 - **Auto-Repair System**: Automatically fixes trailing whitespace, line endings, basic formatting
 - **Quality Gates**: Enforced through enhanced pre-commit hooks with validation
 - **User Experience**: Reduces manual fixes, provides clear feedback on auto-repairs
@@ -152,7 +152,7 @@ Types:
 - **Ensures README stays synchronized with project state**
 - Enables seamless `@wf_prime.md` context loading with long-term memory
 
-##                                                                                    Pre-commit Framework Integration
+## Pre-commit Framework Integration
 
 ### Installation & Setup
 ```bash
