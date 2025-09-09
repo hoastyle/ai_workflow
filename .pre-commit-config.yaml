@@ -6,7 +6,7 @@ repos:
   - repo: local
     hooks:
       # === AUTO-REPAIR HOOKS (100% Safe Operations) ===
-      
+
       # Auto-fix trailing whitespace - completely safe operation
       - id: auto-fix-whitespace
         name: Auto-fix Trailing Whitespace
@@ -60,7 +60,7 @@ repos:
         always_run: true
 
       # === VALIDATION HOOKS (Quality Assurance) ===
-      
+
       # Validate file formats after auto-repair
       - id: file-format-validation
         name: Validate File Format
