@@ -1,391 +1,654 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+AI 编程助手的项目指南 - Claude Code 工作流和标准规范
 
-## Repository Overview
+This file provides comprehensive guidance to Claude Code (claude.ai/code) for working with this repository's optimized closed-loop workflow command system.
 
-This is an optimized closed-loop workflow command system for Claude Code that integrates project planning, task management, and development workflows.
+---
 
-**🚀 Quick Start**: New users can be productive with just 4 Essential Commands (80% of use cases)
-**🔄 Context Continuity**: Uses PLANNING.md, TASK.md, and CONTEXT.md to maintain context across `/clear` boundaries
-**⚡ Streamlined**: 13 commands organized by development lifecycle stages
-**🛡️ Quality Gates**: Built-in formatting, testing, and validation
+## 快速导航目录
 
-1. 语言
-    * 交互沟通使用中文
-    * 默认文档使用中文
-    * 代码中全部使用英文(除非专有名词类)
-    * 代码提交参考历史提交，如果历史提交大部分为中文，则使用中文。否则使用英文。
-2. 项目管理类文档在docs/management目录下构建和管理，管理类文件包括:
-    * PRD.md
-    * PLANNING.md
-    * TASK.md
-    * CONTEXT.md
-    * KNOWLEDGE.md
+| 部分 | 说明 | 适用场景 |
+|------|------|---------|
+| **[项目规范](#项目规范)** | 语言、文档、代码标准 | 项目启动、新协作者 |
+| **[核心概念](#核心概念)** | 工作流系统介绍和哲学 | 理解系统设计 |
+| **[快速开始](#快速开始指南)** | 4个必用命令 (80% 场景) | 新用户上手 |
+| **[完整命令参考](#命令完整参考)** | 13个工作流命令详解 | 命令查询和使用 |
+| **[工作流决策树](#工作流决策树)** | 场景-命令映射 | 选择合适的命令 |
+| **[完整工作流模式](#完整工作流模式)** | 常见开发流程 | 实际工作参考 |
+| **[核心文件说明](#核心文件说明)** | 项目管理文档 | 文档管理和维护 |
+| **[开发标准](#开发标准)** | 代码质量和流程规范 | 代码审查、提交 |
+| **[最佳实践](#最佳实践-故障排除)** | 常见问题和解决方案 | 问题排查 |
 
-## Command Overview
+---
 
-All commands follow the `wf_<number>_<name>.md <ARGUMENTS>` format where:
-- **Numbered prefixes** indicate typical usage order in workflows
-- **Arguments** specify the target scope (feature, component, error, etc.)
-- **Multi-agent coordination** used for complex tasks with specialized roles
-- **Progressive development** with validation at each step
+## 项目规范
 
-### Core Philosophy
+### 语言规范
 
-The workflow system is designed to:
-1. **Maintain Context** - Use PLANNING.md, TASK.md, and CONTEXT.md as persistent context stores
-2. **Enable Continuity** - Allow work to continue across `/clear` boundaries via `wf_03_prime.md`
-3. **Track Progress** - Automatically update task status throughout development
-4. **Enforce Standards** - Apply consistent patterns and quality gates
-5. **Close the Loop** - Each command integrates with others for complete workflows
-6. **Reduce Redundancy** - Consolidate similar functions into unified commands
+本项目采用分层语言策略，确保清晰的交互和一致的代码：
 
-### Foundation Commands (1-3) - Project Infrastructure
-- `wf_01_planning.md` - Create/update project planning documentation (aligned with PRD.md)
-- `wf_02_task.md` - Manage task tracking and progress (mapped to PRD requirements)
-- `wf_03_prime.md` - Load project context from PRD.md, PLANNING.md, TASK.md, and CONTEXT.md
+1. **交互沟通**: 中文
+   - 用户和 Claude 之间的交互使用中文
+   - 文档说明、注释使用中文便于理解
 
-### Development Commands (4-6) - Implementation Phase
-- `wf_04_ask.md` - Architecture consultation within PRD and project context (includes comprehensive codebase review capabilities)
-- `wf_05_code.md` - Implement features aligned with PRD requirements (auto-formatting integrated)
-- `wf_06_debug.md` - Enhanced systematic debugging and fixing (integrated with advanced error analysis protocol)
+2. **文档**: 中文
+   - 所有项目管理文档（PRD.md, PLANNING.md, TASK.md, CONTEXT.md, KNOWLEDGE.md）使用中文
+   - README、指南、规范文档使用中文
 
-### Quality Assurance Commands (7-10) - Quality & Optimization Phase
-- `wf_07_test.md` - Test development and execution (coverage analysis integrated, PRD criteria validation)
-- `wf_08_review.md` - Code review against standards and PRD compliance
-- `wf_09_refactor.md` - Code improvement maintaining PRD compliance
-- `wf_10_optimize.md` - Performance optimization (meeting PRD performance requirements)
+3. **代码实现**: 英文
+   - 代码中的所有变量、函数、类名使用英文
+   - 代码注释遵循项目历史惯例
+   - 专有名词和缩写保持英文
 
-### Operations Commands (11-12) - Deployment & Maintenance Phase
-- `wf_11_commit.md` - Git commits with formatting and context updates (auto-formatting integrated)
-- `wf_12_deploy_check.md` - Deployment readiness validation (PRD criteria verification)
+4. **代码提交**: 参考历史
+   - 查看项目的既有提交信息
+   - 如果历史提交大部分为中文，使用中文提交信息
+   - 否则使用英文提交信息
+   - 确保提交信息风格一致
 
-### Support Commands (99) - Always Available
-- `wf_99_help.md` - Complete help system (integrates guide, quick reference, and command help)
+### 项目管理文档结构
 
-## Quick Start Guide
+所有项目管理类文档应在 `docs/management/` 目录下构建和管理：
 
-### 🚀 New to cc_commands? Start Here!
+| 文件 | 用途 | 维护者 |
+|-----|------|--------|
+| **PRD.md** | 项目需求文档（read-only）| 产品/技术主管 |
+| **PLANNING.md** | 技术规划和架构设计 | 项目主导 |
+| **TASK.md** | 任务追踪和进度管理 | 开发团队 |
+| **CONTEXT.md** | 会话上下文和工作状态 | 自动更新（wf_11_commit.md） |
+| **KNOWLEDGE.md** | 知识库和决策记录 | 团队积累 |
 
-#### Essential Commands (80% of workflows)
-These 4 commands handle most development scenarios:
+**关键原则**:
+- PRD.md 是只读参考，不自动修改
+- 所有命令必须遵守 PRD.md 需求
+- 每个决策应在 PLANNING.md 中记录
+- CONTEXT.md 由 wf_11_commit.md 自动更新以支持会话连续性
 
-**1. 📋 Project Setup** - `wf_01_planning.md "<project_description>"`
-- Creates PLANNING.md with architecture, tech stack, standards
-- Establishes PRD alignment and development guidelines
-- **When to use**: Starting new projects or major feature planning
-- **Example**: `wf_01_planning.md "E-commerce API with user authentication"`
+---
 
-**2. 🔄 Context Loading** - `wf_03_prime.md`
-- Loads all project context (PRD.md, PLANNING.md, TASK.md, CONTEXT.md)
-- **CRITICAL**: Always run after `/clear` or session restart
-- **When to use**: Session start, after context loss, resuming work
-- **Example**: Simply run `wf_03_prime.md` (no arguments needed)
+## 核心概念
 
-**3. 💻 Feature Implementation** - `wf_05_code.md "<feature_description>"`
-- Multi-agent development with auto-formatting
-- Follows project standards and PRD requirements
-- **When to use**: Implementing new features or major functionality
-- **Example**: `wf_05_code.md "User login with JWT token validation"`
+### 工作流系统概述
 
-**4. 💾 Save Progress** - `wf_11_commit.md "<commit_message>"`
-- Quality gates, auto-formatting, context updates
-- Updates TASK.md and CONTEXT.md automatically
-- **When to use**: After completing work, before `/clear`
-- **Example**: `wf_11_commit.md "Add user authentication system"`
+这是一个为 Claude Code 优化的闭环工作流命令系统，集成项目规划、任务管理和开发工作流。
 
-#### Intermediate Commands (Cover remaining 15%)
-Ready to expand? Add these workflow enhancers:
+**系统特点**:
+- 🚀 **快速上手**: 4个必用命令覆盖 80% 的使用场景
+- 🔄 **上下文连续性**: 使用 PLANNING.md、TASK.md、CONTEXT.md 跨越 `/clear` 边界
+- ⚡ **精简高效**: 13个命令按开发生命周期组织
+- 🛡️ **质量保证**: 内置格式化、测试、验证
 
-**5. 🤔 Decision Support** - `wf_04_ask.md "<technical_question>"`
-- Architecture consultation with optional codebase review
-- **Flag**: Use `--review-codebase` for comprehensive analysis
-- **Example**: `wf_04_ask.md "Should I use Redis or database caching?"`
+### 核心哲学
 
-**6. 🧪 Testing** - `wf_07_test.md "<component_to_test>"`
-- Test development with coverage analysis
-- **Flag**: Use `--coverage` for detailed coverage reports
-- **Example**: `wf_07_test.md "UserService authentication methods"`
+工作流系统设计原则：
 
-**7. 🔍 Quality Review** - `wf_08_review.md`
-- Code review against standards and PRD compliance
-- **Example**: `wf_08_review.md` (reviews current codebase)
+1. **维护上下文** - 使用 PLANNING.md、TASK.md、CONTEXT.md 作为持久存储
+2. **启用连续性** - 通过 `wf_03_prime.md` 跨越 `/clear` 边界继续工作
+3. **追踪进度** - 自动更新整个开发周期的任务状态
+4. **强制标准** - 应用一致的模式和质量门控
+5. **闭合循环** - 每个命令与其他命令集成形成完整工作流
+6. **减少冗余** - 将类似功能合并到统一命令中
 
-**8. 📝 Task Management** - `wf_02_task.md update "<task_description>"`
-- Dynamic task tracking with PRD traceability
-- **Example**: `wf_02_task.md update "Complete user registration API"`
+### 命令格式和约定
 
-### 🎯 Advanced Users: Full Workflow Commands
+所有命令遵循 `wf_<number>_<name>.md <ARGUMENTS>` 格式：
 
-Once comfortable with the basics, explore:
-- `wf_06_debug.md` - Systematic error resolution
-- `wf_09_refactor.md` - Code structure improvements
-- `wf_10_optimize.md` - Performance tuning
-- `wf_12_deploy_check.md` - Deployment validation
+- **编号前缀** (1-12, 99): 表示工作流中的典型使用顺序
+- **命令名称**: 描述性的操作名称
+- **参数**: 指定操作范围（功能、组件、错误等）
+- **多智能体协调**: 复杂任务使用专门的角色
+- **渐进式开发**: 逐步构建并在每个步骤验证
 
-## Command Decision Tree
+---
 
-### 🤔 Which Command Should I Use?
+## 命令完整参考
 
-**Start here** → What do you want to do?
+### 第一阶段: 基础设施 (命令 1-3)
 
-```
-🆕 Starting fresh?
-├── 📋 New project → wf_01_planning.md "project description"
-└── 🔄 Resume work → wf_03_prime.md
+#### `wf_01_planning.md` - 项目规划
+创建或更新项目规划文档（与 PRD.md 对齐）
 
-💻 Building features?
-├── 🤔 Need guidance → wf_04_ask.md "technical question"
-├── 💻 Write code → wf_05_code.md "feature description"
-├── 🐛 Fix bugs → wf_06_debug.md "error description"
-└── 🧪 Add tests → wf_07_test.md "component name"
+- **用途**: 建立技术架构和开发标准
+- **输入**: 项目描述
+- **输出**: PLANNING.md（包含架构、技术栈、标准）
+- **何时使用**: 项目启动、重大功能规划
 
-🔍 Improving quality?
-├── 👀 Review code → wf_08_review.md
-├── 🔧 Refactor → wf_09_refactor.md "component to improve"
-└── ⚡ Optimize → wf_10_optimize.md "performance target"
+#### `wf_02_task.md` - 任务管理
+管理任务追踪和进度（映射到 PRD 需求）
 
-💾 Finishing work?
-├── 📝 Update tasks → wf_02_task.md update "task description"
-├── 💾 Commit changes → wf_11_commit.md "commit message"
-└── 🚀 Check deployment → wf_12_deploy_check.md
+- **用途**: 动态任务跟踪和更新
+- **用法**: `wf_02_task.md update "任务描述"`
+- **输出**: TASK.md 更新（带 PRD 可追溯性）
+- **何时使用**: 任何时刻更新进度
 
-❓ Need help → wf_99_help.md
-```
+#### `wf_03_prime.md` - 上下文加载
+从 PRD.md、PLANNING.md、TASK.md 和 CONTEXT.md 加载项目上下文
 
-### 🎯 Common Scenarios
+- **用途**: 恢复工作会话状态
+- **输入**: 无参数
+- **输出**: 加载所有项目上下文
+- **何时使用**: 会话开始、`/clear` 之后、恢复工作
+- **关键**: 始终在会话开始时运行
 
-**"I'm new and don't know where to start"**
-→ `wf_01_planning.md` → `wf_03_prime.md` → `wf_05_code.md` → `wf_11_commit.md`
+### 第二阶段: 开发实现 (命令 4-6)
 
-**"I just opened Claude Code"**
-→ `wf_03_prime.md` (loads all context)
+#### `wf_04_ask.md` - 架构咨询
+PRD 和项目上下文中的架构咨询
 
-**"I want to implement a feature"**
-→ `wf_04_ask.md` (get guidance) → `wf_05_code.md` → `wf_07_test.md` → `wf_11_commit.md`
+- **用途**: 获取架构和设计指导
+- **用法**: `wf_04_ask.md "技术问题"`
+- **高级**: 使用 `--review-codebase` 进行代码库分析
+- **何时使用**: 需要设计建议时
 
-**"Something is broken"**
-→ `wf_06_debug.md` → `wf_07_test.md` → `wf_11_commit.md`
+#### `wf_05_code.md` - 代码实现
+实现与 PRD 需求对齐的功能
 
-**"Code quality needs improvement"**
-→ `wf_08_review.md` → `wf_09_refactor.md` → `wf_07_test.md` → `wf_11_commit.md`
+- **用途**: 功能开发（多智能体协调）
+- **用法**: `wf_05_code.md "功能描述"`
+- **特性**: 自动格式化、标准遵守
+- **何时使用**: 实现新功能或主要功能
 
-**💡 Pro Tip**: Each command follows the pattern `wf_XX_name.md "<description>"` and integrates automatically with your project files (PLANNING.md, TASK.md, CONTEXT.md).
+#### `wf_06_debug.md` - 系统调试
+增强的系统调试和修复
 
-## Complete Workflow Patterns
+- **用途**: 错误分析和解决
+- **用法**: `wf_06_debug.md "错误描述"`
+- **特性**: 详细的错误分类、根本原因分析
+- **何时使用**: 修复错误和问题
 
-### 🔄 Session Management
-**Essential for context continuity:**
-```
-📱 Session Start   → wf_03_prime.md (load all context)
-⚡  Active Work     → wf_05_code.md, wf_07_test.md, etc.
-💾 Save Progress   → wf_11_commit.md (auto-updates CONTEXT.md)
-🔄 Memory Reset    → /clear (when context gets large)
-🚀 Resume Work     → wf_03_prime.md (reload and continue)
-```
+### 第三阶段: 质量保证 (命令 7-10)
 
-### 🏗️ Feature Development (Complete)
-**Full development lifecycle:**
-```
-🤔 Plan           → wf_04_ask.md "architecture guidance"
-💻 Implement      → wf_05_code.md "feature description"
-🧪 Test           → wf_07_test.md "component name"
-👀 Review         → wf_08_review.md
-💾 Commit         → wf_11_commit.md "feature completed"
-📝 Track          → wf_02_task.md update "task status"
-```
+#### `wf_07_test.md` - 测试开发
+测试开发和执行
 
-### 🐛 Bug Fixing (Streamlined)
-**Efficient problem resolution:**
-```
-🔍 Debug          → wf_06_debug.md "error description"
-✅ Verify Fix     → wf_07_test.md "affected component"
-💾 Commit         → wf_11_commit.md "fix applied"
-```
+- **用途**: 编写和运行测试
+- **用法**: `wf_07_test.md "组件名称"`
+- **高级**: 使用 `--coverage` 进行覆盖率分析
+- **何时使用**: 添加测试、验证功能
 
-### 🔧 Quality Improvement (Advanced)
-**Code quality enhancement:**
-```
-📊 Analyze        → wf_08_review.md
-🔧 Refactor       → wf_09_refactor.md "component to improve"
-⚡  Optimize       → wf_10_optimize.md "performance target"
-🧪 Test           → wf_07_test.md --coverage "ensure no regression"
-💾 Commit         → wf_11_commit.md "quality improvements"
-```
+#### `wf_08_review.md` - 代码审查
+根据标准和 PRD 合规性进行代码审查
 
-## Key Files (Closed Loop)
+- **用途**: 质量验证和标准检查
+- **用法**: `wf_08_review.md`
+- **输出**: 审查报告和改进建议
+- **何时使用**: 提交前审查
 
-### PRD.md (Requirements Source)
-Project Requirements Document - read-only reference containing:
-- Official project requirements and specifications
-- Business objectives and success criteria
-- Stakeholder requirements and constraints
-- **CRITICAL**: Never automatically modified by commands
-- **ROLE**: Source of truth for all project decisions
+#### `wf_09_refactor.md` - 代码重构
+代码改进（保持 PRD 合规性）
 
-### PLANNING.md
-Technical architecture document aligned with PRD.md containing:
-- Project overview and goals (derived from PRD.md)
-- System architecture and design (meeting PRD requirements)
-- Technology stack and tools (supporting PRD objectives)
-- Development standards and patterns
-- Testing and deployment strategies
-- PRD compliance checklist
+- **用途**: 代码结构改进和优化
+- **用法**: `wf_09_refactor.md "组件名称"`
+- **何时使用**: 改进代码质量
 
-### TASK.md
-Dynamic task tracking document containing:
-- Categorized task lists (mapped to PRD requirements)
-- Task status and progress
-- Dependencies and blockers
-- Completion history
-- PRD requirement traceability
+#### `wf_10_optimize.md` - 性能优化
+性能优化（满足 PRD 性能要求）
 
-### CONTEXT.md (New)
-Session state and progress summary containing:
-- Work completed in recent sessions
-- Key decisions made (with PRD alignment notes)
-- Current focus areas
-- Next priority items
-- Auto-updated by wf_11_commit.md for seamless session continuity
+- **用途**: 系统性能改进
+- **用法**: `wf_10_optimize.md "性能目标"`
+- **何时使用**: 性能改进
 
-## Command Integration Rules
+### 第四阶段: 运维部署 (命令 11-12)
 
-1. **PRD Compliance**: All commands must reference and align with PRD.md requirements (read-only, never modify)
-2. **Context Loading**: Commands should read PRD.md for requirements, PLANNING.md for standards, TASK.md for status, and CONTEXT.md for session state
-3. **Progress Updates**: Commands that complete work should update TASK.md with PRD requirement traceability
-4. **Standard Enforcement**: All code generation follows PLANNING.md guidelines aligned with PRD requirements
-5. **Documentation**: Significant decisions update PLANNING.md with PRD alignment justification
-6. **Task Generation**: Issues and improvements create TASK.md entries mapped to PRD requirements
-7. **Session Continuity**: wf_11_commit.md auto-updates CONTEXT.md for seamless wf_03_prime.md loading
-8. **Integrated Operations**: Formatting, coverage analysis, and fixing are integrated into main commands
+#### `wf_11_commit.md` - Git 提交
+带格式化、验证和上下文更新的 Git 提交
 
-## Multi-Agent Coordination
+- **用途**: 提交更改并更新上下文
+- **用法**: `wf_11_commit.md "提交信息"`
+- **特性**: 自动格式化、质量门控、CONTEXT.md 更新
+- **何时使用**: 完成工作、准备 `/clear`
 
-The cc_commands workflow system uses a multi-agent approach with specialized roles:
+#### `wf_12_deploy_check.md` - 部署检查
+部署就绪性验证
 
-- **Architect Agent** - High-level design and structure analysis
-- **Implementation Engineer** - Core functionality development following standards
-- **Integration Specialist** - System compatibility and dependency management
-- **Code Reviewer** - Quality validation and standards compliance
-- **Test Specialists** - Various testing strategies (unit, integration, coverage)
-- **Structure Analyst** - Code architecture evaluation and improvement
-- **Design Pattern Expert** - Pattern application for maintainability
-- **Debug Coordinator** - Systematic error analysis and resolution
-- **Performance Optimizer** - System performance analysis and tuning
+- **用途**: 验证部署前的条件
+- **用法**: `wf_12_deploy_check.md`
+- **何时使用**: 部署前最后检查
 
-Each command orchestrates relevant specialists to ensure comprehensive coverage of development tasks while maintaining consistency with project standards and PRD requirements.
+### 支持命令 (命令 99)
 
-## Development Standards
+#### `wf_99_help.md` - 帮助系统
+完整的帮助系统（集成指南、快速参考、命令帮助）
 
-### Code Quality
-- Follow patterns established in existing code
-- Maintain test coverage requirements
-- Auto-formatting applied by wf_11_commit.md (Python: black, JS/TS: prettier, C++: clang-format, Go: gofmt)
-- **No trailing whitespace**: All files must be free of trailing spaces and tabs
-- **Consistent line endings**: Use Unix-style line endings (LF)
-- Document significant changes
+- **用途**: 获取系统帮助
+- **用法**: `wf_99_help.md`
+- **何时使用**: 任何时候需要帮助
 
-### Pre-commit Quality Checks
-**Automated through pre-commit framework**: The system now uses pre-commit hooks for automated quality validation.
+---
 
-**Manual Installation** (one-time setup):
+## 快速开始指南
+
+### 新用户核心 4 命令 (80% 场景)
+
+这 4 个命令处理大多数开发场景，学习曲线最短：
+
+#### 1️⃣ 项目启动
 ```bash
-# Install pre-commit framework
-pip install pre-commit
+wf_01_planning.md "项目描述"
+```
+- **作用**: 创建技术规划文档
+- **输出**: PLANNING.md（架构、标准、技术栈）
+- **何时用**: 项目开始、重大功能规划
 
-# Install hooks in repository
+#### 2️⃣ 会话恢复 ⭐ 重要
+```bash
+wf_03_prime.md
+```
+- **作用**: 加载所有项目上下文
+- **何时用**: 会话开始、`/clear` 之后
+- **提示**: 始终第一步运行
+
+#### 3️⃣ 代码实现
+```bash
+wf_05_code.md "功能描述"
+```
+- **作用**: 多智能体协调开发
+- **特点**: 自动格式化、标准遵守、PRD 对齐
+- **何时用**: 实现新功能
+
+#### 4️⃣ 保存进度
+```bash
+wf_11_commit.md "提交信息"
+```
+- **作用**: Git 提交 + 上下文更新
+- **特点**: 质量门控、自动格式化、CONTEXT.md 更新
+- **何时用**: 完成工作、准备 `/clear`
+
+### 进阶 5 命令 (额外 15% 场景)
+
+掌握基础后学习这些：
+
+| 命令 | 作用 | 何时用 |
+|------|------|--------|
+| `wf_02_task.md update` | 更新任务进度 | 任何时刻 |
+| `wf_04_ask.md` | 架构咨询 | 需要设计建议 |
+| `wf_06_debug.md` | 错误修复 | 有 Bug |
+| `wf_07_test.md` | 测试开发 | 编写测试 |
+| `wf_08_review.md` | 代码审查 | 提交前 |
+
+### 高级命令
+
+准备好后，探索这些：
+- `wf_09_refactor.md` - 代码改进
+- `wf_10_optimize.md` - 性能优化
+- `wf_12_deploy_check.md` - 部署检查
+
+---
+
+## 工作流决策树
+
+### 我应该用哪个命令？
+
+**从这里开始** → 我想做什么？
+
+```
+🆕 全新开始?
+├── 📋 新项目启动 → wf_01_planning.md "项目描述"
+└── 🔄 恢复工作 → wf_03_prime.md
+
+💻 开发功能?
+├── 🤔 需要设计建议 → wf_04_ask.md "技术问题"
+├── 💻 写代码实现 → wf_05_code.md "功能描述"
+├── 🐛 修复 Bug → wf_06_debug.md "错误描述"
+└── 🧪 添加测试 → wf_07_test.md "组件名称"
+
+🔍 提升代码质量?
+├── 👀 审查代码 → wf_08_review.md
+├── 🔧 重构代码 → wf_09_refactor.md "要改进的组件"
+└── ⚡ 性能优化 → wf_10_optimize.md "性能目标"
+
+💾 完成工作?
+├── 📝 更新任务 → wf_02_task.md update "任务描述"
+├── 💾 提交更改 → wf_11_commit.md "提交信息"
+└── 🚀 部署检查 → wf_12_deploy_check.md
+
+❓ 需要帮助? → wf_99_help.md
+```
+
+### 常见场景工作流
+
+| 场景 | 命令流程 | 说明 |
+|------|---------|------|
+| 🆕 **全新项目** | `wf_01_planning.md` → `wf_03_prime.md` → `wf_05_code.md` → `wf_11_commit.md` | 从零开始建立项目 |
+| 📱 **打开会话** | `wf_03_prime.md` | 立即加载所有上下文 |
+| ✨ **实现功能** | `wf_04_ask.md` → `wf_05_code.md` → `wf_07_test.md` → `wf_11_commit.md` | 完整的功能开发流程 |
+| 🐛 **修复 Bug** | `wf_06_debug.md` → `wf_07_test.md` → `wf_11_commit.md` | 快速问题解决 |
+| 📊 **质量改进** | `wf_08_review.md` → `wf_09_refactor.md` → `wf_07_test.md` → `wf_11_commit.md` | 系统性代码改进 |
+
+**💡 小贴士**: 每个命令遵循 `wf_XX_name.md "<描述>"` 格式，自动与项目文件集成（PLANNING.md, TASK.md, CONTEXT.md）
+
+---
+
+## 完整工作流模式
+
+### 📱 会话管理生命周期
+
+上下文连续性的关键流程：
+
+```
+会话开始  → wf_03_prime.md (加载所有上下文)
+  ↓
+主动工作  → wf_05_code.md, wf_07_test.md 等
+  ↓
+保存进度  → wf_11_commit.md (自动更新 CONTEXT.md)
+  ↓
+清理上下文 → /clear (当上下文过大时)
+  ↓
+恢复工作  → wf_03_prime.md (重新加载并继续)
+```
+
+**最佳实践**:
+- 始终以 `wf_03_prime.md` 开始会话
+- 定期用 `wf_11_commit.md` 保存进度
+- 工作前检查 TASK.md 当前状态
+
+### ✨ 功能开发完整流程
+
+从概念到部署的完整生命周期：
+
+```
+1. 设计规划  → wf_04_ask.md "架构建议"
+2. 代码实现  → wf_05_code.md "功能描述"
+3. 编写测试  → wf_07_test.md "组件名称"
+4. 代码审查  → wf_08_review.md
+5. 提交代码  → wf_11_commit.md "功能完成"
+6. 更新任务  → wf_02_task.md update "任务状态"
+```
+
+**预计时间**: 中等功能 30-60 分钟
+
+### 🐛 Bug 修复快速路径
+
+高效的问题解决流程：
+
+```
+1. 错误分析  → wf_06_debug.md "错误描述"
+2. 验证修复  → wf_07_test.md "受影响组件"
+3. 提交修复  → wf_11_commit.md "修复已应用"
+```
+
+**预计时间**: 简单 Bug 5-15 分钟，复杂 Bug 30+ 分钟
+
+### 📊 代码质量改进流程
+
+系统性的代码改进：
+
+```
+1. 质量分析  → wf_08_review.md
+2. 代码重构  → wf_09_refactor.md "要改进的组件"
+3. 性能优化  → wf_10_optimize.md "性能目标"
+4. 回归测试  → wf_07_test.md --coverage (确保无回归)
+5. 提交改进  → wf_11_commit.md "质量改进"
+```
+
+**预计时间**: 取决于改进范围，通常 45-120 分钟
+
+---
+
+## 核心文件说明
+
+这些文件形成闭环工作流的基础。所有文件应在 `docs/management/` 目录下维护。
+
+### 📋 PRD.md - 项目需求文档
+
+**特性**: 只读参考，权威数据源
+
+**包含内容**:
+- 官方项目需求和规范
+- 业务目标和成功标准
+- 利益相关者需求和约束
+- 性能、安全、可用性要求
+
+**维护规则**:
+- ✅ 只读参考：所有命令必须尊重其需求
+- ❌ 不自动修改：只有授权人员可修改
+- 📌 质量保证：所有决策必须对齐 PRD
+- 🔗 可追溯性：TASK.md 映射到 PRD 需求
+
+### 🏗️ PLANNING.md - 技术规划和架构
+
+**特性**: 技术蓝图，与 PRD.md 对齐
+
+**包含内容**:
+- 项目概述和目标（源自 PRD.md）
+- 系统架构和设计（满足 PRD 需求）
+- 技术栈和工具选择
+- 开发标准和模式
+- 测试和部署策略
+- PRD 合规清单
+
+**维护规则**:
+- 📝 定期更新：重要决策后立即记录
+- 📍 决策跟踪：记录"为什么"选择某技术
+- 🔄 与 PRD 同步：检查是否满足所有需求
+
+### ✅ TASK.md - 任务追踪
+
+**特性**: 动态进度管理
+
+**包含内容**:
+- 分类任务列表（映射到 PRD）
+- 任务状态和进度
+- 依赖和阻挡因素
+- 完成历史记录
+- PRD 可追溯性
+
+**维护规则**:
+- 🔄 实时更新：完成工作后立即更新
+- 📊 进度可见：清晰显示完成百分比
+- 🔗 需求追踪：每项任务关联 PRD 需求
+
+### 📱 CONTEXT.md - 会话上下文
+
+**特性**: 自动管理，支持会话连续性
+
+**包含内容**:
+- 最近会话完成的工作
+- 关键决策（带 PRD 对齐注释）
+- 当前关注点
+- 下一个优先项
+- 自动更新时间戳
+
+**维护规则**:
+- 🤖 自动更新：由 wf_11_commit.md 自动管理
+- ⏰ 时间戳：记录工作时间点
+- 📋 快照：保存工作的"相机快照"
+
+### 📚 KNOWLEDGE.md - 知识库
+
+**特性**: 团队积累的经验和决策
+
+**包含内容**:
+- 架构决策记录（ADR）
+- 常见问题和解决方案
+- 可重用代码模式
+- 项目特定的最佳实践
+- 技术研究和调查结果
+
+**维护规则**:
+- 📖 文献库：长期知识存储
+- 🔍 可搜索：易于查找过去的决策
+- 🧠 集体智慧：记录团队学到的东西
+
+---
+
+## 开发标准
+
+### 集成规则
+
+所有命令必须遵循这些规则以保持系统的连贯性：
+
+| 规则 | 说明 | 实施方式 |
+|------|------|---------|
+| **PRD 对齐** | 所有命令必须参考 PRD.md 需求 | 每个决策检查 PRD |
+| **上下文加载** | 每个命令读取 PLANNING.md、TASK.md、CONTEXT.md | 命令启动时自动加载 |
+| **进度追踪** | 工作完成后更新 TASK.md | 包含 PRD 可追溯性 |
+| **标准遵守** | 代码遵循 PLANNING.md 指南 | 自动格式化和 lint |
+| **决策记录** | 重要决策更新 PLANNING.md | 包含"为什么"和 PRD 对齐 |
+| **会话连续性** | CONTEXT.md 由 wf_11_commit.md 自动更新 | 支持 wf_03_prime.md 加载 |
+
+### 多智能体协调
+
+工作流命令系统使用多智能体方法，每个命令可以协调相关的专家：
+
+| 智能体 | 职责 | 关键技能 |
+|--------|------|---------|
+| **Architect 架构师** | 高级设计和结构分析 | 系统设计、模式、权衡 |
+| **Implementation Engineer 实现工程师** | 遵循标准的核心功能开发 | 代码编写、最佳实践 |
+| **Integration Specialist 集成专家** | 系统兼容性和依赖管理 | 系统集成、依赖、接口 |
+| **Code Reviewer 审查员** | 质量验证和标准检查 | 代码质量、安全、性能 |
+| **Test Specialist 测试专家** | 单元、集成、覆盖率测试 | 测试策略、覆盖率分析 |
+| **Structure Analyst 结构分析师** | 代码架构评估和改进 | 重构、设计模式 |
+| **Debug Coordinator 调试协调员** | 系统错误分析和解决 | 错误诊断、根本原因分析 |
+| **Performance Optimizer 性能优化师** | 系统性能改进 | 性能分析、瓶颈识别 |
+
+### 代码质量
+
+**基本原则**:
+- 📚 遵循现有代码模式
+- ✅ 维护测试覆盖率要求
+- 🎨 自动格式化（Python: black, JS/TS: prettier, C++: clang-format, Go: gofmt）
+- 🚫 零容忍尾部空格（所有文件）
+- 📝 统一 Unix 行结尾（LF）
+- 📖 记录重要变更
+
+### 质量门控 Pre-commit
+
+**自动化框架**: 使用 pre-commit 钩子进行自动质量验证
+
+**一次性安装**:
+```bash
+pip install pre-commit
 pre-commit install
 ```
 
-**Automated Checks** (run automatically on commit):
-- Trailing whitespace detection (zero tolerance)
-- File format validation
-- Line ending validation (Unix LF only)
-- Markdown link validation
-- Command reference consistency
+**自动检查** (提交时自动运行):
+- ✓ 尾部空格检测（零容忍）
+- ✓ 文件格式验证
+- ✓ 行结尾验证（Unix LF）
+- ✓ Markdown 链接验证
+- ✓ 命令参考一致性
 
-**Manual Verification** (if needed):
+**手动验证** (如需要):
 ```bash
-# Run checks on all files
-pre-commit run --all-files
-
-# Run checks on staged files only
-pre-commit run
-
-# Legacy manual checks (if pre-commit not available)
-grep -n " $" *.md && echo "❌ Found trailing whitespace" || echo "✅ No trailing whitespace"
-file *.md | grep -v "ASCII text" && echo "❌ Non-standard file format" || echo "✅ Clean file formats"
+pre-commit run --all-files    # 检查所有文件
+pre-commit run                 # 检查暂存文件
 ```
 
-### Git Workflow
-- Semantic commit messages ([feat], [fix], [docs], [refactor])
-- Task references in commits
-- **Mandatory quality checks**: Run pre-commit validation before every commit
-- Auto-formatting integrated into wf_11_commit.md
-- Auto-update TASK.md and CONTEXT.md after commits
-- Consider splitting logically separate changes into different commits
+### Git 提交工作流
 
-### Quality Gate Enforcement
-The `wf_11_commit.md` command MUST include these checks:
-1. **Pre-commit hooks execution**: Run all configured quality gates
-2. **Whitespace validation**: Reject commits with trailing whitespace (zero tolerance)
-3. **File format validation**: Ensure consistent line endings and formats
-4. **Auto-formatting**: Apply language-specific formatters
-5. **Lint checks**: Run relevant linters before commit
-6. **Link validation**: Verify all markdown links work correctly
-7. **Reference consistency**: Ensure command references are consistent across documentation
+**提交信息格式**:
+```
+[type][scope] subject
 
-### Testing
-- Write tests for new features
-- Maintain coverage targets using wf_07_test.md --coverage
-- Test before deployment
-- Document test strategy in PLANNING.md
+body
+```
 
-### Error Debugging Process
-Follow the systematic approach in `wf_06_debug.md`:
-1. Analyze complete error output with detailed classification
-2. Research using available tools (context7 MCP, brave-search MCP)
-3. Implement targeted fixes addressing root causes
-4. Verify fixes by re-running original commands
-5. Iterate if new errors appear
-6. Document solutions for future reference
+| 类型 | 说明 | 例子 |
+|------|------|------|
+| `[feat]` | 新功能 | `[feat] Add user authentication` |
+| `[fix]` | Bug 修复 | `[fix] 修复登录超时问题` |
+| `[docs]` | 文档更新 | `[docs] 更新 API 文档` |
+| `[refactor]` | 代码重构 | `[refactor] 优化数据库查询` |
+| `[test]` | 测试添加 | `[test] Add user service tests` |
 
-## Best Practices
+**最佳实践**:
+- 始终运行 pre-commit 检查
+- 将逻辑上不同的变更分为不同提交
+- 包含任务引用: `Task: #123`
+- wf_11_commit.md 自动处理格式化和 CONTEXT.md 更新
 
-1. **Start Sessions with Prime**: Always run `wf_03_prime.md` after `/clear`
-2. **Update Tasks Regularly**: Keep TASK.md current with progress
-3. **Document Decisions**: Update PLANNING.md with architectural changes
-4. **Test Continuously**: Run tests after significant changes
-5. **Review Before Commit**: Use `wf_08_review.md` for quality checks
-6. **Quality First**: Run pre-commit checks to catch whitespace, formatting issues
-7. **Let Commit Handle Everything**: wf_11_commit.md includes quality gates, formatting, and validation
+### 测试策略
 
-## Troubleshooting
+- ✍️ 为新功能编写测试
+- 📊 维护覆盖率目标（使用 `wf_07_test.md --coverage`）
+- 🧪 部署前测试
+- 📋 在 PLANNING.md 中记录测试策略
 
-### Lost Context
-- Run `wf_03_prime.md` to reload from all core files
-- Check CONTEXT.md for latest session state
-- Review PLANNING.md for architecture
-- Review TASK.md for current state
+### 错误调试流程
 
-### Unclear Requirements
-- Use `wf_04_ask.md` for consultation
-- Update PLANNING.md with decisions
-- Create tasks in TASK.md
+系统方法（遵循 wf_06_debug.md）:
 
-### Quality Issues
-- Run `wf_08_review.md` for assessment
-- Apply `wf_09_refactor.md` for improvements
-- Verify with `wf_07_test.md --coverage`
+1. **分析** - 详细分类错误输出
+2. **研究** - 使用可用工具（context7 MCP、搜索等）
+3. **实现** - 针对性地修复根本原因
+4. **验证** - 重新运行原始命令确认修复
+5. **迭代** - 如有新错误继续处理
+6. **文档** - 将解决方案记录到 KNOWLEDGE.md
 
-### Code Quality Problems
-- **Trailing whitespace found**: Run `pre-commit run --all-files` to identify and fix automatically
-- **Commit rejected by quality gates**: Run `pre-commit run` to see specific issues, fix, then retry
-- **Mixed line endings**: Pre-commit hooks will detect and reject inconsistent line endings
-- **Formatting inconsistent**: Let `wf_11_commit.md` handle auto-formatting and pre-commit validation
-- **Pre-commit not installed**: Run `pip install pre-commit && pre-commit install` to set up quality gates
-- **Hook failures**: Review pre-commit output for specific file and line numbers with issues
+---
+
+## 最佳实践 & 故障排除
+
+### 最佳实践清单
+
+| 实践 | 说明 | 何时做 |
+|------|------|--------|
+| 🔄 **会话开始** | 运行 `wf_03_prime.md` 加载上下文 | 每个新会话开始 |
+| 📝 **定期更新** | 保持 TASK.md 最新进度 | 完成任务后立即 |
+| 📖 **记录决策** | 更新 PLANNING.md 架构变更 | 重要决策后 |
+| 🧪 **连续测试** | 变更后运行测试 | 重大改动后 |
+| 👀 **审查前提交** | 使用 `wf_08_review.md` | 提交之前 |
+| 🎯 **质量第一** | 运行 pre-commit 检查 | 提交前 |
+| ✅ **完全委托提交** | 让 wf_11_commit.md 处理一切 | 准备提交时 |
+
+### 常见问题排查
+
+**问题**: 丢失项目上下文
+```bash
+解决方案:
+1. wf_03_prime.md          # 从核心文件重新加载
+2. 检查 CONTEXT.md         # 查看最新会话状态
+3. 检查 PLANNING.md        # 回顾架构
+4. 检查 TASK.md           # 查看当前任务
+```
+
+**问题**: 不清楚需求
+```bash
+解决方案:
+1. wf_04_ask.md "问题"      # 获取架构咨询
+2. 更新 PLANNING.md         # 记录决策
+3. 创建 TASK.md 任务        # 明确行动项
+```
+
+**问题**: 代码质量问题
+```bash
+解决方案:
+1. wf_08_review.md         # 进行代码审查
+2. wf_09_refactor.md       # 进行代码改进
+3. wf_07_test.md --coverage # 验证覆盖率
+```
+
+**问题**: 尾部空格被检测
+```bash
+自动修复:
+pre-commit run --all-files   # 自动识别和修复
+```
+
+**问题**: 提交被质量门控拒绝
+```bash
+调查和修复:
+1. pre-commit run           # 查看具体问题
+2. 手动修复或使用自动修复
+3. 重新尝试提交
+```
+
+**问题**: 行结尾混乱
+```bash
+解决方案:
+# Pre-commit 钩子自动检测和拒绝不一致的行结尾
+# 使用 pre-commit run 自动修复
+pre-commit run --all-files
+```
+
+**问题**: Pre-commit 未安装
+```bash
+安装:
+pip install pre-commit
+pre-commit install
+pre-commit run --all-files
+```
 
 ### 时间点管理规范
 
@@ -430,26 +693,46 @@ WEEK_CN=$(date +%Y年第%U周)           # 2025年第34周
 - ✅ **必须**: 在wf_11_commit.md中验证日期正确性
 - ✅ **必须**: 区分历史日期和维护日期的处理方式
 
-## Version Information
+---
 
-**Current Version**: v2.3 (User Experience Optimization)
-**Last Updated**: 2025-08-21
+## 版本信息和改进
 
-### Recent Improvements (v2.3)
-- Enhanced Quick Start Guide with detailed Essential Commands
-- Added Command Decision Tree for intuitive command selection
-- Improved Workflow Patterns with visual clarity
-- Comprehensive code quality rules and enforcement
+**当前版本**: v2.3 (用户体验优化)
+**最后更新**: $(date +%Y-%m-%d)
 
-For complete version history, optimization details, and development roadmap, see: **[CHANGELOG.md](./CHANGELOG.md)**
+### 最近改进 (v2.3)
 
-## Continuous Improvement
+- ✨ 重新组织了文档结构，更好的导航
+- 📊 将项目规范前置，便于新用户参考
+- 🎯 简化快速开始指南，更清晰的学习路径
+- 🔗 改进命令参考的一致性
+- 📚 增强故障排除部分，实际可操作
+- 🏗️ 完整的多智能体协调说明
 
-The workflow system evolves through:
-- Regular PLANNING.md updates
-- Task pattern analysis
-- Command refinements
-- Process optimization
-- User feedback integration
+### 持续改进
 
-This system ensures development continuity, quality maintenance, and efficient progress tracking across all project phases while maintaining simplicity and avoiding redundancy.
+该工作流系统通过以下方式演进：
+
+- 📖 定期更新 PLANNING.md 和 KNOWLEDGE.md
+- 📊 分析任务模式和工作流效率
+- 🔧 持续改进命令和流程
+- 🎯 优化用户体验
+- 👥 集成用户反馈
+
+---
+
+## 快速参考
+
+**记住这 5 件事**:
+1. 🔄 会话开始时运行 `wf_03_prime.md`
+2. 💻 使用 `wf_05_code.md` 实现功能
+3. ✅ 提交前使用 `wf_08_review.md`
+4. 💾 完成后用 `wf_11_commit.md` 保存
+5. ❓ 不确定时运行 `wf_99_help.md`
+
+**获取帮助**:
+- 技术问题: `wf_04_ask.md "<问题>"`
+- Bug 修复: `wf_06_debug.md "<错误>"`
+- 质量改进: `wf_08_review.md` + `wf_09_refactor.md`
+
+该系统确保开发连续性、质量维护和高效的进度追踪，同时保持简洁和避免冗余。
