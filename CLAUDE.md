@@ -11,6 +11,18 @@ This is an optimized closed-loop workflow command system for Claude Code that in
 **⚡ Streamlined**: 13 commands organized by development lifecycle stages
 **🛡️ Quality Gates**: Built-in formatting, testing, and validation
 
+1. 语言
+    * 交互沟通使用中文
+    * 默认文档使用中文
+    * 代码中全部使用英文(除非专有名词类)
+    * 代码提交参考历史提交，如果历史提交大部分为中文，则使用中文。否则使用英文。
+2. 项目管理类文档在docs/management目录下构建和管理，管理类文件包括:
+    * PRD.md
+    * PLANNING.md
+    * TASK.md
+    * CONTEXT.md
+    * KNOWLEDGE.md
+
 ## Command Overview
 
 All commands follow the `wf_<number>_<name>.md <ARGUMENTS>` format where:
