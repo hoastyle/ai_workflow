@@ -31,6 +31,7 @@
 | 10 | `/wf_10_optimize` | 性能优化 | [wf_10_optimize.md](wf_10_optimize.md) |
 | 11 | `/wf_11_commit` | 提交代码 | [wf_11_commit.md](wf_11_commit.md) |
 | 12 | `/wf_12_deploy_check` | 部署检查 | [wf_12_deploy_check.md](wf_12_deploy_check.md) |
+| 13 | `/wf_13_doc_maintain` | 文档维护 | [wf_13_doc_maintain.md](wf_13_doc_maintain.md) |
 | 99 | `/wf_99_help` | 帮助系统 | [wf_99_help.md](wf_99_help.md) |
 
 ---
@@ -84,24 +85,30 @@
 
 ### /wf_03_prime - 上下文加载 ⭐
 
-**用途**: 加载项目完整上下文到AI工作记忆
+**用途**: 加载项目完整上下文到AI工作记忆（智能按需加载）
 
 **使用**:
 ```bash
 /wf_03_prime
 ```
 
-**读取**: PRD.md, PLANNING.md, TASK.md, CONTEXT.md, KNOWLEDGE.md
+**读取**: PRD.md, PLANNING.md, TASK.md, CONTEXT.md, KNOWLEDGE.md + 智能加载技术文档
 **写入**: 无（仅加载到内存）
 **后续**: /wf_05_code, /wf_04_ask, /wf_02_task
 
 **关键功能**:
-- 读取所有项目文档
-- 理解当前开发状态
+- 自动加载5个管理层文档
+- 从KNOWLEDGE.md解析文档索引（NEW）
+- 根据任务相关性智能加载技术文档（NEW）
 - 恢复会话上下文
 - 准备工作环境
 
-**💡 最佳实践**: 每次会话开始必须运行
+**智能加载策略**（NEW）:
+- 优先级=高 且 任务相关 → 立即加载
+- 优先级=中 且 任务相关 → 按需加载
+- 其他文档 → 仅记录可用性
+
+**💡 最佳实践**: 每次会话开始必须运行，通过文档索引优化上下文成本
 
 ---
 
@@ -260,6 +267,39 @@
 
 ---
 
+## 文档维护阶段 (NEW)
+
+### /wf_13_doc_maintain - 文档维护
+
+**用途**: 维护项目文档结构，确保文档层次清晰、上下文成本可控
+
+**使用**:
+```bash
+/wf_13_doc_maintain           # 交互模式（生成报告+确认）
+/wf_13_doc_maintain --auto    # 自动执行安全修复
+/wf_13_doc_maintain --dry-run # 预览模式（不做修改）
+```
+
+**读取**: PLANNING.md, KNOWLEDGE.md, docs/, TASK.md
+**写入**: KNOWLEDGE.md(索引更新), docs/archive/, 维护报告
+**后续**: /wf_03_prime (重新加载优化后的上下文)
+
+**关键功能**:
+- 结构审查（四层架构合规性）
+- 内容分析（过期、重复、孤立文档）
+- 索引验证（KNOWLEDGE.md准确性）
+- 优化建议（上下文成本减少）
+- 归档执行（移动过期文档）
+
+**执行时机**:
+- 每10次提交后
+- 季度末（Q1/Q2/Q3/Q4）
+- 文档混乱时
+
+**💡 最佳实践**: 定期运行确保管理层 < 100KB
+
+---
+
 ## 运维部署阶段
 
 ### /wf_11_commit - 代码提交
@@ -362,4 +402,4 @@ Bug修复:
 ---
 
 **最后更新**: 2025-10-31
-**版本**: v3.0
+**版本**: v3.1 (新增文档管理)

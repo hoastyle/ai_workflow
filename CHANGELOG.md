@@ -4,7 +4,36 @@ This document tracks the evolution of the cc_commands workflow system, documenti
 
 ## Version History
 
-### v3.0 (Current) - Context Optimization & Documentation Architecture
+### v3.1 (Current) - Documentation Management System
+**Release Date**: 2025-10-31
+**版本**: v3.1
+
+**Document Management System** ⭐:
+- **Four-Layer Architecture**: 管理层/技术层/工作层/归档层清晰分离
+- **Smart On-Demand Loading**: /wf_03_prime智能按需加载技术文档，基于优先级和相关性
+- **KNOWLEDGE.md as Index Center**: 文档索引中心，维护技术文档地图和任务-文档关联
+- **New Command**: /wf_13_doc_maintain 定期文档维护和优化
+- **Context Cost Optimization**: 管理层文档 < 100KB目标
+
+**New Documentation**:
+- **DOC_ARCHITECTURE.md** (585行, 17KB): 完整的四层文档架构规范
+- **wf_13_doc_maintain.md** (447行, 13KB): 文档维护命令定义
+
+**Enhanced Commands**:
+- **wf_01_planning**: 初始化docs/目录结构和文档架构
+- **wf_03_prime**: 智能加载策略，根据任务相关性和文档优先级
+
+**Documentation Updates**:
+- CLAUDE.md: +116行（文档管理规则）
+- COMMANDS.md: +52行（新命令和增强说明）
+- README.md: +27行（系统说明更新）
+- WORKFLOWS.md: +74行（文档维护工作流）
+
+**Total Changes**: +367行 (8个文件修改，2个新增)
+
+---
+
+### v3.0 - Context Optimization & Documentation Architecture
 **Release Date**: 2025-10-31
 
 **Major Context Optimization** ⭐:
@@ -28,7 +57,7 @@ This document tracks the evolution of the cc_commands workflow system, documenti
 **Critical Fixes** (Phase 1 & 2):
 - **P0严重**: 统一13个命令Usage格式 `@wf_xxx.md` → `/wf_XX_name`
 - **P1清理**: 删除CLAUDE.md.backup (26KB) 和 tags (33KB)
-- **P1一致性**: 统一所有文档版本号为v3.0
+- **P1一致性**: 统一所有文档版本号
 - **P1格式**: 统一日期格式和README.md格式
 - **P1冗余**: 删除README_CN.md，移除过时引用
 
@@ -194,8 +223,8 @@ This document tracks the evolution of the cc_commands workflow system, documenti
 ---
 
 **Last Updated**: 2025-10-31
-**Current Version**: v3.0
-**Next Review**: After v3.1 planning
+**Current Version**: v3.1
+**Next Review**: After v3.2 planning
 
 ### v2.4 - Pre-commit Framework Integration
 **Release Date**: 2025-09-09

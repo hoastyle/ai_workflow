@@ -29,16 +29,33 @@ Prime the AI assistant with comprehensive project context by reading core projec
 - Accumulated project knowledge and patterns
 
 ## Process
-1. **Read Core Documentation**:
-   - Check for existence of PRD.md, PLANNING.md, TASK.md, and KNOWLEDGE.md
+1. **Read Core Management Documents** (Always Load):
+   - Check for existence of PRD.md, PLANNING.md, TASK.md, CONTEXT.md, and KNOWLEDGE.md
    - Read PRD.md for project requirements (read-only, never modify)
    - Read CONTEXT.md for latest session state (if exists)
    - Read PLANNING.md for architecture aligned with PRD requirements
-   - Read KNOWLEDGE.md for accumulated project knowledge and patterns
-   - Read CLAUDE.md for project-specific AI guidance
-   - Identify any additional context files (README.md, etc.)
+   - Read TASK.md for current tasks and priorities
+   - Read KNOWLEDGE.md for accumulated project knowledge and documentation index
+   - Read CLAUDE.md for project-specific AI guidance (if exists)
 
-2. **Context Analysis**:
+2. **Parse Documentation Index** (NEW - Smart Loading):
+   - Extract "📚 文档索引" section from KNOWLEDGE.md
+   - Parse technical documentation map (path, priority, last_updated)
+   - Parse task-document relationship mapping
+   - Understand document dependency graph
+   - Build available documentation catalog
+
+3. **Context-Aware Document Loading** (NEW - On-Demand):
+   - Analyze current active tasks from TASK.md
+   - Match tasks with related technical documents (from KNOWLEDGE.md index)
+   - Evaluate document priority (高/中/低) and relevance
+   - Decision logic:
+     * Priority=高 AND task-relevant → Load immediately
+     * Priority=中 AND task-relevant → Load if context allows
+     * Priority=低 OR task-irrelevant → Skip, note availability
+   - Load selected technical documents from docs/ directory
+
+4. **Context Analysis**:
    - Parse project architecture and technology stack from PLANNING.md
    - Load latest progress and decisions from CONTEXT.md
    - Extract architectural decisions and patterns from KNOWLEDGE.md
@@ -47,35 +64,68 @@ Prime the AI assistant with comprehensive project context by reading core projec
    - Note any blockers or dependencies
    - Review common issues and solutions from knowledge base
 
-3. **Session State Recovery**:
+5. **Session State Recovery**:
    - Load work completed from previous sessions
    - Understand current development focus
    - Identify where work was left off
    - Restore development context and momentum
 
-4. **Working Memory Setup**:
+6. **Working Memory Setup**:
    - Load relevant code patterns and conventions from KNOWLEDGE.md
    - Apply accumulated solutions to current context
    - Understand testing and deployment procedures
    - Note security considerations and constraints
    - Reference architectural decisions for consistency
    - Prepare for continuation of work with enhanced context
+   - Remember available technical documents for on-demand access
 
 ## Output Format
 1. **Requirements Overview** - Key requirements from PRD.md (read-only reference)
 2. **Project Summary** - Brief overview from PLANNING.md aligned with PRD
-3. **Knowledge Base Summary** - Key patterns and decisions from KNOWLEDGE.md
-4. **Session Recovery** - Latest progress from CONTEXT.md
-5. **Active Context** - Current working area and immediate tasks from TASK.md
-6. **Applicable Solutions** - Relevant past solutions and patterns for current context
-7. **Ready Status** - Confirmation of context loading and readiness to continue
+3. **Documentation Map** (NEW) - Available technical documents with priorities
+4. **Loaded Technical Docs** (NEW) - List of technical documents loaded based on current tasks
+5. **Knowledge Base Summary** - Key patterns and decisions from KNOWLEDGE.md
+6. **Session Recovery** - Latest progress from CONTEXT.md
+7. **Active Context** - Current working area and immediate tasks from TASK.md
+8. **Applicable Solutions** - Relevant past solutions and patterns for current context
+9. **On-Demand Documents** (NEW) - Available but not loaded docs (can be accessed if needed)
+10. **Ready Status** - Confirmation of context loading and readiness to continue
 
 ## Integration Notes
 - Run after `/clear` to restore working context
 - Use before starting new related work sessions
 - Loads CONTEXT.md for session continuity (updated by `/wf_11_commit`)
-- Integrates KNOWLEDGE.md for accumulated project wisdom
+- Integrates KNOWLEDGE.md for accumulated project wisdom and documentation index
+- Smart loading strategy: Always load 5 management docs, selectively load technical docs
+- Context cost optimization: Technical docs loaded on-demand based on task relevance
 - Ensures continuity across context boundaries
 - Maintains development momentum without redundant information
 - Provides intelligent context enhancement through past decisions
 - Core component of the closed-loop workflow system with long-term memory
+
+## Smart Loading Examples
+
+**Example 1: User Authentication Task**
+```
+Active Task: "实现JWT用户认证"
+→ Load: docs/api/authentication.md (priority: 高, relevant)
+→ Load: docs/architecture/system-design.md (priority: 高, relevant)
+→ Note: docs/database/schema.md (priority: 中, available if needed)
+→ Skip: docs/deployment/ci-cd.md (priority: 中, irrelevant)
+```
+
+**Example 2: Performance Bug Fix**
+```
+Active Task: "修复API响应慢问题"
+→ Load: docs/database/optimization.md (priority: 中, relevant)
+→ Load: docs/architecture/data-flow.md (priority: 高, relevant)
+→ Note: docs/api/endpoints/ (priority: 低, available if needed)
+```
+
+**Example 3: New Project (No Technical Docs Yet)**
+```
+Active Task: "项目初始化"
+→ Load: 5 management docs only
+→ Note: No technical docs exist yet
+→ Suggestion: Run /wf_01_planning to initialize documentation structure
+```

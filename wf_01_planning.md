@@ -93,16 +93,30 @@ Create or update PLANNING.md to establish comprehensive project documentation th
    - Optimization priorities
    - Monitoring approach
 
-3. **Interactive Refinement**:
+   ### Documentation Architecture (NEW)
+   - Four-layer documentation structure (Management/Technical/Working/Archive)
+   - Document organization principles (see DOC_ARCHITECTURE.md)
+   - AI context optimization strategy (on-demand loading)
+   - Document lifecycle and maintenance schedule
+   - KNOWLEDGE.md as documentation index center
+
+3. **Documentation Architecture Setup**:
+   - Create initial docs/ directory structure (architecture, api, database, deployment)
+   - Initialize KNOWLEDGE.md with documentation index template
+   - Explain four-layer architecture to user (refer to DOC_ARCHITECTURE.md)
+   - Set up document organization rules in PLANNING.md
+
+4. **Interactive Refinement**:
    - Mark sections as TBD initially
    - Collaborate with user to fill details
    - Validate technical decisions
    - Ensure completeness and accuracy
 
-4. **Integration Setup**:
+5. **Integration Setup**:
    - Link with TASK.md creation
    - Establish update procedures
    - Define review cycles
+   - Initialize KNOWLEDGE.md documentation index
 
 ## Output Format
 1. **PLANNING.md File** - Complete project planning document

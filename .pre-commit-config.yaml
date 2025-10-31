@@ -157,7 +157,7 @@ repos:
         name: Check Version Number Consistency
         entry: >-
           bash -c 'echo "🔍 Checking version number consistency...";
-          expected_version="v3.0";
+          expected_version="v3.1";
           main_docs="CLAUDE.md COMMANDS.md WORKFLOWS.md TROUBLESHOOTING.md README.md CHANGELOG.md";
           found_inconsistency=false;
           for doc in $main_docs; do

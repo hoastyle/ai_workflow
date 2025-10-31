@@ -45,7 +45,8 @@ This file provides essential execution rules for Claude Code when working with t
 | **PLANNING.md** | 技术规划和架构 | ✅ 重大决策后更新 |
 | **TASK.md** | 任务追踪 | ✅ 实时更新状态 |
 | **CONTEXT.md** | 会话上下文 | 🤖 仅由/wf_11_commit自动管理 |
-| **KNOWLEDGE.md** | 知识库 | ✅ 新模式和ADR时添加 |
+| **KNOWLEDGE.md** | 知识库+文档索引 | ✅ 新模式和ADR时添加<br/>📚 维护技术文档索引 |
+| **docs/** | 技术层文档 | 📖 按需加载，通过KNOWLEDGE.md索引 |
 
 ---
 
@@ -154,6 +155,103 @@ This file provides essential execution rules for Claude Code when working with t
 4. 将问题和解决方案记录到KNOWLEDGE.md
 ```
 
+### 文档管理规则 (NEW)
+
+> 📚 基于四层文档架构的智能加载和维护策略（详见 [DOC_ARCHITECTURE.md](DOC_ARCHITECTURE.md)）
+
+#### 文档架构层次
+
+使用workflow的项目应遵循四层文档架构：
+
+| 层级 | 位置 | 职责 | AI加载策略 |
+|------|------|------|-----------|
+| **管理层** | 项目根目录 | PRD, PLANNING, TASK, CONTEXT, KNOWLEDGE | ✅ prime自动加载（5个文件） |
+| **技术层** | docs/ | 技术细节文档 | 🔍 按需加载（通过KNOWLEDGE.md索引） |
+| **工作层** | docs/research/ | 临时探索 | ❌ 不加载（用户可指定） |
+| **归档层** | docs/archive/ | 历史文档 | ❌ 不加载 |
+
+#### 文档读取原则
+
+**AI在不同场景的文档加载策略**：
+
+| 场景 | 加载策略 | 说明 |
+|------|---------|------|
+| **会话开始（/wf_03_prime）** | 自动加载5个管理层文档 | 成本可控，~100KB以内 |
+| **解析文档索引** | 从KNOWLEDGE.md提取"📚 文档索引"章节 | 理解可用技术文档 |
+| **任务相关技术实现** | 根据TASK.md当前任务判断相关性 | 优先级=高 且 相关 → 加载 |
+| **架构咨询（/wf_04_ask）** | 优先读取PLANNING.md，必要时读取docs/architecture/ | 深度分析才加载详细文档 |
+| **调试问题（/wf_06_debug）** | 查阅KNOWLEDGE.md已知问题，按需读取技术文档 | 避免盲目加载 |
+| **工作层/归档层** | 不主动加载，除非用户明确指示 | 控制上下文成本 |
+
+**加载决策逻辑**：
+```
+文档优先级 = 高 AND 任务相关 → 立即加载
+文档优先级 = 中 AND 任务相关 → 询问或按需加载
+文档优先级 = 低 OR 任务无关 → 仅记录存在，不加载
+```
+
+#### 文档维护规则
+
+**创建技术文档时**：
+- ✅ 必须在KNOWLEDGE.md中添加索引条目
+  ```markdown
+  | 主题 | 文档路径 | 说明 | 优先级 | 最后更新 |
+  | 用户认证 | docs/api/authentication.md | JWT实现 | 高 | 2024-10-31 |
+  ```
+- ✅ 在KNOWLEDGE.md中建立任务-文档关联
+  ```markdown
+  | 任务类型 | 相关文档 |
+  | 实现登录功能 | architecture/system-design.md, api/authentication.md |
+  ```
+
+**维护KNOWLEDGE.md文档索引**：
+- ✅ 新技术文档 → 添加索引条目
+- ✅ 文档更新 → 更新last_updated字段
+- ✅ 文档废弃 → 移动到archive/，从索引移除
+- ✅ 定期运行 `/wf_13_doc_maintain` 检查一致性
+
+**定期文档整理**：
+- 📅 每10次提交后提示运行 `/wf_13_doc_maintain`
+- 📅 季度末（Q1/Q2/Q3/Q4）执行文档维护
+- 🔍 识别过期、重复、孤立文档
+- 📦 归档到docs/archive/YYYY-QX/
+
+#### 文档分层放置规则
+
+**何时放在管理层（根目录）**：
+- ✅ 核心架构概述（不超过500行）
+- ✅ 关键决策记录（ADR摘要）
+- ❌ 详细技术实现（应放docs/）
+
+**何时放在技术层（docs/）**：
+- ✅ API详细文档
+- ✅ 数据库设计细节
+- ✅ 部署流程和配置
+- ✅ 架构深度分析
+
+**何时放在工作层（docs/research/）**：
+- ✅ 技术探索Spike（前缀日期：2024-10-XX-name.md）
+- ✅ 原型验证文档
+- ✅ 临时研究笔记
+- ⏰ 超过3个月未使用 → 考虑归档或转正
+
+**何时归档（docs/archive/）**：
+- ✅ 超过6个月未更新且无引用
+- ✅ 功能已废弃
+- ✅ 被新文档完全取代
+
+#### 上下文成本优化
+
+**成功指标**：
+- 管理层文档总大小 < 100KB ✓
+- 80%的任务只需加载0-2个技术文档 ✓
+- 文档索引准确率 > 90% ✓
+
+**AI主动提醒**：
+- 管理层文档 > 100KB → 建议精简或外放到技术层
+- 发现未索引的技术文档 → 提醒更新KNOWLEDGE.md
+- 提交次数达到10次 → 提示运行 `/wf_13_doc_maintain`
+
 ### 命令调用规则
 
 **工作流命令是Slash Commands**：
@@ -193,6 +291,9 @@ This file provides essential execution rules for Claude Code when working with t
 - `/wf_11_commit` - 提交代码（自动更新CONTEXT.md）
 - `/wf_12_deploy_check` - 部署检查
 
+### 文档维护（13）NEW
+- `/wf_13_doc_maintain` - 文档结构维护和优化
+
 ### 支持命令（99）
 - `/wf_99_help` - 帮助系统
 
@@ -208,7 +309,8 @@ This file provides essential execution rules for Claude Code when working with t
 | **PLANNING.md** | 读写 | ✅ 重大决策更新 |
 | **TASK.md** | 读写 | ✅ 实时状态更新 |
 | **CONTEXT.md** | 只读 | 🤖 仅/wf_11_commit写入 |
-| **KNOWLEDGE.md** | 读写 | ✅ 新模式/ADR添加 |
+| **KNOWLEDGE.md** | 读写 | ✅ 新模式/ADR添加<br/>📚 文档索引中心 |
+| **docs/** | 读写 | 📖 技术层文档，按需加载 |
 
 ---
 
@@ -293,6 +395,12 @@ Bug修复:
 ---
 
 **最后更新**: 2025-10-31
-**版本**: v3.0 (精简优化版)
+**版本**: v3.1 (增加文档管理规则)
 
-该系统确保开发连续性、质量维护和高效的进度追踪，同时通过文档路由机制减少AI上下文消耗。
+该系统确保开发连续性、质量维护和高效的进度追踪，同时通过文档路由机制和四层架构减少AI上下文消耗。
+
+**新增功能**：
+- 📚 四层文档架构（管理层/技术层/工作层/归档层）
+- 🔍 智能按需加载（基于任务相关性和文档优先级）
+- 📑 KNOWLEDGE.md作为文档索引中心
+- 🔄 `/wf_13_doc_maintain` 定期文档维护命令
