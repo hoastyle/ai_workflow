@@ -277,6 +277,72 @@
 /wf_08_review → /wf_10_optimize → /wf_07_test (验证)
 ```
 
+### 完整Workflow流程图
+
+```mermaid
+graph TD
+    A["🆕 新项目<br/>/wf_01_planning"] --> B["📋 任务初始化<br/>/wf_02_task"]
+    B --> C["📱 会话开始<br/>/wf_03_prime"]
+
+    C --> D{开发任务?}
+    D -->|不清楚架构| E["❓ 架构咨询<br/>/wf_04_ask"]
+    E --> F["💻 实现功能<br/>/wf_05_code"]
+    D -->|直接开发| F
+    D -->|遇到Bug| G["🐛 调试修复<br/>/wf_06_debug"]
+
+    F --> H["✅ 添加测试<br/>/wf_07_test"]
+    G --> H
+    H --> I["👀 代码审查<br/>/wf_08_review"]
+
+    I --> J{需要改进?}
+    J -->|代码重构| K["🔧 代码重构<br/>/wf_09_refactor"]
+    J -->|性能问题| L["⚡ 性能优化<br/>/wf_10_optimize"]
+    J -->|直接提交| M["💾 提交保存<br/>/wf_11_commit"]
+
+    K --> H
+    L --> H
+
+    M --> N["🚀 准备部署<br/>/wf_12_deploy_check"]
+    N --> O["📦 实际部署<br/>(外部操作)"]
+
+    M --> P["🔄 清理上下文<br/>/clear"]
+    P --> C
+
+    style A fill:#e1f5ff
+    style C fill:#fff3e0
+    style F fill:#f3e5f5
+    style H fill:#e8f5e9
+    style I fill:#fce4ec
+    style M fill:#fff9c4
+    style N fill:#f1f8e9
+```
+
+### 常见场景的快速决策流
+
+```mermaid
+graph LR
+    Start{我要做什么?}
+
+    Start -->|新项目| P1["/wf_01_planning"]
+    Start -->|启动会话| P2["/wf_03_prime"]
+    Start -->|实现功能| P3["/wf_05_code → /wf_07_test<br/> → /wf_08_review → /wf_11_commit"]
+    Start -->|修复Bug| P4["/wf_06_debug → /wf_07_test<br/> → /wf_11_commit"]
+    Start -->|代码改进| P5["/wf_08_review → /wf_09_refactor<br/> → /wf_07_test"]
+    Start -->|部署检查| P6["/wf_12_deploy_check"]
+    Start -->|需要帮助| P7["/wf_99_help"]
+
+    P1 --> End["✅ 开始工作"]
+    P2 --> End
+    P3 --> End
+    P4 --> End
+    P5 --> End
+    P6 --> End
+    P7 --> End
+
+    style Start fill:#fff9c4
+    style End fill:#c8e6c9
+```
+
 ---
 
 ## 最佳实践
