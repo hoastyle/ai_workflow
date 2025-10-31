@@ -240,7 +240,6 @@ TIMESTAMP=$(date +%Y-%m-%d\ %H:%M:%S) # 完整时间戳
 
 ## 🔗 扩展阅读
 
-- **中文文档**: [README_CN.md](README_CN.md)
 - **工作流指导**: [WORKFLOWS.md](WORKFLOWS.md)
 - **故障排查**: [TROUBLESHOOTING.md](TROUBLESHOOTING.md)
 - **命令参考**: [COMMANDS.md](COMMANDS.md)
@@ -248,6 +247,7 @@ TIMESTAMP=$(date +%Y-%m-%d\ %H:%M:%S) # 完整时间戳
 
 ---
 
-**Last Updated**: $(date +%Y-%m-%d)
-**Architecture**: 命令定义（commands/）与项目数据（根目录）清晰分离
-**Command Format**: 统一使用 `/wf_XX_name` slash command 格式
+**最后更新**: 2025-10-31
+**版本**: v3.0
+**架构**: 命令定义（commands/）与项目数据（根目录）清晰分离
+**命令格式**: 统一使用 `/wf_XX_name` slash command 格式

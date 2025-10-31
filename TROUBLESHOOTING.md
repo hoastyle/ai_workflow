@@ -584,4 +584,4 @@ pre-commit run markdown-link-check
 ---
 
 **最后更新**: 2025-10-31
-**版本**: v2.5
+**版本**: v3.0
