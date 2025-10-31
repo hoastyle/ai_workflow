@@ -92,7 +92,7 @@ Create or update PLANNING.md to establish comprehensive project documentation th
 4. **Integration Guide** - How to use with other workflow commands
 
 ## Workflow Integration
-- Creates foundation for `@wf_task.md`
-- Referenced by `@wf_prime.md` for context loading
-- Updated through `@wf_review.md` cycles
-- Drives `@wf_code.md` implementation standards
+- Creates foundation for `/wf_02_task`
+- Referenced by `/wf_03_prime` for context loading
+- Updated through `/wf_08_review` cycles
+- Drives `/wf_05_code` implementation standards

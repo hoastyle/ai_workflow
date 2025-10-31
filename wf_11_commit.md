@@ -146,11 +146,11 @@ Types:
 - Updates completed tasks in TASK.md
 - Auto-updates CONTEXT.md for session continuity
 - Enhances KNOWLEDGE.md with accumulated wisdom
-- Follows after `@wf_review.md` approval
+- Follows after `/wf_08_review` approval
 - Triggers task status updates
 - Maintains complete project history and context
 - **Ensures README stays synchronized with project state**
-- Enables seamless `@wf_prime.md` context loading with long-term memory
+- Enables seamless `/wf_03_prime` context loading with long-term memory
 
 ## Pre-commit Framework Integration
 

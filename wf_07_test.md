@@ -79,8 +79,8 @@ Test Strategy Coordinator ensuring comprehensive validation:
 ## Workflow Integration
 - Follows PLANNING.md test strategy
 - Updates test tasks in TASK.md
-- Validates `@wf_code.md` implementations
-- Required before `@wf_deploy_check.md`
-- Supports `@wf_review.md` assessments
+- Validates `/wf_05_code` implementations
+- Required before `/wf_12_deploy_check`
+- Supports `/wf_08_review` assessments
 - Integrates coverage analysis (formerly wf_coverage.md functionality)
-- Coverage reports inform `@wf_refactor.md` decisions
+- Coverage reports inform `/wf_09_refactor` decisions

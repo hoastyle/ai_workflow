@@ -46,6 +46,6 @@ Refactoring Coordinator ensuring project consistency:
 ## Workflow Integration
 - Guided by PLANNING.md architecture
 - Updates technical debt in TASK.md
-- Requires `@wf_test.md` validation
-- Triggers `@wf_review.md` assessment
+- Requires `/wf_07_test` validation
+- Triggers `/wf_08_review` assessment
 - May update PLANNING.md patterns

@@ -46,6 +46,6 @@ Deployment Readiness Coordinator ensuring safe deployment:
 ## Workflow Integration
 - Validates against PLANNING.md requirements
 - Checks TASK.md completeness
-- Requires passing `@wf_test.md`
+- Requires passing `/wf_07_test`
 - Gates actual deployment
 - Updates deployment documentation

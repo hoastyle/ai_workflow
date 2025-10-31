@@ -54,7 +54,7 @@ Prime the AI assistant with comprehensive project context by reading core projec
 ## Integration Notes
 - Run after `/clear` to restore working context
 - Use before starting new related work sessions
-- Loads CONTEXT.md for session continuity (updated by wf_commit.md)
+- Loads CONTEXT.md for session continuity (updated by `/wf_11_commit`)
 - Integrates KNOWLEDGE.md for accumulated project wisdom
 - Ensures continuity across context boundaries
 - Maintains development momentum without redundant information

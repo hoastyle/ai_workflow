@@ -75,9 +75,9 @@ Manage TASK.md to track project progress and maintain task continuity:
 
 ## Integration Notes
 - Depends on PLANNING.md for initial creation
-- Used by `@wf_prime.md` to understand current state
-- Updated after each `@wf_code.md` completion
-- Reviewed before `@wf_commit.md` operations
+- Used by `/wf_03_prime` to understand current state
+- Updated after each `/wf_05_code` completion
+- Reviewed before `/wf_11_commit` operations
 - Drives sprint planning and daily work
 
 ## Task State Transitions

@@ -96,6 +96,6 @@ Debug Coordinator orchestrating specialists within project context:
 - Leverages KNOWLEDGE.md for past solutions
 - Updates TASK.md with debugging work
 - Contributes new patterns to KNOWLEDGE.md
-- May trigger `@wf_test.md` for validation
-- Can lead to `@wf_refactor.md` if needed
+- May trigger `/wf_07_test` for validation
+- Can lead to `/wf_09_refactor` if needed
 - Documents lessons for future debugging sessions

@@ -46,6 +46,6 @@ Performance Optimization Coordinator achieving project targets:
 ## Workflow Integration
 - Targets from PLANNING.md requirements
 - Updates optimization tasks in TASK.md
-- May trigger `@wf_refactor.md` for structure
-- Validates with `@wf_test.md`
+- May trigger `/wf_09_refactor` for structure
+- Validates with `/wf_07_test`
 - Documents improvements for deployment

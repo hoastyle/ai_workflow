@@ -52,6 +52,6 @@ Code Review Coordinator ensuring project standards:
 - Leverages patterns from KNOWLEDGE.md
 - Contributes new patterns to KNOWLEDGE.md
 - Generates tasks in TASK.md
-- Gates `@wf_commit.md` readiness
-- May trigger `@wf_refactor.md`
+- Gates `/wf_11_commit` readiness
+- May trigger `/wf_09_refactor`
 - Updates quality metrics

@@ -104,5 +104,5 @@ You are a Senior Systems Architect providing consultation within project context
 - Consults PLANNING.md for context
 - May trigger PLANNING.md updates
 - Can generate new tasks in TASK.md
-- Informs `@wf_code.md` implementation
-- Documents decisions for future `@wf_prime.md`
+- Informs `/wf_05_code` implementation
+- Documents decisions for future `/wf_03_prime`

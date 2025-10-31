@@ -46,6 +46,6 @@ You are the Development Coordinator directing four coding specialists:
 ## Workflow Integration
 - Reads context from PLANNING.md
 - Updates progress in TASK.md
-- Triggers `@wf_test.md` for validation
-- Prepares for `@wf_review.md` cycle
-- Leads to `@wf_commit.md` when complete
+- Triggers `/wf_07_test` for validation
+- Prepares for `/wf_08_review` cycle
+- Leads to `/wf_11_commit` when complete
