@@ -18,7 +18,7 @@ context_rules:
 **依赖链**: /wf_04_ask (可选) → **当前（代码实现）** → /wf_07_test → /wf_08_review
 
 ## Usage
-`@wf_code.md <FEATURE_DESCRIPTION>`
+`/wf_05_code <FEATURE_DESCRIPTION>`
 
 ## Context
 - Feature/functionality to implement: $ARGUMENTS

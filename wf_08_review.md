@@ -18,7 +18,7 @@ context_rules:
 **依赖链**: /wf_07_test → **当前（代码审查）** → /wf_09_refactor (可选) → /wf_11_commit
 
 ## Usage
-`@wf_review.md <CODE_SCOPE>`
+`/wf_08_review <CODE_SCOPE>`
 
 ## Context
 - Code scope for review: $ARGUMENTS

@@ -18,7 +18,7 @@ context_rules:
 **依赖链**: /wf_03_prime → **当前（架构咨询）** → /wf_05_code
 
 ## Usage
-`@wf_ask.md <TECHNICAL_QUESTION> [--review-codebase]`
+`/wf_04_ask <TECHNICAL_QUESTION> [--review-codebase]`
 
 ## Context
 - Technical question or challenge: $ARGUMENTS

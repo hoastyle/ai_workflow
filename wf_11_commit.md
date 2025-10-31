@@ -19,7 +19,7 @@ context_rules:
 **依赖链**: /wf_08_review → **当前（提交保存）** → /wf_02_task update (可选)
 
 ## Usage
-`@wf_commit.md [message]`
+`/wf_11_commit [message]`
 
 ## Purpose
 Create git commits with integrated formatting, validation, and context updates:

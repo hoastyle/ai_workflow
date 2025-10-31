@@ -18,7 +18,7 @@ context_rules:
 **依赖链**: **当前（项目启动）** → /wf_02_task (任务规划)
 
 ## Usage
-`@wf_planning.md <PROJECT_NAME>`
+`/wf_01_planning <PROJECT_NAME>`
 
 ## Purpose
 Create or update PLANNING.md to establish comprehensive project documentation that:

@@ -18,7 +18,7 @@ context_rules:
 **依赖链**: /clear (可选) → **当前（会话启动）** → /wf_05_code / /wf_04_ask
 
 ## Usage
-`@wf_prime.md`
+`/wf_03_prime`
 
 ## Purpose
 Prime the AI assistant with comprehensive project context by reading core project files to understand:

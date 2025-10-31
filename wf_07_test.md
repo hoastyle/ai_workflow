@@ -18,7 +18,7 @@ context_rules:
 **依赖链**: /wf_05_code → **当前（测试开发）** → /wf_08_review → /wf_11_commit
 
 ## Usage
-`@wf_test.md <COMPONENT_OR_FEATURE> [--coverage]`
+`/wf_07_test <COMPONENT_OR_FEATURE> [--coverage]`
 
 ## Context
 - Target for testing: $ARGUMENTS

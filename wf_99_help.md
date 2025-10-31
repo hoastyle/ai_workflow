@@ -18,7 +18,7 @@ context_rules:
 **依赖链**: 独立命令，任何时候可用
 
 ## Usage
-`@wf_help.md [command|guide|quick]`
+`/wf_99_help [command|guide|quick]`
 
 ## Purpose
 提供工作流命令的完整帮助系统，整合快速参考、场景指导和命令详情
@@ -142,7 +142,7 @@ PRD.md → PLANNING.md → TASK.md → CONTEXT.md → Git提交
 ```
 
 ### 具体命令 - 显示命令详情
-对于 `@wf_help.md wf_xxx` 形式的查询，显示该命令的详细信息：
+对于 `/wf_99_help wf_xxx` 形式的查询，显示该命令的详细信息：
 
 ```
 📖 {COMMAND_NAME} - {命令用途}

@@ -18,7 +18,7 @@ context_rules:
 **依赖链**: **当前（性能优化）** → /wf_07_test (验证) → /wf_11_commit
 
 ## Usage
-`@wf_optimize.md <PERFORMANCE_TARGET>`
+`/wf_10_optimize <PERFORMANCE_TARGET>`
 
 ## Context
 - Performance target: $ARGUMENTS

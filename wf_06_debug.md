@@ -18,7 +18,7 @@ context_rules:
 **依赖链**: **当前（错误修复）** → /wf_07_test (验证) → /wf_11_commit
 
 ## Usage
-`@wf_debug.md <ERROR_DESCRIPTION> [--quick]`
+`/wf_06_debug <ERROR_DESCRIPTION> [--quick]`
 
 ## Context
 - Error description: $ARGUMENTS

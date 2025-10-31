@@ -18,7 +18,7 @@ context_rules:
 **依赖链**: /wf_07_test + /wf_08_review → **当前（部署检查）** → 部署
 
 ## Usage
-`@wf_deploy_check.md <DEPLOYMENT_TARGET>`
+`/wf_12_deploy_check <DEPLOYMENT_TARGET>`
 
 ## Context
 - Deployment target: $ARGUMENTS

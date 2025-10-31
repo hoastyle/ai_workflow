@@ -18,7 +18,7 @@ context_rules:
 **依赖链**: /wf_08_review → **当前（代码重构）** → /wf_07_test (回归)
 
 ## Usage
-`@wf_refactor.md <REFACTOR_SCOPE>`
+`/wf_09_refactor <REFACTOR_SCOPE>`
 
 ## Context
 - Refactoring scope: $ARGUMENTS

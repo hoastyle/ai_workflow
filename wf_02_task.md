@@ -18,7 +18,7 @@ context_rules:
 **依赖链**: /wf_01_planning → **当前** → /wf_03_prime / /wf_05_code
 
 ## Usage
-`@wf_task.md [update|create|review]`
+`/wf_02_task [update|create|review]`
 
 ## Purpose
 Manage TASK.md to track project progress and maintain task continuity:
