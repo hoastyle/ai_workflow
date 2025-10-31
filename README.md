@@ -1,310 +1,253 @@
-# Claude Code Workflow Commands (wf_*) - v2.3 Enhanced
+# Claude Code Workflow Commands
 
-A streamlined closed-loop workflow system for Claude Code that integrates project planning, task management, and development best practices.
-
-## 🎯 Purpose
-
-This command suite provides a structured workflow that:
-- Maintains context across sessions using PLANNING.md, TASK.md, and CONTEXT.md
-- Enables work continuity through `/clear` boundaries
-- Tracks progress automatically throughout development
-- Enforces consistent patterns and quality standards
-- Creates a complete development loop from planning to deployment
-- **New in v2.3**: Enhanced with automatic README updates and improved closed-loop workflow
-- **Optimized**: Reduced complexity by 28% (18→13 commands) with integrated functionality
-
-## 🚀 Quick Start
-
-1. **Initialize a Project**
-   ```bash
-   /wf_01_planning "MyProject"
-   /wf_02_task create
-   ```
-
-2. **Start a Work Session**
-   ```bash
-   /wf_03_prime  # Load project context
-   ```
-
-3. **Develop Features**
-   ```bash
-   /wf_05_code "implement user authentication"  # Auto-formatted
-   /wf_07_test "authentication module"          # With coverage analysis
-   /wf_11_commit "feat: add user authentication"  # Auto-updates context
-   ```
-
-4. **Continue After Break**
-   ```bash
-   /clear  # Clear context when it gets large
-   /wf_03_prime  # Reload and continue seamlessly
-   ```
-
-## 📁 Optimized Command Architecture (13 Commands)
-
-### 🔄 Core Workflow (3) - Ordered by Usage
-| Command | Purpose | New Features |
-|---------|---------|-------------|
-| `wf_01_planning.md` | Create/update project architecture | PRD.md alignment, enhanced documentation |
-| `wf_02_task.md` | Manage task tracking and progress | PRD requirement mapping, improved automation |
-| `wf_03_prime.md` | Load project context | Reads PRD.md + CONTEXT.md for session state |
-
-### 💻 Development (4) - Ordered by Usage
-| Command | Purpose | Integrations |
-|---------|---------|-------------|
-| `wf_04_ask.md` | Get architecture consultation within PRD context | Enhanced multi-agent |
-| `wf_05_code.md` | Implement features aligned with PRD requirements | Auto-formatting built-in |
-| `wf_06_debug.md` | Debug and fix issues systematically | **Merged wf_fix.md** |
-| `wf_09_refactor.md` | Improve code structure maintaining PRD compliance | Enhanced |
-
-### ✅ Quality Assurance (3) - Ordered by Usage
-| Command | Purpose | Integrations |
-|---------|---------|-------------|
-| `wf_07_test.md` | Create and run tests | **Merged wf_coverage.md**, PRD criteria validation |
-| `wf_08_review.md` | Review code against standards | Format validation, PRD compliance |
-| `wf_10_optimize.md` | Optimize performance | PRD performance requirements |
-
-### 🔧 Operations (2) - Ordered by Usage
-| Command | Purpose | Integrations |
-|---------|---------|-------------|
-| `wf_11_commit.md` | Commit with complete automation | **Auto README updates + formatting + CONTEXT.md updates** |
-| `wf_12_deploy_check.md` | Validate deployment readiness | PRD criteria verification |
-
-### 📚 Help (1) - Always Available
-| Command | Purpose | Integrations |
-|---------|---------|-------------|
-| `wf_99_help.md` | Complete help system | **Merged wf_guide.md + wf_quick.md** |
-
-## 🔄 Workflow Examples
-
-### Complete Feature Development
-```bash
-# 1. Architecture consultation
-/wf_04_ask "How should I structure the authentication system?"
-
-# 2. Implementation (auto-formatted)
-/wf_05_code "Implement JWT-based authentication"
-
-# 3. Testing (with coverage analysis)
-/wf_07_test "authentication endpoints"
-
-# 4. Review
-/wf_08_review
-
-# 5. Commit (auto-updates context)
-/wf_11_commit "feat: add JWT authentication"
-
-# 6. Update tasks (auto-updated by commit)
-/wf_02_task update
-```
-
-### Bug Fix Workflow
-```bash
-# 1. Debug and fix (unified command)
-/wf_06_debug "Users getting 500 error on login"
-
-# 2. Test fix
-/wf_07_test "concurrent login scenarios"
-
-# 3. Commit (auto-updated context)
-/wf_11_commit "fix: resolve login race condition"
-```
-
-### Session Management
-```bash
-# Start of day
-/wf_03_prime              # Loads all context from project files
-/wf_02_task review
-
-# ... work on features ...
-
-# Before break
-/wf_11_commit "save progress"              # Auto-updates CONTEXT.md
-
-# After break (new session)
-/clear
-/wf_03_prime              # Seamlessly resumes from CONTEXT.md
-# Continue where you left off
-```
-
-## 📋 Key Files (Closed Loop)
-
-**Location**: All project management files are stored in the project root directory (`.claude/`), separate from the `commands/` directory which contains only workflow command definitions.
-
-### PRD.md
-The requirements source document containing:
-- Official project requirements and specifications
-- Business objectives and success criteria
-- Stakeholder requirements and constraints
-- **CRITICAL**: Read-only, never automatically modified
-
-### PLANNING.md
-The technical architecture document containing:
-- Project overview and goals (derived from PRD.md)
-- System architecture (meeting PRD requirements)
-- Technology decisions (supporting PRD objectives)
-- Development standards and patterns
-- Testing strategies
-
-### TASK.md
-The dynamic progress tracker containing:
-- Categorized task lists (mapped to PRD requirements)
-- Current status and progress
-- Dependencies and blockers
-- Completion history
-- PRD requirement traceability
-
-### CONTEXT.md ⭐ (Session State Manager)
-The automatic session continuity file containing:
-- Work completed in recent sessions
-- Key decisions made (with PRD alignment notes)
-- Current focus areas
-- Next priority items
-- **Auto-updated by `/wf_11_commit`**
-
-### KNOWLEDGE.md
-The accumulated knowledge repository containing:
-- Architecture Decision Records (ADR)
-- Common problem-solution patterns
-- Reusable code patterns and conventions
-- Project-specific best practices
-- Technical research and findings
-
-## 🏗️ Setup
-
-1. **Directory structure is automatically created by Claude Code:**
-   ```
-   .claude/
-   ├── PRD.md            # Project requirements
-   ├── PLANNING.md       # Technical architecture
-   ├── TASK.md           # Task tracking
-   ├── CONTEXT.md        # Session state (auto-updated)
-   ├── KNOWLEDGE.md      # Knowledge base
-   └── commands/         # Workflow command definitions
-       ├── wf_01_planning.md
-       ├── wf_02_task.md
-       ├── ... (other wf_XX commands)
-       └── CLAUDE.md     # AI instruction document
-   ```
-
-2. **Initialize your project:**
-   ```bash
-   /wf_01_planning "YourProjectName"
-   /wf_02_task create
-   ```
-
-3. **Start developing!**
-
-## 💡 Best Practices
-
-1. **Always prime after clearing context** - Run `/wf_03_prime` after `/clear`
-2. **Let automation work for you** - `/wf_11_commit` handles formatting and context updates
-3. **Use unified commands** - `/wf_06_debug` for both debugging and fixing
-4. **Test with coverage** - `/wf_07_test --coverage` for coverage analysis
-5. **Get help easily** - `/wf_99_help` for comprehensive command reference
-6. **Respect file permissions** - PRD.md is read-only; use PLANNING.md for technical decisions
-7. **Leverage KNOWLEDGE.md** - Document architecture decisions and patterns for future reference
-
-## 🔍 Latest Updates (v2.4)
-
-### Recent Improvements
-- 🎯 **Data File Migration**: Moved project management files (PRD.md, PLANNING.md, KNOWLEDGE.md, CONTEXT.md) from `commands/` to project root for cleaner separation of concerns
-- 🤖 **AI Execution Rules**: Added comprehensive AI behavior guidelines and file permission matrix
-- 📁 **File Structure Clarity**: `commands/` directory now contains only workflow definitions
-- 🔧 **Format Optimization**: Unified all command invocations to slash command format (`/wf_XX`)
-- 📚 **Documentation Enhancement**: Updated CLAUDE.md with AI-specific execution rules and file management guidelines
-
-### v2.0 Optimization Summary
-
-#### Eliminated Commands (5)
-- ❌ `wf_fix.md` → Merged into `wf_06_debug.md`
-- ❌ `wf_format.md` → Integrated into `wf_11_commit.md`
-- ❌ `wf_coverage.md` → Merged into `wf_07_test.md`
-- ❌ `wf_guide.md` → Merged into `wf_99_help.md`
-- ❌ `wf_quick.md` → Merged into `wf_99_help.md`
-
-#### Enhanced Commands
-- ✅ **wf_11_commit.md**: Auto-formatting + CONTEXT.md updates
-- ✅ **wf_03_prime.md**: Reads CONTEXT.md for session continuity
-- ✅ **wf_06_debug.md**: Unified debugging and fixing
-- ✅ **wf_07_test.md**: Integrated coverage analysis with `--coverage` flag
-- ✅ **wf_99_help.md**: Complete help system
-
-#### New Features
-- 🆕 **CONTEXT.md**: Automatic session state management
-- 🆕 **Auto-formatting**: Multi-language formatting in commit workflow
-- 🆕 **Seamless sessions**: Perfect continuity across `/clear` boundaries
-- 🆕 **Unified operations**: Less cognitive overhead, more focus on development
-
-## 📊 Workflow Benefits
-
-- **Context Preservation**: Work continues smoothly across sessions via CONTEXT.md
-- **Progress Tracking**: Always know what's done and what's next
-- **Quality Enforcement**: Consistent standards automatically applied
-- **Reduced Overhead**: 28% fewer commands, integrated functionality
-- **Complete Loop**: From planning to deployment in one streamlined system
-
-## 🛠️ Troubleshooting
-
-### Lost Context?
-```bash
-/wf_03_prime  # Reload everything from all core files
-```
-
-### Unclear Requirements?
-```bash
-/wf_04_ask "your question"
-```
-
-### Need Quality Check?
-```bash
-/wf_08_review
-/wf_07_test --coverage
-```
-
-### Ready to Deploy?
-```bash
-/wf_12_deploy_check
-```
-
-### Get Help?
-```bash
-/wf_99_help           # Main help menu
-/wf_99_help quick     # Command reference
-/wf_99_help guide     # Workflow scenarios
-```
-
-## 📈 Continuous Improvement
-
-The system evolves through:
-- Regular PLANNING.md updates with architecture decisions
-- Task pattern analysis via TASK.md
-- Command refinements based on usage patterns
-- Workflow optimization driven by KNOWLEDGE.md insights
-- User feedback integration
-
-## 📖 Related Documentation
-
-- **CLAUDE.md** - Comprehensive AI instruction document with execution rules
-- **PLANNING.md** - Technical architecture and development standards
-- **KNOWLEDGE.md** - Architecture Decision Records (ADR) and accumulated project knowledge
-- **README_CN.md** - Chinese language documentation
-
-## 🔮 What's Next
-
-Future improvements may include:
-- Further automation enhancements
-- Additional language support for formatting
-- Enhanced context analysis capabilities
-- Performance optimizations for large projects
-- Extended multi-language testing support
+高频使用场景优化的闭环工作流系统，为 Claude Code 提供项目规划、任务管理和开发最佳实践的完整集成。
 
 ---
 
-**Architecture**: Clear separation between command definitions (`commands/`) and project data (project root)
+## 🎯 核心特点
 
-**File Management**: All project management documents stored in project root with read/write permissions matrix defined in CLAUDE.md
+- **会话连续性**: 通过 CONTEXT.md 跨越 `/clear` 边界保持工作状态
+- **自动化追踪**: 开发周期全程自动更新进度
+- **质量保证**: 内置格式化、测试、代码审查
+- **文档驱动**: PRD.md → PLANNING.md → TASK.md 完整追溯链
+- **高效简洁**: 13个命令覆盖完整开发生命周期
 
-**Command Format**: All commands use slash command format (`/wf_XX`) for consistency and clarity
+---
 
-**Last Updated**: 2025-10-21
-**Current Version**: v2.4 (AI Execution Rules + Data File Migration)
+## 🚀 快速开始
+
+### 新项目初始化
+```bash
+/wf_01_planning "项目名称"    # 创建技术规划
+/wf_02_task create           # 初始化任务追踪
+```
+
+### 日常开发流程
+```bash
+# 1. 会话开始（必须）
+/wf_03_prime                 # 加载项目上下文
+
+# 2. 功能开发
+/wf_05_code "功能描述"       # 实现代码（自动格式化）
+/wf_07_test "组件名称"       # 添加测试
+
+# 3. 保存进度
+/wf_11_commit "提交信息"     # 提交并自动更新 CONTEXT.md
+```
+
+### 会话恢复（上下文过大时）
+```bash
+/clear                       # 清理上下文
+/wf_03_prime                 # 重新加载，无缝继续
+```
+
+---
+
+## 📚 文档导航
+
+本系统采用分层文档架构，各司其职：
+
+| 文档 | 用途 | 适用场景 |
+|------|------|---------|
+| **[COMMANDS.md](COMMANDS.md)** | 13个命令完整参考 | 查询命令用法、参数、依赖 |
+| **[WORKFLOWS.md](WORKFLOWS.md)** | 场景化工作流指导 | 实现功能、修复Bug、质量改进 |
+| **[TROUBLESHOOTING.md](TROUBLESHOOTING.md)** | 故障排查和解决方案 | 遇到错误、问题诊断 |
+| **[CLAUDE.md](CLAUDE.md)** | AI执行规则和权限 | AI行为规范、文件权限矩阵 |
+
+**导航原则**：
+- 🔍 **查命令** → COMMANDS.md
+- 🛠️ **做开发** → WORKFLOWS.md
+- 🐛 **解问题** → TROUBLESHOOTING.md
+- 🤖 **AI规则** → CLAUDE.md
+
+---
+
+## 📁 项目文件结构
+
+```
+.claude/
+├── PRD.md              # 项目需求文档（只读）
+├── PLANNING.md         # 技术架构和开发标准
+├── TASK.md             # 任务追踪和进度管理
+├── CONTEXT.md          # 会话上下文（自动管理）
+├── KNOWLEDGE.md        # 知识库和ADR
+└── commands/           # 工作流命令定义
+    ├── wf_01_planning.md
+    ├── wf_02_task.md
+    ├── ... (其他命令)
+    ├── COMMANDS.md
+    ├── WORKFLOWS.md
+    ├── TROUBLESHOOTING.md
+    └── CLAUDE.md
+```
+
+---
+
+## 📋 核心文件说明
+
+### PRD.md ⚠️ 只读
+- 项目需求和规范的权威数据源
+- 业务目标和成功标准
+- 利益相关者需求和约束
+- **绝不自动修改**，所有决策必须对齐此文件
+
+### PLANNING.md
+- 技术架构和设计（满足PRD需求）
+- 技术栈和工具选择
+- 开发标准和模式
+- 测试和部署策略
+
+### TASK.md
+- 任务列表（映射到PRD需求）
+- 实时状态和进度
+- 依赖和阻挡因素
+- 完成历史记录
+
+### CONTEXT.md ⭐ 会话管理器
+- 最近会话完成的工作
+- 关键决策和PRD对齐注释
+- 当前关注点和下一步优先项
+- **由 `/wf_11_commit` 自动更新**
+
+### KNOWLEDGE.md
+- 架构决策记录（ADR）
+- 常见问题解决方案
+- 可重用代码模式
+- 项目特定最佳实践
+
+---
+
+## 🎓 典型使用场景
+
+### 场景1: 新功能开发
+```bash
+/wf_03_prime                    # 加载上下文
+/wf_04_ask "架构设计问题"        # 获取设计建议（可选）
+/wf_05_code "实现用户认证"       # 编写代码
+/wf_07_test "认证模块"           # 添加测试
+/wf_08_review                   # 代码审查
+/wf_11_commit "feat: 用户认证"   # 提交保存
+```
+**详细流程**: 查看 [WORKFLOWS.md](WORKFLOWS.md#功能开发完整流程)
+
+### 场景2: Bug修复
+```bash
+/wf_06_debug "登录500错误"       # 调试修复
+/wf_07_test "登录场景"           # 验证修复
+/wf_11_commit "fix: 登录问题"    # 提交
+```
+**详细流程**: 查看 [WORKFLOWS.md](WORKFLOWS.md#bug-修复快速路径)
+
+### 场景3: 代码质量改进
+```bash
+/wf_08_review                   # 质量分析
+/wf_09_refactor "组件名"         # 重构
+/wf_10_optimize "性能目标"       # 优化
+/wf_07_test --coverage          # 验证覆盖率
+/wf_11_commit "refactor: 改进"  # 提交
+```
+**详细流程**: 查看 [WORKFLOWS.md](WORKFLOWS.md#代码质量改进流程)
+
+---
+
+## 💡 关键最佳实践
+
+1. **每次会话开始运行 `/wf_03_prime`** - 加载所有项目上下文
+2. **让 `/wf_11_commit` 处理一切** - 自动格式化、CONTEXT.md更新、质量检查
+3. **PRD.md 是只读的** - 需求修改需授权人员处理
+4. **提交前运行 `/wf_08_review`** - 确保代码质量
+5. **使用 `--coverage` 关注测试覆盖率** - `/wf_07_test --coverage`
+
+---
+
+## 🛠️ 快速问题解决
+
+| 问题 | 解决方案 |
+|------|---------|
+| 丢失项目上下文 | `/wf_03_prime` |
+| 不清楚需求 | `/wf_04_ask "问题"` |
+| 代码有问题 | `/wf_06_debug "错误描述"` |
+| 需要帮助 | `/wf_99_help` |
+
+**完整故障排查**: 查看 [TROUBLESHOOTING.md](TROUBLESHOOTING.md)
+
+---
+
+## 📖 系统优势
+
+- **上下文保存**: CONTEXT.md 自动管理，跨会话无缝继续
+- **进度追踪**: TASK.md 实时更新，始终清楚当前状态
+- **质量强制**: 自动格式化、pre-commit检查、代码审查集成
+- **完整闭环**: 从规划到部署的完整生命周期覆盖
+- **高频优化**: 为日常高频使用场景设计，命令记忆负担最小
+
+---
+
+## 🔧 开发标准
+
+- **代码格式**: 自动格式化（Python: black, JS/TS: prettier, C++: clang-format, Go: gofmt）
+- **行结尾**: 统一Unix LF
+- **尾部空格**: 零容忍（pre-commit自动检查）
+- **提交信息**: `[type] subject` 格式（feat, fix, docs, refactor, test）
+- **质量门控**: pre-commit钩子自动验证
+
+---
+
+## 📅 时间管理规范
+
+**核心原则**: 绝不手动输入日期，总是使用命令动态获取
+
+```bash
+TODAY=$(date +%Y-%m-%d)              # 标准日期
+TIMESTAMP=$(date +%Y-%m-%d\ %H:%M:%S) # 完整时间戳
+```
+
+**日期类型**:
+- **历史日期**（创建时间、发布日期）- 创建时固定，永不修改
+- **维护日期**（最后更新）- 每次编辑自动更新为当前日期
+- **ADR决策日期** - 决策当天的日期
+
+---
+
+## 🎯 命令速查（13个）
+
+### 基础设施 (1-3)
+- `/wf_01_planning` - 创建/更新项目规划
+- `/wf_02_task` - 管理任务追踪
+- `/wf_03_prime` ⭐ - **加载项目上下文**（每次会话必须）
+
+### 开发实现 (4-6)
+- `/wf_04_ask` - 架构咨询（支持`--review-codebase`）
+- `/wf_05_code` - 功能实现（自动格式化）
+- `/wf_06_debug` - 调试修复（支持`--quick`）
+
+### 质量保证 (7-10)
+- `/wf_07_test` - 测试开发（支持`--coverage`）
+- `/wf_08_review` - 代码审查
+- `/wf_09_refactor` - 代码重构
+- `/wf_10_optimize` - 性能优化
+
+### 运维部署 (11-12)
+- `/wf_11_commit` - 提交代码（自动更新CONTEXT.md）
+- `/wf_12_deploy_check` - 部署检查
+
+### 支持命令 (99)
+- `/wf_99_help` - 帮助系统
+
+**详细说明**: 查看 [COMMANDS.md](COMMANDS.md)
+
+---
+
+## 🔗 扩展阅读
+
+- **中文文档**: [README_CN.md](README_CN.md)
+- **工作流指导**: [WORKFLOWS.md](WORKFLOWS.md)
+- **故障排查**: [TROUBLESHOOTING.md](TROUBLESHOOTING.md)
+- **命令参考**: [COMMANDS.md](COMMANDS.md)
+- **AI执行规则**: [CLAUDE.md](CLAUDE.md)
+
+---
+
+**Last Updated**: $(date +%Y-%m-%d)
+**Architecture**: 命令定义（commands/）与项目数据（根目录）清晰分离
+**Command Format**: 统一使用 `/wf_XX_name` slash command 格式
