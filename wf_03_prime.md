@@ -1,3 +1,22 @@
+---
+command: /wf_03_prime
+index: 03
+phase: "基础设施"
+reads: [PRD.md, PLANNING.md, TASK.md, CONTEXT.md, KNOWLEDGE.md, CLAUDE.md]
+writes: []
+prev_commands: [/clear]
+next_commands: [/wf_05_code, /wf_04_ask, /wf_02_task]
+context_rules:
+  - "PRD.md是只读的，绝不修改"
+  - "CONTEXT.md由/wf_11_commit自动管理"
+  - "每次会话开始必须运行此命令"
+---
+
+## 执行上下文
+**输入**: 所有项目管理文档
+**输出**: AI工作记忆中的项目上下文
+**依赖链**: /clear (可选) → **当前（会话启动）** → /wf_05_code / /wf_04_ask
+
 ## Usage
 `@wf_prime.md`
 

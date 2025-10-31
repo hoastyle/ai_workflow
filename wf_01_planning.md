@@ -1,3 +1,22 @@
+---
+command: /wf_01_planning
+index: 01
+phase: "基础设施"
+reads: [PRD.md, 现有PLANNING.md, 项目代码结构]
+writes: [PLANNING.md]
+prev_commands: []
+next_commands: [/wf_02_task]
+context_rules:
+  - "PRD.md是只读的，绝不修改"
+  - "PLANNING.md必须对齐PRD.md所有需求"
+  - "这是项目架构的权威文档"
+---
+
+## 执行上下文
+**输入**: PRD.md需求 + 现有项目结构分析
+**输出**: PLANNING.md (项目架构和开发标准)
+**依赖链**: **当前（项目启动）** → /wf_02_task (任务规划)
+
 ## Usage
 `@wf_planning.md <PROJECT_NAME>`
 

@@ -1,3 +1,22 @@
+---
+command: /wf_06_debug
+index: 06
+phase: "开发实现"
+reads: [PLANNING.md(系统设计), TASK.md(相关任务), KNOWLEDGE.md(已知问题)]
+writes: [代码文件, TASK.md(修复记录), KNOWLEDGE.md(新解决方案)]
+prev_commands: [/wf_05_code, /wf_07_test]
+next_commands: [/wf_07_test, /wf_09_refactor, /wf_11_commit]
+context_rules:
+  - "使用KNOWLEDGE.md已知解决方案"
+  - "修复根本原因，不是症状"
+  - "新模式记录到KNOWLEDGE.md"
+---
+
+## 执行上下文
+**输入**: 错误描述 + PLANNING.md系统设计 + KNOWLEDGE.md已知问题
+**输出**: 代码修复 + TASK.md记录 + KNOWLEDGE.md新模式
+**依赖链**: **当前（错误修复）** → /wf_07_test (验证) → /wf_11_commit
+
 ## Usage
 `@wf_debug.md <ERROR_DESCRIPTION> [--quick]`
 

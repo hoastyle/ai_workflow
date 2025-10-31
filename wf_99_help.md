@@ -1,3 +1,22 @@
+---
+command: /wf_99_help
+index: 99
+phase: "支持命令"
+reads: [所有wf_*.md命令文件]
+writes: []
+prev_commands: [任何命令]
+next_commands: [用户选择的命令]
+context_rules:
+  - "提供中文友好界面"
+  - "支持quick/guide/命令名查询"
+  - "无需项目上下文即可运行"
+---
+
+## 执行上下文
+**输入**: 用户查询参数 (可选)
+**输出**: 帮助信息（速查表/场景指导/命令详情）
+**依赖链**: 独立命令，任何时候可用
+
 ## Usage
 `@wf_help.md [command|guide|quick]`
 

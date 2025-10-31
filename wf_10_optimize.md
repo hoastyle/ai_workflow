@@ -1,3 +1,22 @@
+---
+command: /wf_10_optimize
+index: 10
+phase: "质量保证"
+reads: [PLANNING.md(性能目标), TASK.md(优化任务), 代码文件]
+writes: [代码文件, TASK.md(优化完成), 性能报告]
+prev_commands: [/wf_08_review]
+next_commands: [/wf_09_refactor, /wf_07_test, /wf_11_commit]
+context_rules:
+  - "满足PRD性能要求"
+  - "遵循PLANNING.md性能目标"
+  - "保持功能正确性"
+---
+
+## 执行上下文
+**输入**: PLANNING.md性能目标 + 性能分析数据
+**输出**: 优化代码 + 性能改进报告 + TASK.md更新
+**依赖链**: **当前（性能优化）** → /wf_07_test (验证) → /wf_11_commit
+
 ## Usage
 `@wf_optimize.md <PERFORMANCE_TARGET>`
 

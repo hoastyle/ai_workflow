@@ -1,3 +1,22 @@
+---
+command: /wf_05_code
+index: 05
+phase: "开发实现"
+reads: [PLANNING.md(开发标准), TASK.md(当前任务), KNOWLEDGE.md(代码模式)]
+writes: [代码文件, TASK.md(状态更新)]
+prev_commands: [/wf_03_prime, /wf_04_ask]
+next_commands: [/wf_07_test, /wf_08_review, /wf_11_commit]
+context_rules:
+  - "遵循PLANNING.md的代码标准"
+  - "满足PRD需求"
+  - "更新TASK.md进度"
+---
+
+## 执行上下文
+**输入**: PLANNING.md标准 + TASK.md任务 + KNOWLEDGE.md模式
+**输出**: 代码实现 + TASK.md更新
+**依赖链**: /wf_04_ask (可选) → **当前（代码实现）** → /wf_07_test → /wf_08_review
+
 ## Usage
 `@wf_code.md <FEATURE_DESCRIPTION>`
 

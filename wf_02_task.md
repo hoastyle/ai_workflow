@@ -1,3 +1,22 @@
+---
+command: /wf_02_task
+index: 02
+phase: "基础设施"
+reads: [PLANNING.md, TASK.md]
+writes: [TASK.md]
+prev_commands: [/wf_01_planning, /wf_05_code, /wf_06_debug]
+next_commands: [/wf_03_prime, /wf_05_code]
+context_rules:
+  - "从PLANNING.md生成任务列表"
+  - "任务必须映射到PRD需求"
+  - "实时更新任务状态"
+---
+
+## 执行上下文
+**输入**: PLANNING.md (create模式) 或 TASK.md (update/review模式)
+**输出**: TASK.md (任务跟踪文档)
+**依赖链**: /wf_01_planning → **当前** → /wf_03_prime / /wf_05_code
+
 ## Usage
 `@wf_task.md [update|create|review]`
 

@@ -1,3 +1,23 @@
+---
+command: /wf_11_commit
+index: 11
+phase: "运维部署"
+reads: [PLANNING.md(标准), TASK.md(任务), 代码更改]
+writes: [CONTEXT.md, TASK.md, KNOWLEDGE.md(可能), README.md(可能), Git提交]
+prev_commands: [/wf_05_code, /wf_06_debug, /wf_08_review, /wf_09_refactor, /wf_10_optimize]
+next_commands: [/wf_02_task, /clear, /wf_03_prime]
+context_rules:
+  - "自动更新CONTEXT.md会话状态"
+  - "遵守PLANNING.md质量标准"
+  - "重要工作自动更新README.md"
+  - "识别新模式添加KNOWLEDGE.md"
+---
+
+## 执行上下文
+**输入**: 代码更改 + PLANNING.md标准 + TASK.md任务
+**输出**: Git提交 + CONTEXT.md + 可能的README.md/KNOWLEDGE.md更新
+**依赖链**: /wf_08_review → **当前（提交保存）** → /wf_02_task update (可选)
+
 ## Usage
 `@wf_commit.md [message]`
 

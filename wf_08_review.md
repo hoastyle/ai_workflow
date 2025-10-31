@@ -1,3 +1,22 @@
+---
+command: /wf_08_review
+index: 08
+phase: "质量保证"
+reads: [PLANNING.md(质量标准), KNOWLEDGE.md(代码模式), 代码文件]
+writes: [TASK.md(改进任务), KNOWLEDGE.md(新模式)]
+prev_commands: [/wf_05_code, /wf_07_test, /wf_09_refactor]
+next_commands: [/wf_09_refactor, /wf_11_commit]
+context_rules:
+  - "执行PRD合规性检查"
+  - "验证PLANNING.md标准遵守"
+  - "识别可重用模式到KNOWLEDGE.md"
+---
+
+## 执行上下文
+**输入**: PLANNING.md标准 + KNOWLEDGE.md模式 + 代码实现
+**输出**: 审查报告 + TASK.md改进任务 + KNOWLEDGE.md新模式
+**依赖链**: /wf_07_test → **当前（代码审查）** → /wf_09_refactor (可选) → /wf_11_commit
+
 ## Usage
 `@wf_review.md <CODE_SCOPE>`
 

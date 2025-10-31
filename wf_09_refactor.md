@@ -1,3 +1,22 @@
+---
+command: /wf_09_refactor
+index: 09
+phase: "质量保证"
+reads: [PLANNING.md(架构设计), TASK.md(技术债), KNOWLEDGE.md(代码模式)]
+writes: [代码文件, TASK.md(重构完成), PLANNING.md(可能)]
+prev_commands: [/wf_08_review]
+next_commands: [/wf_07_test, /wf_08_review, /wf_11_commit]
+context_rules:
+  - "对齐PLANNING.md架构"
+  - "应用KNOWLEDGE.md最佳实践"
+  - "保持PRD功能不变"
+---
+
+## 执行上下文
+**输入**: PLANNING.md架构 + TASK.md技术债 + KNOWLEDGE.md模式
+**输出**: 重构代码 + TASK.md更新 + 可能的PLANNING.md改进
+**依赖链**: /wf_08_review → **当前（代码重构）** → /wf_07_test (回归)
+
 ## Usage
 `@wf_refactor.md <REFACTOR_SCOPE>`
 

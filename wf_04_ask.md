@@ -1,3 +1,22 @@
+---
+command: /wf_04_ask
+index: 04
+phase: "开发实现"
+reads: [PLANNING.md, TASK.md, KNOWLEDGE.md, 代码库(--review-codebase)]
+writes: [PLANNING.md(可能), KNOWLEDGE.md(可能), TASK.md(可能)]
+prev_commands: [/wf_03_prime]
+next_commands: [/wf_05_code, /wf_01_planning]
+context_rules:
+  - "决策必须对齐PRD需求"
+  - "重大架构决策更新PLANNING.md"
+  - "新模式添加到KNOWLEDGE.md"
+---
+
+## 执行上下文
+**输入**: 技术问题 + PLANNING.md架构 + KNOWLEDGE.md经验
+**输出**: 架构建议 + 可能的PLANNING.md/KNOWLEDGE.md更新
+**依赖链**: /wf_03_prime → **当前（架构咨询）** → /wf_05_code
+
 ## Usage
 `@wf_ask.md <TECHNICAL_QUESTION> [--review-codebase]`
 
