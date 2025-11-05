@@ -2,6 +2,7 @@
 command: /wf_07_test
 index: 07
 phase: "质量保证"
+description: "测试开发和覆盖率分析，支持coverage模式"
 reads: [PLANNING.md(测试策略), TASK.md(测试任务), 代码文件]
 writes: [测试文件, TASK.md(测试状态), 覆盖率报告]
 prev_commands: [/wf_05_code, /wf_06_debug, /wf_09_refactor]

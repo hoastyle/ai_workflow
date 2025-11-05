@@ -2,6 +2,7 @@
 command: /wf_04_ask
 index: 04
 phase: "开发实现"
+description: "架构咨询服务，支持技术决策和代码库审查"
 reads: [PLANNING.md, TASK.md, KNOWLEDGE.md, 代码库(--review-codebase)]
 writes: [PLANNING.md(可能), KNOWLEDGE.md(可能), TASK.md(可能)]
 prev_commands: [/wf_03_prime]

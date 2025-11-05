@@ -2,6 +2,7 @@
 command: /wf_08_review
 index: 08
 phase: "质量保证"
+description: "代码审查协调器，多维度质量检查"
 reads: [PLANNING.md(质量标准), KNOWLEDGE.md(代码模式), 代码文件]
 writes: [TASK.md(改进任务), KNOWLEDGE.md(新模式)]
 prev_commands: [/wf_05_code, /wf_07_test, /wf_09_refactor]

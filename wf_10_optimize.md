@@ -2,6 +2,7 @@
 command: /wf_10_optimize
 index: 10
 phase: "质量保证"
+description: "性能优化协调器，满足性能目标"
 reads: [PLANNING.md(性能目标), TASK.md(优化任务), 代码文件]
 writes: [代码文件, TASK.md(优化完成), 性能报告]
 prev_commands: [/wf_08_review]

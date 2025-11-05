@@ -2,6 +2,7 @@
 command: /wf_01_planning
 index: 01
 phase: "基础设施"
+description: "创建/更新项目规划文档，建立架构和开发标准"
 reads: [PRD.md, 现有PLANNING.md, 项目代码结构]
 writes: [PLANNING.md]
 prev_commands: []

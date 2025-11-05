@@ -2,6 +2,8 @@
 command: /wf_13_doc_maintain
 index: 13
 phase: "文档维护"
+description: "文档架构维护，索引更新和归档管理"
+model: haiku
 reads: [PLANNING.md, KNOWLEDGE.md, docs/, TASK.md]
 writes: [KNOWLEDGE.md, docs/archive/, 维护报告]
 prev_commands: [/wf_11_commit, /wf_03_prime]

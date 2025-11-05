@@ -2,6 +2,7 @@
 command: /wf_05_code
 index: 05
 phase: "开发实现"
+description: "功能实现协调器，遵循架构标准编写代码"
 reads: [PLANNING.md(开发标准), TASK.md(当前任务), KNOWLEDGE.md(代码模式)]
 writes: [代码文件, TASK.md(状态更新)]
 prev_commands: [/wf_03_prime, /wf_04_ask]

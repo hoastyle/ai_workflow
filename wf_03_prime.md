@@ -2,6 +2,8 @@
 command: /wf_03_prime
 index: 03
 phase: "基础设施"
+description: "加载项目管理文档到AI上下文（会话必备）"
+model: haiku
 reads: [PRD.md, PLANNING.md, TASK.md, CONTEXT.md, KNOWLEDGE.md, CLAUDE.md]
 writes: []
 prev_commands: [/clear]

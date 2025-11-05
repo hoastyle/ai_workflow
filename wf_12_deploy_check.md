@@ -2,6 +2,7 @@
 command: /wf_12_deploy_check
 index: 12
 phase: "运维部署"
+description: "部署就绪检查，多层验证和Go/No-Go决策"
 reads: [PLANNING.md(部署要求), TASK.md(任务完成度), 测试报告]
 writes: [部署报告, TASK.md(部署任务)]
 prev_commands: [/wf_07_test, /wf_08_review, /wf_11_commit]

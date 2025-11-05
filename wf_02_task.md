@@ -2,6 +2,8 @@
 command: /wf_02_task
 index: 02
 phase: "基础设施"
+description: "管理任务追踪系统，支持创建、更新和审查模式"
+model: haiku
 reads: [PLANNING.md, TASK.md]
 writes: [TASK.md]
 prev_commands: [/wf_01_planning, /wf_05_code, /wf_06_debug]

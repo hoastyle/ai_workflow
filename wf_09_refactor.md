@@ -2,6 +2,7 @@
 command: /wf_09_refactor
 index: 09
 phase: "质量保证"
+description: "代码重构服务，保持架构一致性"
 reads: [PLANNING.md(架构设计), TASK.md(技术债), KNOWLEDGE.md(代码模式)]
 writes: [代码文件, TASK.md(重构完成), PLANNING.md(可能)]
 prev_commands: [/wf_08_review]
