@@ -4,7 +4,43 @@ This document tracks the evolution of the cc_commands workflow system, documenti
 
 ## Version History
 
-### v3.1 (Current) - Documentation Management System
+### v3.2 (Current) - Ultrathink Design Philosophy Integration
+**Release Date**: 2025-11-06
+**版本**: v3.2
+
+**Design Philosophy Integration** ⭐:
+- **Ultrathink Framework**: 6个核心原则（Think Different, Obsess Over Details, Plan Like Da Vinci, Craft Code, Iterate Relentlessly, Simplify Ruthlessly）
+- **PHILOSOPHY.md**: 完整的设计哲学指南和应用场景（500行，16KB）
+- **ADR System**: docs/adr/ 目录，架构决策记录和权衡分析
+- **Auto-Reminder Mechanism**: 关键决策点自动提醒考虑设计哲学视角
+- **Enhanced Commands**: /wf_04_ask, /wf_05_code, /wf_08_review 集成 ultrathink 支持
+
+**New Documentation**:
+- **PHILOSOPHY.md** (580行, 16KB): 6原则、应用场景、案例分析、最佳实践
+- **docs/adr/README.md** (360行, 11KB): ADR 编写指南和生命周期管理
+- **docs/adr/TEMPLATE.md**: ADR 模板
+- **KNOWLEDGE.md** (200行, 6.8KB): 知识库和文档索引中心
+
+**Enhanced Documentation**:
+- CLAUDE.md: +35行（设计哲学索引和自动提醒规则）
+- wf_04_ask.md: 添加 ultrathink_enabled 和设计视角提醒
+- wf_05_code.md: 添加 ultrathink_lens 和代码优雅度检查
+- wf_08_review.md: 添加 ultrathink_lens 和设计优雅度评审
+
+**Key Features**:
+- ✅ 完全可选，不影响现有工作流
+- ✅ 与 CLAUDE.md 执行规范互补不冲突
+- ✅ 沉淀设计决策到 ADR 系统
+- ✅ 自动提醒关键决策点
+- ✅ 支持权衡矩阵和根本原因分析
+
+**Backward Compatibility**: 100% 向后兼容，现有项目无需修改
+
+**Total Changes**: +1500行 (4个新文件，4个文件增强)
+
+---
+
+### v3.1 - Documentation Management System
 **Release Date**: 2025-10-31
 **版本**: v3.1
 

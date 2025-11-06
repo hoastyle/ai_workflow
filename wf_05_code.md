@@ -2,15 +2,17 @@
 command: /wf_05_code
 index: 05
 phase: "开发实现"
-description: "功能实现协调器，遵循架构标准编写代码"
-reads: [PLANNING.md(开发标准), TASK.md(当前任务), KNOWLEDGE.md(代码模式)]
+description: "功能实现协调器，遵循架构标准编写代码，集成 Ultrathink 优雅实现"
+reads: [PLANNING.md(开发标准), TASK.md(当前任务), KNOWLEDGE.md(代码模式), PHILOSOPHY.md(可选)]
 writes: [代码文件, TASK.md(状态更新)]
 prev_commands: [/wf_03_prime, /wf_04_ask]
 next_commands: [/wf_07_test, /wf_08_review, /wf_11_commit]
+ultrathink_lens: "craft_elegance"
 context_rules:
   - "遵循PLANNING.md的代码标准"
   - "满足PRD需求"
   - "更新TASK.md进度"
+  - "Ultrathink 优雅实现（Craft, Don't Code）：函数名清晰、抽象自然、错误处理优雅"
 ---
 
 ## 执行上下文
@@ -62,6 +64,11 @@ You are the Development Coordinator directing four coding specialists:
 3. **Task Updates** – TASK.md updates for completed work
 4. **Integration Notes** – how code fits into system
 5. **Next Actions** – remaining tasks and dependencies
+6. **🎨 Ultrathink 设计检查** (可选提醒) – 代码优雅度自检（参见 PHILOSOPHY.md）
+   - ✅ 函数/变量名字是否自然而清晰？(Obsess Over Details)
+   - ✅ 代码结构是否流畅易懂？(Craft, Don't Code)
+   - ✅ 错误处理是否优雅而有用？(Craft, Don't Code)
+   - ✅ 有没有不必要的复杂性能移除？(Simplify Ruthlessly)
 
 ## Workflow Integration
 - Reads context from PLANNING.md

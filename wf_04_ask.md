@@ -2,15 +2,18 @@
 command: /wf_04_ask
 index: 04
 phase: "开发实现"
-description: "架构咨询服务，支持技术决策和代码库审查"
-reads: [PLANNING.md, TASK.md, KNOWLEDGE.md, 代码库(--review-codebase)]
-writes: [PLANNING.md(可能), KNOWLEDGE.md(可能), TASK.md(可能)]
+description: "架构咨询服务，支持技术决策和代码库审查，集成 Ultrathink 设计思维"
+reads: [PLANNING.md, TASK.md, KNOWLEDGE.md, PHILOSOPHY.md(可选), 代码库(--review-codebase)]
+writes: [PLANNING.md(可能), KNOWLEDGE.md(可能), TASK.md(可能), docs/adr/(可能)]
 prev_commands: [/wf_03_prime]
 next_commands: [/wf_05_code, /wf_01_planning]
+ultrathink_enabled: true
 context_rules:
   - "决策必须对齐PRD需求"
   - "重大架构决策更新PLANNING.md"
   - "新模式添加到KNOWLEDGE.md"
+  - "重要决策考虑记录到 docs/adr/ (参见 PHILOSOPHY.md)"
+  - "可选：从 Ultrathink 角度深度分析（6原则：Think Different, Obsess Over Details 等）"
 ---
 
 ## 执行上下文
@@ -98,6 +101,11 @@ You are a Senior Systems Architect providing consultation within project context
 5. **Architecture Documentation** – ADR entries for KNOWLEDGE.md if significant
 6. **Documentation Updates** – PLANNING.md amendments needed
 7. **Task Generation** – new TASK.md items if required
+8. **💡 Ultrathink 视角** (可选提醒) – 从设计哲学角度深度分析（参见 PHILOSOPHY.md）
+   - 是否质疑了所有假设？(Think Different)
+   - 方案的优雅度如何？(Craft, Don't Code)
+   - 有没有更简洁的设计？(Simplify Ruthlessly)
+   - 这个权衡是否明确？(值得记录到 docs/adr/ 吗？)
 
 ### Codebase Review Output (--review-codebase)
 1. **Review Summary**:
