@@ -148,6 +148,7 @@ Checks:
 ✓ Last updated dates are accurate
 ✓ Task-document mappings are current
 ✓ No broken links in documentation map
+✓ Frontmatter metadata is present and valid (NEW)
 ```
 
 **Process**:
@@ -164,6 +165,198 @@ Checks:
 - Missing entries to add
 - Outdated entries to update/remove
 - Auto-generated index updates
+
+---
+
+### 3.1. **Frontmatter 一致性检查** (NEW)
+
+Validate and repair Frontmatter metadata across all technical documents.
+
+**📋 标准规范**: 详见 [Frontmatter规范参考](docs/reference/FRONTMATTER.md)
+
+**⚠️ Execution Context**: All validation scripts assume execution from **project root directory** (详见规范文档 § 执行上下文)
+
+```
+检查维度:
+✓ Frontmatter 存在性
+  └─ 使用标准模板验证所有 docs/ 文件
+
+✓ 必需字段完整性
+  └─ 验证7个必需字段（见规范文档 § 字段说明）
+
+✓ 字段值有效性
+  └─ 使用标准枚举值（见规范文档 § 枚举值定义）
+
+✓ 关系引用有效性
+  └─ 验证 related_documents/code/tasks 路径
+  └─ 检查反向引用一致性
+
+✓ 日期逻辑性
+  └─ 使用标准验证逻辑（见规范文档 § 验证逻辑）
+```
+
+**检测逻辑**:
+```python
+def check_frontmatter_consistency(docs_directory):
+    """
+    Check frontmatter consistency using standard validation from FRONTMATTER.md
+
+    IMPORTANT: Assumes execution from project root directory.
+    See: docs/reference/FRONTMATTER.md § 执行上下文
+
+    Args:
+        docs_directory: Path to docs directory (typically "docs/")
+
+    Returns:
+        Dictionary of issues categorized by type
+    """
+    from frontmatter_validator import validate_frontmatter  # 使用标准验证函数
+
+    issues = {
+        'missing_frontmatter': [],
+        'incomplete_fields': [],
+        'invalid_values': [],
+        'broken_references': [],
+        'date_inconsistencies': [],
+        'missing_reverse_refs': []
+    }
+
+    # 1. 扫描所有技术文档
+    for doc_path in glob(f"{docs_directory}/**/*.md", recursive=True):
+        if doc_path.startswith('docs/archive/'):
+            continue
+
+        frontmatter = extract_frontmatter(doc_path)
+
+        # 2. 使用标准验证函数（见 FRONTMATTER.md § 验证逻辑）
+        if frontmatter is None:
+            issues['missing_frontmatter'].append({
+                'path': doc_path,
+                'suggestion': 'run /wf_14_doc to auto-generate'
+            })
+            continue
+
+        # 3. 调用标准验证
+        validation = validate_frontmatter(doc_path, frontmatter)
+
+        if not validation['valid']:
+            for error in validation['errors']:
+                # 分类错误到对应的 issue 类型
+                if '缺少必需字段' in error:
+                    issues['incomplete_fields'].append({'path': doc_path, 'error': error})
+                elif '无效的' in error and 'type' in error or 'status' in error or 'priority' in error:
+                    issues['invalid_values'].append({'path': doc_path, 'error': error})
+                elif '日期' in error:
+                    issues['date_inconsistencies'].append({'path': doc_path, 'error': error})
+
+        for warning in validation['warnings']:
+            if '不存在' in warning:
+                issues['broken_references'].append({'path': doc_path, 'warning': warning})
+
+    # 4. 检查反向引用一致性
+    ref_graph = build_reference_graph(docs_directory)
+    for doc_path, refs in ref_graph.items():
+        for ref_path in refs:
+            if doc_path not in ref_graph.get(ref_path, []):
+                issues['missing_reverse_refs'].append({
+                    'doc': doc_path,
+                    'references': ref_path,
+                    'action': f'Add reverse reference in {ref_path}'
+                })
+
+    return issues
+
+def auto_fix_dates(doc_path, frontmatter):
+    """
+    自动修复日期问题
+
+    使用标准日期验证逻辑（见 FRONTMATTER.md § 验证逻辑）
+    """
+    fixes = {}
+    file_mtime = datetime.fromtimestamp(os.path.getmtime(doc_path))
+    actual_date = file_mtime.strftime('%Y-%m-%d')
+
+    # 修复 last_updated（应该接近文件修改时间）
+    if 'last_updated' in frontmatter:
+        doc_date = datetime.strptime(frontmatter['last_updated'], '%Y-%m-%d')
+        if abs((file_mtime - doc_date).days) > 7:
+            fixes['last_updated'] = actual_date
+
+    # 修复 created_date > last_updated
+    if 'created_date' in frontmatter and 'last_updated' in frontmatter:
+        if frontmatter['created_date'] > frontmatter['last_updated']:
+            fixes['created_date'] = min(frontmatter['created_date'], frontmatter['last_updated'])
+
+    return fixes
+
+def generate_missing_fields(doc_path, frontmatter):
+    """
+    为缺失字段生成默认值
+
+    使用标准模板和枚举值（见 FRONTMATTER.md § 标准模板 § 枚举值定义）
+    """
+    from generate_frontmatter import generate_default_frontmatter  # 标准生成函数
+
+    # 使用标准生成函数（见 FRONTMATTER.md § 工具和脚本）
+    defaults = generate_default_frontmatter(doc_path)
+
+    return defaults
+```
+
+**自动修复策略**（详见 FRONTMATTER.md § 使用规则）:
+```
+1. 缺少 frontmatter → 调用 /wf_14_doc 自动生成
+2. 缺少必需字段 → 使用标准默认值填充
+3. 枚举值无效 → 使用标准枚举值列表修正
+4. 引用路径无效 → 提示移除或更新路径
+5. 日期不一致 → 使用标准日期验证逻辑修复
+6. 缺少反向引用 → 提供添加反向引用的命令
+```
+
+**输出示例**:
+```markdown
+### Frontmatter 一致性报告
+
+#### ⚠️ 缺少 Frontmatter (3 文档)
+1. docs/api/webhooks.md
+   → 建议: 运行 /wf_14_doc --update api 自动生成
+
+2. docs/deployment/backup.md
+   → 建议: 运行 /wf_14_doc --update deployment 自动生成
+
+3. docs/architecture/caching.md
+   → 建议: 手动添加或运行 /wf_14_doc
+
+#### ⚠️ 字段不完整 (5 文档)
+1. docs/api/authentication.md
+   - 缺失字段: priority, next_review_date
+   - 自动修复: priority = "高", next_review_date = "2025-05-10"
+
+2. docs/database/schema.md
+   - 缺失字段: description, related_code
+   - 自动修复: description = "数据库模式设计文档"
+
+#### ⚠️ 引用无效 (2 文档)
+1. docs/api/rest-api.md
+   - 引用: docs/architecture/old-design.md (文件不存在)
+   - 建议: 移除引用或更新为 docs/archive/2024-Q3/old-design.md
+
+2. docs/deployment/kubernetes.md
+   - 引用: src/deploy/k8s.yaml (文件已移动)
+   - 建议: 更新为 infrastructure/k8s/deployment.yaml
+
+#### ⚠️ 日期不一致 (1 文档)
+1. docs/api/endpoints.md
+   - 问题: last_updated (2024-08-15) 比文件修改时间 (2024-10-28) 早2个月
+   - 自动修复: last_updated = "2024-10-28"
+
+#### ⚠️ 缺少反向引用 (3 对)
+1. docs/api/auth.md → docs/api/oauth.md
+   - 建议: 在 oauth.md 中添加对 auth.md 的 related_documents 引用
+
+2. docs/architecture/system-design.md → docs/database/schema.md
+   - 建议: 在 schema.md 中添加对 system-design.md 的 related_documents 引用
+```
 
 ---
 
@@ -390,6 +583,9 @@ Show what would be changed without making changes:
 - <5% duplicate content ✓
 - <10% orphaned documents ✓
 - Structure compliance >90% ✓
+- **All technical docs have valid Frontmatter ✓ (NEW)**
+- **Frontmatter reference accuracy >95% ✓ (NEW)**
+- **反向引用一致性 >90% ✓ (NEW)**
 
 ---
 

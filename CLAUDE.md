@@ -268,16 +268,73 @@ This file provides essential execution rules for Claude Code when working with t
 - ✅ 功能已废弃
 - ✅ 被新文档完全取代
 
+#### 文档Frontmatter元数据规范
+
+**为什么使用Frontmatter？**
+
+Frontmatter是一种标准化的文档元数据格式（YAML），用于：
+- ✅ 快速定位文档与代码的关系
+- ✅ 自动化维护文档间的交叉引用
+- ✅ 支持脚本化的文档分析和查询
+- ✅ 降低人工维护成本
+- ✅ 在单个文件内部定义关系，易于版本控制
+
+**标准Frontmatter模板**
+
+**📋 完整规范**: 详见 [commands/docs/reference/FRONTMATTER.md](commands/docs/reference/FRONTMATTER.md)
+
+**快速参考**：
+```yaml
+---
+# 必需字段（7个）
+title: "文档标题"
+description: "一句话描述文档的核心内容"
+type: "技术设计 | 系统集成 | API参考 | 教程 | 故障排查 | 架构决策"
+status: "草稿 | 完成 | 待审查"
+priority: "高 | 中 | 低"
+created_date: "2025-11-10"
+last_updated: "2025-11-10"
+
+# 推荐字段（关系网络）
+related_documents: []  # 相关文档
+related_code: []       # 实现代码
+
+# 可选字段
+tags: []
+authors: ["Claude"]
+version: "1.0"
+---
+```
+
+**字段说明**（完整版见规范文档）：
+- **必需（7个）**: title, description, type, status, priority, created_date, last_updated
+- **推荐（2个）**: related_documents（文档关系）, related_code（代码链接）
+- **可选（4个）**: tags, authors, version, next_review_date
+
+**使用规则**（详见规范文档 § 使用规则）：
+
+1. **创建**: `/wf_14_doc` 自动生成标准 frontmatter
+2. **修改**: `/wf_11_commit` 自动更新 `last_updated`
+3. **发布**: `/wf_11_commit` 验证完整性（⚠️ 从项目根目录运行）
+4. **维护**: `/wf_13_doc_maintain` 定期检查一致性
+
+**成本分析**（详见规范文档 § 成本分析）：
+- 创建成本：低（自动生成）
+- 维护成本：极低（自动更新）
+- 查询收益：10倍+效率提升
+
 #### 上下文成本优化
 
 **成功指标**：
 - 管理层文档总大小 < 100KB ✓
 - 80%的任务只需加载0-2个技术文档 ✓
 - 文档索引准确率 > 90% ✓
+- 所有技术文档都有完整的frontmatter ✓
 
 **AI主动提醒**：
 - 管理层文档 > 100KB → 建议精简或外放到技术层
 - 发现未索引的技术文档 → 提醒更新KNOWLEDGE.md
+- 发现文档缺少frontmatter → 提醒补充
 - 提交次数达到10次 → 提示运行 `/wf_13_doc_maintain`
 
 ### 命令调用规则

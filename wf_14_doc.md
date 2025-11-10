@@ -538,6 +538,68 @@ curl -X POST https://api.example.com/auth/refresh \
 
 **功能**: 基于提取的信息和项目风格生成文档
 
+#### 5.0 Frontmatter 元数据生成 (NEW)
+
+**功能**: 为所有技术文档自动生成标准 Frontmatter 头
+
+**📋 标准规范**: 详见 [Frontmatter规范参考](docs/reference/FRONTMATTER.md)
+
+**快速参考**:
+- 必需字段（7个）: title, description, type, status, priority, created_date, last_updated
+- Type枚举（6种）: 技术设计 | 系统集成 | API参考 | 教程 | 故障排查 | 架构决策
+- Status枚举（3种）: 草稿 | 完成 | 待审查
+- Priority枚举（3种）: 高 | 中 | 低
+
+完整模板和字段说明见规范文档 § 标准模板 § 字段说明
+
+**生成逻辑**（使用标准规范函数，见 FRONTMATTER.md § 工具和脚本）:
+```python
+def generate_frontmatter(doc_info, codebase_analysis, knowledge_md):
+    """
+    生成标准 frontmatter
+
+    使用标准模板和枚举值（见 FRONTMATTER.md）
+    """
+    from generate_frontmatter import generate_default_frontmatter  # 标准生成函数
+
+    # 1. 加载标准模板
+    frontmatter = generate_default_frontmatter(doc_info.path)
+
+    # 2. 填充基础信息
+    frontmatter['title'] = doc_info.title or infer_from_filename(doc_info.path)
+    frontmatter['description'] = extract_first_paragraph(doc_info.content)
+
+    # 3. 智能提取关系网络
+    frontmatter['related_documents'] = find_related_docs(doc_info, knowledge_md)
+    frontmatter['related_code'] = extract_code_references(doc_info, codebase_analysis)
+
+    # 4. 提取元数据
+    frontmatter['tags'] = extract_tags(doc_info, codebase_analysis.tech_stack)
+
+    return format_yaml_frontmatter(frontmatter)
+```
+
+**类型和优先级判定逻辑**（见 FRONTMATTER.md § 枚举值定义）:
+```python
+# Type 自动分类（基于路径）
+type_mapping = {
+    'docs/api/': 'API参考',
+    'docs/architecture/': '技术设计',
+    'docs/deployment/': '系统集成',
+    'docs/development/': '教程',
+    'docs/troubleshooting/': '故障排查',
+    'docs/adr/': '架构决策'
+}
+
+# Priority 自动判定（基于类型和引用数）
+high_priority_types = ['API参考', '系统集成', '架构决策']
+```
+
+**集成到文档模板**:
+所有生成的技术文档（docs/下的文件）都应该在文件顶部包含 Frontmatter。
+
+---
+
 #### 5.1 文档类型模板
 
 **1. 📚 项目概览 (README.md)**
@@ -775,6 +837,13 @@ def generate_with_style(content, style):
 
 **检查项**:
 ```
+✓ Frontmatter 完整性 (NEW)
+  ├─ 必需字段都存在（title, description, type, status, priority, created_date, last_updated）
+  ├─ 字段值格式正确（日期格式、枚举值）
+  ├─ related_documents 路径有效
+  ├─ related_code 路径存在
+  └─ related_tasks 在 TASK.md 中存在
+
 ✓ 语言一致性
   ├─ 遵循 CLAUDE.md 语言规范
   └─ 术语使用一致
@@ -796,6 +865,31 @@ def generate_with_style(content, style):
   ├─ 技术层文档在 docs/
   └─ 更新 KNOWLEDGE.md 索引
 ```
+
+**Frontmatter 验证**:
+
+使用标准验证函数（见 [FRONTMATTER.md § 验证逻辑](docs/reference/FRONTMATTER.md)）
+
+**⚠️ Execution Context**: 验证脚本必须从**项目根目录**运行（详见规范文档 § 执行上下文）
+
+```python
+from frontmatter_validator import validate_frontmatter  # 使用标准验证函数
+
+# 验证示例
+validation_result = validate_frontmatter(doc_path, frontmatter)
+if not validation_result['valid']:
+    for error in validation_result['errors']:
+        print(f"错误: {error}")
+    for warning in validation_result['warnings']:
+        print(f"警告: {warning}")
+```
+
+**验证内容**（详见规范文档）:
+- ✅ 7个必需字段完整性
+- ✅ 枚举值有效性（type/status/priority）
+- ✅ 日期格式（YYYY-MM-DD）
+- ✅ 日期逻辑（created_date <= last_updated）
+- ✅ 引用路径存在性（related_documents/code/tasks）
 
 ---
 

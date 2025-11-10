@@ -61,6 +61,12 @@ Create git commits with integrated formatting, validation, and context updates:
      * Preserve historical dates (创建日期、发布日期、决策日期)
      * Validate date format consistency across all .md files
      * Check for and flag any outdated year references
+   - **Auto-Update Frontmatter Dates** (NEW):
+     * Update `last_updated` field in all modified docs/ files: `$(date +%Y-%m-%d)`
+     * Preserve `created_date` (historical, never modify)
+     * Validate `created_date` <= `last_updated` logic
+     * Update `next_review_date` if current date > review date
+     * Verify date format: YYYY-MM-DD
 
 3. **Change Analysis**:
    - Group related changes
@@ -96,6 +102,10 @@ Create git commits with integrated formatting, validation, and context updates:
      * **Auto-repair hooks**: Fix trailing whitespace, line endings, basic formatting
      * **Validation hooks**: Verify fixes were successful, check remaining quality gates
      * **Final quality check**: Comprehensive validation ensuring all standards met
+   - **Frontmatter Validation** (NEW):
+     * 📋 使用标准验证（见 [Frontmatter规范](docs/reference/FRONTMATTER.md) § 验证逻辑）
+     * ⚠️ **Execution Context**: 从**项目根目录**运行（详见规范文档 § 执行上下文）
+     * 验证内容：7个必需字段、枚举值、日期逻辑、引用路径有效性
    - **If validation fails**: Review specific error messages, manual intervention if needed
    - **If validation passes**: All auto-repairs completed successfully, proceed to commit
 
@@ -148,15 +158,16 @@ Types:
 1. **Auto-Repair Report** – automatic fixes applied (whitespace, line endings, formatting)
 2. **Pre-commit Validation Report** – quality gate checks and results
 3. **Formatting Report** – language-specific auto-formatting applied
-4. **Change Summary** – files and modifications
-5. **README Update Report** – README generation details (if triggered)
-6. **Knowledge Extraction** – identified patterns and decisions
-7. **Commit Message** – formatted message
-8. **Task Updates** – TASK.md completions
-9. **Context Update** – CONTEXT.md refresh
-10. **Knowledge Updates** – KNOWLEDGE.md suggestions or updates
-11. **Commit Result** – success confirmation
-12. **Next Steps** – remaining work items
+4. **Frontmatter Update Report** (NEW) – frontmatter dates updated, validation results
+5. **Change Summary** – files and modifications
+6. **README Update Report** – README generation details (if triggered)
+7. **Knowledge Extraction** – identified patterns and decisions
+8. **Commit Message** – formatted message
+9. **Task Updates** – TASK.md completions
+10. **Context Update** – CONTEXT.md refresh
+11. **Knowledge Updates** – KNOWLEDGE.md suggestions or updates
+12. **Commit Result** – success confirmation
+13. **Next Steps** – remaining work items
 
 ## Workflow Integration
 - **Auto-Repair System**: Automatically fixes trailing whitespace, line endings, basic formatting
