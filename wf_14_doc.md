@@ -32,6 +32,45 @@ context_rules:
 **输出**: 项目文档 + KNOWLEDGE.md索引更新
 **依赖链**: /wf_05_code → **当前（文档生成）** → /wf_13_doc_maintain → /wf_11_commit
 
+## 🛠️ 可用工具
+
+**⚠️ 重要执行规则**：本命令使用以下项目工具，**必须调用而不是重新实现**
+
+| 工具 | 路径 | 功能 | 使用方式 |
+|------|------|------|---------|
+| **Frontmatter 处理** | `scripts/frontmatter_utils.py` | 验证、生成、关系图 | `python scripts/frontmatter_utils.py [command]` |
+| **文档关系图** | `scripts/doc_graph_builder.py` | 可视化文档网络 | `python scripts/doc_graph_builder.py [options]` |
+
+**核心命令示例**：
+```bash
+# 为单个文档生成 Frontmatter
+python scripts/frontmatter_utils.py generate docs/api/auth.md
+
+# 批量生成 Frontmatter
+python scripts/frontmatter_utils.py generate-batch docs/
+
+# 验证 Frontmatter
+python scripts/frontmatter_utils.py validate docs/api/auth.md
+
+# 批量验证
+python scripts/frontmatter_utils.py validate-batch docs/
+
+# 生成文档关系图（Mermaid格式）
+python scripts/doc_graph_builder.py docs/ --format mermaid
+```
+
+**AI 执行规则**：
+- ✅ **必须使用**：调用上述脚本工具完成 Frontmatter 相关操作
+- ✅ **优先检查**：执行前确认 `scripts/frontmatter_utils.py` 存在
+- ❌ **绝不允许**：重新实现 Frontmatter 生成/验证功能
+- ❌ **绝不允许**：创建临时脚本 `/tmp/generate_frontmatter.sh` 等替代已有工具
+- ❌ **绝不允许**：在 Bash 中使用 cat/echo 等手动生成 Frontmatter
+
+**Token 效率对比**：
+- 调用工具脚本：~200 tokens
+- 重新实现功能：~8000 tokens
+- **节省比例**：97.5%
+
 ## Usage
 ```bash
 /wf_14_doc [OPTIONS]
@@ -552,32 +591,43 @@ curl -X POST https://api.example.com/auth/refresh \
 
 完整模板和字段说明见规范文档 § 标准模板 § 字段说明
 
-**生成逻辑**（使用标准规范函数，见 FRONTMATTER.md § 工具和脚本）:
-```python
-def generate_frontmatter(doc_info, codebase_analysis, knowledge_md):
-    """
-    生成标准 frontmatter
+**生成逻辑**（⚠️ 必须使用项目工具 `scripts/frontmatter_utils.py`）:
 
-    使用标准模板和枚举值（见 FRONTMATTER.md）
-    """
-    from generate_frontmatter import generate_default_frontmatter  # 标准生成函数
+**实际执行方式**：
+```bash
+# AI 应该执行的实际命令（不是伪代码）
+python scripts/frontmatter_utils.py generate docs/api/new-endpoint.md
 
-    # 1. 加载标准模板
-    frontmatter = generate_default_frontmatter(doc_info.path)
+# 批量生成
+python scripts/frontmatter_utils.py generate-batch docs/api/
 
-    # 2. 填充基础信息
-    frontmatter['title'] = doc_info.title or infer_from_filename(doc_info.path)
-    frontmatter['description'] = extract_first_paragraph(doc_info.content)
-
-    # 3. 智能提取关系网络
-    frontmatter['related_documents'] = find_related_docs(doc_info, knowledge_md)
-    frontmatter['related_code'] = extract_code_references(doc_info, codebase_analysis)
-
-    # 4. 提取元数据
-    frontmatter['tags'] = extract_tags(doc_info, codebase_analysis.tech_stack)
-
-    return format_yaml_frontmatter(frontmatter)
+# 验证生成结果
+python scripts/frontmatter_utils.py validate docs/api/new-endpoint.md
 ```
+
+**工具内部实现**（参考，无需重复实现）:
+```python
+# ⚠️ 以下代码仅供理解工具功能，AI 不应重新实现
+# 实际执行时应调用 scripts/frontmatter_utils.py
+
+# 工具的 generate 命令会：
+# 1. 从文档路径判断 type（docs/api/ → "API参考"）
+# 2. 从文件名提取 title
+# 3. 从文档首段提取 description
+# 4. 分析 KNOWLEDGE.md 查找 related_documents
+# 5. 扫描代码库查找 related_code
+# 6. 生成完整的 YAML frontmatter
+# 7. 插入到文档开头
+
+# 完整实现见: scripts/frontmatter_utils.py (534 行)
+```
+
+**AI 执行检查清单**：
+- [ ] 确认 `scripts/frontmatter_utils.py` 文件存在
+- [ ] 使用 Bash 工具调用脚本，而非重写功能
+- [ ] 检查命令执行返回码（0 = 成功）
+- [ ] 验证生成的 Frontmatter 格式正确
+- [ ] 不创建临时脚本如 `/tmp/generate_frontmatter.sh`
 
 **类型和优先级判定逻辑**（见 FRONTMATTER.md § 枚举值定义）:
 ```python
@@ -868,20 +918,39 @@ def generate_with_style(content, style):
 
 **Frontmatter 验证**:
 
-使用标准验证函数（见 [FRONTMATTER.md § 验证逻辑](docs/reference/FRONTMATTER.md)）
+⚠️ **必须使用项目工具** `scripts/frontmatter_utils.py`（见 [FRONTMATTER.md § 验证逻辑](docs/reference/FRONTMATTER.md)）
 
 **⚠️ Execution Context**: 验证脚本必须从**项目根目录**运行（详见规范文档 § 执行上下文）
 
-```python
-from frontmatter_validator import validate_frontmatter  # 使用标准验证函数
+**实际执行方式**：
+```bash
+# AI 应该执行的实际命令（不是伪代码）
 
-# 验证示例
-validation_result = validate_frontmatter(doc_path, frontmatter)
-if not validation_result['valid']:
-    for error in validation_result['errors']:
-        print(f"错误: {error}")
-    for warning in validation_result['warnings']:
-        print(f"警告: {warning}")
+# 验证单个文档
+python scripts/frontmatter_utils.py validate docs/api/auth.md
+
+# 批量验证
+python scripts/frontmatter_utils.py validate-batch docs/
+
+# 检查命令返回码
+if [ $? -eq 0 ]; then
+    echo "验证通过"
+else
+    echo "验证失败，请检查输出的错误信息"
+fi
+```
+
+**工具输出示例**（参考，无需重新实现验证逻辑）:
+```
+✓ docs/api/auth.md - 验证通过
+  - 必需字段完整
+  - 枚举值有效
+  - 日期格式正确
+  - 引用路径存在
+
+✗ docs/api/users.md - 验证失败
+  错误: 缺少必需字段 'priority'
+  警告: related_code 路径 'src/auth.py' 不存在
 ```
 
 **验证内容**（详见规范文档）:
