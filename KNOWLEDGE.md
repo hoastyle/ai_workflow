@@ -27,6 +27,14 @@
 | 架构决策记录 | [docs/adr/](docs/adr/) | ADR 模板和已有决策 | 中 | 2025-11-06 |
 | ADR 指南 | [docs/adr/README.md](docs/adr/README.md) | 如何编写和维护 ADR | 中 | 2025-11-06 |
 | ADR 模板 | [docs/adr/TEMPLATE.md](docs/adr/TEMPLATE.md) | 新增 ADR 时使用的模板 | 中 | 2025-11-06 |
+| Frontmatter 规范 | [docs/reference/FRONTMATTER.md](docs/reference/FRONTMATTER.md) | 文档元数据标准和验证规则 | 高 | 2025-11-11 |
+
+**自动化脚本** (scripts/ - 工具集):
+
+| 脚本 | 功能 | 主要用途 | 最后更新 |
+|------|------|---------|---------|
+| frontmatter_utils.py | Frontmatter 处理核心工具 | 验证、生成、关系图构建 | 2025-11-11 |
+| doc_graph_builder.py | 文档关系图生成器 | 可视化文档关系网络 | 2025-11-11 |
 
 ---
 
