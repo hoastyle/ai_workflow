@@ -9,7 +9,7 @@
 - **会话连续性**: 通过 CONTEXT.md 跨越 `/clear` 边界保持工作状态
 - **自动化追踪**: 开发周期全程自动更新进度
 - **质量保证**: 内置格式化、测试、代码审查
-- **文档驱动**: PRD.md → PLANNING.md → TASK.md 完整追溯链
+- **文档驱动**: docs/management/ 下的 PRD → PLANNING → TASK 完整追溯链
 - **智能文档管理**: 四层架构 + 按需加载，上下文成本最优
 - **智能文档生成** (NEW): 从代码提取文档，而非凭空编造
 - **高效简洁**: 14个工作流命令覆盖完整开发生命周期
@@ -69,45 +69,46 @@
 ## 📁 项目文件结构
 
 ```
-.claude/
-├── PRD.md              # 项目需求文档（只读）
-├── PLANNING.md         # 技术架构和开发标准
-├── TASK.md             # 任务追踪和进度管理
-├── CONTEXT.md          # 会话上下文（自动管理）
-├── KNOWLEDGE.md        # 知识库和ADR
-└── commands/           # 工作流命令定义
-    ├── wf_01_planning.md
-    ├── wf_02_task.md
-    ├── ... (其他命令)
-    ├── COMMANDS.md
-    ├── WORKFLOWS.md
-    ├── TROUBLESHOOTING.md
-    └── CLAUDE.md
+project/
+├── docs/
+│   ├── management/          # 项目管理文档
+│   │   ├── PRD.md           # 项目需求文档（只读）
+│   │   ├── PLANNING.md      # 技术架构和开发标准
+│   │   ├── TASK.md          # 任务追踪和进度管理
+│   │   └── CONTEXT.md       # 会话上下文（自动管理）
+│   ├── adr/                 # 架构决策记录
+│   ├── reference/           # 参考文档
+│   └── ...
+├── scripts/                 # 自动化工具脚本
+├── KNOWLEDGE.md             # 知识库和文档索引
+├── CLAUDE.md                # AI执行规则
+├── wf_*.md                  # 工作流命令
+└── ...
 ```
 
 ---
 
 ## 📋 核心文件说明
 
-### PRD.md ⚠️ 只读
+### docs/management/PRD.md ⚠️ 只读
 - 项目需求和规范的权威数据源
 - 业务目标和成功标准
 - 利益相关者需求和约束
 - **绝不自动修改**，所有决策必须对齐此文件
 
-### PLANNING.md
+### docs/management/PLANNING.md
 - 技术架构和设计（满足PRD需求）
 - 技术栈和工具选择
 - 开发标准和模式
 - 测试和部署策略
 
-### TASK.md
+### docs/management/TASK.md
 - 任务列表（映射到PRD需求）
 - 实时状态和进度
 - 依赖和阻挡因素
 - 完成历史记录
 
-### CONTEXT.md ⭐ 会话管理器
+### docs/management/CONTEXT.md ⭐ 会话管理器
 - 最近会话完成的工作
 - 关键决策和PRD对齐注释
 - 当前关注点和下一步优先项
@@ -191,8 +192,8 @@
 
 ## 📖 系统优势
 
-- **上下文保存**: CONTEXT.md 自动管理，跨会话无缝继续
-- **进度追踪**: TASK.md 实时更新，始终清楚当前状态
+- **上下文保存**: docs/management/CONTEXT.md 自动管理，跨会话无缝继续
+- **进度追踪**: docs/management/TASK.md 实时更新，始终清楚当前状态
 - **质量强制**: 自动格式化、pre-commit检查、代码审查集成
 - **完整闭环**: 从规划到部署的完整生命周期覆盖
 - **高频优化**: 为日常高频使用场景设计，命令记忆负担最小

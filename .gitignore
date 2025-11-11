@@ -51,8 +51,9 @@ site/
 config.local.json
 
 # Project specific
-PLANNING.md
-TASK.md
+# 管理文档现在在 docs/management/ 下，不再忽略
+# PLANNING.md
+# TASK.md
 *.local.md
 
 # System

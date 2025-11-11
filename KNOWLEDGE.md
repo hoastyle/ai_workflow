@@ -12,11 +12,11 @@
 
 | 主题 | 文档路径 | 说明 | 优先级 | 最后更新 |
 |------|---------|------|--------|---------|
-| 项目需求 | [PRD.md](PRD.md) | 产品需求文档（只读参考） | 高 | 待创建 |
-| 技术规划 | [PLANNING.md](PLANNING.md) | 架构和开发标准 | 高 | 待创建 |
-| 任务追踪 | [TASK.md](TASK.md) | 当前任务和进度 | 高 | 待创建 |
-| 会话上下文 | [CONTEXT.md](CONTEXT.md) | 工作进度和状态（自动管理） | 高 | - |
-| AI执行规则 | [CLAUDE.md](CLAUDE.md) | 权限矩阵和执行规范 | 中 | 2025-11-06 |
+| 项目需求 | [docs/management/PRD.md](docs/management/PRD.md) | 产品需求文档（只读参考） | 高 | 待创建 |
+| 技术规划 | [docs/management/PLANNING.md](docs/management/PLANNING.md) | 架构和开发标准 | 高 | 待创建 |
+| 任务追踪 | [docs/management/TASK.md](docs/management/TASK.md) | 当前任务和进度 | 高 | 2025-11-11 |
+| 会话上下文 | [docs/management/CONTEXT.md](docs/management/CONTEXT.md) | 工作进度和状态（自动管理） | 高 | - |
+| AI执行规则 | [CLAUDE.md](CLAUDE.md) | 权限矩阵和执行规范 | 中 | 2025-11-11 |
 | 设计哲学 | [PHILOSOPHY.md](PHILOSOPHY.md) | Ultrathink 6原则和应用指南 | 中 | 2025-11-06 |
 | 文档架构 | [DOC_ARCHITECTURE.md](DOC_ARCHITECTURE.md) | 四层文档架构和管理策略 | 中 | 待创建 |
 
@@ -86,17 +86,17 @@
 
 | 文件 | 读取 | 创建 | 修改 | 删除 | 特殊规则 |
 |------|:----:|:----:|:----:|:----:|---------|
-| **PRD.md** | ✅ | ❌ | ❌ | ❌ | 只读参考 |
-| **PLANNING.md** | ✅ | ✅ | ✅ | ❌ | 重大决策后更新 |
-| **TASK.md** | ✅ | ✅ | ✅ | ❌ | 实时更新状态 |
-| **CONTEXT.md** | ✅ | ❌ | ❌ | ❌ | 仅/wf_11_commit写入 |
+| **docs/management/PRD.md** | ✅ | ❌ | ❌ | ❌ | 只读参考 |
+| **docs/management/PLANNING.md** | ✅ | ✅ | ✅ | ❌ | 重大决策后更新 |
+| **docs/management/TASK.md** | ✅ | ✅ | ✅ | ❌ | 实时更新状态 |
+| **docs/management/CONTEXT.md** | ✅ | ❌ | ❌ | ❌ | 仅/wf_11_commit写入 |
 | **KNOWLEDGE.md** | ✅ | ✅ | ✅ | ❌ | ADR和文档索引中心 |
 | **代码文件** | ✅ | ✅ | ✅ | ⚠️ | 删除需确认 |
 
 ### 文档管理规则 (来自 CLAUDE.md v3.1+)
 
 **四层文档架构**:
-1. **管理层** (根目录) - PRD, PLANNING, TASK, CONTEXT, KNOWLEDGE
+1. **管理层** (docs/management/) - PRD, PLANNING, TASK, CONTEXT + (根目录) KNOWLEDGE
 2. **技术层** (docs/) - API, 数据库, 部署等详细文档
 3. **工作层** (docs/research/) - 临时探索, spike 笔记
 4. **归档层** (docs/archive/) - 历史文档

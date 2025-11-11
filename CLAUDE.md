@@ -69,10 +69,10 @@ This file provides essential execution rules for Claude Code when working with t
 
 | 文件 | 用途 | 维护规则 |
 |-----|------|---------|
-| **PRD.md** | 项目需求（read-only）| ❌ 绝不自动修改 |
-| **PLANNING.md** | 技术规划和架构 | ✅ 重大决策后更新 |
-| **TASK.md** | 任务追踪 | ✅ 实时更新状态 |
-| **CONTEXT.md** | 会话上下文 | 🤖 仅由/wf_11_commit自动管理 |
+| **docs/management/PRD.md** | 项目需求（read-only）| ❌ 绝不自动修改 |
+| **docs/management/PLANNING.md** | 技术规划和架构 | ✅ 重大决策后更新 |
+| **docs/management/TASK.md** | 任务追踪 | ✅ 实时更新状态 |
+| **docs/management/CONTEXT.md** | 会话上下文 | 🤖 仅由/wf_11_commit自动管理 |
 | **KNOWLEDGE.md** | 知识库+文档索引 | ✅ 新模式和ADR时添加<br/>📚 维护技术文档索引 |
 | **docs/** | 技术层文档 | 📖 按需加载，通过KNOWLEDGE.md索引 |
 
@@ -86,10 +86,10 @@ This file provides essential execution rules for Claude Code when working with t
 
 | 文件 | 读取 | 创建 | 修改 | 删除 | 特殊规则 |
 |------|:----:|:----:|:----:|:----:|---------|
-| **PRD.md** | ✅ | ❌ | ❌ | ❌ | 只读参考。如用户要求修改，必须明确确认并警告影响 |
-| **PLANNING.md** | ✅ | ✅ | ✅ | ❌ | 重大技术决策后必须更新。记录"为什么"和PRD对齐理由 |
-| **TASK.md** | ✅ | ✅ | ✅ | ❌ | 完成任务后立即更新状态。每项任务关联PRD需求 |
-| **CONTEXT.md** | ✅ | ❌ | ❌ | ❌ | 仅由`/wf_11_commit`自动管理。其他命令不得写入 |
+| **docs/management/PRD.md** | ✅ | ❌ | ❌ | ❌ | 只读参考。如用户要求修改，必须明确确认并警告影响 |
+| **docs/management/PLANNING.md** | ✅ | ✅ | ✅ | ❌ | 重大技术决策后必须更新。记录"为什么"和PRD对齐理由 |
+| **docs/management/TASK.md** | ✅ | ✅ | ✅ | ❌ | 完成任务后立即更新状态。每项任务关联PRD需求 |
+| **docs/management/CONTEXT.md** | ✅ | ❌ | ❌ | ❌ | 仅由`/wf_11_commit`自动管理。其他命令不得写入 |
 | **KNOWLEDGE.md** | ✅ | ✅ | ✅ | ❌ | 发现架构决策、新模式或问题解决方案时添加ADR |
 | **代码文件** | ✅ | ✅ | ✅ | ⚠️ | 遵循PLANNING.md标准。删除需用户确认 |
 
@@ -106,7 +106,7 @@ This file provides essential execution rules for Claude Code when working with t
    │  └─ 引导: "这是新项目，建议运行 /wf_01_planning 建立规划"
    │
    └─ 如果已加载上下文
-       └─ 简要总结: "已加载项目上下文。当前任务: [从TASK.md读取]"
+       └─ 简要总结: "已加载项目上下文。当前任务: [从docs/management/TASK.md读取]"
 ```
 
 #### ⚡ 会话进行中（持续监控）
@@ -166,9 +166,9 @@ This file provides essential execution rules for Claude Code when working with t
 
 | 文件 | 处理方式 |
 |------|---------|
-| **PRD.md, PLANNING.md** | 提示新项目，建议: "/wf_01_planning 建立项目规划" |
-| **TASK.md** | 创建空白模板，添加初始任务: "开始第一个功能开发" |
-| **CONTEXT.md** | 正常情况，首次运行不存在。忽略 |
+| **docs/management/PRD.md, PLANNING.md** | 提示新项目，建议: "/wf_01_planning 建立项目规划" |
+| **docs/management/TASK.md** | 创建空白模板，添加初始任务: "开始第一个功能开发" |
+| **docs/management/CONTEXT.md** | 正常情况，首次运行不存在。忽略 |
 | **KNOWLEDGE.md** | 创建空白文件，说明: "将在工作中积累知识和决策" |
 
 #### 命令执行失败时的处理
@@ -206,8 +206,8 @@ This file provides essential execution rules for Claude Code when working with t
 |------|---------|------|
 | **会话开始（/wf_03_prime）** | 自动加载5个管理层文档 | 成本可控，~100KB以内 |
 | **解析文档索引** | 从KNOWLEDGE.md提取"📚 文档索引"章节 | 理解可用技术文档 |
-| **任务相关技术实现** | 根据TASK.md当前任务判断相关性 | 优先级=高 且 相关 → 加载 |
-| **架构咨询（/wf_04_ask）** | 优先读取PLANNING.md，必要时读取docs/architecture/ | 深度分析才加载详细文档 |
+| **任务相关技术实现** | 根据docs/management/TASK.md当前任务判断相关性 | 优先级=高 且 相关 → 加载 |
+| **架构咨询（/wf_04_ask）** | 优先读取docs/management/PLANNING.md，必要时读取docs/architecture/ | 深度分析才加载详细文档 |
 | **调试问题（/wf_06_debug）** | 查阅KNOWLEDGE.md已知问题，按需读取技术文档 | 避免盲目加载 |
 | **工作层/归档层** | 不主动加载，除非用户明确指示 | 控制上下文成本 |
 
@@ -391,10 +391,10 @@ version: "1.0"
 
 | 文件 | 权限 | 关键规则 |
 |------|------|---------|
-| **PRD.md** | 只读 | ❌ 绝不修改 |
-| **PLANNING.md** | 读写 | ✅ 重大决策更新 |
-| **TASK.md** | 读写 | ✅ 实时状态更新 |
-| **CONTEXT.md** | 只读 | 🤖 仅/wf_11_commit写入 |
+| **docs/management/PRD.md** | 只读 | ❌ 绝不修改 |
+| **docs/management/PLANNING.md** | 读写 | ✅ 重大决策更新 |
+| **docs/management/TASK.md** | 读写 | ✅ 实时状态更新 |
+| **docs/management/CONTEXT.md** | 只读 | 🤖 仅/wf_11_commit写入 |
 | **KNOWLEDGE.md** | 读写 | ✅ 新模式/ADR添加<br/>📚 文档索引中心 |
 | **docs/** | 读写 | 📖 技术层文档，按需加载 |
 
