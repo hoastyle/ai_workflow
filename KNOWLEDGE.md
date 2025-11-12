@@ -44,6 +44,7 @@
 
 | 决策日期 | 标题 | 影响 | 状态 | 文档路径 |
 |---------|------|------|------|---------|
+| 2025-11-13 | 在架构咨询工作流中优先考虑开源方案 | 高 | Accepted | [docs/adr/2025-11-13-prioritize-opensource-in-architecture.md](docs/adr/2025-11-13-prioritize-opensource-in-architecture.md) |
 | 2025-11-11 | 命令文档必须明确指示使用项目工具 | 高 | Accepted | [docs/adr/2025-11-11-use-existing-tools-over-reimplementation.md](docs/adr/2025-11-11-use-existing-tools-over-reimplementation.md) |
 | 2025-11-11 | 采用独立脚本而非嵌入文档 | 高 | Accepted | (见 TASK.md § 架构决策) |
 | 2025-11-07 | 智能文档生成（提取而非编造） | 高 | Accepted | [docs/adr/2025-11-07-intelligent-doc-generation-over-template-based.md](docs/adr/2025-11-07-intelligent-doc-generation-over-template-based.md) |
