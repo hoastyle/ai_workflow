@@ -190,80 +190,25 @@ OPTIONS:
 
 ### 2. 文档缺口检测器 (Documentation Gap Detector)
 
-**功能**: 对比现有文档与代码实际状态，识别缺失和过时
+**功能**: 自动对比代码与文档，识别以下缺口：
 
-**检测逻辑**:
-```python
-def detect_gaps(codebase_info, existing_docs):
-    gaps = []
+**检测维度**:
+- ✓ **API文档** - 实际端点 vs 文档中的端点（缺失、变化、过时）
+- ✓ **技术栈版本** - README 中的版本 vs 实际依赖版本
+- ✓ **环境变量配置** - .env.example vs 代码中的实际环境变量
+- ✓ **依赖关系同步** - 文档中的依赖 vs 实际安装的包
+- ✓ **架构文档** - 架构图是否反映当前模块结构
 
-    # 检查 1: API 文档完整性
-    documented_endpoints = extract_endpoints_from_docs(existing_docs)
-    actual_endpoints = codebase_info.api_endpoints
-    missing_endpoints = actual_endpoints - documented_endpoints
-    if missing_endpoints:
-        gaps.append({
-            'type': 'api',
-            'severity': 'high',
-            'message': f'API 文档缺失 {len(missing_endpoints)} 个端点',
-            'details': missing_endpoints
-        })
+**检测过程**:
+1. 扫描代码库识别实际状态（API、依赖、配置等）
+2. 读取现有文档提取已记录的状态
+3. 对比两者，识别不一致
+4. 按严重程度分类（高/中/低）
+5. 生成详细的缺口报告
 
-    # 检查 2: README 技术栈同步
-    readme_tech_stack = parse_tech_stack(existing_docs['README.md'])
-    actual_tech_stack = codebase_info.tech_stack
-    if readme_tech_stack != actual_tech_stack:
-        gaps.append({
-            'type': 'overview',
-            'severity': 'medium',
-            'message': 'README 技术栈信息过时',
-            'details': {
-                'documented': readme_tech_stack,
-                'actual': actual_tech_stack
-            }
-        })
-
-    # 检查 3: 环境变量文档
-    documented_env_vars = extract_env_vars_from_docs(existing_docs)
-    actual_env_vars = codebase_info.env_vars
-    missing_vars = actual_env_vars - documented_env_vars
-    if missing_vars:
-        gaps.append({
-            'type': 'deployment',
-            'severity': 'high',
-            'message': f'部署文档缺少 {len(missing_vars)} 个环境变量',
-            'details': missing_vars
-        })
-
-    # 检查 4: 开发指南依赖同步
-    if 'docs/development/setup.md' in existing_docs:
-        documented_deps = extract_dependencies_from_docs(existing_docs)
-        actual_deps = codebase_info.dependencies
-        if documented_deps != actual_deps:
-            gaps.append({
-                'type': 'dev',
-                'severity': 'medium',
-                'message': '开发指南依赖信息过时',
-                'details': {
-                    'added': actual_deps - documented_deps,
-                    'removed': documented_deps - actual_deps
-                }
-            })
-    else:
-        gaps.append({
-            'type': 'dev',
-            'severity': 'medium',
-            'message': '缺少开发指南',
-            'details': 'docs/development/setup.md 不存在'
-        })
-
-    # 检查 5: 架构文档同步
-    if 'docs/architecture/' in existing_docs:
-        # 检查架构图是否反映当前模块结构
-        pass
-
-    return gaps
-```
+**工具实现**: 待实现脚本 `scripts/doc_gap_analyzer.py`
+- 详细的检测逻辑见脚本实现
+- 集成到 `/wf_14_doc` 的执行流程中
 
 **输出示例**:
 ```markdown
@@ -605,23 +550,6 @@ python scripts/frontmatter_utils.py generate-batch docs/api/
 python scripts/frontmatter_utils.py validate docs/api/new-endpoint.md
 ```
 
-**工具内部实现**（参考，无需重复实现）:
-```python
-# ⚠️ 以下代码仅供理解工具功能，AI 不应重新实现
-# 实际执行时应调用 scripts/frontmatter_utils.py
-
-# 工具的 generate 命令会：
-# 1. 从文档路径判断 type（docs/api/ → "API参考"）
-# 2. 从文件名提取 title
-# 3. 从文档首段提取 description
-# 4. 分析 KNOWLEDGE.md 查找 related_documents
-# 5. 扫描代码库查找 related_code
-# 6. 生成完整的 YAML frontmatter
-# 7. 插入到文档开头
-
-# 完整实现见: scripts/frontmatter_utils.py (534 行)
-```
-
 **AI 执行检查清单**：
 - [ ] 确认 `scripts/frontmatter_utils.py` 文件存在
 - [ ] 使用 Bash 工具调用脚本，而非重写功能
@@ -629,21 +557,7 @@ python scripts/frontmatter_utils.py validate docs/api/new-endpoint.md
 - [ ] 验证生成的 Frontmatter 格式正确
 - [ ] 不创建临时脚本如 `/tmp/generate_frontmatter.sh`
 
-**类型和优先级判定逻辑**（见 FRONTMATTER.md § 枚举值定义）:
-```python
-# Type 自动分类（基于路径）
-type_mapping = {
-    'docs/api/': 'API参考',
-    'docs/architecture/': '技术设计',
-    'docs/deployment/': '系统集成',
-    'docs/development/': '教程',
-    'docs/troubleshooting/': '故障排查',
-    'docs/adr/': '架构决策'
-}
-
-# Priority 自动判定（基于类型和引用数）
-high_priority_types = ['API参考', '系统集成', '架构决策']
-```
+**详细的生成逻辑和类型判定规则见**: [Frontmatter规范参考](docs/reference/FRONTMATTER.md) § 标准模板 § 枚举值定义
 
 **集成到文档模板**:
 所有生成的技术文档（docs/下的文件）都应该在文件顶部包含 Frontmatter。
@@ -842,42 +756,21 @@ cp .env.example .env
 
 #### 5.2 风格适配
 
-**学习项目风格**:
-```python
-def learn_doc_style(existing_docs, planning_md):
-    style = {
-        'heading_style': 'atx',  # # 还是 underline
-        'code_fence': '```',     # ``` 还是 ~~~
-        'list_marker': '-',      # - 还是 *
-        'emphasis': '*',         # * 还是 _
-        'language': 'zh-CN',     # 从 CLAUDE.md 读取
-        'emoji_usage': True,     # 是否使用 emoji
-        'tone': 'professional'   # 从现有文档学习语气
-    }
+**学习和应用项目风格**:
+1. **分析现有文档** - 提取标题、代码栅栏、列表标记、强调风格
+2. **识别写作风格** - 语言选择、emoji使用、语气（专业/轻松）
+3. **应用到生成** - 新生成的文档自动使用同样的风格
 
-    # 分析现有文档的风格
-    for doc in existing_docs:
-        # ... 提取风格特征
+**自动检测的风格特征**:
+- 标题风格（# 还是 underline）
+- 代码栅栏（``` 还是 ~~~）
+- 列表标记（- 还是 *）
+- 强调方式（* 还是 _）
+- 语言选择（从 CLAUDE.md 读取）
+- Emoji使用（是否启用）
+- 整体语气（专业/友好）
 
-    return style
-```
-
-**应用风格生成**:
-```python
-def generate_with_style(content, style):
-    # 应用学习到的风格
-    if style['language'] == 'zh-CN':
-        # 使用中文
-        content = translate_to_chinese(content)
-
-    if style['emoji_usage']:
-        # 添加 emoji
-        content = add_emojis(content)
-
-    # ... 应用其他风格
-
-    return content
-```
+**工具实现**: 见 `scripts/doc_style_learner.py`（待实现）
 
 ---
 
@@ -940,18 +833,9 @@ else
 fi
 ```
 
-**工具输出示例**（参考，无需重新实现验证逻辑）:
-```
-✓ docs/api/auth.md - 验证通过
-  - 必需字段完整
-  - 枚举值有效
-  - 日期格式正确
-  - 引用路径存在
-
-✗ docs/api/users.md - 验证失败
-  错误: 缺少必需字段 'priority'
-  警告: related_code 路径 'src/auth.py' 不存在
-```
+**工具输出示例**:
+- ✓ docs/api/auth.md - 验证通过（必需字段完整、枚举值有效、日期格式正确）
+- ✗ docs/api/users.md - 验证失败（缺少必需字段 'priority'，related_code 路径无效）
 
 **验证内容**（详见规范文档）:
 - ✅ 7个必需字段完整性
