@@ -6,6 +6,65 @@ This file provides essential execution rules for Claude Code when working with t
 
 ---
 
+## 📋 配置层级说明
+
+本文件是**全局默认配置**，通过软链接 `~/.claude/CLAUDE.md` 使所有使用命令系统的项目共享。
+
+### 配置优先级
+
+```
+项目级 CLAUDE.md (最高优先级)
+    ↓ 覆盖
+全局 ~/.claude/CLAUDE.md (默认配置，本文件)
+    ↓ 覆盖
+Claude Code 内置默认
+```
+
+### 哪些规则可以被项目覆盖？
+
+| 规则类型 | 全局/项目 | 说明 |
+|---------|----------|------|
+| **语言规范** | 项目可覆盖 ✅ | 团队项目可能使用英文 |
+| **文档结构** | 项目可覆盖 ✅ | 项目可使用简化或扩展结构 |
+| **Git 提交格式** | 项目可覆盖 ✅ | 遵循团队规范 |
+| **命令系统核心** | 全局固定 🔒 | /wf_* 命令的存在和基本行为 |
+| **文件权限矩阵** | 全局建议 ⚠️ | 项目可调整，但需谨慎 |
+| **AI 会话规则** | 全局固定 🔒 | 保证一致的工作流体验 |
+
+### 如何创建项目级配置？
+
+**步骤 1**: 在项目根目录创建 `CLAUDE.md`
+```bash
+cd /path/to/your/project
+touch CLAUDE.md
+```
+
+**步骤 2**: 只写需要覆盖的部分
+```markdown
+# 项目级 CLAUDE.md
+
+## 语言规范
+1. **交互沟通**: English (international open-source project)
+2. **代码提交**: English with conventional commits
+
+## 项目管理文档
+- **README.md** - Project overview and requirements
+- **docs/design/** - Architecture decisions
+- **GitHub Issues** - Task tracking
+```
+
+**步骤 3**: AI 会自动合并配置
+- 读取全局 `~/.claude/CLAUDE.md`（默认）
+- 读取项目级 `./CLAUDE.md`（覆盖）
+- 合并后执行
+
+**注意**:
+- ⚠️ 项目级配置只需写差异部分，不需要完整复制
+- ✅ 未覆盖的规则仍然使用全局默认
+- 💡 建议在项目 README 中说明自定义配置
+
+---
+
 ## 📚 文档路由规则
 
 **AI在遇到以下场景时，必须主动使用Read工具读取对应文档**：
@@ -46,7 +105,7 @@ This file provides essential execution rules for Claude Code when working with t
 - **PHILOSOPHY.md** = 设计思维 (如何思考、如何决策、如何优雅)
 
 **architecture 决策记录 (ADR)**: 重要决策的"背景、选择、权衡"记录在 `docs/adr/` (参见模板)
-- 🗂️ 位置: `/home/howie/Software/utility/commands/docs/adr/`
+- 🗂️ 位置: `docs/adr/` (相对于项目根目录)
 - 📝 模板: `docs/adr/TEMPLATE.md`
 - 📚 指南: `docs/adr/README.md`
 
@@ -54,27 +113,68 @@ This file provides essential execution rules for Claude Code when working with t
 
 ## 项目规范
 
-### 语言规范
+### 语言规范（全局默认，项目可覆盖）
 
-本项目采用分层语言策略：
+**默认策略**（适用大多数项目）：
 
-1. **交互沟通**: 中文
-2. **文档**: 中文
-3. **代码实现**: 英文（变量、函数、类名）
-4. **代码提交**: 参考历史提交风格
+1. **交互沟通**: 中文（除非检测到项目主要语言为其他语言）
+2. **文档**: 遵循项目现有文档语言
+   - 检测方法：分析 README.md 前100行的主要语言
+   - 如无法确定，使用中文
+3. **代码实现**: 英文（变量、函数、类名）- 国际惯例
+4. **代码提交**: 参考最近5次提交的语言风格
 
-### 项目管理文档
+**自动检测逻辑**:
+```bash
+# AI 应执行的检测
+1. 读取 README.md 前100行，统计中英文比例
+2. 检查最近5次 git commit message 的语言
+3. 如果 >70% 为英文，切换到英文模式
+4. 如果存在项目级 CLAUDE.md，优先使用其配置
+```
 
-所有项目管理文档存储在项目根目录：
+**项目级覆盖示例**:
+如果项目需要不同的语言策略，在项目根目录创建 `CLAUDE.md`:
+```markdown
+# 项目级配置示例
+## 语言规范
+1. **交互沟通**: English (international team)
+2. **文档**: English
+3. **提交信息**: English (conventional commits)
+```
 
-| 文件 | 用途 | 维护规则 |
-|-----|------|---------|
-| **docs/management/PRD.md** | 项目需求（read-only）| ❌ 绝不自动修改 |
-| **docs/management/PLANNING.md** | 技术规划和架构 | ✅ 重大决策后更新 |
-| **docs/management/TASK.md** | 任务追踪 | ✅ 实时更新状态 |
-| **docs/management/CONTEXT.md** | 会话上下文 | 🤖 仅由/wf_11_commit自动管理 |
-| **KNOWLEDGE.md** | 知识库+文档索引 | ✅ 新模式和ADR时添加<br/>📚 维护技术文档索引 |
-| **docs/** | 技术层文档 | 📖 按需加载，通过KNOWLEDGE.md索引 |
+### 项目管理文档（推荐结构）
+
+**标准文档结构**（命令系统推荐，项目可调整）：
+
+| 文件 | 用途 | 维护规则 | 必需性 |
+|-----|------|---------|--------|
+| **docs/management/PRD.md** | 项目需求 | ❌ 绝不自动修改 | 可选 |
+| **docs/management/PLANNING.md** | 技术规划和架构 | ✅ 重大决策后更新 | 推荐 |
+| **docs/management/TASK.md** | 任务追踪 | ✅ 实时更新状态 | 推荐 |
+| **docs/management/CONTEXT.md** | 会话上下文 | 🤖 仅由/wf_11_commit自动管理 | 自动创建 |
+| **KNOWLEDGE.md** | 知识库+文档索引 | ✅ 新模式和ADR时添加<br/>📚 维护技术文档索引 | 推荐 |
+| **docs/** | 技术层文档 | 📖 按需加载，通过KNOWLEDGE.md索引 | 可选 |
+
+**灵活性说明**:
+- ✅ **PRD 可选**: 小项目可用 README.md 代替，或需求在 GitHub Issues
+- ✅ **位置可变**: 项目可使用 `docs/` 而非 `docs/management/`
+- ✅ **格式可变**: 可使用 YAML/JSON 代替 Markdown
+- 💡 **AI 行为**:
+  - 首次接触项目时，使用 Glob 工具探索实际结构
+  - 如果推荐文件不存在，询问："是否需要创建 [文件]？"
+  - 不强制创建，除非用户确认
+
+**项目级覆盖示例**:
+```markdown
+# 项目级 CLAUDE.md
+## 项目管理文档
+
+本项目使用简化结构：
+- **README.md** - 包含需求和架构说明
+- **TODO.md** - 任务追踪
+- **CHANGELOG.md** - 变更历史
+```
 
 ---
 
