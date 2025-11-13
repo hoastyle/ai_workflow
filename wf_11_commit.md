@@ -34,7 +34,11 @@ Create git commits with integrated formatting, validation, and context updates:
 - Maintain commit message conventions
 - Ensure full traceability
 
-## Process
+## Process (4-Stage Simplified Workflow)
+
+### 🔧 Stage 1: Preparation (修复和校验)
+**目标**: 清理代码、修复常见问题、校验质量
+
 1. **Pre-Commit Auto-Repair & Validation**:
    - Check git status for changes
    - Identify files for staging
@@ -42,98 +46,113 @@ Create git commits with integrated formatting, validation, and context updates:
      * **Auto-fix Trailing Whitespace**: 100% safe, automatic removal
      * **Auto-fix Line Endings**: Convert CRLF to Unix LF automatically
      * **Auto-fix Markdown Formatting**: Basic formatting improvements
-     * **Enhanced Validation**: Comprehensive quality checks after auto-repair
-     * **Link & Reference Validation**: Manual review recommendations
-   - Validate against PLANNING.md standards
-   - Check related tasks in TASK.md
-
-2. **Auto-Formatting & Time Sync**:
    - Apply language-specific formatting:
      * Python: black formatter
      * JavaScript/TypeScript: prettier
      * C++: clang-format
      * Go: gofmt
      * Other: project-specific formatters
-   - **Pre-commit auto-repair ensures**: Zero trailing whitespace, consistent line endings
    - **Auto-Update Maintenance Dates**:
      * Update "最后更新" fields to current date: `$(date +%Y-%m-%d)`
-     * Update "Last Updated" fields to current date: `$(date +%Y-%m-%d)`
      * Preserve historical dates (创建日期、发布日期、决策日期)
-     * Validate date format consistency across all .md files
-     * Check for and flag any outdated year references
-   - **Auto-Update Frontmatter Dates** (NEW):
+   - **Auto-Update Frontmatter Dates**:
      * Update `last_updated` field in all modified docs/ files: `$(date +%Y-%m-%d)`
      * Preserve `created_date` (historical, never modify)
      * Validate `created_date` <= `last_updated` logic
-     * Update `next_review_date` if current date > review date
-     * Verify date format: YYYY-MM-DD
 
-3. **Change Analysis**:
-   - Group related changes
-   - Identify completed tasks
-   - Check for excluded files
-   - Validate code formatting applied
-   - **README Update Assessment**: Check if changes trigger README update:
+2. **Validation & Error Handling**:
+   - **Run enhanced pre-commit validation** on all staged files
+   - **Frontmatter Script Dependency Check** (⚠️ NEW):
+     ```bash
+     if [ ! -f "scripts/frontmatter_utils.py" ]; then
+       echo "⚠️ Frontmatter script missing: scripts/frontmatter_utils.py"
+       echo "Skipping Frontmatter validation (script not available)"
+     else
+       python scripts/frontmatter_utils.py validate-batch docs/
+     fi
+     ```
+   - **If validation fails**:
+     * Display specific error messages with file:line locations
+     * Provide auto-repair suggestions for common issues
+     * Offer automated recovery for safe problems (whitespace, line endings)
+     * For unsafe problems: pause and require user confirmation to proceed
+     * Document failure reason for troubleshooting
+   - **If validation passes**: Proceed to Stage 2
+
+---
+
+### 📊 Stage 2: Analysis & Generation (分析和更新)
+**目标**: 理解变更内容、生成文档、评估README更新需求
+
+1. **Change Analysis**:
+   - Group related changes by file type and scope
+   - Identify completed tasks linked to TASK.md
+   - Check for excluded files (third-party, generated)
+   - Validate code formatting applied successfully
+   - **Analyze changes for knowledge extraction opportunities**
+
+2. **README Update Assessment** (if applicable):
+   - **Check if changes trigger README update**:
      * New core features (feat commits affecting main files)
      * PLANNING.md architecture changes
      * API/interface modifications
      * Dependency or installation requirement changes
-     * Major version milestones
-   - Analyze changes for knowledge extraction opportunities
-   - **Time Point Validation**: Verify all dates are current and accurate
-
-4. **README Update (If Triggered)**:
-   - **Content Generation**: Generate updated README.md:
+   - **If triggered, generate updated README.md**:
      * Project overview from PLANNING.md
      * Installation requirements from dependencies
-     * Core usage examples from available commands
      * Feature list from completed TASK.md items
      * Architecture overview from PLANNING.md
-     * Troubleshooting from KNOWLEDGE.md
-   - **Quality Validation**: Ensure README meets standards:
-     * No trailing whitespace (enforced by pre-commit)
-     * Valid markdown formatting
-     * Working internal links
-     * Current date references
-   - **Integration**: Include updated README in commit
+   - **Quality validation**: No trailing whitespace, valid markdown, current dates
 
-5. **Final Pre-Commit Validation**:
-   - **Run enhanced pre-commit validation** on all staged files:
-     * **Auto-repair hooks**: Fix trailing whitespace, line endings, basic formatting
-     * **Validation hooks**: Verify fixes were successful, check remaining quality gates
-     * **Final quality check**: Comprehensive validation ensuring all standards met
-   - **Frontmatter Validation** (NEW):
-     * 📋 使用标准验证（见 [Frontmatter规范](docs/reference/FRONTMATTER.md) § 验证逻辑）
-     * ⚠️ **Execution Context**: 从**项目根目录**运行（详见规范文档 § 执行上下文）
-     * 验证内容：7个必需字段、枚举值、日期逻辑、引用路径有效性
-   - **If validation fails**: Review specific error messages, manual intervention if needed
-   - **If validation passes**: All auto-repairs completed successfully, proceed to commit
+---
 
-6. **Commit Preparation**:
+### 💾 Stage 3: Commit & Update (提交和保存)
+**目标**: 生成提交、更新上下文、记录完成
+
+1. **Commit Preparation**:
    - Stage formatted files (including README if updated)
-   - Generate semantic commit message
-   - Link to TASK.md items
-   - Add task references
+   - Generate semantic commit message:
+     ```
+     [<type>] <subject>
 
-7. **Context Update**:
+     <body>
+
+     Tasks: #task-id-1, #task-id-2
+     Refs: PLANNING.md updates, TASK.md completions
+     ```
+
+2. **Context Update**:
    - Create/update CONTEXT.md with:
      * Work completed this session
      * Tasks finished and remaining
      * Key decisions made
      * Next priority items
-   - Include progress summary
 
-8. **Knowledge Extraction**:
+3. **Task & Knowledge Updates**:
+   - Update TASK.md with completions
    - Identify architectural decisions worthy of ADR documentation
    - Detect new problem-solution patterns
-   - Recognize reusable code patterns or conventions
    - Suggest KNOWLEDGE.md updates if applicable
-
-9. **Post-Commit Actions**:
-   - Update TASK.md with completions
    - Document significant changes
-   - Update KNOWLEDGE.md if new patterns or decisions identified
-   - Prepare for next work cycle
+
+---
+
+### 🚀 Stage 4: Completion & Continuity (完成和延续)
+**目标**: 确认提交成功、准备下一步工作
+
+1. **Commit Execution**:
+   - Execute git commit with semantic message
+   - Verify commit hash and completion
+
+2. **Post-Commit Validation**:
+   - Confirm CONTEXT.md updated successfully
+   - Verify TASK.md status changes applied
+   - Check KNOWLEDGE.md additions if any
+
+3. **Next Steps Guidance**:
+   - Display remaining work items from TASK.md
+   - Suggest next priority actions
+   - Remind: `/clear` → `/wf_03_prime` for session continuity
 
 ## Commit Message Format
 ```
@@ -155,23 +174,61 @@ Types:
 - chore: Maintenance tasks
 
 ## Output Format
+
+### Stage 1: Preparation Output
 1. **Auto-Repair Report** – automatic fixes applied (whitespace, line endings, formatting)
-2. **Pre-commit Validation Report** – quality gate checks and results
-3. **Formatting Report** – language-specific auto-formatting applied
-4. **Frontmatter Update Report** (NEW) – frontmatter dates updated, validation results
-5. **Change Summary** – files and modifications
-6. **README Update Report** – README generation details (if triggered)
+2. **Formatting Report** – language-specific auto-formatting applied
+3. **Date Update Report** – maintenance and frontmatter dates synchronized
+4. **Validation Report** – quality gate checks, error handling if needed
+
+### Stage 2: Analysis & Generation Output
+5. **Change Summary** – grouped files and modifications by scope
+6. **README Update Report** – generation details (if triggered)
 7. **Knowledge Extraction** – identified patterns and decisions
-8. **Commit Message** – formatted message
-9. **Task Updates** – TASK.md completions
-10. **Context Update** – CONTEXT.md refresh
+
+### Stage 3: Commit & Update Output
+8. **Commit Message** – formatted semantic message with task references
+9. **Context Update** – CONTEXT.md refresh summary
+10. **Task Updates** – TASK.md completions
 11. **Knowledge Updates** – KNOWLEDGE.md suggestions or updates
-12. **Commit Result** – success confirmation
-13. **Next Steps** – remaining work items
+
+### Stage 4: Completion Output
+12. **Commit Result** – success confirmation with hash
+13. **Post-Commit Validation** – CONTEXT/TASK/KNOWLEDGE verification
+14. **Next Steps** – remaining work items and recommended actions
+
+## 📌 工作流导航
+
+**在工作流中的位置**:
+```
+/wf_08_review (代码审查通过)
+  ↓
+/wf_11_commit (提交保存) ← 当前
+  ↓
+/wf_02_task update (更新任务状态)
+  ↓
+/clear (清理上下文)
+  ↓
+/wf_03_prime (加载上下文，开始下一轮)
+```
+
+**工作流集成**:
+- ✅ **接收**: 来自 /wf_08_review 的代码审查通过信号
+- ✅ **核心价值**: 通过4阶段简化流程，自动化修复、格式化、验证、更新
+- ✅ **输出**: Git提交 + CONTEXT.md更新 + TASK.md完成标记
+- ✅ **关键特性**:
+  - 自动修复尾部空格、行结尾、格式问题（Stage 1）
+  - Frontmatter脚本依赖检查，安全地处理缺失情况（Stage 1）
+  - 智能README更新，仅当有重要变更时触发（Stage 2）
+  - 完整的错误处理和恢复机制（Stage 1-2）
+  - 自动更新CONTEXT.md实现会话连续性（Stage 3）
+- ✅ **下一步**: `/wf_02_task update` 标记任务完成，或直接 `/clear` 清理上下文
 
 ## Workflow Integration
 - **Auto-Repair System**: Automatically fixes trailing whitespace, line endings, basic formatting
 - **Quality Gates**: Enforced through enhanced pre-commit hooks with validation
+- **Error Handling**: Comprehensive validation with clear recovery paths for failures
+- **Script Dependencies**: Checks for required tools (e.g., Frontmatter script) before execution
 - **User Experience**: Reduces manual fixes, provides clear feedback on auto-repairs
 - Validates against PLANNING.md standards
 - Auto-formats code (integrates wf_format.md functionality)
