@@ -53,8 +53,18 @@ Manage TASK.md to track project progress and maintain task continuity:
      - Priority: High/Medium/Low
      - Effort: S/M/L/XL
      - Status: Not Started/In Progress/Blocked/Done
-     - Notes: Implementation details or blockers
+     - Git commits: [commit hash] (completed tasks only)
+     - Related ADR: [ADR link] (if architectural decision)
+     - Blockers: [reason] (if Status=Blocked)
    ```
+
+   **IMPORTANT - SSOT Principles**:
+   - ✅ **DO** record: Task name, status, priority, Git commits hash
+   - ❌ **DON'T** record: Implementation details (use `git log [hash]` instead)
+   - ❌ **DON'T** record: Code changes, file lists (already in Git commits)
+   - ❌ **DON'T** duplicate: Git commit messages content
+
+   **Query implementation details**: Use `git log [commit hash]` to see full details
 
 ### Update Mode
 1. **Read Current TASK.md**

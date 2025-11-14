@@ -135,11 +135,43 @@ Create git commits with integrated formatting, validation, and context updates:
    - **SSOT Principle**: All content should be pointers or metadata, not duplicated information
 
 3. **Task & Knowledge Updates**:
-   - Update TASK.md with completions
+   - Update TASK.md with completions (following SSOT principles):
+     * ✅ Mark task status as [x] completed
+     * ✅ Record completion date (Completed: YYYY-MM-DD)
+     * ✅ Add Git commits hash references (Git commits: abc1234)
+     * ✅ Link related ADR if architectural decision (Related ADR: docs/adr/...)
+     * ✅ Keep key metrics if significant (e.g., Token savings: 97.5%)
+     * ❌ DO NOT record implementation details (query with `git log [hash]`)
+     * ❌ DO NOT duplicate Git commit message content
+     * ❌ DO NOT record code line counts, technical minutiae
    - Identify architectural decisions worthy of ADR documentation
    - Detect new problem-solution patterns
    - Suggest KNOWLEDGE.md updates if applicable
    - Document significant changes
+
+---
+
+### 📋 TASK.md Update Format Template
+
+**Recommended format for completed tasks**:
+```markdown
+- [x] **Task name**
+  - Completed: 2025-11-15
+  - Priority: High
+  - Git commits: abc1234, def5678
+  - Related ADR: docs/adr/2025-11-15-decision.md (if applicable)
+  - Key metrics: Token savings 97.5% (if significant achievement)
+  - Details: `git log abc1234..def5678`
+```
+
+**AVOID this redundant format**:
+```markdown
+❌ - [x] **Task name**
+  - Implemented XX class        ← DELETE, check Git log
+  - Created XX file             ← DELETE, check Git log
+  - Modified XX module          ← DELETE, check Git log
+  - Code changes: 534 lines     ← DELETE, check Git log
+```
 
 ---
 

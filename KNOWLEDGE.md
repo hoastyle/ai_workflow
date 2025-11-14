@@ -44,6 +44,7 @@
 
 | 决策日期 | 标题 | 影响 | 状态 | 文档路径 |
 |---------|------|------|------|---------|
+| 2025-11-15 | Workflow 文档生成 SSOT 架构：消除系统性冗余 | 高 | Accepted | [docs/adr/2025-11-15-workflow-document-generation-ssot.md](docs/adr/2025-11-15-workflow-document-generation-ssot.md) |
 | 2025-11-15 | CONTEXT.md 指针文档模式：消除 85% 冗余 | 高 | Accepted | [docs/adr/2025-11-15-context-md-pointer-document.md](docs/adr/2025-11-15-context-md-pointer-document.md) |
 | 2025-11-13 | 在架构咨询工作流中优先考虑开源方案 | 高 | Accepted | [docs/adr/2025-11-13-prioritize-opensource-in-architecture.md](docs/adr/2025-11-13-prioritize-opensource-in-architecture.md) |
 | 2025-11-11 | 命令文档必须明确指示使用项目工具 | 高 | Accepted | [docs/adr/2025-11-11-use-existing-tools-over-reimplementation.md](docs/adr/2025-11-11-use-existing-tools-over-reimplementation.md) |

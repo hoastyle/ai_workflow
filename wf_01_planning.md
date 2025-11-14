@@ -50,7 +50,10 @@ Create or update PLANNING.md to establish comprehensive project documentation th
    - Core components and modules
    - Data models and storage
    - External integrations
-   - Technology decisions rationale
+   - Technology decisions (What, not Why)
+     * 📋 List current technology choices
+     * 🔗 Architecture decision rationale → See ADR
+     * ❌ DO NOT duplicate decision background and trade-offs here
 
    ### Technology Stack
    - Programming languages and versions
@@ -58,6 +61,22 @@ Create or update PLANNING.md to establish comprehensive project documentation th
    - Database and storage systems
    - Development and deployment tools
    - Third-party services
+
+   **Architecture Decision Records (ADR)**:
+   - Detailed "Why" → See KNOWLEDGE.md § ADR
+   - Major technical choices → Create ADR: docs/adr/YYYY-MM-DD-title.md
+   - PLANNING.md records "What it is", NOT "Why we chose it"
+   - Example reference format:
+     ```markdown
+     ## Technology Stack
+     - Frontend: React 18
+     - Backend: Node.js + Express
+     - Database: PostgreSQL
+
+     **Architecture Decisions**: See following ADRs
+     - [Why React?](docs/adr/2025-01-01-choose-react.md)
+     - [Why PostgreSQL?](docs/adr/2025-01-02-choose-postgresql.md)
+     ```
 
    ### Development Workflow
    - Setup instructions
