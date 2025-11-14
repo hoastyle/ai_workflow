@@ -121,12 +121,18 @@ Create git commits with integrated formatting, validation, and context updates:
      Refs: PLANNING.md updates, TASK.md completions
      ```
 
-2. **Context Update**:
-   - Create/update CONTEXT.md with:
-     * Work completed this session
-     * Tasks finished and remaining
-     * Key decisions made
-     * Next priority items
+2. **Context Update** (Pointer Document - Zero Redundancy):
+   - Create/update CONTEXT.md as a **pointer document** (NOT content duplication):
+     * **Last session timestamp** - When the session ended
+     * **Git baseline** - Latest commit hash as reference point
+     * **Active task pointer** - Reference to TASK.md section (e.g., "TASK.md § 任务1️⃣ Line 361")
+     * **Related architecture pointer** - Reference to PLANNING.md sections (if applicable)
+     * **Related ADR pointers** - References to KNOWLEDGE.md ADR entries (if applicable)
+     * **Session commits summary** - Count and main change area (e.g., "2 commits, 文档架构优化")
+     * **Modified files summary** - Count only (details in Git log)
+     * **Next startup recommendation** - Suggested command sequence for /wf_03_prime
+   - **IMPORTANT**: Do NOT duplicate content from TASK.md, PLANNING.md, or KNOWLEDGE.md
+   - **SSOT Principle**: All content should be pointers or metadata, not duplicated information
 
 3. **Task & Knowledge Updates**:
    - Update TASK.md with completions
@@ -188,7 +194,7 @@ Types:
 
 ### Stage 3: Commit & Update Output
 8. **Commit Message** – formatted semantic message with task references
-9. **Context Update** – CONTEXT.md refresh summary
+9. **Context Update** – CONTEXT.md pointer document refresh (timestamp, Git baseline, task pointers)
 10. **Task Updates** – TASK.md completions
 11. **Knowledge Updates** – KNOWLEDGE.md suggestions or updates
 
@@ -241,6 +247,40 @@ Types:
 - Maintains complete project history and context
 - **Ensures README stays synchronized with project state**
 - Enables seamless `/wf_03_prime` context loading with long-term memory
+
+## CONTEXT.md Pointer Document Template
+
+**New Format** (Zero Redundancy - SSOT Compliant):
+```markdown
+# CONTEXT.md
+
+**最后会话**: 2025-11-14 16:45
+**Git 基准**: commit 9d99506
+
+## 📍 上下文指针 (Context Pointers)
+
+### 当前工作焦点
+- 活跃任务: TASK.md § 任务1️⃣ 完善脚本类型注解 (Line 361)
+- 相关架构: PLANNING.md § 技术栈 (待创建)
+- 相关 ADR: KNOWLEDGE.md § ADR 2025-11-13 (开源优先)
+
+### 会话状态
+- Git commits (本次会话): 2 commits (9d99506, 292a57a)
+- 修改文件数: 8 files
+- 主要变更领域: 文档架构优化
+
+### 下次启动时
+- 推荐命令: /wf_03_prime
+- 推荐下一步: 执行 TASK.md § 任务1️⃣ 的推荐命令序列
+```
+
+**Key Principles**:
+- ✅ All content is **pointers** or **metadata**
+- ✅ Zero duplication from TASK.md, PLANNING.md, KNOWLEDGE.md
+- ✅ File size target: < 50 lines (vs. 300+ in old format)
+- ✅ Single Source of Truth (SSOT) compliant
+
+---
 
 ## Pre-commit Framework Integration
 

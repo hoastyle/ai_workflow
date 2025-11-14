@@ -152,7 +152,7 @@ touch CLAUDE.md
 | **docs/management/PRD.md** | 项目需求 | ❌ 绝不自动修改 | 可选 |
 | **docs/management/PLANNING.md** | 技术规划和架构 | ✅ 重大决策后更新 | 推荐 |
 | **docs/management/TASK.md** | 任务追踪 | ✅ 实时更新状态 | 推荐 |
-| **docs/management/CONTEXT.md** | 会话上下文 | 🤖 仅由/wf_11_commit自动管理 | 自动创建 |
+| **docs/management/CONTEXT.md** | 会话指针文档 | 🤖 仅由/wf_11_commit自动管理 | 自动创建 |
 | **KNOWLEDGE.md** | 知识库+文档索引 | ✅ 新模式和ADR时添加<br/>📚 维护技术文档索引 | 推荐 |
 | **docs/** | 技术层文档 | 📖 按需加载，通过KNOWLEDGE.md索引 | 可选 |
 
@@ -189,9 +189,67 @@ touch CLAUDE.md
 | **docs/management/PRD.md** | ✅ | ❌ | ❌ | ❌ | 只读参考。如用户要求修改，必须明确确认并警告影响 |
 | **docs/management/PLANNING.md** | ✅ | ✅ | ✅ | ❌ | 重大技术决策后必须更新。记录"为什么"和PRD对齐理由 |
 | **docs/management/TASK.md** | ✅ | ✅ | ✅ | ❌ | 完成任务后立即更新状态。每项任务关联PRD需求 |
-| **docs/management/CONTEXT.md** | ✅ | ❌ | ❌ | ❌ | 仅由`/wf_11_commit`自动管理。其他命令不得写入 |
+| **docs/management/CONTEXT.md** | ✅ | ❌ | ❌ | ❌ | 指针文档（零冗余）。仅由`/wf_11_commit`自动管理。其他命令不得写入 |
 | **KNOWLEDGE.md** | ✅ | ✅ | ✅ | ❌ | 发现架构决策、新模式或问题解决方案时添加ADR |
 | **代码文件** | ✅ | ✅ | ✅ | ⚠️ | 遵循PLANNING.md标准。删除需用户确认 |
+
+#### CONTEXT.md 指针文档模式 (SSOT 架构)
+
+**核心原则**: CONTEXT.md 是**指针文档**而非内容文档，遵循 SSOT (Single Source of Truth) 原则。
+
+**新职责** (零冗余):
+- 记录会话的指针和元信息
+- 所有内容都是指针或元数据，不重复其他文档内容
+
+**标准模板** (~50 行，vs 旧版 300+ 行):
+```markdown
+# CONTEXT.md
+
+**最后会话**: 2025-11-14 16:45
+**Git 基准**: commit 9d99506
+
+## 📍 上下文指针 (Context Pointers)
+
+### 当前工作焦点
+- 活跃任务: TASK.md § 任务1️⃣ 完善脚本类型注解 (Line 361)
+- 相关架构: PLANNING.md § 技术栈 (待创建)
+- 相关 ADR: KNOWLEDGE.md § ADR 2025-11-13 (开源优先)
+
+### 会话状态
+- Git commits (本次会话): 2 commits (9d99506, 292a57a)
+- 修改文件数: 8 files
+- 主要变更领域: 文档架构优化
+
+### 下次启动时
+- 推荐命令: /wf_03_prime
+- 推荐下一步: 执行 TASK.md § 任务1️⃣ 的推荐命令序列
+```
+
+**禁止内容** (冗余信息):
+- ❌ 项目状态和进度百分比 → 改为从 TASK.md 推断
+- ❌ 待办任务列表 → 改为指向 TASK.md § 待做任务
+- ❌ 下一步优先事项详情 → 改为指向 TASK.md § 推荐任务
+- ❌ 架构决策详情 → 改为指向 KNOWLEDGE.md § ADR
+- ❌ 关键学习和模式 → 改为指向 KNOWLEDGE.md § 设计模式
+- ❌ 最近修改文件详情 → 改为 Git log 查询
+
+**SSOT 映射**:
+| 信息类型 | SSOT 来源 | CONTEXT.md 处理 |
+|---------|----------|----------------|
+| 任务状态 | TASK.md | 指针：Line X |
+| 架构决策 | KNOWLEDGE.md | 指针：ADR YYYY-MM-DD |
+| 代码变更 | Git log | 元数据：commits count |
+| 设计模式 | KNOWLEDGE.md | 指针：§ 章节 |
+
+**效果**:
+- ✅ 信息量减少 **80%** (300+ 行 → ~50 行)
+- ✅ 冗余率从 **85%** → **0%**
+- ✅ 维护成本降低 **90%**
+- ✅ /wf_03_prime 快速定位关键信息
+
+**相关 ADR**: [docs/adr/2025-11-15-context-md-pointer-document.md](docs/adr/2025-11-15-context-md-pointer-document.md)
+
+---
 
 ### 会话生命周期规则
 

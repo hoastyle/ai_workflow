@@ -45,7 +45,10 @@ Prime the AI assistant with comprehensive project context by reading core projec
 1. **Read Core Management Documents** (Always Load):
    - Check for existence of PRD.md, PLANNING.md, TASK.md, CONTEXT.md, and KNOWLEDGE.md
    - Read PRD.md for project requirements (read-only, never modify)
-   - Read CONTEXT.md for latest session state (if exists)
+   - Read CONTEXT.md as **pointer document** for session pointers (if exists)
+     * NOTE: CONTEXT.md now contains only pointers and metadata (zero redundancy)
+     * Pointers reference sections in TASK.md, PLANNING.md, KNOWLEDGE.md
+     * Use pointers to navigate to actual content in source documents
    - Read PLANNING.md for architecture aligned with PRD requirements
    - Read TASK.md for current tasks and priorities
    - Read KNOWLEDGE.md for accumulated project knowledge and documentation index
@@ -70,18 +73,25 @@ Prime the AI assistant with comprehensive project context by reading core projec
 
 4. **Context Analysis**:
    - Parse project architecture and technology stack from PLANNING.md
-   - Load latest progress and decisions from CONTEXT.md
+   - **Extract pointers from CONTEXT.md** (pointer document):
+     * Identify active task pointer → Navigate to TASK.md section
+     * Identify related architecture pointer → Navigate to PLANNING.md section
+     * Identify related ADR pointers → Navigate to KNOWLEDGE.md ADR entries
+     * Extract session metadata (Git baseline, commits count, change areas)
    - Extract architectural decisions and patterns from KNOWLEDGE.md
    - Understand current development phase from TASK.md
    - Identify active tasks and priorities
    - Note any blockers or dependencies
    - Review common issues and solutions from knowledge base
 
-5. **Session State Recovery**:
-   - Load work completed from previous sessions
-   - Understand current development focus
-   - Identify where work was left off
-   - Restore development context and momentum
+5. **Session State Recovery** (Using Pointers):
+   - **Use CONTEXT.md pointers** to locate session state in source documents:
+     * Active task pointer → Read task details from TASK.md
+     * Git baseline → Understand what commits happened since last session
+     * Next startup recommendation → Know which command to run next
+   - Understand current development focus from TASK.md (not CONTEXT.md)
+   - Identify where work was left off using task pointers
+   - Restore development context by following pointers to source documents
 
 6. **Working Memory Setup**:
    - Load relevant code patterns and conventions from KNOWLEDGE.md
@@ -112,7 +122,7 @@ Prime the AI assistant with comprehensive project context by reading core projec
 3. **Documentation Map** (NEW) - Available technical documents with priorities
 4. **Loaded Technical Docs** (NEW) - List of technical documents loaded based on current tasks
 5. **Knowledge Base Summary** - Key patterns and decisions from KNOWLEDGE.md
-6. **Session Recovery** - Latest progress from CONTEXT.md
+6. **Session Recovery** - Pointers from CONTEXT.md to locate session state in source documents
 7. **Active Context** - Current working area and immediate tasks from TASK.md
 8. **Applicable Solutions** - Relevant past solutions and patterns for current context
 9. **On-Demand Documents** (NEW) - Available but not loaded docs (can be accessed if needed)
@@ -128,7 +138,7 @@ Prime the AI assistant with comprehensive project context by reading core projec
 ## Integration Notes
 - Run after `/clear` to restore working context
 - Use before starting new related work sessions
-- Loads CONTEXT.md for session continuity (updated by `/wf_11_commit`)
+- Loads CONTEXT.md as pointer document for quick session navigation (updated by `/wf_11_commit`)
 - Integrates KNOWLEDGE.md for accumulated project wisdom and documentation index
 - Smart loading strategy: Always load 5 management docs, selectively load technical docs
 - Context cost optimization: Technical docs loaded on-demand based on task relevance
