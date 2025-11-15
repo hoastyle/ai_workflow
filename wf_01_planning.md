@@ -144,6 +144,84 @@ Create or update PLANNING.md to establish comprehensive project documentation th
 3. **Next Steps** - Immediate tasks based on planning
 4. **Integration Guide** - How to use with other workflow commands
 
+## 📌 工作流导航 (Phase 3 - 闭环工作流)
+
+### 工作流位置指示
+
+当使用此命令时，你正在执行标准开发流程的以下阶段：
+
+```
+[项目启动 ← 当前] → [任务规划] → [加载上下文] → [架构咨询] → [代码实现] → [测试验证] → [代码审查] → [提交保存]
+   STEP 0            STEP 0.5       STEP 1          STEP 2       STEP 3       STEP 4       STEP 5      STEP 6
+```
+
+### ✅ 已完成的步骤
+
+这是新项目的起点，通常没有前置步骤。如果是更新现有规划：
+
+1. ✅ **加载上下文**（可选，`/wf_03_prime`）
+   - 如果这是现有项目，先加载上下文
+
+### 📝 当前步骤
+
+**正在执行**: `/wf_01_planning "<项目描述>"`
+
+- 分析需求和项目结构
+- 制定技术规划和架构
+- 定义开发标准和流程
+- 建立 PLANNING.md 作为权威参考
+
+### ⏭️ 建议下一步
+
+**规划完成后**，建议按以下顺序执行：
+
+#### 路径 1：新项目启动（推荐）✅
+```bash
+# 第 0.5 步: 创建任务追踪
+/wf_02_task create "项目任务初始化"
+
+# 第 1 步: 加载上下文
+/wf_03_prime
+
+# 第 2 步: 架构咨询（可选，如需要验证）
+/wf_04_ask "这个架构设计是否合理？"
+
+# 第 3 步: 开始编码实现
+/wf_05_code "实现第一个功能"
+```
+
+#### 路径 2：更新现有规划
+```bash
+# 更新规划后
+/wf_03_prime
+
+# 继续当前工作
+/wf_05_code "继续实现"
+```
+
+### 📊 工作流进度提示
+
+当你完成规划时，确保输出中包含：
+
+✅ 已完成:
+- PLANNING.md 已生成或更新
+- 架构清晰且符合 PRD 需求
+- 开发标准已定义
+
+⏭️ 下一步提示:
+- 推荐执行 `/wf_02_task create` 初始化任务
+- 如果是现有项目，建议先运行 `/wf_03_prime`
+
+### 💡 决策指南
+
+**我应该执行哪个路径？**
+
+| 情况 | 建议 | 命令 |
+|------|------|------|
+| 全新项目启动 | 路径 1 | /wf_02_task → /wf_03_prime → /wf_04_ask (可选) → /wf_05_code |
+| 更新项目规划 | 路径 2 | /wf_03_prime → /wf_05_code |
+| 需要验证设计 | 咨询 | /wf_04_ask "设计是否合理？" |
+
 ## Workflow Integration
 - Creates foundation for `/wf_02_task`
 - Referenced by `/wf_03_prime` for context loading
