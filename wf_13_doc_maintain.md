@@ -37,16 +37,29 @@ Maintain project documentation architecture to ensure:
 Verify four-layer architecture compliance:
 
 ```
-✓ Management Layer (Root):
-  - PRD.md, PLANNING.md, TASK.md, CONTEXT.md, KNOWLEDGE.md
+✓ 管理层 - 全局索引文件（项目根目录，⚠️ 不在 docs/management/ 中）:
+  - 根目录/KNOWLEDGE.md       (必须在根目录！索引所有层级文档)
+  - 根目录/CLAUDE.md          (全局 AI 执行规范)
+  - 根目录/PHILOSOPHY.md      (设计哲学指南)
+  - 根目录/README.md          (项目入口文档)
   - Check file sizes (warn if >20KB for single file)
   - Total size should be <100KB for AI context efficiency
+
+✓ 项目管理文档（docs/management/ 目录）:
+  - docs/management/PRD.md       (产品需求文档)
+  - docs/management/PLANNING.md  (技术规划)
+  - docs/management/TASK.md      (任务追踪)
+  - docs/management/CONTEXT.md   (会话上下文指针)
+  - Total size should be <80KB
 
 ✓ Technical Layer (docs/):
   - docs/architecture/
   - docs/api/
   - docs/database/
   - docs/deployment/
+  - docs/reference/            (参考文档，如 FRONTMATTER.md, AI_ROLES_LIBRARY.md)
+  - docs/examples/             (示例文档)
+  - docs/adr/                  (架构决策记录)
   - Check for misplaced files (should be in appropriate subdirectories)
 
 ✓ Working Layer (docs/research/):
@@ -59,11 +72,17 @@ Verify four-layer architecture compliance:
   - docs/archive/YYYY-QX/
   - docs/archive/deprecated/
   - Verify archived files have metadata (reason, replacement)
+
+⚠️ 关键警告：
+  - KNOWLEDGE.md 必须保持在项目根目录，绝不移动到 docs/management/
+  - 原因：它是全局文档索引中心，需要索引所有四层（管理/技术/工作/归档）的文档
+  - 如果发现 KNOWLEDGE.md 在 docs/management/，这是错误，必须移回根目录
 ```
 
 **Output**:
 - List of misplaced documents with suggested locations
-- Management layer size report
+- **CRITICAL**: KNOWLEDGE.md 位置验证（必须在根目录）
+- Management layer size report (分别统计根目录和 docs/management/)
 - Structure compliance score (0-100%)
 
 ---
@@ -376,8 +395,19 @@ Create comprehensive documentation health report:
 - Duplicates found: 1 pair ⚠️
 
 ## Structure Audit
-### Management Layer (5 docs, 87KB)
-✓ All required files present
+### 🚨 CRITICAL Issues
+✓ KNOWLEDGE.md location: 根目录 ✓ (正确位置)
+  - If found in docs/management/, this would be CRITICAL ERROR
+
+### 管理层 - 全局索引文件 (根目录, 4 docs, 45KB)
+✓ KNOWLEDGE.md: 根目录 ✓
+✓ CLAUDE.md: 根目录 ✓
+✓ PHILOSOPHY.md: 根目录 ✓
+✓ README.md: 根目录 ✓
+✓ Size within limits
+
+### 项目管理文档 (docs/management/, 4 docs, 42KB)
+✓ PRD.md, PLANNING.md, TASK.md, CONTEXT.md present
 ✓ Size within limits
 
 ### Technical Layer (32 docs)
@@ -703,15 +733,42 @@ python scripts/frontmatter_utils.py validate-batch docs/
 # ℹ️ No maintenance needed
 ```
 
+### Scenario 4: CRITICAL - KNOWLEDGE.md Misplaced
+```bash
+# Detecting critical structure error
+/wf_13_doc_maintain
+
+# Output:
+# 🚨 CRITICAL ERROR: KNOWLEDGE.md found in docs/management/
+# 📍 Expected location: 项目根目录
+# 📍 Current location: docs/management/KNOWLEDGE.md
+#
+# ⚠️ This breaks the documentation architecture!
+#
+# 🔧 Recommended fix:
+#   git mv docs/management/KNOWLEDGE.md ./KNOWLEDGE.md
+#   /wf_11_commit "fix: 恢复 KNOWLEDGE.md 到根目录（修正误操作）"
+#
+# Would you like to fix this automatically? [Y/n]
+```
+
 ---
 
 ## Best Practices
 
-1. **Run Regularly**: Don't let documentation debt accumulate
-2. **Review Before Auto-Fix**: Always check report before --auto
-3. **Preserve History**: Archive, don't delete (unless truly useless)
-4. **Update Index**: Keep KNOWLEDGE.md in sync after manual doc changes
-5. **Communicate**: If archiving shared docs, notify team
+1. **🚨 Verify KNOWLEDGE.md Location First**: Always check KNOWLEDGE.md is in root directory
+   - KNOWLEDGE.md 必须在项目根目录
+   - 如果在 docs/management/，立即修复
+   - 这是结构审计的第一优先级检查项
+2. **Run Regularly**: Don't let documentation debt accumulate
+3. **Review Before Auto-Fix**: Always check report before --auto
+4. **Preserve History**: Archive, don't delete (unless truly useless)
+5. **Update Index**: Keep KNOWLEDGE.md in sync after manual doc changes
+6. **Communicate**: If archiving shared docs, notify team
+7. **Understand Layer Separation**:
+   - 根目录 = 全局索引文件（KNOWLEDGE.md, CLAUDE.md, PHILOSOPHY.md）
+   - docs/management/ = 项目管理文档（PRD, PLANNING, TASK, CONTEXT）
+   - 两者职责不同，不可混淆
 
 ---
 
