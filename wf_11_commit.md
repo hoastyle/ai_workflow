@@ -3,11 +3,11 @@ command: /wf_11_commit
 index: 11
 phase: "运维部署"
 description: "Git提交管理，自动更新CONTEXT和格式化"
-model: haiku
 reads: [PLANNING.md(标准), TASK.md(任务), 代码更改]
 writes: [CONTEXT.md, TASK.md, KNOWLEDGE.md(可能), README.md(可能), Git提交]
 prev_commands: [/wf_05_code, /wf_06_debug, /wf_08_review, /wf_09_refactor, /wf_10_optimize]
 next_commands: [/wf_02_task, /clear, /wf_03_prime]
+model: haiku
 context_rules:
   - "自动更新CONTEXT.md会话状态"
   - "遵守PLANNING.md质量标准"

@@ -3,11 +3,11 @@ command: /wf_99_help
 index: 99
 phase: "支持命令"
 description: "工作流帮助系统，提供命令参考和使用指导"
-model: haiku
 reads: [所有wf_*.md命令文件]
 writes: []
 prev_commands: [任何命令]
 next_commands: [用户选择的命令]
+model: haiku
 context_rules:
   - "提供中文友好界面"
   - "支持quick/guide/命令名查询"

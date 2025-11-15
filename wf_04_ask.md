@@ -7,13 +7,13 @@ reads: [PLANNING.md, TASK.md, KNOWLEDGE.md, PHILOSOPHY.md(可选), 代码库(--r
 writes: [PLANNING.md(可能), KNOWLEDGE.md(可能), TASK.md(可能), docs/adr/(可能)]
 prev_commands: [/wf_03_prime]
 next_commands: [/wf_05_code, /wf_01_planning]
-ultrathink_enabled: true
+ultrathink_lens: "architecture_design"
 context_rules:
   - "决策必须对齐PRD需求"
   - "重大架构决策更新PLANNING.md"
   - "新模式添加到KNOWLEDGE.md"
   - "重要决策考虑记录到 docs/adr/ (参见 PHILOSOPHY.md)"
-  - "可选：从 Ultrathink 角度深度分析（6原则：Think Different, Obsess Over Details 等）"
+  - "从 Ultrathink 角度深度分析（6原则：Think Different, Obsess Over Details 等）"
 ---
 
 ## 执行上下文
