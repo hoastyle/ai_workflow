@@ -42,22 +42,8 @@ context_rules:
 | **文档关系图** | `scripts/doc_graph_builder.py` | 可视化文档网络 | `python scripts/doc_graph_builder.py [options]` |
 
 **核心命令示例**：
-```bash
-# 为单个文档生成 Frontmatter
-python scripts/frontmatter_utils.py generate docs/api/auth.md
 
-# 批量生成 Frontmatter
-python scripts/frontmatter_utils.py generate-batch docs/
-
-# 验证 Frontmatter
-python scripts/frontmatter_utils.py validate docs/api/auth.md
-
-# 批量验证
-python scripts/frontmatter_utils.py validate-batch docs/
-
-# 生成文档关系图（Mermaid格式）
-python scripts/doc_graph_builder.py docs/ --format mermaid
-```
+> 详见 [完整示例库 - 核心命令示例](docs/examples/wf_14_doc_examples.md#核心命令示例)
 
 **AI 执行规则**：
 - ✅ **必须使用**：调用上述脚本工具完成 Frontmatter 相关操作
@@ -144,47 +130,7 @@ OPTIONS:
   └─ 监控和日志配置
 ```
 
-**输出示例**:
-```markdown
-# 📊 代码库分析报告
-
-## 项目概览
-- **名称**: MyProject
-- **类型**: Web Application
-- **代码规模**: 12,450 LOC, 87 文件
-- **模块数**: 6 个核心模块
-
-## 技术栈
-- **语言**: Python 3.11
-- **框架**: FastAPI 0.104
-- **数据库**: PostgreSQL 15 + Redis 7
-- **ORM**: SQLAlchemy 2.0
-- **认证**: JWT (PyJWT)
-- **部署**: Docker + Kubernetes
-
-## 架构
-- **模式**: Clean Architecture
-- **分层**:
-  - API Layer (routes/)
-  - Service Layer (services/)
-  - Repository Layer (repositories/)
-  - Domain Layer (models/)
-
-## API 概览
-- **端点数**: 12 个
-- **认证**: Bearer Token (JWT)
-- **新增端点**（未在文档中）:
-  - POST /auth/refresh
-  - GET /users/bulk
-  - GET /admin/stats
-
-## 配置
-- **环境变量**: 8 个
-- **新增变量**（未在文档中）:
-  - REDIS_URL
-  - SENTRY_DSN
-  - SMTP_SERVER
-```
+**输出示例**: 详见 [完整示例库 - 代码库分析输出](docs/examples/wf_14_doc_examples.md#1-代码库分析输出示例)
 
 ---
 
@@ -210,43 +156,7 @@ OPTIONS:
 - 详细的检测逻辑见脚本实现
 - 集成到 `/wf_14_doc` 的执行流程中
 
-**输出示例**:
-```markdown
-# 📋 文档缺口分析
-
-## ⚠️ 严重缺口 (2)
-1. **API 文档缺失端点**
-   - 类型: api
-   - 影响: 开发者无法了解新 API 的使用方式
-   - 缺失端点:
-     * POST /auth/refresh
-     * GET /users/bulk
-     * GET /admin/stats
-
-2. **部署文档缺少环境变量**
-   - 类型: deployment
-   - 影响: 部署时配置不完整，可能导致运行时错误
-   - 缺失变量:
-     * REDIS_URL
-     * SENTRY_DSN
-     * SMTP_SERVER
-
-## ⚠️ 中等缺口 (2)
-3. **README 技术栈过时**
-   - 类型: overview
-   - 当前文档: Python 3.9, FastAPI 0.95
-   - 实际版本: Python 3.11, FastAPI 0.104
-
-4. **开发指南依赖过时**
-   - 类型: dev
-   - 新增依赖: redis, sentry-sdk, celery
-   - 移除依赖: flask-cors (已迁移到 FastAPI)
-
-## ✅ 完整文档 (1)
-5. **架构文档**
-   - 最后更新: 2025-11-05
-   - 状态: 与代码一致
-```
+**输出示例**: 详见 [完整示例库 - 文档缺口分析](docs/examples/wf_14_doc_examples.md#2-文档缺口分析示例)
 
 ---
 
@@ -273,45 +183,7 @@ OPTIONS:
   └─ 确认后开始生成
 ```
 
-**用户界面示例**:
-```
-📊 分析完成！发现 4 个文档缺口
-
-📝 建议生成的文档:
-
-[1] 🔴 API 文档更新 (docs/api/README.md)
-    ├─ 严重程度: 高
-    ├─ 内容: 添加 3 个新端点的文档
-    ├─ 来源: 从路由定义和类型注解提取
-    └─ 预计时间: 2 分钟
-
-[2] 🔴 环境变量文档 (docs/deployment/env-vars.md)
-    ├─ 严重程度: 高
-    ├─ 内容: 3 个新环境变量的说明
-    ├─ 来源: 从 .env.example 和代码引用提取
-    └─ 预计时间: 1 分钟
-
-[3] 🟡 README 更新
-    ├─ 严重程度: 中
-    ├─ 内容: 更新技术栈版本信息
-    ├─ 来源: 从 pyproject.toml 提取
-    └─ 预计时间: 1 分钟
-
-[4] 🟡 开发指南更新 (docs/development/setup.md)
-    ├─ 严重程度: 中
-    ├─ 内容: 更新依赖列表和安装步骤
-    ├─ 来源: 从 pyproject.toml 和 Makefile 提取
-    └─ 预计时间: 3 分钟
-
-请选择要生成的文档:
-  [ ] 1. API 文档更新
-  [ ] 2. 环境变量文档
-  [ ] 3. README 更新
-  [ ] 4. 开发指南更新
-  [ ] all - 生成所有文档
-
-输入选项 (1-4, all, 或逗号分隔如 1,2): _
-```
+**用户界面示例**: 详见 [完整示例库 - 交互式向导](docs/examples/wf_14_doc_examples.md#3-交互式文档向导示例)
 
 ---
 
@@ -321,200 +193,27 @@ OPTIONS:
 
 #### 4.1 API 文档提取
 
-**Python (FastAPI) 示例**:
-```python
-# 代码:
-@app.post("/auth/refresh", response_model=TokenResponse, tags=["Authentication"])
-async def refresh_token(
-    refresh_token: str = Body(..., description="Refresh token from login"),
-    db: Session = Depends(get_db)
-) -> TokenResponse:
-    """
-    刷新访问令牌
+从 FastAPI、Express 等框架的路由定义自动提取 API 文档。
 
-    使用有效的 refresh token 获取新的 access token，
-    无需重新输入用户名和密码。
-
-    Args:
-        refresh_token: 登录时获得的刷新令牌
-
-    Returns:
-        新的访问令牌和刷新令牌
-
-    Raises:
-        401: 刷新令牌无效或已过期
-    """
-    # ... implementation
-```
-
-**提取后的文档**:
-```markdown
-### POST /auth/refresh
-
-刷新访问令牌
-
-使用有效的 refresh token 获取新的 access token，无需重新输入用户名和密码。
-
-**请求体**:
-```json
-{
-  "refresh_token": "string"  // 登录时获得的刷新令牌
-}
-```
-
-**响应** (200 OK):
-```json
-{
-  "access_token": "string",
-  "refresh_token": "string",
-  "token_type": "bearer",
-  "expires_in": 3600
-}
-```
-
-**错误响应**:
-- `401 Unauthorized`: 刷新令牌无效或已过期
-
-**标签**: Authentication
-```
+**示例**: 详见 [完整示例库 - API 提取示例](docs/examples/wf_14_doc_examples.md#4-信息提取示例)
 
 #### 4.2 环境变量文档提取
 
-**从代码中提取**:
-```python
-# settings.py
-REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379/0")
-SENTRY_DSN = os.getenv("SENTRY_DSN")  # Optional
-SMTP_SERVER = os.getenv("SMTP_SERVER", "smtp.gmail.com")
-```
+从 .env.example 和代码中自动提取环境变量配置。
 
-**从 .env.example 提取**:
-```bash
-# .env.example
-REDIS_URL=redis://localhost:6379/0
-SENTRY_DSN=https://xxx@sentry.io/123  # Optional: Error tracking
-SMTP_SERVER=smtp.gmail.com
-```
-
-**生成的文档**:
-```markdown
-## 环境变量配置
-
-### REDIS_URL
-- **描述**: Redis 数据库连接 URL
-- **类型**: String
-- **必需**: 否
-- **默认值**: `redis://localhost:6379/0`
-- **示例**: `redis://user:pass@redis-host:6379/0`
-
-### SENTRY_DSN
-- **描述**: Sentry 错误追踪 DSN
-- **类型**: String
-- **必需**: 否（用于生产环境监控）
-- **默认值**: 无
-- **示例**: `https://xxx@sentry.io/123`
-
-### SMTP_SERVER
-- **描述**: 邮件发送服务器地址
-- **类型**: String
-- **必需**: 否
-- **默认值**: `smtp.gmail.com`
-- **示例**: `smtp.sendgrid.net`
-```
+**示例**: 详见 [完整示例库 - 环境变量提取](docs/examples/wf_14_doc_examples.md#4-信息提取示例)
 
 #### 4.3 依赖和技术栈提取
 
-**从 pyproject.toml 提取**:
-```toml
-[tool.poetry.dependencies]
-python = "^3.11"
-fastapi = "^0.104.0"
-sqlalchemy = "^2.0.0"
-redis = "^5.0.0"
-sentry-sdk = "^1.38.0"
-```
+从 pyproject.toml、package.json、Cargo.toml 等自动提取技术栈信息。
 
-**生成的文档**:
-```markdown
-## 技术栈
-
-### 核心框架
-- **Python**: 3.11+
-- **Web 框架**: FastAPI 0.104+
-- **ORM**: SQLAlchemy 2.0+
-
-### 数据存储
-- **主数据库**: PostgreSQL 15+
-- **缓存**: Redis 7+
-
-### 监控和日志
-- **错误追踪**: Sentry (sentry-sdk 1.38+)
-
-### 安装依赖
-
-使用 Poetry:
-```bash
-poetry install
-```
-
-或使用 pip:
-```bash
-pip install -r requirements.txt
-```
-```
+**示例**: 详见 [完整示例库 - 信息提取示例](docs/examples/wf_14_doc_examples.md#4-信息提取示例)
 
 #### 4.4 从测试代码提取使用示例
 
-**测试代码**:
-```python
-def test_refresh_token(client, test_user):
-    # 先登录获取 refresh token
-    login_response = client.post("/auth/login", json={
-        "username": "test@example.com",
-        "password": "password123"
-    })
-    refresh_token = login_response.json()["refresh_token"]
+从现有的测试代码自动生成真实的使用示例。
 
-    # 使用 refresh token 获取新的 access token
-    response = client.post("/auth/refresh", json={
-        "refresh_token": refresh_token
-    })
-
-    assert response.status_code == 200
-    assert "access_token" in response.json()
-```
-
-**生成的文档示例**:
-```markdown
-### 使用示例
-
-**刷新令牌**:
-```bash
-# 1. 先登录获取 refresh token
-curl -X POST https://api.example.com/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{"username": "user@example.com", "password": "your_password"}'
-
-# 响应:
-# {
-#   "access_token": "eyJ...",
-#   "refresh_token": "dGh...",
-#   "expires_in": 3600
-# }
-
-# 2. 使用 refresh token 获取新的 access token
-curl -X POST https://api.example.com/auth/refresh \
-  -H "Content-Type: application/json" \
-  -d '{"refresh_token": "dGh..."}'
-
-# 响应:
-# {
-#   "access_token": "eyJ...",  # 新的 access token
-#   "refresh_token": "abc...",  # 新的 refresh token
-#   "expires_in": 3600
-# }
-```
-```
+**示例**: 详见 [完整示例库 - 信息提取示例](docs/examples/wf_14_doc_examples.md#4-信息提取示例)
 
 ---
 
@@ -1152,122 +851,12 @@ def update_knowledge_index(new_docs, knowledge_md):
 
 ## Examples
 
-### 示例 1: 新项目首次生成文档
+详见 [完整示例库 - 完整执行示例](docs/examples/wf_14_doc_examples.md#5-完整执行示例)
 
-```bash
-$ /wf_14_doc
-
-📊 正在分析代码库...
-✓ 项目结构扫描完成 (87 文件)
-✓ 技术栈识别完成 (Python 3.11 + FastAPI)
-✓ API 提取完成 (12 端点)
-✓ 配置分析完成 (8 环境变量)
-
-📋 文档缺口分析:
-
-⚠️ 严重缺口 (3)
-1. 缺少 API 文档 (docs/api/README.md)
-2. 缺少环境变量文档 (docs/deployment/env-vars.md)
-3. 缺少开发指南 (docs/development/setup.md)
-
-⚠️ 中等缺口 (1)
-4. README.md 不存在
-
-📝 建议生成的文档:
-
-[1] 🔴 API 文档 (docs/api/README.md)
-    ├─ 严重程度: 高
-    ├─ 内容: 12 个端点的完整文档
-    ├─ 来源: 从路由定义和类型注解提取
-    └─ 预计时间: 5 分钟
-
-[2] 🔴 环境变量文档 (docs/deployment/env-vars.md)
-    ├─ 严重程度: 高
-    ├─ 内容: 8 个环境变量的说明
-    ├─ 来源: 从 .env.example 和代码提取
-    └─ 预计时间: 2 分钟
-
-[3] 🔴 开发指南 (docs/development/setup.md)
-    ├─ 严重程度: 高
-    ├─ 内容: 环境设置和开发工作流
-    ├─ 来源: 从 pyproject.toml 和 Makefile 提取
-    └─ 预计时间: 4 分钟
-
-[4] 🟡 README.md
-    ├─ 严重程度: 中
-    ├─ 内容: 项目概览和快速开始
-    ├─ 来源: 从项目分析和 PLANNING.md 提取
-    └─ 预计时间: 3 分钟
-
-请选择要生成的文档 (1-4, all, 或逗号分隔): all
-
-✅ 开始生成文档...
-
-✓ [1/4] 生成 docs/api/README.md (5.2 秒)
-✓ [2/4] 生成 docs/deployment/env-vars.md (1.8 秒)
-✓ [3/4] 生成 docs/development/setup.md (3.5 秒)
-✓ [4/4] 生成 README.md (2.9 秒)
-
-✓ 更新 KNOWLEDGE.md 索引 (添加 3 个条目)
-
-✅ 文档生成完成！
-
-生成的文档:
-1. ✅ docs/api/README.md - API 完整文档
-2. ✅ docs/deployment/env-vars.md - 环境变量说明
-3. ✅ docs/development/setup.md - 开发环境设置
-4. ✅ README.md - 项目概览
-
-后续建议:
-- 审查生成的文档，完善细节
-- 运行 /wf_13_doc_maintain 检查文档结构
-- 运行 /wf_11_commit 提交更改
-```
-
-### 示例 2: 代码更新后更新 API 文档
-
-```bash
-$ /wf_14_doc --update api
-
-📊 分析 API 变化...
-
-发现 3 个新端点:
-  + POST /auth/refresh
-  + GET /users/bulk
-  + GET /admin/stats
-
-发现 1 个端点修改:
-  ~ PUT /users/{id} - 添加了新参数 'role'
-
-✅ 更新 docs/api/README.md...
-
-✓ 添加 3 个新端点文档
-✓ 更新 1 个端点文档
-✓ 更新 KNOWLEDGE.md (最后更新时间)
-
-✅ API 文档更新完成！
-```
-
-### 示例 3: CI/CD 检查模式
-
-```bash
-$ /wf_14_doc --check
-
-📊 分析代码库...
-📋 检测文档缺口...
-
-⚠️ 发现 2 个文档缺口:
-
-1. API 文档缺少 1 个新端点
-   - POST /webhooks/stripe
-
-2. 环境变量文档缺少 1 个变量
-   - STRIPE_WEBHOOK_SECRET
-
-❌ 文档检查失败 (退出码 1)
-
-建议: 运行 /wf_14_doc 更新文档
-```
+包含以下 3 个完整场景：
+- 新项目首次生成文档
+- 代码更新后更新 API 文档
+- CI/CD 检查模式
 
 ---
 
