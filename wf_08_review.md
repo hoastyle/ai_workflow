@@ -37,6 +37,9 @@ Code Review Coordinator ensuring project standards:
 4. **Architecture Assessor** – verifies design alignment
 
 ## Process
+
+### Phase 1: 基础代码审查 (Dimension 1-5)
+
 1. **Review Preparation**:
    - Load standards from PLANNING.md
    - Check related tasks in TASK.md
@@ -61,18 +64,190 @@ Code Review Coordinator ensuring project standards:
    - Document patterns and standards for KNOWLEDGE.md
    - Document decisions
 
+### Phase 2: 文档架构合规性检查 (Dimension 6 - 强制) ⭐ NEW
+
+**强制执行**: 如果代码审查通过其他维度，必须检查第 6 维度，确保文档架构完整性
+
+#### Dimension 6: 文档架构合规性 (Documentation Architecture Compliance)
+
+**目的**: 确保代码和文档同步，遵循分层约束，成本控制
+
+**检查清单** (所有 YES 才能通过此维度):
+
+```
+□ 分层正确性 - 文档位置是否符合四层架构？
+  ├─ 检查项: 新文档是否在正确的层级？
+  │  管理层 (PLANNING.md, CONTEXT.md)
+  │  技术层 (docs/)
+  │  知识层 (KNOWLEDGE.md, docs/knowledge/)
+  │  归档层 (docs/archive/)
+  ├─ 反例: ❌ 常见 FAQ 出现在 docs/api/ 中
+  │         应该在: KNOWLEDGE.md § FAQ
+  └─ 通过: ✅ 新 API 文档在 docs/api/
+           新决策在 docs/adr/
+           常见问题在 KNOWLEDGE.md
+
+□ 成本控制 - 文档大小是否符合约束？
+  ├─ KNOWLEDGE.md 是否 < 200 行？
+  │  ❌ 如果增长 > 20% → 拆分关键部分到 docs/knowledge/
+  │  ✅ 增长 < 20% → 通过
+  ├─ 新技术文档是否 < 500 行？
+  │  ❌ 如果 > 500 → 要求拆分成多个文件
+  │  ✅ < 500 → 通过
+  ├─ 新 ADR 是否 < 200 行？
+  │  ❌ 如果 > 200 → 要求精简
+  │  ✅ < 200 → 通过
+  └─ docs/ 总增长是否 < 30%？
+     ❌ 如果 > 30% → 检查是否需要清理旧文档
+     ✅ < 30% → 通过
+
+□ Frontmatter 完整性 - 所有新文档是否有元数据？
+  ├─ 必需字段 (7个) 都存在？
+  │  ❌ 缺失任何字段 → 拒绝
+  │  ✅ 全部存在 → 通过
+  │  字段: title, description, type, status, priority,
+  │        created_date, last_updated
+  ├─ 关系字段是否正确填写？
+  │  ❌ related_documents/related_code 为空或过时 → 标记改进
+  │  ✅ 相关链接准确 → 通过
+  └─ 类型是否符合规范？
+     ❌ type 字段不在允许的值中 → 拒绝
+     ✅ type 正确 → 通过
+
+□ 内容重复检查 - 是否有内容在多个文档重复？
+  ├─ 信号1: 类似的说明出现在 2+ 个地方
+  │  ❌ 重复内容 → 要求建立指针关系
+  │  ✅ 内容独立，无重复 → 通过
+  ├─ 信号2: KNOWLEDGE.md FAQ 和 docs/ 文档说同一个事
+  │  ❌ 重复说明 → 删除一个，保留指针
+  │  ✅ 各有特点，互补而非重复 → 通过
+  └─ 信号3: ADR 和 PLANNING.md 有相同决策记录
+     ❌ 重复记录 → 精简一个
+     ✅ PLANNING.md 记录"是什么"，ADR 记录"为什么" → 通过
+
+□ 指针而非复制 - 是否建立了正确的文档关系？
+  ├─ 跨层引用: 高层文档是否链接到低层详细文档？
+  │  ❌ PLANNING.md 和 docs/ 是孤立的 → 要求补充链接
+  │  ✅ PLANNING.md 有指向 docs/ 的链接 → 通过
+  ├─ 索引更新: KNOWLEDGE.md 文档索引是否包含新文档？
+  │  ❌ 新文档未在索引表中 → 拒绝
+  │  ✅ 索引已更新 → 通过
+  └─ 关系图: 相关文档之间是否有 related_documents 字段？
+     ❌ Frontmatter 中没有关系链接 → 标记改进
+     ✅ 关系清晰 → 通过
+
+□ 审查合规 - 文档内容质量和准确性
+  ├─ 是否从代码中提取的真实内容（不是编造）？
+  │  ❌ 文档说明与代码不符 → 拒绝
+  │  ✅ 文档准确反映代码 → 通过
+  ├─ 是否包含实际的代码示例（如适用）？
+  │  ❌ API 文档没有使用示例 → 要求补充
+  │  ✅ 有清晰的代码示例 → 通过
+  └─ 是否风格和格式一致（与现有文档）？
+     ❌ 格式与项目其他文档明显不一致 → 要求调整
+     ✅ 风格一致 → 通过
+```
+
+**审查评分** (文档架构维度):
+
+```
+评分等级          条件
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+5/5 (优秀)      所有 6 项检查通过，示范级别
+4/5 (良好)      通过所有关键项 (分层、成本、Frontmatter)
+                仅有微小改进
+3/5 (及格)      基本符合约束，有改进空间
+2/5 (需改进)    有 2+ 项不符合，需要显著调整
+1/5 (拒绝)      严重违反约束，无法通过
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+**失败处理**:
+
+🔴 **立即拒绝（必须修复）**:
+- KNOWLEDGE.md 增长 > 50%
+- 新文档无 Frontmatter
+- 内容重复在 2+ 个地方
+- 文档内容与代码不符
+
+🟠 **要求改进（可以在下个 commit 修复）**:
+- KNOWLEDGE.md 增长 20-50%（需解释为什么）
+- 文档 > 500 行（需分拆）
+- Frontmatter 缺少推荐字段
+- 没有链接到相关文档
+
+**修复方式**:
+如果文档审查不通过，返回 Step 8 (在 /wf_05_code 中) 或使用：
+```bash
+/wf_14_doc --check "docs/"  # 快速检查文档问题
+/wf_14_doc --fix "docs/"    # 自动修复可修复的问题
+```
+
+#### Dimension 6 总结
+
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Dimension 6: 文档架构合规性
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+├─ 分层正确性:  ✅/❌
+├─ 成本控制:    ✅/❌
+├─ Frontmatter: ✅/❌
+├─ 内容重复:    ✅/❌
+├─ 指针关系:    ✅/❌
+├─ 审查合规:    ✅/❌
+└─ 综合评分:    __/5
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+代码审查通过 (Dim 1-5) AND 文档审查通过 (Dim 6) = ✅ APPROVED
+```
+
+---
+
 ## Output Format
+
+### Phase 1: 代码审查输出（Dimension 1-5）
 1. **Review Summary** – overall assessment
 2. **Findings** – issues with standard references
 3. **Pattern Analysis** – reusable patterns identified for KNOWLEDGE.md
 4. **Required Changes** – must-fix items
 5. **Recommendations** – improvement suggestions
 6. **Task Generation** – new TASK.md entries
-7. **👁️ Ultrathink 设计优雅度评审** (可选提醒) – 设计质量维度（参见 PHILOSOPHY.md）
+
+### Phase 2: 文档架构合规性输出（Dimension 6 - 强制）⭐ NEW
+7. **📋 文档审查总结** – 完成 Dimension 6 的检查结果：
+   - ✅ 分层正确性检查 - 文档位置是否符合四层架构
+   - ✅ 成本控制检查 - KNOWLEDGE.md/docs/ 大小是否符合约束
+   - ✅ Frontmatter 完整性检查 - 是否有完整的元数据
+   - ✅ 内容重复检查 - 是否有多处重复的内容
+   - ✅ 指针关系检查 - 是否建立了跨层的链接
+   - ✅ 审查合规检查 - 文档内容准确性和示例完整性
+
+   **输出示例**：
+   ```
+   📄 文档架构合规性审查 (Dimension 6)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   分层正确性:  ✅ 新 docs/api/auth.md 位置正确
+   成本控制:    ✅ KNOWLEDGE.md 增长 +3%, docs/ +6%
+   Frontmatter: ✅ 所有必需字段完整
+   内容重复:    ✅ 无重复，独立内容
+   指针关系:    ✅ related_documents 已填写
+   审查合规:    ✅ 代码示例完整，文档准确
+
+   综合评分:    5/5 (优秀) ⭐
+   状态:        ✅ APPROVED (代码+文档均通过)
+   ```
+
+8. **📚 文档改进任务**（如果需要）– 如果 Dimension 6 发现改进项：
+   - 🔴 立即拒绝项（必须在本次 commit 修复）
+   - 🟠 要求改进项（可以在下个迭代修复）
+   - 建议使用：`/wf_14_doc --check` 和 `--fix` 快速修复
+
+9. **👁️ Ultrathink 设计优雅度评审** (可选提醒) – 设计质量维度（参见 PHILOSOPHY.md）
    - 📐 **代码结构**: 是否流畅易懂？函数职责清晰吗？
    - ✨ **命名质量**: 变量名/函数名是否自然而消除歧义？
    - 🎯 **必然性**: 代码是否"不得不这样"，有没有不必要的复杂性？
    - ⚖️ **权衡认知**: 如果有性能/可读性权衡，是否明确且值得？
+   - 📚 **文档一致性**: 文档和代码是否保持同步和协调？
 
 ## Workflow Integration
 - Enforces PLANNING.md standards
