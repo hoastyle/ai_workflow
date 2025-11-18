@@ -542,6 +542,173 @@ version: "1.0"
 - 发现文档缺少frontmatter → 提醒补充
 - 提交次数达到10次 → 提示运行 `/wf_13_doc_maintain`
 
+#### 文档生成约束规范（约束驱动） (NEW - 2025-11-18)
+
+**核心原则**: 在文档生成时就内置约束检查，而非事后清理（详见 ADR 2025-11-18-constraint-driven-documentation-generation）
+
+**三阶段约束执行系统**:
+
+| 阶段 | 执行命令 | 职责 | 输出 |
+|------|--------|------|------|
+| **Phase 1** | `/wf_05_code` Step 8 | 代码完成后的文档决策树 | 确定需要哪些文档（类型、位置、大小）|
+| **Phase 2** | `/wf_14_doc` | 文档生成的成本估计和门控 | 生成前预估成本，超限时拒绝 |
+| **Phase 3** | `/wf_08_review` Dimension 6 | 审查时的架构合规性检查 | 再次验证 Frontmatter、分层、约束 |
+
+**成本约束规范（硬限制）**:
+
+```
+文档大小约束:
+┌────────────────────────────────┬────────┬──────────────┐
+│ 文档类型 | 位置 | 约束 | 说明 |
+├────────────────────────────────┼────────┼──────────────┤
+│ 类型A (架构) | PLANNING.md | < 50行 | 仅"为什么"和"架构影响" |
+│ 类型B (决策) | docs/adr/ | < 200行 | 遵循 ADR 模板 |
+│ 类型C (功能) | docs/ | < 500行 | 复杂 API 分多文件 |
+│ 类型D (问题) | KNOWLEDGE.md | < 50行 | 月末批量审查 |
+│ 类型E (无文档) | - | - | 代码优化、变量改进等 |
+└────────────────────────────────┴────────┴──────────────┘
+
+增长率约束 (per commit):
+  - KNOWLEDGE.md 增长: < 20%
+  - docs/ 增长: < 30%
+
+索引约束:
+  - KNOWLEDGE.md 总行数: < 200 行（仅索引和摘要）
+  - 所有新文档: 必须有完整 Frontmatter（7个必需字段）
+```
+
+**执行流程**:
+
+```
+代码实现完成
+  ↓
+Step 1 (在 /wf_05_code Step 8.1-8.2):
+  确定文档需求（Q1-Q5检查清单）
+  按 A/B/C/D/E 类型分层
+  ↓
+Step 2 (在 /wf_14_doc 中):
+  ✅ 估计每个文档的成本
+  ✅ 计算对 KNOWLEDGE.md 和 docs/ 的影响
+  ✅ 判断是否超过约束阈值
+
+  若超限 → 提示用户：
+    ① 修改文档范围（减少内容）
+    ② 拆分成多个 commit
+    ③ 先清理旧文档，再添加新文档
+
+  若符合 → 生成文档 + 生成 Frontmatter
+  ↓
+Step 3 (在 /wf_08_review Dimension 6 中):
+  ✅ 验证 Frontmatter 完整性
+  ✅ 重新计算成本影响
+  ✅ 检查分层正确性
+  ✅ 验证无重复内容
+
+  若不符合 → 返回改进要求
+  若符合 → 提示进入 /wf_11_commit
+  ↓
+Step 4 (在 /wf_11_commit 中):
+  在 commit message 中记录文档决策：
+    - 类型和位置
+    - 成本影响
+    - 决策时间戳
+```
+
+**文档分类决策树（来自 /wf_05_code Step 8.2）**:
+
+```
+改动类型 → 文档类型 → 位置 → 约束 → 自动分层
+
+Q1: 改动了公开 API/函数/类?
+├─ YES → Type C 或 B (看是否有设计决策)
+└─ NO → Q2
+
+Q2: 改变了现有功能的行为?
+├─ YES → Type A 或 D (架构变化 vs 最佳实践)
+└─ NO → Q3
+
+Q3: 使用了新的库/框架/技术?
+├─ YES → Type B (创建 ADR 记录决策原因)
+└─ NO → Q4
+
+Q4: 改变了系统架构或设计?
+├─ YES → Type A (更新 PLANNING.md)
+└─ NO → Q5
+
+Q5: 引入了新的配置或部署流程?
+├─ YES → Type C (部署/配置文档)
+└─ NO → Type E (无需文档)
+```
+
+**强制门控点（三个地方必须通过）**:
+
+1. **生成时** (/wf_14_doc):
+   ```bash
+   成本估计 → 判断超限 → 若超限拒绝生成
+   python scripts/frontmatter_utils.py validate docs/
+   ```
+
+2. **审查时** (/wf_08_review Dimension 6):
+   ```
+   6项检查清单 → 必须全部通过
+   ✅ 分层正确性
+   ✅ 成本控制
+   ✅ Frontmatter 完整性
+   ✅ 内容重复检查
+   ✅ 指针关系
+   ✅ 审查合规
+   ```
+
+3. **提交时** (/wf_11_commit):
+   ```
+   自动检查：
+   - Frontmatter 验证
+   - 索引更新（python scripts/frontmatter_utils.py update-index）
+   - 无破损链接
+   ```
+
+**相关命令和工具**:
+
+| 命令 | 用途 | 约束检查 |
+|------|------|--------|
+| `/wf_05_code` Step 8 | 代码后的文档决策 | Step 8.4 成本门控 |
+| `/wf_14_doc` | 文档生成 | 步骤 1.5 + 5.1-5.2 |
+| `/wf_08_review` Dimension 6 | 代码审查 | 6项检查清单 |
+| `/wf_11_commit` | 提交代码 | Frontmatter 验证 |
+
+**工具脚本**:
+
+```bash
+# Frontmatter 生成和验证
+python scripts/frontmatter_utils.py generate <doc_path>
+python scripts/frontmatter_utils.py validate <doc_path>
+python scripts/frontmatter_utils.py validate-batch docs/
+python scripts/frontmatter_utils.py update-index KNOWLEDGE.md
+
+# 文档关系图
+python scripts/doc_graph_builder.py generate docs/
+```
+
+**超限处理**:
+
+🔴 **立即失败** (必须立即修复):
+- KNOWLEDGE.md 增长 > 50%
+- 新文档无 Frontmatter
+- 内容在 2+ 个地方重复
+- 文档内容与代码不符
+
+🟠 **要求改进** (可在下个 commit 修复):
+- KNOWLEDGE.md 增长 20-50%
+- 文档 > 500 行
+- Frontmatter 缺少推荐字段
+- 没有链接到相关文档
+
+**修复选项**:
+1. 减少文档范围（删除非关键部分）
+2. 拆分成多个 < 500 行的文件
+3. 先清理旧文档（运行 `/wf_13_doc_maintain`）
+4. 分多个 commit 逐步添加
+
 ### 命令调用规则
 
 **工作流命令是Slash Commands**：
