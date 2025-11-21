@@ -54,7 +54,7 @@ declare -ga DOC_FILES=(
 # These are derived from environment variables for flexibility
 INSTALL_DIR="${HOME}/.claude"
 COMMANDS_DIR="${INSTALL_DIR}/commands"
-SCRIPTS_DIR="${INSTALL_DIR}/scripts"
+SCRIPTS_DIR="${COMMANDS_DIR}/scripts"
 DOCS_DIR="${INSTALL_DIR}/docs"
 BACKUP_DIR="${INSTALL_DIR}/backup"
 

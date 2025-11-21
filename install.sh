@@ -37,7 +37,7 @@ source "${SCRIPT_DIR}/scripts/install.manifest" || exit 1
 ###############################################################################
 
 # Default options
-INSTALL_METHOD="link"  # link or copy
+INSTALL_METHOD="copy"  # copy or link (copy is default for portability)
 CREATE_BACKUP=1
 INCLUDE_DOCS=0
 DRY_RUN=0
@@ -376,13 +376,13 @@ install_scripts() {
             continue
         fi
 
-        local target="$INSTALL_DIR/scripts/$script_file"
+        local target="$COMMANDS_DIR/scripts/$script_file"
 
         if [[ $DRY_RUN -eq 1 ]]; then
             info "[DRY RUN] Would install: $script_file"
             ((scripts_count++))
         else
-            mkdir -p "$INSTALL_DIR/scripts"
+            mkdir -p "$COMMANDS_DIR/scripts"
             if [[ $INSTALL_METHOD == "link" ]]; then
                 if install_file_link "$source_file" "$target"; then
                     ((scripts_count++))

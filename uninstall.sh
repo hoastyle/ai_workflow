@@ -296,7 +296,7 @@ uninstall_scripts() {
     echo ""
     info "Removing utility scripts..."
 
-    local scripts_dir="$INSTALL_DIR/scripts"
+    local scripts_dir="$COMMANDS_DIR/scripts"
     local removed_count=0
 
     if [[ ! -d "$scripts_dir" ]]; then
