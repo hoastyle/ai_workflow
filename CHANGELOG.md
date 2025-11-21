@@ -4,7 +4,80 @@ This document tracks the evolution of the cc_commands workflow system, documenti
 
 ## Version History
 
-### v3.2 (Current) - Ultrathink Design Philosophy Integration
+### v3.3 (Current) - Installation/Uninstallation System
+**Release Date**: 2025-11-21
+**版本**: v3.3
+
+**Installation System** ⭐:
+- **Install/Uninstall Scripts**: Bash脚本实现完整的安装/卸载功能
+- **Utilities Library**: scripts/install_utils.sh - 可复用的工具函数库（15个函数）
+- **Smart Backup Mechanism**: 自动备份，支持恢复
+- **Multiple Installation Methods**: 符号链接（推荐）或文件复制两种方式
+- **Comprehensive Documentation**: INSTALL.md完整指南
+
+**Core Features**:
+- ✅ 零外部依赖（仅需系统Bash）
+- ✅ 符号链接方式：命令文件保持同步，自动更新
+- ✅ 文件复制方式：独立副本，不依赖项目目录
+- ✅ 完整备份机制：自动备份、恢复、清理
+- ✅ 详细的错误处理和用户反馈
+- ✅ 支持干运行模式验证安装
+- ✅ 16个命令文件+1个配置文件安装
+
+**New Files**:
+- **install.sh** (570行): 主安装脚本，支持8个选项
+- **uninstall.sh** (480行): 主卸载脚本，支持5个选项
+- **scripts/install_utils.sh** (420行): 工具函数库
+  - 颜色输出函数
+  - 验证和检查函数
+  - 文件操作函数（复制、链接、备份）
+  - 清理和验证函数
+- **INSTALL.md** (400行): 详细安装指南
+
+**Enhanced Files**:
+- README.md: +40行（安装部分）
+- CHANGELOG.md: 本条目
+
+**Installation Directories**:
+```
+~/.claude/
+├── commands/       # 16个命令文件
+├── CLAUDE.md       # 全局配置
+├── docs/           # 可选文档（COMMANDS.md等）
+└── backup/         # 自动备份目录
+```
+
+**Usage Examples**:
+```bash
+# 推荐：符号链接安装
+./install.sh
+
+# 备选：文件复制
+./install.sh --copy
+
+# 不创建备份
+./install.sh --no-backup
+
+# 测试安装
+./install.sh --dry-run
+
+# 卸载
+./uninstall.sh
+```
+
+**Key Design Decisions**:
+- **Bash脚本**: 符合"优先开源、成熟优先"原则，零依赖
+- **符号链接**: 推荐方式，保持项目文件同步
+- **备份机制**: 时间戳备份，便于恢复
+- **相关ADR**: docs/adr/2025-11-21-bash-script-for-installation.md
+
+**Backward Compatibility**: 100% 向后兼容，现有项目无需修改
+
+**Total Changes**: +1870行 (3个新文件，3个脚本，2个增强文件)
+
+---
+
+### v3.2 - Ultrathink Design Philosophy Integration
 **Release Date**: 2025-11-06
 **版本**: v3.2
 

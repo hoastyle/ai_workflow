@@ -16,6 +16,52 @@
 
 ---
 
+## 📦 安装
+
+### 方式1：从项目目录安装（推荐）
+
+```bash
+# 克隆项目
+git clone <ai_workflow_repo>
+cd ai_workflow
+
+# 运行安装脚本
+./install.sh
+
+# 加载项目上下文
+/wf_03_prime
+```
+
+### 方式2：自定义安装选项
+
+```bash
+# 查看所有选项
+./install.sh --help
+
+# 示例：复制文件而不是使用符号链接
+./install.sh --copy
+
+# 示例：不创建备份
+./install.sh --no-backup
+
+# 示例：包含文档文件
+./install.sh --include-docs
+```
+
+### 卸载
+
+```bash
+# 从项目目录卸载
+./uninstall.sh
+
+# 查看卸载选项
+./uninstall.sh --help
+```
+
+**更多安装说明**: 查看 [INSTALL.md](./INSTALL.md)
+
+---
+
 ## 🚀 快速开始
 
 ### 新项目初始化

@@ -1,0 +1,129 @@
+#!/bin/bash
+
+###############################################################################
+# Installation Manifest - Single Source of Truth for File Lists
+#
+# This file is sourced by both install.sh and uninstall.sh to ensure
+# consistent file lists across installation and uninstallation.
+#
+# ⚠️  IMPORTANT: Keep all arrays synchronized!
+#     When adding new files, update ALL relevant arrays below.
+#
+# Usage:
+#   source "${SCRIPT_DIR}/scripts/install.manifest"
+###############################################################################
+
+# ============================================================================
+# File Manifests - Define all files to be installed/uninstalled
+# ============================================================================
+
+# Workflow command files - glob pattern for all wf_*.md files
+declare -ga COMMAND_FILES=(
+    "wf_*.md"  # Glob pattern - expands to all matching files
+)
+
+# Global configuration files
+declare -ga CONFIG_FILES=(
+    "CLAUDE.md"
+)
+
+# Utility scripts to install to ~/.claude/scripts/
+# ⚠️  SYNC NOTE: This is the source of truth for script files
+#     If you add a new script:
+#     1. Place it in scripts/ directory
+#     2. Add its name to this array
+#     3. Both install.sh and uninstall.sh will automatically use it
+declare -ga SCRIPT_FILES=(
+    "install_utils.sh"
+    "frontmatter_utils.py"
+    "doc_graph_builder.py"
+)
+
+# Optional documentation files (installed with --include-docs)
+declare -ga DOC_FILES=(
+    "COMMANDS.md"
+    "WORKFLOWS.md"
+    "TROUBLESHOOTING.md"
+    "PHILOSOPHY.md"
+)
+
+# ============================================================================
+# Installation Directories - Paths for installation targets
+# ============================================================================
+
+# These are derived from environment variables for flexibility
+INSTALL_DIR="${HOME}/.claude"
+COMMANDS_DIR="${INSTALL_DIR}/commands"
+SCRIPTS_DIR="${INSTALL_DIR}/scripts"
+DOCS_DIR="${INSTALL_DIR}/docs"
+BACKUP_DIR="${INSTALL_DIR}/backup"
+
+# ============================================================================
+# Validation Functions
+# ============================================================================
+
+# Verify manifest consistency
+validate_manifest() {
+    local errors=0
+
+    echo "📋 Validating installation manifest..."
+
+    # Check if arrays are defined
+    if [[ -z "${COMMAND_FILES[*]}" ]]; then
+        echo "❌ COMMAND_FILES is empty"
+        ((errors++))
+    fi
+
+    if [[ -z "${CONFIG_FILES[*]}" ]]; then
+        echo "❌ CONFIG_FILES is empty"
+        ((errors++))
+    fi
+
+    if [[ -z "${SCRIPT_FILES[*]}" ]]; then
+        echo "❌ SCRIPT_FILES is empty"
+        ((errors++))
+    fi
+
+    if [[ $errors -eq 0 ]]; then
+        echo "✅ Manifest validation passed"
+        return 0
+    else
+        echo "❌ Manifest validation failed ($errors errors)"
+        return 1
+    fi
+}
+
+# Print manifest summary
+print_manifest_summary() {
+    echo ""
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo "Installation Manifest Summary"
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo ""
+    echo "📋 Files to be installed:"
+    echo "  Commands:       ${COMMAND_FILES[*]}"
+    echo "  Config files:   ${CONFIG_FILES[*]}"
+    echo "  Scripts:        ${SCRIPT_FILES[*]}"
+    if [[ -n "${DOC_FILES[*]}" ]]; then
+        echo "  Documentation:  ${DOC_FILES[*]}"
+    fi
+    echo ""
+    echo "📁 Target directories:"
+    echo "  Commands:  $COMMANDS_DIR"
+    echo "  Scripts:   $SCRIPTS_DIR"
+    echo "  Docs:      $DOCS_DIR"
+    echo "  Backup:    $BACKUP_DIR"
+    echo ""
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo ""
+}
+
+# ============================================================================
+# Export declarations for use in sourced scripts
+# ============================================================================
+
+export INSTALL_DIR COMMANDS_DIR SCRIPTS_DIR DOCS_DIR BACKUP_DIR
+export COMMAND_FILES CONFIG_FILES SCRIPT_FILES DOC_FILES
+
+# Export functions
+export -f validate_manifest print_manifest_summary
