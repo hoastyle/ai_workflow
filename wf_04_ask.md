@@ -16,6 +16,99 @@ context_rules:
   - "从 Ultrathink 角度深度分析（6原则：Think Different, Obsess Over Details 等）"
 ---
 
+## 🔌 MCP 增强能力
+
+本命令支持以下 MCP 服务器的可选增强：
+
+### Sequential-thinking (结构化思考)
+
+**启用**: `--think` 标志
+**用途**: 复杂架构决策时使用结构化多步推理
+**自动激活**: 检测到复杂决策关键词
+
+**示例**:
+```bash
+# 启用深度思考
+/wf_04_ask "选择 Web 框架" --think
+
+# 组合启用
+/wf_04_ask "..." --think --c7 --research
+```
+
+**改进点**:
+- 问题分解为清晰的步骤
+- 逐步分析每个选项
+- 权衡明确和可追踪
+- 建议基于结构化分析
+
+---
+
+### Context7 (官方文档)
+
+**启用**: `--c7` 标志或自动检测
+**用途**: 获取官方框架和库的文档、API 参考、最佳实践
+**自动激活**: 检测到框架/库名
+
+**示例**:
+```bash
+# 明确启用
+/wf_04_ask "如何在 React 中实现路由？" --c7
+
+# 自动启用 (检测到 React)
+/wf_04_ask "React vs Vue，哪个更好？"
+```
+
+**改进点**:
+- 官方文档链接
+- 官方推荐的最佳实践
+- API 参考
+- 版本兼容性信息
+
+---
+
+### Tavily (Web 搜索)
+
+**启用**: `--research` 标志
+**用途**: 搜索最新的技术发展、社区讨论、性能对比
+**自动激活**: 否 (用户明确启用)
+
+**示例**:
+```bash
+/wf_04_ask "Rust vs Go for 2024" --research
+```
+
+**改进点**:
+- 最新的社区讨论
+- GitHub 趋势数据
+- 性能对比报告
+- 新版本发布信息
+
+---
+
+### 组合使用
+
+```bash
+# 全面的架构决策分析
+/wf_04_ask "选择微服务框架" --think --c7 --research
+
+# 输出包含:
+# 1. 多步骤结构化分析 (Sequential-thinking)
+# 2. 官方文档和最佳实践 (Context7)
+# 3. 最新社区反馈 (Tavily)
+# 4. 综合建议
+```
+
+---
+
+### 禁用 MCP
+
+```bash
+# 使用纯文本分析，不启用任何 MCP
+/wf_04_ask "..." --no-mcp
+```
+
+---
+
 ## 执行上下文
 **输入**: 技术问题 + PLANNING.md架构 + KNOWLEDGE.md经验
 **输出**: 架构建议 + 可能的PLANNING.md/KNOWLEDGE.md更新
@@ -105,7 +198,7 @@ You are a Senior Systems Architect providing consultation within project context
 
 ## Output Format
 
-### Standard Consultation Output
+### Standard Consultation Output (Without MCP)
 1. **Contextual Analysis** – question within project scope
 2. **开源方案评估** (NEW) – candidate solutions with pros/cons:
    - 候选方案 1: XXX (优势/劣势/License)
@@ -124,6 +217,84 @@ You are a Senior Systems Architect providing consultation within project context
    - 方案的优雅度如何？(Craft, Don't Code) → 使用成熟库 > 自己实现
    - 有没有更简洁的设计？(Simplify Ruthlessly) → 减少依赖数量，择优而用
    - 这个权衡是否明确？(值得记录到 docs/adr/ 吗？)
+
+### Enhanced Output with --think (Sequential-thinking)
+**Additional sections when using `--think` flag**:
+
+1. **Problem Decomposition** – break down the decision into clear steps:
+   - Step 1: Understanding the requirement
+   - Step 2: Identifying constraints
+   - Step 3: Listing evaluation criteria
+   - Step 4: Analyzing each option systematically
+
+2. **Option Analysis** – systematic evaluation of each candidate:
+   - Option A: Detailed analysis with scoring
+   - Option B: Detailed analysis with scoring
+   - Option C: Detailed analysis with scoring
+
+3. **Trade-off Analysis** – explicit pros/cons comparison:
+   - Performance vs Complexity
+   - Learning curve vs Long-term maintainability
+   - Community support vs Feature completeness
+   - License implications
+
+4. **Structured Recommendation** – based on step-by-step analysis with clear reasoning chain
+
+### Enhanced Output with --c7 (Context7)
+**Additional sections when using `--c7` flag**:
+
+1. **Official Documentation** – links and references:
+   - Official docs URLs for each candidate solution
+   - API reference documentation
+   - Official tutorials and guides
+
+2. **Best Practices** – from official sources:
+   - Recommended patterns from official docs
+   - Common pitfalls to avoid
+   - Configuration best practices
+
+3. **API Reference** – key technical details:
+   - Core API methods and usage
+   - Integration points
+   - Configuration options
+
+4. **Version Information** – compatibility notes:
+   - Current stable version
+   - Breaking changes in recent versions
+   - Compatibility matrix
+   - Upgrade path considerations
+
+### Enhanced Output with --research (Tavily)
+**Additional sections when using `--research` flag**:
+
+1. **Community Feedback** – what developers are saying:
+   - Stack Overflow discussions
+   - Reddit developer opinions
+   - Blog post analyses
+
+2. **Performance Data** – latest benchmarks:
+   - Performance comparison charts
+   - Real-world benchmark results
+   - Scalability reports
+
+3. **Adoption Trends** – GitHub and ecosystem stats:
+   - GitHub stars and growth trends
+   - NPM download statistics
+   - Active contributor counts
+   - Community activity metrics
+
+4. **Recent Updates** – new versions and changes:
+   - Latest release information
+   - Breaking changes and migration guides
+   - Roadmap and future plans
+   - Security advisories
+
+### Combined Output (--think --c7 --research)
+When all three MCP services are enabled, the output provides:
+- **Comprehensive analysis** combining structured reasoning, official docs, and real-world data
+- **Multi-dimensional evaluation** from theory to practice
+- **High-confidence recommendations** backed by multiple authoritative sources
+- **Complete decision documentation** suitable for ADR records
 
 ### Codebase Review Output (--review-codebase)
 1. **Review Summary**:

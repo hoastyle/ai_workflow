@@ -724,6 +724,90 @@ python scripts/doc_graph_builder.py generate docs/
 
 ---
 
+## 🔌 MCP 集成和增强功能 (NEW - 2025-11-21)
+
+### 什么是 MCP？
+
+MCP (Model Context Protocol) 是 SuperClaude Framework 提供的模型扩展协议。它允许通过外部服务器（Node.js 进程）向 Claude 提供额外的上下文和能力。
+
+**当前支持的 MCP 服务器**:
+- **Sequential-thinking**: 结构化多步推理
+- **Context7**: 官方库文档查询
+- **Serena**: 语义代码理解和项目内存
+- **Tavily**: Web 搜索和实时信息
+- **Magic**: UI 组件生成
+
+### MCP 激活机制
+
+#### 显式激活 (用户标志)
+
+某些 wf 命令支持通过标志显式启用特定 MCP：
+
+```bash
+# 启用结构化思考
+/wf_04_ask "技术决策" --think
+
+# 启用官方文档
+/wf_04_ask "..." --c7
+
+# 启用 Web 搜索
+/wf_04_research "..." --research
+
+# 启用深度代码分析
+/wf_06_debug "..." --deep
+
+# 启用 UI 生成
+/wf_14_doc "..." --ui
+
+# 组合激活
+/wf_04_ask "..." --think --c7 --research
+```
+
+#### 自动激活
+
+某些 MCP 在特定条件下自动激活：
+- **Sequential-thinking**: 检测复杂决策关键词时
+- **Context7**: 检测框架/库名时
+- **Serena**: 在 /wf_03_prime 中加载项目上下文时
+
+#### 禁用 MCP
+
+用户可以通过 --no-mcp 标志禁用所有 MCP 增强（性能考虑）：
+
+```bash
+/wf_04_ask "..." --no-mcp
+# 使用纯文本分析，跳过所有 MCP 调用
+```
+
+### MCP 可用性和降级
+
+- ✅ MCP 完全可选，不启用时工作流保持原样
+- ✅ 如果 MCP 未安装或不可用，自动降级到标准功能
+- ✅ 用户可以选择启用或禁用 MCP 增强
+- 📝 建议: 首次使用时运行 `SuperClaude install --mcp-all` 获得最佳体验
+
+### 支持 MCP 的 wf 命令
+
+| 命令 | 支持的 MCP | 标志 |
+|------|-----------|------|
+| wf_03_prime | Serena (自动) | 无 |
+| wf_04_ask | Sequential-thinking, Context7, Tavily | --think, --c7, --research |
+| wf_04_research | Context7, Tavily | --c7, --research |
+| wf_05_code | Magic | --ui |
+| wf_06_debug | Sequential-thinking, Serena | --think, --deep |
+| wf_14_doc | Magic | --ui |
+
+### 更多信息
+
+详见:
+- [MCP 集成策略报告](docs/integration/MCP_INTEGRATION_STRATEGY.md)
+- [MCP 架构设计](docs/integration/MCP_ARCHITECTURE.md)
+- [MCP 实施指南](docs/integration/MCP_IMPLEMENTATION_GUIDE.md)
+- [MCP 验证框架](docs/integration/VALIDATION_FRAMEWORK.md)
+- [SuperClaude 官方文档](https://superclaudeframework.ai/)
+
+---
+
 ## 🛠️ 技术选型规范 (NEW - 优先开源方案)
 
 ### 核心原则
@@ -942,8 +1026,8 @@ Bug修复:
 
 ---
 
-**最后更新**: 2025-11-07
-**版本**: v3.3 (增加智能文档生成)
+**最后更新**: 2025-11-21
+**版本**: v3.3 (增加智能文档生成 + MCP 集成)
 
 该系统确保开发连续性、质量维护和高效的进度追踪，同时通过文档路由机制和四层架构减少AI上下文消耗。
 

@@ -13,6 +13,116 @@ context_rules:
   - "新模式记录到KNOWLEDGE.md"
 ---
 
+## 🔌 MCP 增强能力
+
+本命令支持以下 MCP 服务器的可选增强：
+
+### Sequential-thinking (结构化调试)
+
+**启用**: `--think` 标志
+**用途**: 复杂错误分析时使用结构化多步推理
+**自动激活**: 检测到复杂错误或级联错误
+
+**示例**:
+```bash
+# 启用结构化调试
+/wf_06_debug "数据库连接超时错误" --think
+
+# 组合启用
+/wf_06_debug "..." --think --deep
+```
+
+**改进点**:
+- 错误分解为系统化的分析步骤
+- 假设生成和逐步验证
+- 多种可能原因的优先级排序
+- 基于证据的诊断路径
+
+**输出示例**:
+```
+Step 1: 症状分析
+  - 观察到的错误现象
+  - 错误发生频率和条件
+
+Step 2: 假设生成
+  - 可能原因 A: 网络问题 (概率: 40%)
+  - 可能原因 B: 数据库配置 (概率: 35%)
+  - 可能原因 C: 超时设置 (概率: 25%)
+
+Step 3: 验证步骤
+  - 对每个假设的具体验证方法
+  - 排查优先级和验证顺序
+
+Step 4: 根因定位
+  - 基于证据确定根本原因
+  - 排除其他可能性的理由
+
+Step 5: 解决方案
+  - 针对根因的修复方案
+  - 预防再次发生的措施
+```
+
+---
+
+### Serena (深度代码理解)
+
+**启用**: `--deep` 标志
+**用途**: 语义级别的代码理解和问题定位
+**自动激活**: 在 `/wf_06_debug` 命令中自动激活
+
+**示例**:
+```bash
+# 启用深度代码分析
+/wf_06_debug "类型错误" --deep
+
+# 与 --think 组合
+/wf_06_debug "性能问题" --think --deep
+```
+
+**改进点**:
+- 语义级别的代码搜索和理解
+- 精确定位错误相关的代码位置
+- 识别代码间的依赖关系
+- 跨文件的影响分析
+
+**使用场景**:
+- 错误涉及多个模块或文件
+- 需要理解复杂的调用链
+- 定位性能瓶颈
+- 识别潜在的副作用
+
+**Serena 工具**:
+- `find_symbol`: 定位函数、类、变量定义
+- `find_referencing_symbols`: 找到所有引用位置
+- `search_for_pattern`: 搜索代码模式
+- `get_symbols_overview`: 快速理解文件结构
+
+---
+
+### 组合使用
+
+```bash
+# 全面的调试分析
+/wf_06_debug "复杂的系统错误" --think --deep
+
+# 输出包含:
+# 1. 结构化的错误分析 (Sequential-thinking)
+# 2. 精确的代码定位和理解 (Serena)
+# 3. 系统化的解决方案
+# 4. 完整的验证计划
+```
+
+---
+
+### 禁用 MCP
+
+```bash
+# 使用传统调试方法，不启用任何 MCP
+/wf_06_debug "..." --no-mcp
+```
+
+---
+
 ## 执行上下文
 **输入**: 错误描述 + PLANNING.md系统设计 + KNOWLEDGE.md已知问题
 **输出**: 代码修复 + TASK.md记录 + KNOWLEDGE.md新模式
@@ -104,12 +214,72 @@ Debug Coordinator orchestrating specialists within project context:
    - Update TASK.md with brief fix note
 
 ## Output Format
+
+### Standard Debugging Output (Without MCP)
 1. **Debug Analysis** – root cause within system context
 2. **Fix Implementation** – solution following standards
 3. **Knowledge Capture** – new problem-solution patterns for KNOWLEDGE.md
 4. **Task Updates** – TASK.md entries for fixes
 5. **Prevention Notes** – updates for PLANNING.md
 6. **Test Requirements** – validation needed
+
+### Enhanced Output with --think (Sequential-thinking)
+**Additional sections when using `--think` flag**:
+
+1. **Structured Error Analysis** – systematic symptom breakdown:
+   - Observed error manifestation
+   - Error frequency and triggering conditions
+   - Initial impact assessment
+
+2. **Hypothesis Generation** – multiple potential causes with probability:
+   - Hypothesis A: [Description] (Probability: X%)
+   - Hypothesis B: [Description] (Probability: Y%)
+   - Hypothesis C: [Description] (Probability: Z%)
+
+3. **Verification Plan** – systematic testing approach:
+   - Step-by-step verification for each hypothesis
+   - Evidence collection methods
+   - Priority-based investigation order
+
+4. **Root Cause Identification** – evidence-based conclusion:
+   - Confirmed root cause with supporting evidence
+   - Reasons for ruling out alternative hypotheses
+   - Confidence level in diagnosis
+
+5. **Solution Design** – comprehensive fix strategy:
+   - Immediate fix for the root cause
+   - Prevention measures for recurrence
+   - Related issues to monitor
+
+### Enhanced Output with --deep (Serena)
+**Additional sections when using `--deep` flag**:
+
+1. **Code Location Analysis** – precise error localization:
+   - Exact file paths and line numbers
+   - Function/method context
+   - Symbol definitions involved
+
+2. **Dependency Analysis** – code relationship mapping:
+   - Functions/classes calling the error location
+   - Functions/classes called from error location
+   - Cross-module dependencies
+
+3. **Impact Assessment** – potential side effects:
+   - Other code that might be affected by the fix
+   - Test files that need attention
+   - Documentation that needs updates
+
+4. **Code Pattern Analysis** – similar code locations:
+   - Other places with similar patterns
+   - Related bugs that might exist
+   - Opportunities for systematic fixes
+
+### Combined Output (--think --deep)
+When both MCP services are enabled, the output provides:
+- **Comprehensive diagnosis** combining structured reasoning and deep code understanding
+- **High-confidence root cause** backed by both logical analysis and code evidence
+- **Systematic fix strategy** addressing immediate issue and preventing recurrence
+- **Complete impact analysis** identifying all affected code areas
 
 ## 📌 工作流导航 (Phase 3 - 闭环工作流)
 

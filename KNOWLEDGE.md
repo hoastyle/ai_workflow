@@ -24,10 +24,14 @@
 
 | 主题 | 文档路径 | 说明 | 优先级 | 最后更新 |
 |------|---------|------|--------|---------|
-| 架构决策记录 | [docs/adr/](docs/adr/) | ADR 模板和已有决策 | 中 | 2025-11-06 |
+| 架构决策记录 | [docs/adr/](docs/adr/) | ADR 模板和已有决策 | 中 | 2025-11-21 |
 | ADR 指南 | [docs/adr/README.md](docs/adr/README.md) | 如何编写和维护 ADR | 中 | 2025-11-06 |
 | ADR 模板 | [docs/adr/TEMPLATE.md](docs/adr/TEMPLATE.md) | 新增 ADR 时使用的模板 | 中 | 2025-11-06 |
 | Frontmatter 规范 | [docs/reference/FRONTMATTER.md](docs/reference/FRONTMATTER.md) | 文档元数据标准和验证规则 | 高 | 2025-11-11 |
+| **MCP 集成文档** | [docs/integration/](docs/integration/) | MCP 集成策略、指南、示例 | 高 | 2025-11-21 |
+| MCP 用户指南 | [docs/integration/MCP_USER_GUIDE.md](docs/integration/MCP_USER_GUIDE.md) | MCP 使用指南和场景决策树 | 高 | 2025-11-21 |
+| MCP 集成报告 | [docs/integration/MCP_INTEGRATION_REPORT.md](docs/integration/MCP_INTEGRATION_REPORT.md) | Phase 1-3 验证报告 | 高 | 2025-11-21 |
+| MCP 验证清单 | [docs/integration/MCP_VALIDATION_CHECKLIST.md](docs/integration/MCP_VALIDATION_CHECKLIST.md) | 完整的功能和性能验证清单 | 中 | 2025-11-21 |
 
 **自动化脚本** (scripts/ - 工具集):
 
@@ -44,6 +48,7 @@
 
 | 决策日期 | 标题 | 影响 | 状态 | 文档路径 |
 |---------|------|------|------|---------|
+| 2025-11-21 | MCP 集成策略：可选增强模式 | 全局 | Accepted | [docs/adr/2025-11-21-mcp-integration-strategy.md](docs/adr/2025-11-21-mcp-integration-strategy.md) |
 | 2025-11-18 | 约束驱动的文档生成系统：从被动清理到主动防控 | 高 | Accepted | [docs/adr/2025-11-18-constraint-driven-documentation-generation.md](docs/adr/2025-11-18-constraint-driven-documentation-generation.md) |
 | 2025-11-15 | Workflow 文档生成 SSOT 架构：消除系统性冗余 | 高 | Accepted | [docs/adr/2025-11-15-workflow-document-generation-ssot.md](docs/adr/2025-11-15-workflow-document-generation-ssot.md) |
 | 2025-11-15 | CONTEXT.md 指针文档模式：消除 85% 冗余 | 高 | Accepted | [docs/adr/2025-11-15-context-md-pointer-document.md](docs/adr/2025-11-15-context-md-pointer-document.md) |
@@ -395,7 +400,7 @@
 
 ---
 
-**最后更新**: 2025-11-07
+**最后更新**: 2025-11-21
 **维护**: Knowledge Base Management System
 **相关**: [CLAUDE.md](CLAUDE.md), [PHILOSOPHY.md](PHILOSOPHY.md), [docs/adr/](docs/adr/)
 
