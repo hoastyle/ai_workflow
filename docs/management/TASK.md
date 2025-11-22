@@ -692,7 +692,7 @@ MCP (Model Context Protocol) 集成为 AI Workflow Command System 引入了 5 �
 
 ---
 
-#### 任务 2️⃣：增强脚本错误处理 (🔴 高优先级)
+#### 任务 2.：增强脚本错误处理 (🔴 高优先级)
 
 **基本信息**:
 - 预计时间: 45分钟

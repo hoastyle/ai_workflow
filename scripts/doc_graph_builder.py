@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# coding: utf-8
 """
 文档关系图生成器（便捷包装）
 

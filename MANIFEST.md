@@ -95,7 +95,7 @@ declare -ga SCRIPT_FILES=("script1.sh" "script2.py" "script3.sh" "NEW_SCRIPT.py"
 # ✅ 自动同步，无需手动修改两处
 ```
 
-### 2️⃣ **验证脚本** (`scripts/verify_manifest.sh`)
+### 2. **验证脚本** (`scripts/verify_manifest.sh`)
 
 自动检查一致性：
 

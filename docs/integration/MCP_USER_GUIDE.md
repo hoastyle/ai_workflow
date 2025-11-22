@@ -121,7 +121,7 @@ superclaudeframework mcp status
 - ✅ 需要快速定位相关代码
 - ✅ 想要理解代码间的依赖关系
 
-#### 2️⃣ `/wf_04_ask` - 架构咨询
+#### 2. `/wf_04_ask` - 架构咨询
 
 **MCP**: Sequential-thinking, Context7, Tavily
 **标志**: `--think`, `--c7`, `--research`

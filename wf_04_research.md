@@ -430,7 +430,7 @@ When both MCP services are enabled, the output provides:
 ```
 **适用场景**: 研究推荐明确，无需进一步验证，可以直接更新规划
 
-#### 路径 2️⃣：PoC 验证后确认方案 🧪
+#### 路径 2.：PoC 验证后确认方案 🧪
 ```bash
 # 当前: 研究完成，但需要验证方案可行性
 # 下一步: 创建概念验证

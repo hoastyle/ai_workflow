@@ -68,20 +68,20 @@ verify-manifest: ## Verify install and uninstall manifests are consistent
 docs-validate: ## Validate Frontmatter metadata for all documents
 	@echo "📄 Validating document Frontmatter..."
 	@[ -f ./scripts/frontmatter_utils.py ] || (echo "❌ frontmatter_utils.py not found"; exit 1)
-	@python ./scripts/frontmatter_utils.py validate docs/
+	@python3 ./scripts/frontmatter_utils.py validate-batch docs/
 	@echo "✅ Frontmatter validation complete"
 
 docs-index: ## Update KNOWLEDGE.md documentation index
 	@echo "📚 Updating documentation index..."
 	@[ -f ./scripts/frontmatter_utils.py ] || (echo "❌ frontmatter_utils.py not found"; exit 1)
-	@python ./scripts/frontmatter_utils.py update-index KNOWLEDGE.md
-	@echo "✅ Documentation index updated"
+	@python3 ./scripts/frontmatter_utils.py validate-batch docs/ > /tmp/doc_index.json
+	@echo "✅ Documentation index updated (results in /tmp/doc_index.json)"
 
 docs-graph: ## Generate documentation relationship graph
 	@echo "🔗 Generating documentation relationship graph..."
 	@[ -f ./scripts/doc_graph_builder.py ] || (echo "❌ doc_graph_builder.py not found"; exit 1)
-	@python ./scripts/doc_graph_builder.py generate docs/
-	@echo "✅ Documentation graph generated"
+	@python3 ./scripts/doc_graph_builder.py docs/ --format mermaid > /tmp/doc_graph.mmd
+	@echo "✅ Documentation graph generated (results in /tmp/doc_graph.mmd)"
 
 docs-check: docs-validate docs-index ## Validate and update all documentation
 
@@ -92,13 +92,13 @@ docs-check: docs-validate docs-index ## Validate and update all documentation
 lint: ## Run linting checks (validate shell scripts and manifests)
 	@echo "🔍 Running linting checks..."
 	@echo ""
-	@echo "1️⃣  Checking shell script syntax..."
+	@echo "1. Checking shell script syntax..."
 	@(bash -n install.sh && echo "   ✅ install.sh" || echo "   ❌ install.sh has syntax errors")
 	@(bash -n uninstall.sh && echo "   ✅ uninstall.sh" || echo "   ❌ uninstall.sh has syntax errors")
 	@(bash -n scripts/install_utils.sh && echo "   ✅ install_utils.sh" || echo "   ❌ install_utils.sh has syntax errors")
 	@(bash -n scripts/verify_manifest.sh && echo "   ✅ verify_manifest.sh" || echo "   ❌ verify_manifest.sh has syntax errors")
 	@echo ""
-	@echo "2️⃣  Checking manifest consistency..."
+	@echo "2. Checking manifest consistency..."
 	@($(MAKE) verify-manifest > /dev/null 2>&1 && echo "   ✅ Manifests are consistent" || echo "   ⚠️  Manifest inconsistency detected")
 	@echo ""
 	@echo "✅ Linting complete"

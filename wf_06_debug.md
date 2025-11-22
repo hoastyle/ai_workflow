@@ -331,7 +331,7 @@ When both MCP services are enabled, the output provides:
 ```
 **适用场景**: 使用 `--quick` 快速修复模式，修复的是简单的 bug 或语法错误
 
-#### 路径 2️⃣：完整测试验证修复 ✅
+#### 路径 2.：完整测试验证修复 ✅
 ```bash
 # 当前: 复杂错误已系统调试，完整修复
 # 下一步: 全面验证修复

@@ -116,7 +116,7 @@ Deployment Readiness Coordinator ensuring safe deployment:
 ```
 **适用场景**: 所有部署检查通过，系统已完全就绪，可以安全部署
 
-#### 路径 2️⃣：No-Go - 发现阻塞问题 🔴
+#### 路径 2.：No-Go - 发现阻塞问题 🔴
 ```bash
 # 当前: 发现了阻塞部署的严重问题
 # 下一步: 修复问题后重新检查

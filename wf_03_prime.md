@@ -260,7 +260,7 @@ Prime the AI assistant with comprehensive project context by reading core projec
 ```
 **适用场景**: 需要在编码前进行技术验证、架构决策、或获取设计指导
 
-#### 路径 2️⃣：直接开始编码实现 ✨
+#### 路径 2.：直接开始编码实现 ✨
 ```bash
 # 当前: 已加载项目上下文
 # 下一步: 直接实现功能

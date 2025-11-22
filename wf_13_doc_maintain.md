@@ -566,7 +566,7 @@ Show what would be changed without making changes:
 ```
 **适用场景**: 运行 `--dry-run` 确认无问题，或执行 `--auto` 自动修复已完成
 
-#### 路径 2️⃣：发现问题需要手动处理 🔧
+#### 路径 2.：发现问题需要手动处理 🔧
 ```bash
 # 当前: 识别了需要手动处理的问题（可能 dry-run 输出）
 # 下一步: 按照报告建议手动处理
