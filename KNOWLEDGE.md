@@ -28,6 +28,7 @@
 |------|------|--------|
 | 架构决策记录 | [docs/adr/](docs/adr/) | 中 |
 | Frontmatter 规范 | [docs/reference/FRONTMATTER.md](docs/reference/FRONTMATTER.md) | 高 |
+| Markdown 格式约束 | [docs/reference/MARKDOWN_STYLE.md](docs/reference/MARKDOWN_STYLE.md) | 高 |
 | MCP 集成 | [docs/integration/](docs/integration/) | 高 |
 
 ### 知识库详细文档 (docs/knowledge/)
