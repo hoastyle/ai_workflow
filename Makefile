@@ -1,4 +1,4 @@
-.PHONY: install install-link verify verify-manifest uninstall clean lint help
+.PHONY: install install-link verify verify-manifest uninstall clean lint help mcp-install mcp-list mcp-check
 
 # Default target
 .DEFAULT_GOAL := help
@@ -108,6 +108,31 @@ format: ## Format shell scripts (with shfmt if available)
 	@if command -v shfmt > /dev/null 2>&1; then echo "Using shfmt for formatting..."; shfmt -i 4 -w install.sh uninstall.sh scripts/*.sh; echo "✅ Formatting complete"; else echo "⚠️  shfmt not found. Install with: sudo apt-get install shfmt"; fi
 
 ###############################################################################
+# MCP (Model Context Protocol) Integration
+###############################################################################
+
+mcp-install: ## Install MCP servers (interactive)
+	@echo "📦 Installing MCP Servers..."
+	@[ -f ./scripts/install_mcp.py ] || (echo "❌ install_mcp.py not found in scripts/"; exit 1)
+	@python3 ./scripts/install_mcp.py
+
+mcp-install-all: ## Install all available MCP servers
+	@echo "📦 Installing all MCP servers..."
+	@[ -f ./scripts/install_mcp.py ] || (echo "❌ install_mcp.py not found in scripts/"; exit 1)
+	@python3 ./scripts/install_mcp.py --all
+
+mcp-list: ## List all available MCP servers
+	@echo "📋 Available MCP Servers:"
+	@[ -f ./scripts/install_mcp.py ] || (echo "❌ install_mcp.py not found in scripts/"; exit 1)
+	@python3 ./scripts/install_mcp.py --list
+
+mcp-check: ## Check MCP prerequisites (Claude CLI and Node.js)
+	@echo "🔍 Checking MCP prerequisites..."
+	@which claude > /dev/null && echo "   ✅ Claude CLI found: $$(claude --version)" || echo "   ❌ Claude CLI not found"
+	@which node > /dev/null && echo "   ✅ Node.js found: $$(node --version)" || echo "   ❌ Node.js not found"
+	@which npm > /dev/null && echo "   ✅ npm found: $$(npm --version)" || echo "   ❌ npm not found"
+
+###############################################################################
 # Maintenance and Cleanup
 ###############################################################################
 
@@ -154,6 +179,12 @@ help: ## Show this help message
 	@echo "  make format          - Format shell scripts (requires shfmt)"
 	@echo "  make clean           - Clean temporary files"
 	@echo ""
+	@echo "🔌 MCP Integration:"
+	@echo "  make mcp-check       - Check MCP prerequisites (Claude CLI, Node.js)"
+	@echo "  make mcp-list        - List all available MCP servers"
+	@echo "  make mcp-install     - Install MCP servers (interactive)"
+	@echo "  make mcp-install-all - Install all available MCP servers"
+	@echo ""
 	@echo "📚 Documentation:"
 	@echo "  make docs-validate   - Validate document Frontmatter"
 	@echo "  make docs-index      - Update documentation index"
@@ -169,4 +200,5 @@ help: ## Show this help message
 	@echo "  INSTALL.md           - Detailed installation guide"
 	@echo "  README.md            - Project overview"
 	@echo "  COMMANDS.md          - Complete command reference"
+	@echo "  docs/integration/MCP_INTEGRATION_GUIDE.md - MCP setup and usage"
 	@echo ""
