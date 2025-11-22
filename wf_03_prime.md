@@ -91,6 +91,77 @@ context_rules:
 
 **Note**: Serena 在后台自动工作，提升上下文理解的深度和准确性，无需用户干预。
 
+#### LSP 初始化输出示例
+
+当 Serena 启动时，LSP 初始化流程会产生以下输出信息：
+
+```
+═══════════════════════════════════════════════════════════
+🔌 Serena LSP 初始化进度
+═══════════════════════════════════════════════════════════
+
+[T+0.0s] 项目激活
+└─ 路径: /home/user/my-project
+└─ 配置: .serena/project.yml
+
+[T+0.1s] 语言检测
+└─ 检测语言: Python
+└─ 首选 LSP: Pyright
+
+[T+0.5s] 启动语言服务器 🚀
+└─ 启动: Pyright (Python Language Server)
+└─ 进程 ID: 12345
+└─ 耗时: 2.3s
+
+[T+2.8s] 加载项目配置
+└─ 文件: pyproject.toml, setup.cfg
+└─ 源目录: src/
+└─ 耗时: 1.2s
+
+[T+4.0s] 代码扫描和索引生成 📚
+├─ 扫描文件: 246 Python 源文件
+├─ 生成 AST: 进行中... [████░░░░░░] 40%
+├─ 构建符号表: 已完成
+│  ├─ 函数定义: 523
+│  ├─ 类定义: 87
+│  ├─ 变量定义: 1,245
+│  └─ 导入语句: 456
+└─ 生成引用关系图: 进行中... [██████░░░░] 60%
+
+[T+14.2s] 缓存完成 ✅
+└─ 符号索引缓存: 已保存到内存
+└─ 总耗时: 14.2 秒
+
+═══════════════════════════════════════════════════════════
+📊 Serena 就绪状态
+═══════════════════════════════════════════════════════════
+
+✅ Serena 初始化完成
+├─ LSP 服务器: 运行中 (Pyright)
+├─ 符号索引: 准备就绪 (1,311 个符号)
+├─ 可用工具: 23 个 (find_symbol, rename_symbol, 等)
+├─ 缓存策略: 已激活
+└─ 预期查询延迟: ~200-500ms
+
+📈 性能基准 (此项目)
+├─ 符号查询: ~150ms
+├─ 符号概览: ~300ms
+├─ 引用查找: ~600ms
+└─ 代码导航: 快速
+```
+
+##### LSP 初始化的影响
+
+初始化完成后，你可以使用所有 Serena 的符号级工具，包括：
+
+- 🔍 **find_symbol()** - 精确定位代码中的函数、类、变量
+- 📋 **get_symbols_overview()** - 快速浏览文件的顶层符号
+- 🔗 **find_referencing_symbols()** - 找到所有引用某个符号的位置
+- ✏️ **replace_symbol_body()** - 原子级别地替换符号定义
+- 🔄 **rename_symbol()** - 自动重命名符号及其所有引用
+
+**关键价值**：LSP 初始化后，Serena 能够准确理解代码结构，这使得所有的代码操作都是**语义级别**的，而不仅仅是文本级别的。
+
 ---
 
 ### 组合说明
@@ -205,14 +276,34 @@ Prime the AI assistant with comprehensive project context by reading core projec
 7. **Active Context** - Current working area and immediate tasks from TASK.md
 8. **Applicable Solutions** - Relevant past solutions and patterns for current context
 9. **On-Demand Documents** (NEW) - Available but not loaded docs (can be accessed if needed)
-10. **💡 智能推荐下一步 (NEW - Phase 2 改进)** - 基于 TASK.md 的优先任务推荐
+10. **🔍 Serena LSP 初始化信息** (NEW - LSP 增强输出)
+    - **LSP 初始化状态** - 显示语言服务器的启动进度
+      * LSP 服务器类型（Pyright for Python, TypeScript LS, etc.）
+      * 启动耗时（通常 2-5 秒）
+    - **符号索引状态** - 显示代码扫描和索引进度
+      * 已扫描的文件数和符号数
+      * 索引耗时（通常 5-25 秒，取决于项目大小）
+      * 符号表构建完成情况
+    - **性能基准** - 显示 LSP 工具的预期性能
+      * 符号查询延迟（find_symbol: ~100-300ms）
+      * 符号概览延迟（get_symbols_overview: ~200-500ms）
+      * 引用查找延迟（find_referencing_symbols: ~300-1000ms）
+    - **缓存策略** - 显示后续激活的预期表现
+      * 首次激活耗时（~8-30 秒）
+      * 缓存激活耗时（< 1 秒）
+    - **就绪确认** - 显示 LSP 是否准备好进行符号级操作
+      * "✅ Serena ready for tool calls" 表示可以使用所有 23 个工具
+      * 如果显示等待中，说明正在进行索引和缓存
+
+11. **💡 智能推荐下一步 (NEW - Phase 2 改进)** - 基于 TASK.md 的优先任务推荐
     - 识别"🚀 下一步优先任务"部分中的第一个（最高优先级）任务
     - 显示任务名称、优先级、预计时间
     - 显示完整的"推荐命令序列"（从 TASK.md 提取）
     - 显示工作流位置标记（STEP X/Y）
     - 显示验收标准（可验证的检查清单）
     - 显示"为什么优先"的背景说明
-11. **Ready Status** - Confirmation of context loading and readiness to continue
+
+12. **Ready Status** - Confirmation of context loading and readiness to continue
 
 ## 📌 工作流导航 (Phase 3 - 闭环工作流)
 

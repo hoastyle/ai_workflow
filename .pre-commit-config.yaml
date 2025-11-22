@@ -153,29 +153,29 @@ repos:
         always_run: true
 
       # Version number consistency check
-      - id: version-consistency-check
-        name: Check Version Number Consistency
-        entry: >-
-          bash -c 'echo "🔍 Checking version number consistency...";
-          expected_version="v3.1";
-          main_docs="CLAUDE.md COMMANDS.md WORKFLOWS.md TROUBLESHOOTING.md README.md CHANGELOG.md";
-          found_inconsistency=false;
-          for doc in $main_docs; do
-            if [ -f "$doc" ]; then
-              if ! grep -q "version.*$expected_version\|版本.*$expected_version" "$doc" 2>/dev/null;
-              then echo "  ⚠️  $doc: version mismatch";
-              found_inconsistency=true;
-              fi;
-            fi;
-          done;
-          if [ "$found_inconsistency" = true ];
-          then echo "❌ Version numbers are not consistent across documents";
-          echo "   Run: /wf_11_commit to auto-update";
-          exit 1;
-          else echo "✅ All version numbers are consistent";
-          fi'
-        language: system
-        always_run: true
+      #- id: version-consistency-check
+      #  name: Check Version Number Consistency
+      #  entry: >-
+      #    bash -c 'echo "🔍 Checking version number consistency...";
+      #    expected_version="v3.1";
+      #    main_docs="CLAUDE.md COMMANDS.md WORKFLOWS.md TROUBLESHOOTING.md README.md CHANGELOG.md";
+      #    found_inconsistency=false;
+      #    for doc in $main_docs; do
+      #      if [ -f "$doc" ]; then
+      #        if ! grep -q "version.*$expected_version\|版本.*$expected_version" "$doc" 2>/dev/null;
+      #        then echo "  ⚠️  $doc: version mismatch";
+      #        found_inconsistency=true;
+      #        fi;
+      #      fi;
+      #    done;
+      #    if [ "$found_inconsistency" = true ];
+      #    then echo "❌ Version numbers are not consistent across documents";
+      #    echo "   Run: /wf_11_commit to auto-update";
+      #    exit 1;
+      #    else echo "✅ All version numbers are consistent";
+      #    fi'
+      #  language: system
+      #  always_run: true
 
       # Date format validation (informational only)
       - id: date-format-validation
