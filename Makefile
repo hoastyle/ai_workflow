@@ -114,17 +114,17 @@ format: ## Format shell scripts (with shfmt if available)
 mcp-install: ## Install MCP servers (interactive)
 	@echo "📦 Installing MCP Servers..."
 	@[ -f ./scripts/install_mcp.py ] || (echo "❌ install_mcp.py not found in scripts/"; exit 1)
-	@python3 ./scripts/install_mcp.py
+	-@python3 ./scripts/install_mcp.py
 
 mcp-install-all: ## Install all available MCP servers
 	@echo "📦 Installing all MCP servers..."
 	@[ -f ./scripts/install_mcp.py ] || (echo "❌ install_mcp.py not found in scripts/"; exit 1)
-	@python3 ./scripts/install_mcp.py --all
+	-@python3 ./scripts/install_mcp.py --all
 
 mcp-list: ## List all available MCP servers
 	@echo "📋 Available MCP Servers:"
 	@[ -f ./scripts/install_mcp.py ] || (echo "❌ install_mcp.py not found in scripts/"; exit 1)
-	@python3 ./scripts/install_mcp.py --list
+	-@python3 ./scripts/install_mcp.py --list
 
 mcp-check: ## Check MCP prerequisites (Claude CLI and Node.js)
 	@echo "🔍 Checking MCP prerequisites..."

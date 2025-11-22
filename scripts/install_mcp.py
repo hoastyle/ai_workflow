@@ -306,7 +306,7 @@ def install_mcp_server(
             server_info.get("api_key_description", f"API key for {server_name}"),
         )
         if api_key:
-            env_args = ["--env", f"{api_key_env}={api_key}"]
+            env_args = ["-e", f"{api_key_env}={api_key}"]
 
     # Build installation command
     cmd = ["claude", "mcp", "add", "--transport", transport]
