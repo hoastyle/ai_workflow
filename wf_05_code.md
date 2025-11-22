@@ -8,6 +8,7 @@ writes: [代码文件, TASK.md(状态更新)]
 prev_commands: [/wf_03_prime, /wf_04_ask]
 next_commands: [/wf_07_test, /wf_08_review, /wf_11_commit]
 ultrathink_lens: "craft_elegance"
+model: sonnet
 context_rules:
   - "遵循PLANNING.md的代码标准"
   - "满足PRD需求"

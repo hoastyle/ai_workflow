@@ -7,6 +7,7 @@ reads: [PLANNING.md(架构设计), TASK.md(技术债), KNOWLEDGE.md(代码模式
 writes: [代码文件, TASK.md(重构完成), PLANNING.md(可能)]
 prev_commands: [/wf_08_review]
 next_commands: [/wf_07_test, /wf_08_review, /wf_11_commit]
+model: sonnet
 context_rules:
   - "对齐PLANNING.md架构"
   - "应用KNOWLEDGE.md最佳实践"

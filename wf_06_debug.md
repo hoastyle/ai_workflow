@@ -7,6 +7,7 @@ reads: [PLANNING.md(系统设计), TASK.md(相关任务), KNOWLEDGE.md(已知问
 writes: [代码文件, TASK.md(修复记录), KNOWLEDGE.md(新解决方案)]
 prev_commands: [/wf_05_code, /wf_07_test]
 next_commands: [/wf_07_test, /wf_09_refactor, /wf_11_commit]
+model: sonnet
 context_rules:
   - "使用KNOWLEDGE.md已知解决方案"
   - "修复根本原因，不是症状"

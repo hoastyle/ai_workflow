@@ -8,6 +8,7 @@ writes: [PLANNING.md(可能), KNOWLEDGE.md(可能), TASK.md(可能), docs/adr/(�
 prev_commands: [/wf_03_prime]
 next_commands: [/wf_05_code, /wf_01_planning]
 ultrathink_lens: "architecture_design"
+model: sonnet
 context_rules:
   - "决策必须对齐PRD需求"
   - "重大架构决策更新PLANNING.md"

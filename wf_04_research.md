@@ -7,6 +7,7 @@ reads: [PLANNING.md, KNOWLEDGE.md, TASK.md]
 writes: [KNOWLEDGE.md, PLANNING.md(可能), docs/adr/(可能), TASK.md(可能)]
 prev_commands: [/wf_04_ask]
 next_commands: [/wf_01_planning, /wf_05_code]
+model: sonnet
 context_rules:
   - "系统化评估开源方案，记录决策过程"
   - "更新KNOWLEDGE.md中的方案对比表"

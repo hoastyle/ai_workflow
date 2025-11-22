@@ -8,6 +8,7 @@ writes: [TASK.md(改进任务), KNOWLEDGE.md(新模式)]
 prev_commands: [/wf_05_code, /wf_07_test, /wf_09_refactor]
 next_commands: [/wf_09_refactor, /wf_11_commit]
 ultrathink_lens: "design_elegance"
+model: sonnet
 context_rules:
   - "执行PRD合规性检查"
   - "验证PLANNING.md标准遵守"
