@@ -1,3 +1,20 @@
+---
+title: "架构决策记录指南"
+description: "记录项目中重要的技术和设计决策的背景、选择和权衡。包含 ADR 模板、命名规范、使用指南和最佳实践"
+type: "技术设计"
+status: "完成"
+priority: "高"
+created_date: "2025-11-06"
+last_updated: "2025-11-23"
+related_documents:
+  - ../../PHILOSOPHY.md
+  - ../../CLAUDE.md
+  - ../../KNOWLEDGE.md
+tags: ["ADR", "架构决策", "文档规范", "决策记录"]
+authors: ["Claude"]
+version: "1.0"
+---
+
 # 架构决策记录 (Architecture Decision Records)
 
 **版本**: v1.0

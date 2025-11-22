@@ -1,3 +1,20 @@
+---
+title: "智能文档生成系统设计"
+description: "采用智能提取式文档生成而非通用模板批量生成，从代码中提取真实信息生成项目文档"
+type: "架构决策"
+status: "Accepted"
+priority: "高"
+created_date: "2025-11-07"
+last_updated: "2025-11-23"
+related_documents:
+  - ../../PHILOSOPHY.md
+  - ../../CLAUDE.md
+  - ../2025-11-18-constraint-driven-documentation-generation.md
+tags: ["文档生成", "架构决策", "智能助手", "/wf_14_doc"]
+authors: ["Claude"]
+version: "1.0"
+---
+
 # ADR-001: 智能文档生成系统设计
 
 **日期**: 2025-11-07

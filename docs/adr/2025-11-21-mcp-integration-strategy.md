@@ -1,3 +1,20 @@
+---
+title: "MCP 集成策略：13 个专业 MCP 服务器的五维分层架构"
+description: "设计并实现 13 个 MCP 服务器的集成，支持 AI 代码助手的多维增强能力（推理、文档、代码分析、Web搜索、UI生成）"
+type: "架构决策"
+status: "Accepted"
+priority: "高"
+created_date: "2025-11-21"
+last_updated: "2025-11-23"
+related_documents:
+  - ../../CLAUDE.md
+  - ../../PHILOSOPHY.md
+  - ../2025-11-23-serena-three-layer-role-model.md
+tags: ["MCP", "集成", "架构设计", "工具扩展"]
+authors: ["Claude"]
+version: "1.0"
+---
+
 # ADR 2025-11-21: MCP 集成策略
 
 **状态**: 完成
