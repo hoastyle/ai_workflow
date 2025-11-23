@@ -473,7 +473,7 @@ Active Task: "项目初始化"
 /wf_02_task update "完善脚本类型注解"
 
 # 第2步: 代码实现 (主要工作)
-/wf_05_code "为 scripts/frontmatter_utils.py 添加完整类型注解"
+/wf_05_code "为 ~/.claude/commands/scripts/frontmatter_utils.py 添加完整类型注解"
 
 # 第3步: 代码审查
 /wf_08_review

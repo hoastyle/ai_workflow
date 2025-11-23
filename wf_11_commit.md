@@ -64,11 +64,11 @@ Create git commits with integrated formatting, validation, and context updates:
    - **Run enhanced pre-commit validation** on all staged files
    - **Frontmatter Script Dependency Check** (⚠️ NEW):
      ```bash
-     if [ ! -f "scripts/frontmatter_utils.py" ]; then
-       echo "⚠️ Frontmatter script missing: scripts/frontmatter_utils.py"
+     if [ ! -f ~/.claude/commands/scripts/frontmatter_utils.py ]; then
+       echo "⚠️ Frontmatter script missing: ~/.claude/commands/scripts/frontmatter_utils.py"
        echo "Skipping Frontmatter validation (script not available)"
      else
-       python scripts/frontmatter_utils.py validate-batch docs/
+       python ~/.claude/commands/scripts/frontmatter_utils.py validate-batch docs/
      fi
      ```
    - **If validation fails**:

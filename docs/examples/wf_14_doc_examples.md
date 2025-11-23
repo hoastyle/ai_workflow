@@ -21,19 +21,19 @@ related_documents: ["../../wf_14_doc.md"]
 
 ```bash
 # 为单个文档生成 Frontmatter
-python scripts/frontmatter_utils.py generate docs/api/auth.md
+python ~/.claude/commands/scripts/frontmatter_utils.py generate docs/api/auth.md
 
 # 批量生成 Frontmatter
-python scripts/frontmatter_utils.py generate-batch docs/
+python ~/.claude/commands/scripts/frontmatter_utils.py generate-batch docs/
 
 # 验证 Frontmatter
-python scripts/frontmatter_utils.py validate docs/api/auth.md
+python ~/.claude/commands/scripts/frontmatter_utils.py validate docs/api/auth.md
 
 # 批量验证
-python scripts/frontmatter_utils.py validate-batch docs/
+python ~/.claude/commands/scripts/frontmatter_utils.py validate-batch docs/
 
 # 生成文档关系图（Mermaid格式）
-python scripts/doc_graph_builder.py docs/ --format mermaid
+python ~/.claude/commands/scripts/doc_graph_builder.py docs/ --format mermaid
 ```
 
 ---
@@ -405,7 +405,7 @@ $ /wf_14_doc --check
 ### 验证输出
 
 ```bash
-$ python scripts/frontmatter_utils.py validate-batch docs/
+$ python ~/.claude/commands/scripts/frontmatter_utils.py validate-batch docs/
 
 ✓ docs/api/auth.md - 验证通过
   - 所有 7 个必需字段完整

@@ -645,7 +645,7 @@ Q5: 引入了新的配置或部署流程?
 1. **生成时** (/wf_14_doc):
    ```bash
    成本估计 → 判断超限 → 若超限拒绝生成
-   python scripts/frontmatter_utils.py validate docs/
+   python ~/.claude/commands/scripts/frontmatter_utils.py validate docs/
    ```
 
 2. **审查时** (/wf_08_review Dimension 6):
@@ -663,7 +663,7 @@ Q5: 引入了新的配置或部署流程?
    ```
    自动检查：
    - Frontmatter 验证
-   - 索引更新（python scripts/frontmatter_utils.py update-index）
+   - 索引更新（python ~/.claude/commands/scripts/frontmatter_utils.py update-index）
    - 无破损链接
    ```
 
@@ -680,13 +680,13 @@ Q5: 引入了新的配置或部署流程?
 
 ```bash
 # Frontmatter 生成和验证
-python scripts/frontmatter_utils.py generate <doc_path>
-python scripts/frontmatter_utils.py validate <doc_path>
-python scripts/frontmatter_utils.py validate-batch docs/
-python scripts/frontmatter_utils.py update-index KNOWLEDGE.md
+python ~/.claude/commands/scripts/frontmatter_utils.py generate <doc_path>
+python ~/.claude/commands/scripts/frontmatter_utils.py validate <doc_path>
+python ~/.claude/commands/scripts/frontmatter_utils.py validate-batch docs/
+python ~/.claude/commands/scripts/frontmatter_utils.py update-index KNOWLEDGE.md
 
 # 文档关系图
-python scripts/doc_graph_builder.py generate docs/
+python ~/.claude/commands/scripts/doc_graph_builder.py generate docs/
 ```
 
 **超限处理**:

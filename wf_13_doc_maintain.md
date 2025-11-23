@@ -197,10 +197,10 @@ Checks:
 
 ```bash
 # 批量验证所有 docs/ 下的 markdown 文件
-python scripts/frontmatter_utils.py validate-batch docs/
+python ~/.claude/commands/scripts/frontmatter_utils.py validate-batch docs/
 
 # 以 JSON 格式保存详细报告
-python scripts/frontmatter_utils.py validate-batch docs/ --format json > frontmatter-validation.json
+python ~/.claude/commands/scripts/frontmatter_utils.py validate-batch docs/ --format json > frontmatter-validation.json
 
 # 查看报告
 cat frontmatter-validation.json | jq '.'
@@ -259,7 +259,7 @@ cat frontmatter-validation.json | jq '.'
 **示例 1：缺少 Frontmatter**
 ```bash
 # 自动生成 frontmatter
-python scripts/frontmatter_utils.py generate docs/api/new-endpoint.md
+python ~/.claude/commands/scripts/frontmatter_utils.py generate docs/api/new-endpoint.md
 
 # 输出会显示生成的 frontmatter，复制到文件顶部
 ```
@@ -291,10 +291,10 @@ ls -la docs/architecture/system-design.md
 
 ```bash
 # 生成文档关系图
-python scripts/frontmatter_utils.py graph docs/ --format mermaid > docs/graph.mmd
+python ~/.claude/commands/scripts/frontmatter_utils.py graph docs/ --format mermaid > docs/graph.mmd
 
 # 或分析文档关系指标
-python scripts/doc_graph_builder.py docs/ --analyze
+python ~/.claude/commands/scripts/doc_graph_builder.py docs/ --analyze
 ```
 
 **详细规范参考**: [Frontmatter规范参考](docs/reference/FRONTMATTER.md)
@@ -577,7 +577,7 @@ Show what would be changed without making changes:
 # - 低优先级: 链接孤立文档、组织工作层文档
 
 # 手动处理后运行自动验证
-python scripts/frontmatter_utils.py validate-batch docs/
+python ~/.claude/commands/scripts/frontmatter_utils.py validate-batch docs/
 
 # 处理完成后重新加载上下文
 /wf_03_prime

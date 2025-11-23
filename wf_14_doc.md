@@ -87,8 +87,8 @@ context_rules:
 
 | 工具 | 路径 | 功能 | 使用方式 |
 |------|------|------|---------|
-| **Frontmatter 处理** | `scripts/frontmatter_utils.py` | 验证、生成、关系图 | `python scripts/frontmatter_utils.py [command]` |
-| **文档关系图** | `scripts/doc_graph_builder.py` | 可视化文档网络 | `python scripts/doc_graph_builder.py [options]` |
+| **Frontmatter 处理** | `scripts/frontmatter_utils.py` | 验证、生成、关系图 | `python ~/.claude/commands/scripts/frontmatter_utils.py [command]` |
+| **文档关系图** | `scripts/doc_graph_builder.py` | 可视化文档网络 | `python ~/.claude/commands/scripts/doc_graph_builder.py [options]` |
 
 **核心命令示例**：
 
@@ -96,7 +96,7 @@ context_rules:
 
 **AI 执行规则**：
 - ✅ **必须使用**：调用上述脚本工具完成 Frontmatter 相关操作
-- ✅ **优先检查**：执行前确认 `scripts/frontmatter_utils.py` 存在
+- ✅ **优先检查**：执行前确认 `~/.claude/commands/scripts/frontmatter_utils.py` 存在
 - ❌ **绝不允许**：重新实现 Frontmatter 生成/验证功能
 - ❌ **绝不允许**：创建临时脚本 `/tmp/generate_frontmatter.sh` 等替代已有工具
 - ❌ **绝不允许**：在 Bash 中使用 cat/echo 等手动生成 Frontmatter
@@ -284,22 +284,22 @@ OPTIONS:
 
 完整模板和字段说明见规范文档 § 标准模板 § 字段说明
 
-**生成逻辑**（⚠️ 必须使用项目工具 `scripts/frontmatter_utils.py`）:
+**生成逻辑**（⚠️ 必须使用项目工具 `~/.claude/commands/scripts/frontmatter_utils.py`）:
 
 **实际执行方式**：
 ```bash
 # AI 应该执行的实际命令（不是伪代码）
-python scripts/frontmatter_utils.py generate docs/api/new-endpoint.md
+python ~/.claude/commands/scripts/frontmatter_utils.py generate docs/api/new-endpoint.md
 
 # 批量生成
-python scripts/frontmatter_utils.py generate-batch docs/api/
+python ~/.claude/commands/scripts/frontmatter_utils.py generate-batch docs/api/
 
 # 验证生成结果
-python scripts/frontmatter_utils.py validate docs/api/new-endpoint.md
+python ~/.claude/commands/scripts/frontmatter_utils.py validate docs/api/new-endpoint.md
 ```
 
 **AI 执行检查清单**：
-- [ ] 确认 `scripts/frontmatter_utils.py` 文件存在
+- [ ] 确认 `~/.claude/commands/scripts/frontmatter_utils.py` 文件存在
 - [ ] 使用 Bash 工具调用脚本，而非重写功能
 - [ ] 检查命令执行返回码（0 = 成功）
 - [ ] 验证生成的 Frontmatter 格式正确
@@ -559,7 +559,7 @@ cp .env.example .env
 
 **Frontmatter 验证**:
 
-⚠️ **必须使用项目工具** `scripts/frontmatter_utils.py`（见 [FRONTMATTER.md § 验证逻辑](docs/reference/FRONTMATTER.md)）
+⚠️ **必须使用项目工具** `~/.claude/commands/scripts/frontmatter_utils.py`（见 [FRONTMATTER.md § 验证逻辑](docs/reference/FRONTMATTER.md)）
 
 **⚠️ Execution Context**: 验证脚本必须从**项目根目录**运行（详见规范文档 § 执行上下文）
 
@@ -568,10 +568,10 @@ cp .env.example .env
 # AI 应该执行的实际命令（不是伪代码）
 
 # 验证单个文档
-python scripts/frontmatter_utils.py validate docs/api/auth.md
+python ~/.claude/commands/scripts/frontmatter_utils.py validate docs/api/auth.md
 
 # 批量验证
-python scripts/frontmatter_utils.py validate-batch docs/
+python ~/.claude/commands/scripts/frontmatter_utils.py validate-batch docs/
 
 # 检查命令返回码
 if [ $? -eq 0 ]; then
@@ -774,17 +774,17 @@ def update_knowledge_index(new_docs, knowledge_md):
     - 生成文档文件
 
 4.4 自动添加 Frontmatter
-    ✅ **必须调用**：scripts/frontmatter_utils.py
+    ✅ **必须调用**：~/.claude/commands/scripts/frontmatter_utils.py
 
     对每个生成的文档:
-    python scripts/frontmatter_utils.py generate <doc_path>
+    python ~/.claude/commands/scripts/frontmatter_utils.py generate <doc_path>
 ```
 
 **步骤 5: 约束检查和验证（强制门控）**
 
 ```
 5.1 验证 Frontmatter 完整性
-    python scripts/frontmatter_utils.py validate docs/
+    python ~/.claude/commands/scripts/frontmatter_utils.py validate docs/
 
     必须全部通过:
     - ✅ 7 个必需字段完整
@@ -807,7 +807,7 @@ def update_knowledge_index(new_docs, knowledge_md):
     ✅ 若符合约束 → 继续
 
 5.3 更新 KNOWLEDGE.md 索引
-    python scripts/frontmatter_utils.py update-index KNOWLEDGE.md
+    python ~/.claude/commands/scripts/frontmatter_utils.py update-index KNOWLEDGE.md
 
     必须通过:
     - ✅ 索引表已更新
@@ -1381,7 +1381,7 @@ docs/
 # 4. 验证代码示例的准确性
 
 # 完成调整后运行验证
-python scripts/frontmatter_utils.py validate-batch docs/
+python ~/.claude/commands/scripts/frontmatter_utils.py validate-batch docs/
 
 # 然后进行文档维护
 /wf_13_doc_maintain --auto
@@ -1421,7 +1421,7 @@ python scripts/frontmatter_utils.py validate-batch docs/
 # 下一步: 提交所有更改
 
 # 1. 确认所有文档都有有效的 Frontmatter
-python scripts/frontmatter_utils.py validate-batch docs/
+python ~/.claude/commands/scripts/frontmatter_utils.py validate-batch docs/
 
 # 2. 重新加载上下文（如果有大量文档变化）
 /wf_03_prime

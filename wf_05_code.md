@@ -146,15 +146,15 @@ You are the Development Coordinator directing four coding specialists:
 
 ```bash
 # 验证所有新文档都有完整的 Frontmatter
-python scripts/frontmatter_utils.py validate docs/
+python ~/.claude/commands/scripts/frontmatter_utils.py validate docs/
   输出: ✅ 通过 或 ❌ 缺失字段列表
 
 # 自动更新 KNOWLEDGE.md 的文档索引
-python scripts/frontmatter_utils.py update-index KNOWLEDGE.md
+python ~/.claude/commands/scripts/frontmatter_utils.py update-index KNOWLEDGE.md
   输出: 新增/更新的索引条目
 
 # 生成文档关系图（可选，用于理解依赖）
-python scripts/doc_graph_builder.py generate docs/
+python ~/.claude/commands/scripts/doc_graph_builder.py generate docs/
   输出: docs/relationships.md (文档网络可视化)
 ```
 

@@ -13,7 +13,7 @@ related_documents:
 related_code:
   - path: "scripts/frontmatter_utils.py"
     type: "实现"
-    description: "Frontmatter 处理工具实现"
+    description: "Frontmatter 处理工具实现（位于 ~/.claude/commands/scripts/）"
 tags: ["frontmatter", "文档规范", "元数据"]
 authors: ["Claude"]
 version: "1.1"
@@ -496,10 +496,10 @@ pip install pyyaml
 
 ```bash
 # 验证 frontmatter 完整性
-python scripts/frontmatter_utils.py validate docs/api/auth.md
+python ~/.claude/commands/scripts/frontmatter_utils.py validate docs/api/auth.md
 
 # 输出格式选项：json, yaml, table
-python scripts/frontmatter_utils.py validate docs/api/auth.md --format yaml
+python ~/.claude/commands/scripts/frontmatter_utils.py validate docs/api/auth.md --format yaml
 ```
 
 **输出示例**：
@@ -517,20 +517,20 @@ python scripts/frontmatter_utils.py validate docs/api/auth.md --format yaml
 
 ```bash
 # 验证 docs/ 下所有文档
-python scripts/frontmatter_utils.py validate-batch docs/
+python ~/.claude/commands/scripts/frontmatter_utils.py validate-batch docs/
 
 # 保存验证报告
-python scripts/frontmatter_utils.py validate-batch docs/ > validation-report.json
+python ~/.claude/commands/scripts/frontmatter_utils.py validate-batch docs/ > validation-report.json
 ```
 
 #### 3. 生成默认模板
 
 ```bash
 # 为新文档生成 frontmatter 模板
-python scripts/frontmatter_utils.py generate docs/api/new-endpoint.md
+python ~/.claude/commands/scripts/frontmatter_utils.py generate docs/api/new-endpoint.md
 
 # 直接写入文件
-python scripts/frontmatter_utils.py generate docs/api/new-endpoint.md > docs/api/new-endpoint.md
+python ~/.claude/commands/scripts/frontmatter_utils.py generate docs/api/new-endpoint.md > docs/api/new-endpoint.md
 ```
 
 **生成的模板**：
@@ -556,17 +556,17 @@ next_review_date: "2025-05-11"
 
 ```bash
 # 生成 Mermaid 图表
-python scripts/frontmatter_utils.py graph docs/ --format mermaid > docs/graph.mmd
+python ~/.claude/commands/scripts/frontmatter_utils.py graph docs/ --format mermaid > docs/graph.mmd
 
 # 或使用专用脚本
-python scripts/doc_graph_builder.py docs/ --format mermaid > docs/graph.mmd
+python ~/.claude/commands/scripts/doc_graph_builder.py docs/ --format mermaid > docs/graph.mmd
 
 # 生成 Graphviz DOT 格式
-python scripts/doc_graph_builder.py docs/ --format dot > docs/graph.dot
+python ~/.claude/commands/scripts/doc_graph_builder.py docs/ --format dot > docs/graph.dot
 dot -Tpng docs/graph.dot -o docs/graph.png
 
 # 分析文档关系指标
-python scripts/doc_graph_builder.py docs/ --analyze
+python ~/.claude/commands/scripts/doc_graph_builder.py docs/ --analyze
 ```
 
 **Mermaid 输出示例**：
@@ -581,7 +581,7 @@ graph TD
 
 ```bash
 # 分析文档关系网络指标
-python scripts/doc_graph_builder.py docs/ --analyze
+python ~/.claude/commands/scripts/doc_graph_builder.py docs/ --analyze
 ```
 
 **分析输出示例**：
