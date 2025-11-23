@@ -1,10 +1,10 @@
 # 项目任务跟踪 (TASK.md)
 
 **项目**: AI Workflow 命令系统 - Frontmatter 文档元数据处理 + 工作流闭环改进 + MCP 集成
-**版本**: v1.5
-**最后更新**: 2025-11-21
+**版本**: v1.6
+**最后更新**: 2025-11-23
 **维护者**: Claude Code
-**当前进度**: 38/41 完成 (92.7%)
+**当前进度**: 39/41 完成 (95.1%)
 
 ---
 
@@ -21,9 +21,10 @@
 | **开源优先工作流** | 5 | 5 | 0 | 0 |
 | **wf 命令系统优化** | 5 | 5 | 0 | 0 |
 | **MCP 集成** | 3 | 3 | 0 | 0 |
-| **总计** | 41 | 38 | 0 | 3 |
+| **MCP & 文档架构** | 1 | 1 | 0 | 0 |
+| **总计** | 42 | 39 | 0 | 3 |
 
-**完成度**: 92.7% (38/41 tasks) ✅
+**完成度**: 95.1% (39/42 tasks) ✅
 
 **新增任务说明**:
 - 代码审查 (2025-11-15) 发现 wf 命令系统存在结构不一致和冗余问题
@@ -609,6 +610,43 @@ MCP (Model Context Protocol) 集成为 AI Workflow Command System 引入了 5 �
 - [MCP 用户指南](../integration/MCP_USER_GUIDE.md)
 - [MCP 集成报告](../integration/MCP_INTEGRATION_REPORT.md)
 - [MCP 集成策略 ADR](../adr/2025-11-21-mcp-integration-strategy.md)
+
+---
+
+## ✅ 完成：MCP 与管理文档的互补架构设计 (2025-11-23)
+
+### 任务：验证 MCP 和管理文档的架构关系 (🔴 高优先级 - 完成)
+
+**完成信息**:
+- 执行方式：深度结构化分析（使用 Sequential-thinking MCP）
+- 分析维度：5 个（成本、效果、可靠性、一致性、可追溯性）
+- 评估方案：3 个（精简文档依赖 MCP / 保持完整文档 + MCP 可选增强 / 混合策略优化）
+- 完成时间：2025-11-23
+- 总工作量：1.5 小时
+
+**输出成果**:
+- [x] 深度的架构分析报告（4,000+ 字）
+- [x] 创建 ADR：`docs/adr/2025-11-23-mcp-and-docs-complementary-architecture.md`
+- [x] 更新 KNOWLEDGE.md 索引（添加新 ADR）
+- [x] 更新 TASK.md 进度（完成度从 92.7% → 95.1%）
+
+**验收标准**：✅ 全部通过
+- [x] 明确了 MCP 和管理文档的定位关系（互补，非替代）
+- [x] 量化了成本效益分析（Token 增加 20-40%, 效果提升 50-80%）
+- [x] 制定了明确的使用策略（选项 C：混合策略）
+- [x] 识别了风险和监控指标
+- [x] 记录了 Ultrathink 视角验证（Think Different, Simplify Ruthlessly, Craft Don't Code）
+- [x] 制定了后续行动计划
+
+**决策**：✅ 采用选项 C（混合策略）
+- 保持完整的管理文档体系（PRD, PLANNING, TASK, CONTEXT, KNOWLEDGE）
+- MCP 作为可选增强能力（标志激活或自动激活）
+- 建立清晰的 MCP-文档协同模式
+- 当前架构已达最优，无需调整
+
+**相关文件**:
+- [MCP & 文档架构 ADR](../adr/2025-11-23-mcp-and-docs-complementary-architecture.md)
+- [KNOWLEDGE.md](../../KNOWLEDGE.md) (已更新索引)
 
 ---
 
