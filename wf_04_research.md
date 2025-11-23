@@ -2,12 +2,19 @@
 command: /wf_04_research
 index: 04.5
 phase: "开发实现"
-description: "开源方案深度研究，系统化评估和对比技术选项"
+description: "开源方案深度研究，系统化评估和对比技术选项 | MCP: --c7 | --research"
 reads: [PLANNING.md, KNOWLEDGE.md, TASK.md]
 writes: [KNOWLEDGE.md, PLANNING.md(可能), docs/adr/(可能), TASK.md(可能)]
 prev_commands: [/wf_04_ask]
 next_commands: [/wf_01_planning, /wf_05_code]
 model: sonnet
+mcp_support:
+  - name: "Context7"
+    flag: "--c7"
+    description: "查询官方文档和API参考"
+  - name: "Tavily"
+    flag: "--research"
+    description: "深度搜索社区讨论和性能数据"
 context_rules:
   - "系统化评估开源方案，记录决策过程"
   - "更新KNOWLEDGE.md中的方案对比表"

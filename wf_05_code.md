@@ -2,13 +2,17 @@
 command: /wf_05_code
 index: 05
 phase: "开发实现"
-description: "功能实现协调器，遵循架构标准编写代码，集成 Ultrathink 优雅实现"
+description: "功能实现协调器，遵循架构标准编写代码，集成 Ultrathink 优雅实现 | MCP: --ui"
 reads: [PLANNING.md(开发标准), TASK.md(当前任务), KNOWLEDGE.md(代码模式), PHILOSOPHY.md(可选)]
 writes: [代码文件, TASK.md(状态更新)]
 prev_commands: [/wf_03_prime, /wf_04_ask]
 next_commands: [/wf_07_test, /wf_08_review, /wf_11_commit]
 ultrathink_lens: "craft_elegance"
 model: sonnet
+mcp_support:
+  - name: "Magic"
+    flag: "--ui"
+    description: "UI组件生成和设计系统集成"
 context_rules:
   - "遵循PLANNING.md的代码标准"
   - "满足PRD需求"

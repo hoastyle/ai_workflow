@@ -2,12 +2,16 @@
 command: /wf_14_doc
 index: 14
 phase: "文档管理"
-description: "智能文档助手，从代码库提取信息生成和维护项目文档"
+description: "智能文档助手，从代码库提取信息生成和维护项目文档 | MCP: --ui"
 reads: [项目代码, PLANNING.md, KNOWLEDGE.md, 现有文档]
 writes: [docs/, README.md, KNOWLEDGE.md(索引更新)]
 prev_commands: [/wf_05_code, /wf_08_review]
 next_commands: [/wf_13_doc_maintain, /wf_11_commit]
 ultrathink_lens: "extract_not_create"
+mcp_support:
+  - name: "Magic"
+    flag: "--ui"
+    description: "UI文档和组件示例生成"
 context_rules:
   - "文档从代码中提取，而非凭空生成"
   - "交互式选择，不是批量生成"

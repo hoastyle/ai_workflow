@@ -2,12 +2,16 @@
 command: /wf_03_prime
 index: 03
 phase: "基础设施"
-description: "加载项目管理文档到AI上下文（会话必备）"
+description: "加载项目管理文档到AI上下文（会话必备）| MCP: Serena (自动激活)"
 reads: [PRD.md, PLANNING.md, TASK.md, CONTEXT.md, KNOWLEDGE.md, CLAUDE.md]
 writes: []
 prev_commands: [/clear]
 next_commands: [/wf_05_code, /wf_04_ask, /wf_02_task]
 model: haiku
+mcp_support:
+  - name: "Serena"
+    flag: "自动激活"
+    description: "语义级别的项目理解和代码索引"
 context_rules:
   - "PRD.md是只读的，绝不修改"
   - "CONTEXT.md由/wf_11_commit自动管理"

@@ -2,13 +2,26 @@
 command: /wf_04_ask
 index: 04
 phase: "开发实现"
-description: "架构咨询服务，支持技术决策和代码库审查，集成 Ultrathink 设计思维"
+description: "架构咨询服务，支持技术决策和代码库审查，集成 Ultrathink 设计思维 | MCP: --think | --c7 | --research | --review-codebase"
 reads: [PLANNING.md, TASK.md, KNOWLEDGE.md, PHILOSOPHY.md(可选), 代码库(--review-codebase)]
 writes: [PLANNING.md(可能), KNOWLEDGE.md(可能), TASK.md(可能), docs/adr/(可能)]
 prev_commands: [/wf_03_prime]
 next_commands: [/wf_05_code, /wf_01_planning]
 ultrathink_lens: "architecture_design"
 model: sonnet
+mcp_support:
+  - name: "Sequential-thinking"
+    flag: "--think"
+    description: "结构化多步推理分析复杂决策"
+  - name: "Context7"
+    flag: "--c7"
+    description: "获取官方框架和库的文档及最佳实践"
+  - name: "Tavily"
+    flag: "--research"
+    description: "搜索最新技术发展和社区讨论"
+  - name: "特殊标志"
+    flag: "--review-codebase"
+    description: "全面的代码库审查和质量分析"
 context_rules:
   - "决策必须对齐PRD需求"
   - "重大架构决策更新PLANNING.md"

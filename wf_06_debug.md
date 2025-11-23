@@ -2,12 +2,19 @@
 command: /wf_06_debug
 index: 06
 phase: "开发实现"
-description: "系统化调试修复，支持快速修复模式"
+description: "系统化调试修复，支持快速修复模式 | MCP: --think | --deep"
 reads: [PLANNING.md(系统设计), TASK.md(相关任务), KNOWLEDGE.md(已知问题)]
 writes: [代码文件, TASK.md(修复记录), KNOWLEDGE.md(新解决方案)]
 prev_commands: [/wf_05_code, /wf_07_test]
 next_commands: [/wf_07_test, /wf_09_refactor, /wf_11_commit]
 model: sonnet
+mcp_support:
+  - name: "Sequential-thinking"
+    flag: "--think"
+    description: "结构化分析bug原因和解决方案"
+  - name: "Serena"
+    flag: "--deep"
+    description: "深度代码分析和符号级调试"
 context_rules:
   - "使用KNOWLEDGE.md已知解决方案"
   - "修复根本原因，不是症状"
