@@ -12,7 +12,7 @@ model: sonnet
 mcp_support:
   - name: "Magic"
     flag: "--ui"
-    description: "UI组件生成和设计系统集成"
+    detail: "UI组件生成和设计系统集成"
 context_rules:
   - "遵循PLANNING.md的代码标准"
   - "满足PRD需求"

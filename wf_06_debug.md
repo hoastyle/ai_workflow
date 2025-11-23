@@ -11,10 +11,10 @@ model: sonnet
 mcp_support:
   - name: "Sequential-thinking"
     flag: "--think"
-    description: "结构化分析bug原因和解决方案"
+    detail: "结构化分析bug原因和解决方案"
   - name: "Serena"
     flag: "--deep"
-    description: "深度代码分析和符号级调试"
+    detail: "深度代码分析和符号级调试"
 context_rules:
   - "使用KNOWLEDGE.md已知解决方案"
   - "修复根本原因，不是症状"

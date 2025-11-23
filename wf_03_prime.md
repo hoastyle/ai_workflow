@@ -11,7 +11,7 @@ model: haiku
 mcp_support:
   - name: "Serena"
     flag: "自动激活"
-    description: "语义级别的项目理解和代码索引"
+    detail: "语义级别的项目理解和代码索引"
 context_rules:
   - "PRD.md是只读的，绝不修改"
   - "CONTEXT.md由/wf_11_commit自动管理"

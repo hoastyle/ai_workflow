@@ -11,7 +11,7 @@ ultrathink_lens: "extract_not_create"
 mcp_support:
   - name: "Magic"
     flag: "--ui"
-    description: "UI文档和组件示例生成"
+    detail: "UI文档和组件示例生成"
 context_rules:
   - "文档从代码中提取，而非凭空生成"
   - "交互式选择，不是批量生成"
