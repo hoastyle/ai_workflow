@@ -5,8 +5,13 @@ Frontmatter 元数据处理工具集
 
 自动生成，由 Claude Code 管理
 生成源: docs/reference/FRONTMATTER.md
-版本: 1.0
-最后更新: 2025-11-11
+版本: 1.1
+最后更新: 2025-11-24
+
+更新历史:
+- 1.1 (2025-11-24): 修复 related_documents 和 related_code 字段处理
+    支持字符串数组和对象数组两种格式
+- 1.0 (2025-11-11): 初始版本
 """
 
 import argparse
@@ -106,15 +111,34 @@ class FrontmatterValidator:
                 errors.append("created_date 不能晚于 last_updated")
 
         # 5. 关系引用验证
+        # 支持两种格式:
+        #   - 字符串数组: ["docs/api/auth.md", "docs/api/users.md"]
+        #   - 对象数组: [{"path": "docs/api/auth.md", "type": "reference"}]
         if 'related_documents' in frontmatter:
             for doc in frontmatter['related_documents']:
-                doc_path_ref = doc.get('path', '')
+                # 处理字符串和对象两种格式
+                if isinstance(doc, str):
+                    doc_path_ref = doc
+                elif isinstance(doc, dict):
+                    doc_path_ref = doc.get('path', '')
+                else:
+                    warnings.append(f"related_documents 格式无效: {doc}")
+                    continue
+
                 if doc_path_ref and not (self.project_root / doc_path_ref).exists():
                     warnings.append(f"related_documents 引用的文档不存在: {doc_path_ref}")
 
         if 'related_code' in frontmatter:
             for code in frontmatter['related_code']:
-                code_path_ref = code.get('path', '')
+                # 处理字符串和对象两种格式
+                if isinstance(code, str):
+                    code_path_ref = code
+                elif isinstance(code, dict):
+                    code_path_ref = code.get('path', '')
+                else:
+                    warnings.append(f"related_code 格式无效: {code}")
+                    continue
+
                 if code_path_ref and not (self.project_root / code_path_ref).exists():
                     warnings.append(f"related_code 引用的代码文件不存在: {code_path_ref}")
 
@@ -302,23 +326,47 @@ class DocumentGraphBuilder:
                 })
 
                 # 添加文档关系边
+                # 支持字符串数组和对象数组两种格式
                 for related_doc in frontmatter.get('related_documents', []):
+                    if isinstance(related_doc, str):
+                        target_path = related_doc
+                        relation_type = 'reference'
+                        description = ''
+                    elif isinstance(related_doc, dict):
+                        target_path = related_doc.get('path', '')
+                        relation_type = related_doc.get('type', 'unknown')
+                        description = related_doc.get('description', '')
+                    else:
+                        continue  # 跳过无效格式
+
                     edges.append({
                         'source': rel_path,
-                        'target': related_doc.get('path', ''),
+                        'target': target_path,
                         'type': 'document_relation',
-                        'relation_type': related_doc.get('type', 'unknown'),
-                        'description': related_doc.get('description', '')
+                        'relation_type': relation_type,
+                        'description': description
                     })
 
                 # 添加代码关系边
+                # 支持字符串数组和对象数组两种格式
                 for related_code in frontmatter.get('related_code', []):
+                    if isinstance(related_code, str):
+                        target_path = related_code
+                        relation_type = 'implementation'
+                        description = ''
+                    elif isinstance(related_code, dict):
+                        target_path = related_code.get('path', '')
+                        relation_type = related_code.get('type', 'unknown')
+                        description = related_code.get('description', '')
+                    else:
+                        continue  # 跳过无效格式
+
                     edges.append({
                         'source': rel_path,
-                        'target': related_code.get('path', ''),
+                        'target': target_path,
                         'type': 'code_relation',
-                        'relation_type': related_code.get('type', 'unknown'),
-                        'description': related_code.get('description', '')
+                        'relation_type': relation_type,
+                        'description': description
                     })
 
             except Exception as e:
