@@ -95,20 +95,34 @@ cd ai_workflow
 
 本系统采用分层文档架构，各司其职：
 
+### 核心参考文档
+
 | 文档 | 用途 | 适用场景 |
 |------|------|---------|
-| **[COMMANDS.md](COMMANDS.md)** | 15个命令完整参考 | 查询命令用法、参数、依赖 |
-| **[WORKFLOWS.md](WORKFLOWS.md)** | 场景化工作流指导 | 实现功能、修复Bug、质量改进 |
+| **[COMMANDS.md](COMMANDS.md)** | 14个命令完整参考 | 查询命令用法、参数、依赖 |
+| **[WORKFLOWS.md](WORKFLOWS.md)** | 场景化工作流指导 | 实现功能、修复Bug、质量改进、文档生成 |
 | **[TROUBLESHOOTING.md](TROUBLESHOOTING.md)** | 故障排查和解决方案 | 遇到错误、问题诊断 |
-| **[CLAUDE.md](CLAUDE.md)** | AI执行规则和权限 | AI行为规范、文件权限矩阵 |
-| **[DOC_ARCHITECTURE.md](DOC_ARCHITECTURE.md)** | 文档架构最佳实践 (NEW) | 文档管理、上下文优化 |
+| **[CLAUDE.md](CLAUDE.md)** | AI执行规则和权限 | AI行为规范、文件权限矩阵、约束规范 |
+| **[DOC_ARCHITECTURE.md](DOC_ARCHITECTURE.md)** | 文档架构最佳实践 | 文档管理、上下文优化、四层架构 |
+
+### 教程和参考文档 ⭐ NEW (2025-11-24)
+
+约束驱动的文档生成系统 - 确保文档可控、可验证：
+
+| 文档 | 用途 | 适用场景 |
+|------|------|---------|
+| **[docs/examples/doc_generation_quick_guide.md](docs/examples/doc_generation_quick_guide.md)** | 5分钟快速入门 | 快速理解约束驱动文档生成工作流 |
+| **[docs/examples/doc_generation_decision_tree.md](docs/examples/doc_generation_decision_tree.md)** | 详细决策树和示例 | 判断是否需要文档及选择文档类型 |
+| **[docs/examples/frontmatter_quick_reference.md](docs/examples/frontmatter_quick_reference.md)** | Frontmatter快速参考 | 文档元数据字段定义、常用模板、常见错误 |
+| **[docs/adr/2025-11-24-constraint-driven-doc-generation.md](docs/adr/2025-11-24-constraint-driven-doc-generation.md)** | 架构决策记录 | 理解约束驱动范式的设计原因和权衡 |
 
 **导航原则**：
 - 🔍 **查命令** → COMMANDS.md
 - 🛠️ **做开发** → WORKFLOWS.md
 - 🐛 **解问题** → TROUBLESHOOTING.md
 - 🤖 **AI规则** → CLAUDE.md
-- 📚 **文档管理** → DOC_ARCHITECTURE.md (NEW)
+- 📚 **文档管理** → DOC_ARCHITECTURE.md
+- 📝 **文档生成** → 教程和参考文档（快速指南、决策树、参考）
 
 ---
 
@@ -200,15 +214,39 @@ project/
 ```
 **详细流程**: 查看 [WORKFLOWS.md](WORKFLOWS.md#代码质量改进流程)
 
-### 场景4: 智能文档生成 ⭐ NEW
+### 场景4: 智能文档生成 ⭐ NEW (约束驱动)
 ```bash
+# Step 1: 代码实现
+/wf_03_prime                     # 加载项目上下文
 /wf_05_code "实现新功能"         # 完成代码
+                                # Step 8: 自动执行文档决策树判断
+
+# Step 2: 代码审查
 /wf_08_review                   # 代码审查
-/wf_14_doc                      # 智能文档生成（交互式）
-/wf_13_doc_maintain             # 文档结构检查
-/wf_11_commit "docs: 更新文档"   # 提交
+                                # Dimension 6: 验证文档约束合规
+
+# Step 3: 智能文档生成（三阶段门控）
+/wf_14_doc                      # Phase 1: 确定文档需求
+                                # Phase 2: 成本估计 + 约束检查
+                                # Phase 3: 生成文档 + Frontmatter
+
+# Step 4: 文档维护和提交
+/wf_13_doc_maintain             # 验证索引和链接
+/wf_11_commit "docs: 约束驱动文档生成"  # 提交（自动验证Frontmatter）
 ```
-**核心理念**: 从代码中提取真实信息，而非基于通用模板编造
+
+**核心理念**:
+- 约束驱动（KNOWLEDGE.md < 200行、单文件 < 500行、增长 < 30%）
+- 从代码中提取真实信息，而非基于通用模板编造
+- 三阶段门控确保文档质量和可验证性
+- 自动生成元数据（Frontmatter）和索引更新
+
+**关键文档**:
+- 快速指南: [doc_generation_quick_guide.md](docs/examples/doc_generation_quick_guide.md) (5分钟上手)
+- 决策树: [doc_generation_decision_tree.md](docs/examples/doc_generation_decision_tree.md) (判断是否需要文档)
+- Frontmatter参考: [frontmatter_quick_reference.md](docs/examples/frontmatter_quick_reference.md) (元数据字段)
+- ADR: [2025-11-24-constraint-driven-doc-generation.md](docs/adr/2025-11-24-constraint-driven-doc-generation.md) (设计原理)
+
 **详细流程**: 查看 [WORKFLOWS.md](WORKFLOWS.md#场景5智能文档生成)
 
 ---
@@ -218,19 +256,74 @@ project/
 1. **每次会话开始运行 `/wf_03_prime`** - 加载所有项目上下文
 2. **让 `/wf_11_commit` 处理一切** - 自动格式化、CONTEXT.md更新、质量检查
 3. **PRD.md 是只读的** - 需求修改需授权人员处理
-4. **提交前运行 `/wf_08_review`** - 确保代码质量
+4. **提交前运行 `/wf_08_review`** - 确保代码质量（含Dimension 6文档约束检查）
 5. **使用 `--coverage` 关注测试覆盖率** - `/wf_07_test --coverage`
+6. **遵守文档约束规范** - 确保文档可控和可验证（见下文）
+
+---
+
+## 📐 文档生成约束规范
+
+为了确保文档系统的可控性和可验证性，所有文档生成必须遵守以下约束：
+
+### 约束规则（硬限制）
+
+| 约束项 | 限制值 | 目的 | 检查点 |
+|--------|--------|------|--------|
+| **KNOWLEDGE.md** | < 200 行 | 保持纯索引（不包含详细内容） | /wf_11_commit |
+| **单个文档** | < 500 行 | 易于阅读和维护 | /wf_08_review Dimension 6 |
+| **单次增长** | < 30% | 避免文档爆炸 | /wf_14_doc Phase 2 |
+| **Frontmatter** | 必需（7字段） | 自动化索引和链接 | /wf_11_commit |
+| **文档分层** | 管理/技术/工作/归档 | 智能按需加载 | /wf_03_prime |
+
+### 文档类型和约束
+
+- **Type A（架构更新）** → PLANNING.md, < 50 行 (仅"为什么"和"影响")
+- **Type B（ADR）** → docs/adr/, < 200 行 (按ADR模板)
+- **Type C（功能文档）** → docs/, < 500 行 (超大文件需拆分)
+- **Type D（FAQ）** → KNOWLEDGE.md, < 50 行 (简洁明了)
+- **Type E（无需文档）** → 代码优化、性能改进等
+
+### 三阶段门控
+
+1. **Phase 1** (`/wf_05_code` Step 8) - 代码完成后的文档决策树判断
+2. **Phase 2** (`/wf_14_doc`) - 生成前的成本估计和约束检查
+3. **Phase 3** (`/wf_08_review` Dimension 6) - 生成后的验证
+
+### 约束超限处理
+
+| 超限情况 | 处理方案 |
+|----------|---------|
+| KNOWLEDGE.md 增长 > 50% | 🔴 立即失败，需修改范围或拆分 |
+| 单文件 > 500 行 | 🟠 建议拆分为多文件 |
+| 无 Frontmatter | 🔴 立即失败，必须补充 |
+| 内容在多处重复 | 🔴 立即失败，需使用关系链接 |
+
+**核心理念**: 宁可拆分，也不要超限。宁可简洁，也不要冗余。
+
+参考: [docs/adr/2025-11-24-constraint-driven-doc-generation.md](docs/adr/2025-11-24-constraint-driven-doc-generation.md)
 
 ---
 
 ## 🛠️ 快速问题解决
 
+### 开发相关
 | 问题 | 解决方案 |
 |------|---------|
 | 丢失项目上下文 | `/wf_03_prime` |
 | 不清楚需求 | `/wf_04_ask "问题"` |
 | 代码有问题 | `/wf_06_debug "错误描述"` |
 | 需要帮助 | `/wf_99_help` |
+
+### 文档生成相关 ⭐ NEW
+| 问题 | 解决方案 |
+|------|---------|
+| 不知道是否需要文档 | 查看 [doc_generation_decision_tree.md](docs/examples/doc_generation_decision_tree.md) |
+| 文档超过约束 | 参考 [约束超限处理](#约束超限处理) - 拆分或简化 |
+| 不知道如何填Frontmatter | 查看 [frontmatter_quick_reference.md](docs/examples/frontmatter_quick_reference.md) |
+| 想5分钟快速上手文档生成 | 查看 [doc_generation_quick_guide.md](docs/examples/doc_generation_quick_guide.md) |
+| 想理解约束设计的原因 | 查看 [2025-11-24-constraint-driven-doc-generation.md](docs/adr/2025-11-24-constraint-driven-doc-generation.md) |
+| 文档生成时提示约束违反 | 在 `/wf_14_doc` Phase 2 修改范围，或在 `/wf_13_doc_maintain` 清理旧文档后重试 |
 
 **完整故障排查**: 查看 [TROUBLESHOOTING.md](TROUBLESHOOTING.md)
 
@@ -281,27 +374,34 @@ TIMESTAMP=$(date +%Y-%m-%d\ %H:%M:%S) # 完整时间戳
 - `/wf_03_prime` ⭐ - **加载项目上下文**（智能按需加载技术文档）
 
 ### 开发实现 (4-6)
-- `/wf_04_ask` - 架构咨询（支持`--review-codebase`）
-- `/wf_05_code` - 功能实现（自动格式化）
-- `/wf_06_debug` - 调试修复（支持`--quick`）
+- `/wf_04_ask` - 架构咨询（支持`--review-codebase`、`--think`、`--c7`）
+- `/wf_05_code` - 功能实现（自动格式化，Step 8支持文档决策树）
+- `/wf_06_debug` - 调试修复（支持`--quick`、`--think`、`--deep`）
 
 ### 质量保证 (7-10)
 - `/wf_07_test` - 测试开发（支持`--coverage`）
-- `/wf_08_review` - 代码审查
+- `/wf_08_review` - 代码审查（Dimension 6验证文档约束）
 - `/wf_09_refactor` - 代码重构
 - `/wf_10_optimize` - 性能优化
 
 ### 运维部署 (11-12)
-- `/wf_11_commit` - 提交代码（自动更新CONTEXT.md）
+- `/wf_11_commit` - 提交代码（自动更新CONTEXT.md、验证Frontmatter）
 - `/wf_12_deploy_check` - 部署检查
 
-### 文档维护 (13) NEW
-- `/wf_13_doc_maintain` - 文档结构维护和优化
+### 文档管理 (13-14) ⭐ NEW
+- `/wf_13_doc_maintain` - 文档结构维护和优化（清理过期文档、检查链接）
+- `/wf_14_doc` ⭐ NEW - **智能文档生成**（约束驱动，从代码提取而非编造）
+  - 交互式文档生成（选择类型和范围）
+  - 自动成本估计和约束检查
+  - 完整Frontmatter元数据生成
+  - 支持 `--ui` 标志
 
 ### 支持命令 (99)
 - `/wf_99_help` - 帮助系统
 
 **详细说明**: 查看 [COMMANDS.md](COMMANDS.md)
+
+**文档生成工作流**: 详见 [docs/examples/doc_generation_quick_guide.md](docs/examples/doc_generation_quick_guide.md)
 
 ---
 
@@ -314,12 +414,23 @@ TIMESTAMP=$(date +%Y-%m-%d\ %H:%M:%S) # 完整时间戳
 
 ---
 
-**最后更新**: 2025-11-21
-**版本**: v3.3 (新增智能文档生成 + MCP 集成)
+**最后更新**: 2025-11-24
+**版本**: v3.4 (约束驱动文档生成完善版)
 **架构**: 命令定义（commands/）与项目数据（根目录）清晰分离
 **命令格式**: 统一使用 `/wf_XX_name` slash command 格式
 
-**v3.3 新增** (2025-11-07):
+**v3.4 新增** (2025-11-24) ⭐ 约束驱动文档生成系统完善:
+- 📚 约束驱动文档生成详细文档（4份）:
+  - `doc_generation_quick_guide.md` - 5分钟快速入门
+  - `doc_generation_decision_tree.md` - 详细决策树和示例
+  - `frontmatter_quick_reference.md` - Frontmatter快速参考
+  - `2025-11-24-constraint-driven-doc-generation.md` - ADR记录
+- 📐 完整约束规范（KNOWLEDGE.md < 200行、单文件 < 500行、增长 < 30%）
+- 🔄 三阶段门控系统（Phase 1: 决策树、Phase 2: 成本估计、Phase 3: 验证）
+- ✅ 100% Frontmatter完整性检查
+- 🎯 约束超限处理指南
+
+**v3.3 新增** (2025-11-21):
 - 📝 `/wf_14_doc` - 智能文档生成助手（从代码提取而非编造）
 - 🔍 代码库分析（技术栈、架构、API自动识别）
 - 📋 文档缺口检测（对比代码 vs 现有文档）
