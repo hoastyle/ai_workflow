@@ -26,6 +26,9 @@
 
 | 主题 | 路径 | 优先级 |
 |------|------|--------|
+| 文档生成快速指南 | [docs/examples/doc_generation_quick_guide.md](docs/examples/doc_generation_quick_guide.md) | 高 |
+| 文档生成决策树 | [docs/examples/doc_generation_decision_tree.md](docs/examples/doc_generation_decision_tree.md) | 高 |
+| Frontmatter 快速参考 | [docs/examples/frontmatter_quick_reference.md](docs/examples/frontmatter_quick_reference.md) | 高 |
 | 架构决策记录 | [docs/adr/](docs/adr/) | 中 |
 | Frontmatter 规范 | [docs/reference/FRONTMATTER.md](docs/reference/FRONTMATTER.md) | 高 |
 | Markdown 格式约束 | [docs/reference/MARKDOWN_STYLE.md](docs/reference/MARKDOWN_STYLE.md) | 高 |
@@ -46,6 +49,7 @@
 
 | 日期 | 标题 | 影响 | 状态 |
 |------|------|------|------|
+| 2025-11-24 | 约束驱动的文档生成最佳实践 | 高 | Accepted |
 | 2025-11-23 | MCP 与管理文档的互补架构 | 高 | Accepted |
 | 2025-11-23 | Serena 三层角色模型 | 高 | Accepted |
 | 2025-11-21 | MCP 集成策略 | 全局 | Accepted |
@@ -66,6 +70,65 @@
 
 ---
 
+## ❓ 文档生成常见问题
+
+### Q1：如何判断某个代码改动是否需要文档？
+
+**A**: 使用决策树判断：
+- **改动了公开 API** → 需要（Type C - API文档）
+- **改变了现有行为** → 需要（Type A/D - 架构或FAQ）
+- **使用了新技术** → 需要（Type B - ADR）
+- **改变了系统架构** → 需要（Type A - 规划文档）
+- **新增配置选项** → 需要（Type C - 部署文档）
+- **代码优化** → 不需要（Type E - 无文档）
+
+**经验法则**：如果下一个维护者需要了解"为什么"和"如何用"，就需要文档。
+
+### Q2：为什么文档有大小约束？
+
+**A**: 约束的三个价值：
+1. **成本控制** - 管理人员和上下文消耗
+2. **强制简洁** - 短文档更容易维护
+3. **可验证性** - 提供自动化检查点
+
+**约束规则**：
+- KNOWLEDGE.md < 200 行（纯索引和摘要）
+- 单个文件 < 500 行（复杂内容拆分）
+- 每 commit 增长 < 30%（避免爆炸）
+
+### Q3：文档生成超过约束怎么办？
+
+**A**: 有三个解决方案：
+1. **减少内容** - 删除非关键部分，保留核心
+2. **拆分文件** - 大文档分为 2-3 个小文档
+3. **清理旧文档** - 运行 `/wf_13_doc_maintain` 清理
+
+### Q4：AI 生成的文档需要人工审查吗？
+
+**A**: **是的**。约束驱动生成提供基础，需要 5-10 分钟的人工审查：
+- [ ] 验证技术细节准确性
+- [ ] 补充业务背景说明
+- [ ] 添加图表或实例
+- [ ] 验证代码示例可运行
+
+### Q5：如何填写 Frontmatter 中的 related_documents？
+
+**A**: 只列出真正相关的文档，最多 3-5 个：
+```yaml
+related_documents:
+  - "docs/api/authentication.md"      # 认证机制
+  - "docs/adr/2025-11-24-xxx.md"     # 设计决策
+  - "KNOWLEDGE.md"                    # 知识库
+```
+
+**规则**：
+- 使用相对路径（从项目根目录）
+- 过多相关说明设计有问题
+
+详见 [Frontmatter 实例集合](docs/examples/frontmatter_examples.md)
+
+---
+
 ## 🔗 工作流和核心参考
 
 **工作流命令**: `/wf_01_planning` → `/wf_02_task` → `/wf_03_prime` → `/wf_05_code` → `/wf_08_review` → `/wf_11_commit`
@@ -77,6 +140,6 @@
 
 ---
 
-**最后更新**: 2025-11-23
+**最后更新**: 2025-11-24
 **维护者**: Knowledge Base Management System
-**版本**: v1.2
+**版本**: v1.4 (新增文档生成完整工作流、决策树、Frontmatter 参考和 ADR)
