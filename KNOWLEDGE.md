@@ -34,6 +34,24 @@
 | Markdown 格式约束 | [docs/reference/MARKDOWN_STYLE.md](docs/reference/MARKDOWN_STYLE.md) | 高 |
 | MCP 集成 | [docs/integration/](docs/integration/) | 高 |
 
+### 文档生成模板和工作流 (新增 2025-11-27)
+
+| 主题 | 路径 | 优先级 | 说明 |
+|------|------|--------|------|
+| **文档模板库** | [docs/examples/doc_templates/](docs/examples/doc_templates/) | 高 | 5种标准文档模板 (README, API, DEV_GUIDE, DEPLOYMENT, ARCHITECTURE) |
+| README 模板 | [docs/examples/doc_templates/README_template.md](docs/examples/doc_templates/README_template.md) | 高 | 项目概览文档模板 |
+| API 文档模板 | [docs/examples/doc_templates/API_template.md](docs/examples/doc_templates/API_template.md) | 高 | API 端点文档模板 |
+| 开发指南模板 | [docs/examples/doc_templates/DEV_GUIDE_template.md](docs/examples/doc_templates/DEV_GUIDE_template.md) | 高 | 开发环境设置模板 |
+| 部署文档模板 | [docs/examples/doc_templates/DEPLOYMENT_template.md](docs/examples/doc_templates/DEPLOYMENT_template.md) | 高 | 部署指南模板 |
+| 架构文档模板 | [docs/examples/doc_templates/ARCHITECTURE_template.md](docs/examples/doc_templates/ARCHITECTURE_template.md) | 高 | 系统架构模板 |
+| **约束驱动工作流** | [docs/examples/doc_generation_workflow.md](docs/examples/doc_generation_workflow.md) | 高 | 6步约束驱动文档生成流程 |
+| **输出格式参考** | [docs/examples/doc_generation_outputs.md](docs/examples/doc_generation_outputs.md) | 高 | 3种标准报告格式 |
+| **后续步骤指南** | [docs/examples/doc_generation_next_steps.md](docs/examples/doc_generation_next_steps.md) | 高 | 4种后续路径和决策表 |
+| **最佳实践** | [docs/examples/doc_generation_best_practices.md](docs/examples/doc_generation_best_practices.md) | 高 | 使用时机、审查流程、性能优化 |
+| **故障排查** | [docs/examples/doc_generation_troubleshooting.md](docs/examples/doc_generation_troubleshooting.md) | 高 | 限制说明和常见问题解决 |
+| **UI 增强模板** | [docs/examples/doc_templates/ui_enhanced/](docs/examples/doc_templates/ui_enhanced/) | 中 | Magic MCP UI 组件模板 (4种) |
+| **完整示例库** | [docs/examples/wf_14_doc_examples.md](docs/examples/wf_14_doc_examples.md) | 中 | /wf_14_doc 执行示例和参考 |
+
 ### 知识库详细文档 (docs/knowledge/)
 
 - 📋 [设计模式](docs/knowledge/DESIGN_PATTERNS.md) - 工作流、权限、架构
