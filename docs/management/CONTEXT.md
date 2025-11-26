@@ -1,30 +1,31 @@
 # CONTEXT.md
 
-**最后会话**: 2025-11-23 18:30
-**Git 基准**: commit b38a948
+**最后会话**: 2025-11-27 16:30
+**Git 基准**: commit 24df908
 
 ## 📍 上下文指针 (Context Pointers)
 
 ### 当前工作焦点
-- 活跃任务: TASK.md § 完成：MCP 与管理文档的互补架构设计 (Line 616)
-- 相关架构: PLANNING.md § 技术栈 (待创建)
-- 相关 ADR: KNOWLEDGE.md § ADR 2025-11-23 (MCP & 文档互补架构)
+- 活跃任务: TASK.md § Serena MCP 集成 Phase 1 (Line 461) - **✅ 已完成**
+- 后续任务: TASK.md § Phase 2: 获取 ADR 审批和 CLAUDE.md 更新 (Line 471)
+- 相关 ADR: KNOWLEDGE.md § ADR 2025-11-27 (Serena MCP 集成扩展策略)
 
 ### 会话状态
-- Git commits (本次会话): 1 commit (b38a948)
-- 修改文件数: 3 files (2 modified, 1 new)
-- 主要变更领域: 架构决策文档 + MCP 集成验证
+- Git commits (本次会话): 1 commit (24df908)
+- 修改文件数: 5 files (4 modified, 1 new)
+- 主要变更领域: Serena MCP Phase 1 集成 + 架构决策记录
 
 ### 下次启动时
 - 推荐命令: /wf_03_prime
 - 推荐下一步:
-  - 选项 1: 执行 TASK.md § 任务 1️⃣ 完善脚本类型注解 (高优先级)
-  - 选项 2: 执行 TASK.md § 任务 2️⃣ 增强脚本错误处理 (高优先级)
-  - 选项 3: 执行 TASK.md § 任务 3️⃣ 添加单元测试 (中优先级)
+  - **高优先级**: 执行 TASK.md § Phase 2: 修复 wf_05_code.md 文件大小超限
+  - **高优先级**: 执行 TASK.md § Phase 2: 获取 ADR 审批和更新 CLAUDE.md
+  - **高优先级**: 执行 TASK.md § Phase 2: 集成测试验证
 
 ### 重要决策概览
-- **ADR 2025-11-23**: MCP 和管理文档采用互补架构
-  - 决策: 保留完整管理文档 + MCP 可选增强
-  - 成本: Token +20-40%, 效果 +50-80%
-  - 状态: Accepted ✅
+- **ADR 2025-11-27**: Serena MCP 集成扩展策略 (Phase 1 完成)
+  - 决策: 分层推进（Tier 1 立即，Tier 2/3 后续）
+  - Phase 1 完成: wf_09_refactor (自动), wf_05_code (手动), wf_08_review (条件)
+  - 时间节省: 55-80% 平均
+  - 状态: Proposed (待 Phase 2 执行后升级为 Accepted)
 
