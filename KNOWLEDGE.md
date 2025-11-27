@@ -29,6 +29,8 @@
 | 文档生成快速指南 | [docs/examples/doc_generation_quick_guide.md](docs/examples/doc_generation_quick_guide.md) | 高 |
 | 文档生成决策树 | [docs/examples/doc_generation_decision_tree.md](docs/examples/doc_generation_decision_tree.md) | 高 |
 | Frontmatter 快速参考 | [docs/examples/frontmatter_quick_reference.md](docs/examples/frontmatter_quick_reference.md) | 高 |
+| **文档维护详细流程** | [docs/guides/doc_maintenance_process.md](docs/guides/doc_maintenance_process.md) | 高 |
+| **文档维护工作流指南** | [docs/guides/doc_maintenance_workflows.md](docs/guides/doc_maintenance_workflows.md) | 高 |
 | 架构决策记录 | [docs/adr/](docs/adr/) | 中 |
 | Frontmatter 规范 | [docs/reference/FRONTMATTER.md](docs/reference/FRONTMATTER.md) | 高 |
 | Markdown 格式约束 | [docs/reference/MARKDOWN_STYLE.md](docs/reference/MARKDOWN_STYLE.md) | 高 |

@@ -33,469 +33,40 @@ Maintain project documentation architecture to ensure:
 
 ## Process
 
-### 1. **Structure Audit**
-Verify four-layer architecture compliance:
-
-```
-✓ 管理层 - 全局索引文件（项目根目录，⚠️ 不在 docs/management/ 中）:
-  - 根目录/KNOWLEDGE.md       (必须在根目录！索引所有层级文档)
-  - 根目录/CLAUDE.md          (全局 AI 执行规范)
-  - 根目录/PHILOSOPHY.md      (设计哲学指南)
-  - 根目录/README.md          (项目入口文档)
-  - Check file sizes (warn if >20KB for single file)
-  - Total size should be <100KB for AI context efficiency
-
-✓ 项目管理文档（docs/management/ 目录）:
-  - docs/management/PRD.md       (产品需求文档)
-  - docs/management/PLANNING.md  (技术规划)
-  - docs/management/TASK.md      (任务追踪)
-  - docs/management/CONTEXT.md   (会话上下文指针)
-  - Total size should be <80KB
-
-✓ Technical Layer (docs/):
-  - docs/architecture/
-  - docs/api/
-  - docs/database/
-  - docs/deployment/
-  - docs/reference/            (参考文档，如 FRONTMATTER.md, AI_ROLES_LIBRARY.md)
-  - docs/examples/             (示例文档)
-  - docs/adr/                  (架构决策记录)
-  - Check for misplaced files (should be in appropriate subdirectories)
-
-✓ Working Layer (docs/research/):
-  - docs/research/spikes/
-  - docs/research/prototypes/
-  - Check for files with date prefixes (2024-10-XX-name.md)
-  - Identify files older than 3 months
-
-✓ Archive Layer (docs/archive/):
-  - docs/archive/YYYY-QX/
-  - docs/archive/deprecated/
-  - Verify archived files have metadata (reason, replacement)
-
-⚠️ 关键警告：
-  - KNOWLEDGE.md 必须保持在项目根目录，绝不移动到 docs/management/
-  - 原因：它是全局文档索引中心，需要索引所有四层（管理/技术/工作/归档）的文档
-  - 如果发现 KNOWLEDGE.md 在 docs/management/，这是错误，必须移回根目录
-```
-
-**Output**:
-- List of misplaced documents with suggested locations
-- **CRITICAL**: KNOWLEDGE.md 位置验证（必须在根目录）
-- Management layer size report (分别统计根目录和 docs/management/)
-- Structure compliance score (0-100%)
-
----
-
-### 2. **Content Analysis**
-
-#### A. Outdated Content Detection
-Identify documents that may need updating or archiving:
-
-```
-Criteria for "Outdated":
-- Last modified > 6 months AND no references in TASK.md or code
-- Marked as "deprecated" but not in archive/
-- Related feature removed from codebase
-- Superseded by newer document (check git history)
-```
-
-**Analysis**:
-- Scan all technical documents for last modification date
-- Cross-reference with TASK.md active tasks
-- Check git log for related code changes
-- Identify documents with "TODO" or "WIP" markers older than 3 months
-
-**Output**:
-- List of potentially outdated documents with:
-  * Last modified date
-  * Reference count (TASK.md, KNOWLEDGE.md, code comments)
-  * Suggested action (update / archive / delete)
-
-#### B. Duplicate Content Detection
-Find and consolidate redundant information:
-
-```
-Detection Methods:
-1. Exact duplicates: Same file content (MD5 hash)
-2. Near duplicates: Similar headings and structure (>80% similarity)
-3. Redundant sections: Same content across multiple files
-```
-
-**Analysis**:
-- Compare all markdown files in technical layer
-- Identify common sections across files
-- Suggest consolidation strategies (merge / link / extract to shared doc)
-
-**Output**:
-- Pairs of duplicate/similar documents
-- Redundant sections with consolidation suggestions
-- Recommended refactoring actions
-
-#### C. Orphaned Documents
-Discover documents without proper indexing or linking:
-
-```
-Orphan Criteria:
-- Not listed in KNOWLEDGE.md documentation index
-- No incoming links from other documents
-- Not referenced in PLANNING.md or TASK.md
-- Not mentioned in code comments or README
-```
-
-**Analysis**:
-- Build document reference graph
-- Identify documents with zero incoming edges
-- Check if orphaned docs are still relevant
-
-**Output**:
-- List of orphaned documents
-- Suggested index entries for KNOWLEDGE.md
-- Recommendation: keep and link / archive / delete
-
----
-
-### 3. **Index Verification**
-
-Ensure KNOWLEDGE.md documentation index is accurate:
-
-```
-Checks:
-✓ All technical documents listed in index
-✓ Index paths are valid (files exist)
-✓ Priorities are assigned (高/中/低)
-✓ Last updated dates are accurate
-✓ Task-document mappings are current
-✓ No broken links in documentation map
-✓ Frontmatter metadata is present and valid (NEW)
-```
-
-**Process**:
-- Parse "📚 文档索引" section from KNOWLEDGE.md
-- Verify each entry:
-  * File exists at specified path
-  * Priority is reasonable (based on reference count)
-  * Last updated matches git log
-  * Related tasks still exist in TASK.md
-- Identify missing entries (technical docs not in index)
-
-**Output**:
-- Index accuracy report
-- Missing entries to add
-- Outdated entries to update/remove
-- Auto-generated index updates
-
----
-
-### 3.1. **Frontmatter 一致性检查** (NEW)
-
-验证所有技术文档的 frontmatter 元数据完整性和一致性。
-
-**⚠️ 执行要求**: 必须从**项目根目录**运行（详见 [Frontmatter规范参考](docs/reference/FRONTMATTER.md) § 执行上下文）
-
-#### 运行验证命令
-
-```bash
-# 批量验证所有 docs/ 下的 markdown 文件
-python ~/.claude/commands/scripts/frontmatter_utils.py validate-batch docs/
-
-# 以 JSON 格式保存详细报告
-python ~/.claude/commands/scripts/frontmatter_utils.py validate-batch docs/ --format json > frontmatter-validation.json
-
-# 查看报告
-cat frontmatter-validation.json | jq '.'
-```
-
-**检查内容**:
-- ✓ **Frontmatter 存在性** - 所有 docs/ 中的 .md 文件都包含 frontmatter
-- ✓ **必需字段完整性** - 包含全部 7 个必需字段（title, description, type, status, priority, created_date, last_updated）
-- ✓ **字段值有效性** - type/status/priority 使用标准枚举值
-- ✓ **日期逻辑性** - created_date ≤ last_updated，日期格式正确
-- ✓ **关系引用有效性** - related_documents 和 related_code 指向的文件存在
-- ✓ **任务引用有效性** - related_tasks 在 TASK.md 中能找到
-
-#### 问题分类和处理
-
-**返回结果格式**:
-```json
-[
-  {
-    "file": "docs/api/auth.md",
-    "validation": {
-      "valid": true,
-      "errors": [],
-      "warnings": [
-        "建议添加推荐字段: related_documents"
-      ]
-    }
-  },
-  {
-    "file": "docs/api/webhooks.md",
-    "validation": {
-      "valid": false,
-      "errors": [
-        "缺少必需字段: title",
-        "缺少必需字段: description"
-      ],
-      "warnings": []
-    }
-  }
-]
-```
-
-**基于错误类型的处理流程**:
-
-| 错误类型 | 原因 | 解决方案 |
-|---------|------|--------|
-| **缺少 Frontmatter** | 文档没有元数据块 | 运行 `/wf_14_doc --update` 自动生成 |
-| **缺少必需字段** | 字段不完整 | 运行 `/wf_14_doc --update` 补充或手动编辑 |
-| **无效的枚举值** | type/status/priority 值错误 | 查看 FRONTMATTER.md § 枚举值定义，手动修正 |
-| **引用文件不存在** | related_documents/code 指向的文件已删除 | 移除引用或更新路径 |
-| **日期格式错误** | 日期不符合 YYYY-MM-DD 格式 | 手动修改为正确格式 |
-| **日期逻辑错误** | created_date > last_updated | 调整日期使其符合逻辑 |
-
-#### 常见问题修复示例
-
-**示例 1：缺少 Frontmatter**
-```bash
-# 自动生成 frontmatter
-python ~/.claude/commands/scripts/frontmatter_utils.py generate docs/api/new-endpoint.md
-
-# 输出会显示生成的 frontmatter，复制到文件顶部
-```
-
-**示例 2：引用文件不存在**
-```bash
-# 检查 related_documents 中的路径是否真的存在
-ls -la docs/architecture/system-design.md
-
-# 如果文件不存在，要么：
-# a) 更新引用为正确路径
-# b) 或从 related_documents 中移除该引用
-```
-
-**示例 3：日期不一致**
-```bash
-# 使用 /wf_11_commit 在提交时自动更新 last_updated
-/wf_11_commit "fix: 更新文档"
-
-# 脚本会自动更新所有修改过的文档的 last_updated
-```
-
-#### 后续处理
-
-1. **修复所有错误** - 按上表的解决方案处理每个错误
-2. **重新验证** - 修复后再次运行验证命令确认通过
-3. **更新 KNOWLEDGE.md** - 如果发现新的文档，添加到索引
-4. **生成文档关系图** - 查看整个文档网络是否合理
-
-```bash
-# 生成文档关系图
-python ~/.claude/commands/scripts/frontmatter_utils.py graph docs/ --format mermaid > docs/graph.mmd
-
-# 或分析文档关系指标
-python ~/.claude/commands/scripts/doc_graph_builder.py docs/ --analyze
-```
-
-**详细规范参考**: [Frontmatter规范参考](docs/reference/FRONTMATTER.md)
-- § 标准模板 - 完整字段说明
-- § 枚举值定义 - 所有有效值清单
-- § 验证逻辑 - 验证规则实现
-- § 工具和脚本 - 命令行使用方法
-
----
-
-### 4. **Optimization Suggestions**
-
-Provide actionable recommendations:
-
-#### Management Layer Optimization
-```
-If management docs > 100KB:
-  → Extract technical details to docs/
-  → Suggest content to move to KNOWLEDGE.md
-  → Identify verbose sections for condensing
-```
-
-#### Technical Layer Organization
-```
-If docs/ has >50 files in single directory:
-  → Suggest subdirectory structure
-  → Group related documents
-  → Create category README.md files
-```
-
-#### Working Layer Cleanup
-```
-Research docs older than 3 months:
-  → Mark for review: convert to formal doc or archive
-  → Suggest which spikes resulted in implemented features
-  → Identify abandoned prototypes
-```
-
-**Output**:
-- Prioritized optimization suggestions
-- Estimated impact (context cost reduction, maintainability improvement)
-- Implementation steps
-
----
-
-### 5. **Archive Execution** (Requires Confirmation)
-
-Move documents to archive layer:
-
-```
-Archive Candidates:
-1. Outdated content (>6 months, no references)
-2. Deprecated features (code removed)
-3. Completed research (working layer cleanup)
-4. Superseded documents (newer version exists)
-```
-
-**Process**:
-1. Present archive candidates with reasons
-2. Ask user for confirmation: `Archive these N documents? [y/N]`
-3. If confirmed:
-   - Create archive directory (docs/archive/YYYY-QX/)
-   - Move files with metadata:
-     ```markdown
-     ---
-     archived: 2024-10-31
-     reason: "Superseded by docs/api/rest-api-v2.md"
-     original_path: "docs/api/rest-api-v1.md"
-     ---
-     ```
-   - Update KNOWLEDGE.md index (remove archived entries)
-   - Add archive summary to KNOWLEDGE.md
-4. If `--dry-run`: Only show what would be archived
-
-**Output**:
-- Archive manifest (what was moved)
-- Updated KNOWLEDGE.md
-- Archive layer structure
-
----
-
-### 6. **Generate Maintenance Report**
-
-Create comprehensive documentation health report:
-
-```markdown
-# Documentation Maintenance Report
-
-**Generated**: 2024-10-31
-**Execution Mode**: [auto / manual / dry-run]
-
-## Executive Summary
-- Total documents: 45
-- Management layer size: 87KB ✓
-- Structure compliance: 92% ✓
-- Outdated documents: 3 ⚠️
-- Orphaned documents: 2 ⚠️
-- Duplicates found: 1 pair ⚠️
-
-## Structure Audit
-### 🚨 CRITICAL Issues
-✓ KNOWLEDGE.md location: 根目录 ✓ (正确位置)
-  - If found in docs/management/, this would be CRITICAL ERROR
-
-### 管理层 - 全局索引文件 (根目录, 4 docs, 45KB)
-✓ KNOWLEDGE.md: 根目录 ✓
-✓ CLAUDE.md: 根目录 ✓
-✓ PHILOSOPHY.md: 根目录 ✓
-✓ README.md: 根目录 ✓
-✓ Size within limits
-
-### 项目管理文档 (docs/management/, 4 docs, 42KB)
-✓ PRD.md, PLANNING.md, TASK.md, CONTEXT.md present
-✓ Size within limits
-
-### Technical Layer (32 docs)
-⚠️ 2 files misplaced:
-  - docs/old-design.md → should be docs/archive/
-  - docs/spike-auth.md → should be docs/research/spikes/
-
-### Working Layer (5 docs)
-⚠️ 3 files >3 months old - review needed
-
-### Archive Layer (3 docs)
-✓ Properly organized by quarter
-
-## Content Analysis
-### Outdated Documents (3)
-1. docs/api/auth-v1.md (8 months old, superseded by v2)
-   → Action: Archive
-2. docs/deployment/old-pipeline.md (6 months old, CI/CD changed)
-   → Action: Archive
-3. docs/database/deprecated-schema.md (marked deprecated)
-   → Action: Move to archive/deprecated/
-
-### Duplicate Content (1 pair)
-- docs/api/authentication.md ↔ docs/api/auth-flow.md (85% similar)
-  → Suggestion: Merge into single comprehensive doc
-
-### Orphaned Documents (2)
-- docs/architecture/caching-strategy.md
-  → Action: Add to KNOWLEDGE.md index, link from system-design.md
-- docs/database/backup-procedure.md
-  → Action: Add to KNOWLEDGE.md index (priority: 中)
-
-## Index Verification
-### KNOWLEDGE.md Status
-✓ 28/32 technical docs indexed (87.5%)
-⚠️ 4 missing index entries
-✓ All indexed paths valid
-⚠️ 2 outdated "last_updated" dates
-
-### Recommended Index Updates
-Add entries:
-  - docs/architecture/caching-strategy.md
-  - docs/database/backup-procedure.md
-  - docs/api/webhooks.md
-  - docs/deployment/monitoring.md
-
-Update dates:
-  - docs/api/authentication.md: 2024-08-15 → 2024-10-28
-  - docs/database/schema.md: 2024-09-01 → 2024-10-15
-
-## Optimization Suggestions
-1. **High Priority**
-   - Archive 3 outdated documents (reduce clutter)
-   - Add 4 missing index entries (improve discoverability)
-
-2. **Medium Priority**
-   - Merge duplicate auth docs (reduce redundancy)
-   - Link orphaned docs (improve connectivity)
-
-3. **Low Priority**
-   - Review working layer docs >3 months
-   - Add category README.md to api/ directory
-
-## Proposed Actions
-If executed with --auto:
-  - Archive 3 outdated documents to docs/archive/2024-Q4/
-  - Update KNOWLEDGE.md with 4 new entries
-  - Update 2 timestamp entries
-
-Estimated context cost reduction: ~15KB
-Estimated maintainability improvement: +12%
-
-## Next Steps
-1. Review this report
-2. Run with `--auto` to apply safe changes, or
-3. Manually handle edge cases
-4. Re-run `/wf_03_prime` to reload updated context
-```
+**完整的六步维护流程详见**: [docs/guides/doc_maintenance_process.md](docs/guides/doc_maintenance_process.md)
+
+**流程概览表**:
+
+| 步骤 | 名称 | 职责 | 关键输出 | 详细说明 |
+|-----|------|------|---------|---------|
+| **Step 1** | Structure Audit | 验证四层架构合规性 | 📍 **CRITICAL**: KNOWLEDGE.md 位置验证<br/>📊 结构合规性评分<br/>📋 错位文档清单 | [§ 1 - Structure Audit](docs/guides/doc_maintenance_process.md#1-structure-audit-结构审计) |
+| **Step 2** | Content Analysis | 检测过期、重复、孤立文档 | 📃 过期文档清单<br/>🔁 重复内容对<br/>🔗 孤立文档列表 | [§ 2 - Content Analysis](docs/guides/doc_maintenance_process.md#2-content-analysis-内容分析) |
+| **Step 3** | Index Verification | 验证 KNOWLEDGE.md 索引准确性 | ✅ 索引准确性报告<br/>➕ 缺失条目<br/>🔄 过时条目 | [§ 3 - Index Verification](docs/guides/doc_maintenance_process.md#3-index-verification-索引验证) |
+| **Step 3.1** | Frontmatter 一致性检查 | 验证所有技术文档的元数据完整性 | ✓ Frontmatter 验证报告<br/>❌ 错误和警告清单<br/>📈 文档关系图 | [§ 3.1 - Frontmatter Check](docs/guides/doc_maintenance_process.md#31-frontmatter-一致性检查-new) |
+| **Step 4** | Optimization Suggestions | 提供可执行的优化建议 | 📊 优先级建议<br/>💡 估计影响<br/>📝 实施步骤 | [§ 4 - Optimization](docs/guides/doc_maintenance_process.md#4-optimization-suggestions-优化建议) |
+| **Step 5** | Archive Execution | 归档过期文档（需确认） | 📦 归档清单<br/>✏️ 更新的 KNOWLEDGE.md<br/>📁 归档层结构 | [§ 5 - Archive](docs/guides/doc_maintenance_process.md#5-archive-execution-归档执行) |
+| **Step 6** | Generate Report | 生成综合维护报告 | 📋 健康报告<br/>📊 Executive Summary<br/>⏭️ 下一步建议 | [§ 6 - Report](docs/guides/doc_maintenance_process.md#6-generate-maintenance-report-生成维护报告) |
+
+**关键检查点**:
+- 🚨 **CRITICAL**: KNOWLEDGE.md 必须在根目录（不在 docs/management/）
+- ✅ 管理层文档 < 100KB（根目录 + docs/management/）
+- ✅ 所有技术文档有完整 Frontmatter（7个必需字段）
+- ✅ KNOWLEDGE.md 索引准确率 > 90%
+- ✅ 文档结构合规性 > 90%
 
 ---
 
 ## Output Format
 
-1. **Console Summary** - High-level statistics and warnings
-2. **Detailed Report** - Markdown file with all findings (saved to docs/maintenance-report-YYYY-MM-DD.md)
-3. **Action Plan** - Prioritized list of recommended actions
-4. **Updated Files** - KNOWLEDGE.md with corrected index (if --auto)
-5. **Archive Manifest** - List of archived files (if archiving occurred)
+| 输出类型 | 内容 | 位置 |
+|---------|------|------|
+| **Console Summary** | 高级统计和警告 | 终端输出 |
+| **Detailed Report** | 完整发现清单和建议 | `docs/maintenance-report-YYYY-MM-DD.md` |
+| **Action Plan** | 优先级排序的建议操作 | 报告中 § Proposed Actions |
+| **Updated Files** | 修正后的索引（如果 --auto） | `KNOWLEDGE.md` |
+| **Archive Manifest** | 归档文件清单（如果执行归档） | 报告中 § Archive |
+
+**完整报告示例**: 详见 [doc_maintenance_process.md § 6 - Generate Report](docs/guides/doc_maintenance_process.md#6-generate-maintenance-report-生成维护报告)
 
 ---
 
@@ -519,154 +90,20 @@ Show what would be changed without making changes:
 
 ---
 
-## 📌 工作流导航 (Phase 3 - 闭环工作流)
+## 📌 工作流导航
 
-### 工作流位置指示
+**完整的工作流路径、示例场景和最佳实践详见**: [docs/guides/doc_maintenance_workflows.md](docs/guides/doc_maintenance_workflows.md)
 
-当使用此命令时，你正在执行标准开发流程中的**定期维护阶段**：
+### 维护完成后的 4 种路径
 
-```
-[项目启动] → [任务规划] → [加载上下文] → [架构咨询] → [代码实现] → [测试验证] → [代码审查] → [提交保存] → [文档维护 ← 当前] → [重新加载]
-  STEP 0       STEP 0.5        STEP 1         STEP 2       STEP 3       STEP 4       STEP 5            STEP 6            STEP 8          STEP 1
-```
+| 路径 | 场景 | 下一步命令 | 说明 |
+|-----|------|----------|------|
+| **路径 1** | 检查无问题 | `/wf_03_prime` | 重新加载上下文，继续开发 |
+| **路径 2** | 需手动处理 | 手动修复 → `/wf_03_prime` | 按优先级处理发现的问题 |
+| **路径 3** | 季度末维护 | `--dry-run` → `--auto` → `/wf_03_prime` | 全面清理和优化 |
+| **路径 4** | 发布前清理 | `--dry-run` → `--auto` → `/wf_11_commit` | 清理旧版本文档 |
 
-### ✅ 已完成的步骤
-
-执行 `/wf_13_doc_maintain` 前，通常已经完成：
-
-- ✅ **多次提交或定期维护触发** (STEP 6) - 已进行 10+ 次 `/wf_11_commit`
-  - 或者：季度末进行定期维护
-  - 或者：大版本发布前进行清理
-
-### 📝 当前步骤
-
-**正在执行**: `/wf_13_doc_maintain [--auto] [--dry-run]` (文档架构维护)
-
-**这个命令的职责**：
-- 审计四层文档架构的合规性
-- 检测过期、重复、孤立的文档
-- 验证 KNOWLEDGE.md 索引的准确性
-- 检查所有文档的 Frontmatter 完整性
-- 提供文档优化建议
-- 执行文档归档（需确认）
-
-### ⏭️ 建议下一步
-
-**文档维护完成后**，根据执行模式和发现选择下一步：
-
-#### 路径 1️⃣：一切正常，重新加载上下文 ✅
-```bash
-# 当前: 文档检查完成，无需修改或修改已完成
-# 下一步: 重新加载项目上下文
-
-/wf_03_prime
-
-# 后续: 继续开发工作
-/wf_05_code "继续实现功能"
-```
-**适用场景**: 运行 `--dry-run` 确认无问题，或执行 `--auto` 自动修复已完成
-
-#### 路径 2.：发现问题需要手动处理 🔧
-```bash
-# 当前: 识别了需要手动处理的问题（可能 dry-run 输出）
-# 下一步: 按照报告建议手动处理
-
-# 按优先级处理建议:
-# - 高优先级: 归档过期文档、更新 KNOWLEDGE.md 索引
-# - 中优先级: 合并重复内容、修复 Frontmatter 问题
-# - 低优先级: 链接孤立文档、组织工作层文档
-
-# 手动处理后运行自动验证
-python ~/.claude/commands/scripts/frontmatter_utils.py validate-batch docs/
-
-# 处理完成后重新加载上下文
-/wf_03_prime
-```
-**适用场景**: 需要人工审核和决定的问题，或涉及团队沟通的归档操作
-
-#### 路径 3️⃣：季度末全面维护 📅
-```bash
-# 当前: 季度末进行全面文档维护
-# 下一步: 使用 --auto 执行所有安全的自动修复
-
-# 第1步: 先运行 --dry-run 预览
-/wf_13_doc_maintain --dry-run
-
-# 第2步: 审查报告，确认无问题
-# 第3步: 执行自动修复
-/wf_13_doc_maintain --auto
-
-# 第4步: 如果有交互式提示（如：是否归档），确认选择
-# (系统会询问是否接受 archive 操作)
-
-# 第5步: 重新加载上下文
-/wf_03_prime
-
-# 第6步: 提交维护记录
-/wf_11_commit "docs: 季度末文档维护 (Q4 2025)"
-```
-**适用场景**: 定期季度末维护，进行全面的文档清理和优化
-
-#### 路径 4️⃣：发布前清理 🚀
-```bash
-# 当前: 大版本发布前进行文档清理
-# 下一步: 执行发布前的文档检查
-
-# 第1步: 预览将要改动的内容
-/wf_13_doc_maintain --dry-run
-
-# 第2步: 审查报告，确保不删除重要文档
-# 第3步: 执行自动修复（这会清理过期 v1 文档等）
-/wf_13_doc_maintain --auto
-
-# 第4步: 提交清理结果
-/wf_11_commit "docs: 发布前文档清理 (v2.0 发布準備)"
-
-# 第5步: 重新加载上下文供发布测试
-/wf_03_prime
-```
-**适用场景**: 即将发布新版本，需要清理旧版本文档和过期内容
-
-### 📊 工作流进度提示
-
-当你完成文档维护时，确保输出中包含：
-
-✅ 已完成:
-- 文档结构合规性评分
-- 过期、重复、孤立文档的清单
-- KNOWLEDGE.md 索引准确性报告
-- Frontmatter 验证结果
-- 优化建议的优先级列表
-- 处理的文件清单（如果执行了 --auto）
-
-⏭️ 下一步提示:
-- 建议执行的路径（1/2/3/4）
-- 是否需要手动处理某些问题
-- 执行的修改摘要（文件移动、索引更新等）
-- 预计的上下文成本减少量
-
-### 💡 决策指南
-
-**我应该执行哪个路径？**
-
-| 情况 | 建议 | 命令 |
-|------|------|------|
-| 日常维护，检查无问题 | 路径 1 | /wf_03_prime → /wf_05_code |
-| 发现需要手动处理的问题 | 路径 2 | 手动处理 → /wf_03_prime |
-| 季度末定期全面维护 | 路径 3 | --dry-run → --auto → /wf_03_prime |
-| 大版本发布前清理 | 路径 4 | --dry-run → --auto → /wf_11_commit |
-
-**何时使用 --dry-run？**
-- 不确定会发生什么改动时
-- 归档敏感的文档前
-- 第一次运行 --auto 时
-- 需要向团队展示改动时
-
-**何时使用 --auto？**
-- 已审查 --dry-run 的报告
-- 修改都是安全的（如索引更新）
-- 时间紧张的定期维护
-- 团队同意了 archiving 决策
+**详细工作流步骤、决策指南和示例**: 参见 [doc_maintenance_workflows.md](docs/guides/doc_maintenance_workflows.md)
 
 ---
 
@@ -698,77 +135,29 @@ python ~/.claude/commands/scripts/frontmatter_utils.py validate-batch docs/
 
 ## Example Scenarios
 
-### Scenario 1: Quarterly Maintenance
-```bash
-# End of Q4 2024
-/wf_13_doc_maintain
+**完整示例和命令输出详见**: [docs/guides/doc_maintenance_workflows.md § Example Scenarios](docs/guides/doc_maintenance_workflows.md#example-scenarios-示例场景)
 
-# Output:
-# 📊 Documentation Health: 88% (Good)
-# ⚠️ Found 3 outdated docs, 2 orphans
-# 💡 Suggest archiving to docs/archive/2024-Q4/
-#
-# Proceed with auto-fixes? [y/N]
-```
-
-### Scenario 2: Pre-Release Cleanup
-```bash
-# Before v2.0 release
-/wf_13_doc_maintain --dry-run
-
-# Review report, then:
-/wf_13_doc_maintain --auto
-
-# Confirm archiving outdated v1 docs
-```
-
-### Scenario 3: Daily Check (No Issues)
-```bash
-# After 10 commits
-/wf_13_doc_maintain
-
-# Output:
-# ✅ Documentation Health: 95% (Excellent)
-# ✅ All checks passed
-# ℹ️ No maintenance needed
-```
-
-### Scenario 4: CRITICAL - KNOWLEDGE.md Misplaced
-```bash
-# Detecting critical structure error
-/wf_13_doc_maintain
-
-# Output:
-# 🚨 CRITICAL ERROR: KNOWLEDGE.md found in docs/management/
-# 📍 Expected location: 项目根目录
-# 📍 Current location: docs/management/KNOWLEDGE.md
-#
-# ⚠️ This breaks the documentation architecture!
-#
-# 🔧 Recommended fix:
-#   git mv docs/management/KNOWLEDGE.md ./KNOWLEDGE.md
-#   /wf_11_commit "fix: 恢复 KNOWLEDGE.md 到根目录（修正误操作）"
-#
-# Would you like to fix this automatically? [Y/n]
-```
+| 场景 | 触发时机 | 预期结果 | 详细说明 |
+|------|---------|---------|---------|
+| **Scenario 1** | 季度末维护 | 发现过期文档，建议归档 | [Quarterly Maintenance](docs/guides/doc_maintenance_workflows.md#scenario-1-quarterly-maintenance) |
+| **Scenario 2** | 发布前清理 | 清理旧版本文档 | [Pre-Release Cleanup](docs/guides/doc_maintenance_workflows.md#scenario-2-pre-release-cleanup) |
+| **Scenario 3** | 日常检查 | 健康度 95%，无需维护 | [Daily Check](docs/guides/doc_maintenance_workflows.md#scenario-3-daily-check-no-issues) |
+| **Scenario 4** | 检测关键错误 | KNOWLEDGE.md 位置错误 | [CRITICAL Check](docs/guides/doc_maintenance_workflows.md#scenario-4-critical---knowledgemd-misplaced) |
 
 ---
 
 ## Best Practices
 
-1. **🚨 Verify KNOWLEDGE.md Location First**: Always check KNOWLEDGE.md is in root directory
-   - KNOWLEDGE.md 必须在项目根目录
-   - 如果在 docs/management/，立即修复
-   - 这是结构审计的第一优先级检查项
-2. **Run Regularly**: Don't let documentation debt accumulate
-3. **Review Before Auto-Fix**: Always check report before --auto
-4. **Preserve History**: Archive, don't delete (unless truly useless)
-5. **Update Index**: Keep KNOWLEDGE.md in sync after manual doc changes
-6. **Communicate**: If archiving shared docs, notify team
-7. **Understand Layer Separation**:
-   - 根目录 = 全局索引文件（KNOWLEDGE.md, CLAUDE.md, PHILOSOPHY.md）
-   - docs/management/ = 项目管理文档（PRD, PLANNING, TASK, CONTEXT）
-   - 两者职责不同，不可混淆
+**完整最佳实践详见**: [docs/guides/doc_maintenance_workflows.md § Best Practices](docs/guides/doc_maintenance_workflows.md#best-practices-最佳实践)
+
+**核心原则**:
+1. 🚨 **CRITICAL**: KNOWLEDGE.md 必须在根目录（第一优先级检查）
+2. 📅 定期运行（每 10 次提交/季度末/发布前）
+3. 👀 先 --dry-run 预览，再 --auto 执行
+4. 📦 归档而非删除（保留历史）
+5. 📑 手动修改文档后更新索引
+6. 💬 归档共享文档前通知团队
+7. 🏗️ 理解层级分离（根目录索引 vs docs/management/ 管理文档）
 
 ---
 
