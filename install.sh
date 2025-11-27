@@ -447,6 +447,56 @@ install_documentation() {
     return 0
 }
 
+install_guides() {
+    echo ""
+    info "Installing guide documents..."
+
+    local guides_count=0
+    local fail_count=0
+
+    for guide_file in "${GUIDE_FILES[@]}"; do
+        local source_file="$PROJECT_ROOT/$guide_file"
+
+        if [[ ! -f "$source_file" ]]; then
+            verbose "Guide file not found: $guide_file"
+            continue
+        fi
+
+        local target="$COMMANDS_DIR/$guide_file"
+        local target_dir=$(dirname "$target")
+
+        if [[ $DRY_RUN -eq 1 ]]; then
+            info "[DRY RUN] Would install: $guide_file"
+            ((guides_count++))
+        else
+            mkdir -p "$target_dir"
+            if [[ $INSTALL_METHOD == "link" ]]; then
+                if install_file_link "$source_file" "$target"; then
+                    ((guides_count++))
+                else
+                    warning "Failed to install: $guide_file"
+                    ((fail_count++))
+                fi
+            else
+                if install_file_copy "$source_file" "$target"; then
+                    ((guides_count++))
+                else
+                    warning "Failed to install: $guide_file"
+                    ((fail_count++))
+                fi
+            fi
+        fi
+    done
+
+    if [[ $fail_count -gt 0 ]]; then
+        error "Failed to install $fail_count guide(s)"
+        return 1
+    fi
+
+    success "Installed $guides_count guide document(s)"
+    return 0
+}
+
 ###############################################################################
 # Verification Phase
 ###############################################################################
@@ -581,6 +631,7 @@ main() {
     install_commands || exit 1
     install_claude_md || exit 1
     install_scripts || exit 1
+    install_guides || exit 1  # Critical - guides are referenced by commands
     install_documentation || exit 0  # Non-critical
 
     # Verification

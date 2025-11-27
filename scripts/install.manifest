@@ -47,6 +47,23 @@ declare -ga DOC_FILES=(
     "PHILOSOPHY.md"
 )
 
+# Guide documents - extracted from Tier 1 optimization (always installed)
+# ⚠️  CRITICAL: These guides are referenced by main command files
+#     Must be installed for commands to function correctly
+declare -ga GUIDE_FILES=(
+    "docs/guides/doc_maintenance_process.md"
+    "docs/guides/doc_maintenance_workflows.md"
+    "docs/guides/wf_03_prime_mcp_serena.md"
+    "docs/guides/wf_03_prime_smart_loading.md"
+    "docs/guides/wf_03_prime_workflows.md"
+    "docs/guides/wf_04_research_mcp_guide.md"
+    "docs/guides/wf_04_research_output_formats.md"
+    "docs/guides/wf_04_research_workflows.md"
+    "docs/guides/wf_05_code_doc_sync_guide.md"
+    "docs/guides/wf_05_code_serena_guide.md"
+    "docs/guides/wf_05_code_workflows.md"
+)
+
 # ============================================================================
 # Installation Directories - Paths for installation targets
 # ============================================================================
@@ -84,6 +101,11 @@ validate_manifest() {
         ((errors++))
     fi
 
+    if [[ -z "${GUIDE_FILES[*]}" ]]; then
+        echo "❌ GUIDE_FILES is empty"
+        ((errors++))
+    fi
+
     if [[ $errors -eq 0 ]]; then
         echo "✅ Manifest validation passed"
         return 0
@@ -104,6 +126,7 @@ print_manifest_summary() {
     echo "  Commands:       ${COMMAND_FILES[*]}"
     echo "  Config files:   ${CONFIG_FILES[*]}"
     echo "  Scripts:        ${SCRIPT_FILES[*]}"
+    echo "  Guides:         ${#GUIDE_FILES[@]} files (docs/guides/)"
     if [[ -n "${DOC_FILES[*]}" ]]; then
         echo "  Documentation:  ${DOC_FILES[*]}"
     fi
@@ -111,6 +134,7 @@ print_manifest_summary() {
     echo "📁 Target directories:"
     echo "  Commands:  $COMMANDS_DIR"
     echo "  Scripts:   $SCRIPTS_DIR"
+    echo "  Guides:    $COMMANDS_DIR/docs/guides/"
     echo "  Docs:      $DOCS_DIR"
     echo "  Backup:    $BACKUP_DIR"
     echo ""
@@ -123,7 +147,7 @@ print_manifest_summary() {
 # ============================================================================
 
 export INSTALL_DIR COMMANDS_DIR SCRIPTS_DIR DOCS_DIR BACKUP_DIR
-export COMMAND_FILES CONFIG_FILES SCRIPT_FILES DOC_FILES
+export COMMAND_FILES CONFIG_FILES SCRIPT_FILES DOC_FILES GUIDE_FILES
 
 # Export functions
 export -f validate_manifest print_manifest_summary

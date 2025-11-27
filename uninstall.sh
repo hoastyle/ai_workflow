@@ -334,6 +334,57 @@ uninstall_scripts() {
     return 0
 }
 
+uninstall_guides() {
+    echo ""
+    info "Removing guide documents..."
+
+    local guides_dir="$COMMANDS_DIR/docs/guides"
+    local removed_count=0
+    local fail_count=0
+
+    if [[ ! -d "$guides_dir" ]]; then
+        verbose "Guides directory does not exist"
+        return 0
+    fi
+
+    for guide_file in "${GUIDE_FILES[@]}"; do
+        local target="$COMMANDS_DIR/$guide_file"
+
+        if [[ ! -e "$target" ]]; then
+            continue
+        fi
+
+        if [[ $DRY_RUN -eq 1 ]]; then
+            info "[DRY RUN] Would remove: $guide_file"
+            ((removed_count++))
+        else
+            if rm -f "$target"; then
+                ((removed_count++))
+                verbose "Removed: $target"
+            else
+                error "Failed to remove: $target"
+                ((fail_count++))
+            fi
+        fi
+    done
+
+    # Clean up empty directories
+    if [[ $DRY_RUN -ne 1 ]]; then
+        cleanup_empty_directories "$guides_dir" "$COMMANDS_DIR/docs" "$COMMANDS_DIR" 2>/dev/null
+    fi
+
+    if [[ $fail_count -gt 0 ]]; then
+        error "Failed to remove $fail_count guide(s)"
+        return 1
+    fi
+
+    if [[ $removed_count -gt 0 ]]; then
+        success "Removed $removed_count guide document(s)"
+    fi
+
+    return 0
+}
+
 uninstall_documentation() {
     echo ""
     info "Removing documentation files..."
@@ -531,6 +582,7 @@ main() {
     uninstall_commands || exit 1
     uninstall_claude_md || exit 1
     uninstall_scripts || exit 1
+    uninstall_guides || exit 1  # Critical - guides are referenced by commands
     uninstall_documentation || exit 0  # Non-critical
 
     # Cleanup backups (if --clean-backup)

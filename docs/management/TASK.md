@@ -1,10 +1,10 @@
 # 项目任务跟踪 (TASK.md)
 
 **项目**: AI Workflow 命令系统 - Frontmatter 文档元数据处理 + 工作流闭环改进 + MCP 集成
-**版本**: v1.6
-**最后更新**: 2025-11-23
+**版本**: v1.7
+**最后更新**: 2025-11-27
 **维护者**: Claude Code
-**当前进度**: 39/41 完成 (95.1%)
+**当前进度**: 40/42 完成 (95.2%)
 
 ---
 
@@ -22,9 +22,10 @@
 | **wf 命令系统优化** | 5 | 5 | 0 | 0 |
 | **MCP 集成** | 3 | 3 | 0 | 0 |
 | **MCP & 文档架构** | 1 | 1 | 0 | 0 |
-| **总计** | 42 | 39 | 0 | 3 |
+| **系统修复** | 1 | 1 | 0 | 0 |
+| **总计** | 43 | 40 | 0 | 3 |
 
-**完成度**: 95.1% (39/42 tasks) ✅
+**完成度**: 95.2% (40/43 tasks) ✅
 
 **新增任务说明**:
 - 代码审查 (2025-11-15) 发现 wf 命令系统存在结构不一致和冗余问题
@@ -647,6 +648,51 @@ MCP (Model Context Protocol) 集成为 AI Workflow Command System 引入了 5 �
 **相关文件**:
 - [MCP & 文档架构 ADR](../adr/2025-11-23-mcp-and-docs-complementary-architecture.md)
 - [KNOWLEDGE.md](../../KNOWLEDGE.md) (已更新索引)
+
+---
+
+## ✅ 完成：安装系统修复 - 支持 Guide 文档安装/卸载 (2025-11-27)
+
+### 任务：修复安装系统以支持 Guide 文档的同步安装/卸载 (🔴 高优先级 - 完成)
+
+**背景**:
+在 Tier 1 wf_05_code.md 优化后，创建了 11 个新的 guide 文档在 `docs/guides/` 目录下。这些 guide 被主要命令文件引用，但安装系统没有处理这些依赖文档，导致用户安装后出现链接断开问题。
+
+**完成信息**:
+- 触发原因: Tier 1 优化创建 11 个新 guide 文档，但安装系统未适配
+- 修复方式: 扩展 install.manifest 系统，添加 GUIDE_FILES 支持
+- 影响文件: install.manifest, install.sh, uninstall.sh, Makefile (4 个文件)
+- 完成时间: 2025-11-27
+- 总工作量: 2 小时
+
+**修复内容**:
+- [x] **更新 install.manifest** - 添加 GUIDE_FILES 数组 (11 个条目)
+- [x] **修改 install.sh** - 添加 install_guides() 函数 (48 行)
+- [x] **修改 uninstall.sh** - 添加 uninstall_guides() 函数 (49 行)
+- [x] **更新 Makefile** - verify 目标增加 guide 文档检查
+- [x] **功能测试** - 验证安装/卸载完整流程正常工作
+
+**技术实现细节**:
+- GUIDE_FILES 数组: 列出所有 11 个 docs/guides/*.md 文件
+- 安装路径: `~/.claude/commands/docs/guides/`
+- 支持模式: 同时支持 symlink 和 copy 两种安装模式
+- 错误处理: 完整的错误处理和回滚机制
+- 目录清理: 卸载时自动清理空目录
+
+**验收标准**: ✅ 全部通过
+- [x] 安装脚本正确安装 11 个 guide 文档
+- [x] 卸载脚本正确移除所有 guide 文档和空目录
+- [x] Makefile verify 目标能检测 guide 文档状态
+- [x] 支持 dry-run 模式进行测试
+- [x] 语法检查全部通过
+- [x] 完整流程测试通过
+
+**解决的问题**:
+- ✅ 用户执行 `make install` 后，命令文件中的 guide 链接不再断开
+- ✅ 用户执行 `make uninstall` 后，guide 文档被正确清理，无遗留文件
+- ✅ 用户执行 `make verify` 能看到 guide 文档的安装状态
+
+**相关提交**: [待提交]
 
 ---
 

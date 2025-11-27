@@ -40,6 +40,15 @@ verify: ## Verify installation is working correctly
 	@ls -1 ~/.claude/commands 2>/dev/null | grep "^wf_" | sed 's/^/   - /' | head -5
 	@echo "   ..."
 	@echo ""
+	@echo "📚 Installed guide documents:"
+	@if [ -d ~/.claude/commands/docs/guides ]; then \
+		find ~/.claude/commands/docs/guides -name "*.md" 2>/dev/null | wc -l | xargs -I {} echo "   {} guide documents found"; \
+		find ~/.claude/commands/docs/guides -name "*.md" 2>/dev/null | sed 's|.*/||' | sed 's/^/   - /' | head -5; \
+		echo "   ..."; \
+	else \
+		echo "   ⚠️  Guide documents directory not found"; \
+	fi
+	@echo ""
 	@echo "✅ Configuration file:"
 	@[ -f ~/.claude/CLAUDE.md ] && echo "   ✅ ~/.claude/CLAUDE.md exists" || echo "   ❌ ~/.claude/CLAUDE.md not found"
 	@echo ""
