@@ -49,6 +49,23 @@ verify: ## Verify installation is working correctly
 		echo "   ⚠️  Guide documents directory not found"; \
 	fi
 	@echo ""
+	@echo "📋 Installed example documents:"
+	@if [ -d ~/.claude/commands/docs/examples ]; then \
+		find ~/.claude/commands/docs/examples -name "*.md" 2>/dev/null | wc -l | xargs -I {} echo "   {} example documents found"; \
+		find ~/.claude/commands/docs/examples -name "*.md" 2>/dev/null | sed 's|.*/||' | sed 's/^/   - /' | head -5; \
+		echo "   ..."; \
+	else \
+		echo "   ⚠️  Example documents directory not found"; \
+	fi
+	@echo ""
+	@echo "📖 Installed reference documents:"
+	@if [ -d ~/.claude/commands/docs/reference ]; then \
+		find ~/.claude/commands/docs/reference -name "*.md" 2>/dev/null | wc -l | xargs -I {} echo "   {} reference documents found"; \
+		find ~/.claude/commands/docs/reference -name "*.md" 2>/dev/null | sed 's|.*/||' | sed 's/^/   - /'; \
+	else \
+		echo "   ⚠️  Reference documents directory not found"; \
+	fi
+	@echo ""
 	@echo "✅ Configuration file:"
 	@[ -f ~/.claude/CLAUDE.md ] && echo "   ✅ ~/.claude/CLAUDE.md exists" || echo "   ❌ ~/.claude/CLAUDE.md not found"
 	@echo ""

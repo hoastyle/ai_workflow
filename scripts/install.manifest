@@ -64,6 +64,44 @@ declare -ga GUIDE_FILES=(
     "docs/guides/wf_05_code_workflows.md"
 )
 
+# Example documents - required by wf_14_doc.md (always installed)
+# ⚠️  CRITICAL: These examples are referenced by wf_14_doc command
+#     Must be installed for document generation functionality
+declare -ga EXAMPLE_FILES=(
+    # Core examples
+    "docs/examples/wf_14_doc_examples.md"
+    "docs/examples/doc_generation_workflow.md"
+    "docs/examples/doc_generation_outputs.md"
+    "docs/examples/doc_generation_best_practices.md"
+    "docs/examples/doc_generation_next_steps.md"
+    "docs/examples/doc_generation_troubleshooting.md"
+    "docs/examples/doc_generation_decision_tree.md"
+    "docs/examples/doc_generation_quick_guide.md"
+    "docs/examples/frontmatter_quick_reference.md"
+
+    # Document templates
+    "docs/examples/doc_templates/README_template.md"
+    "docs/examples/doc_templates/API_template.md"
+    "docs/examples/doc_templates/ARCHITECTURE_template.md"
+    "docs/examples/doc_templates/DEV_GUIDE_template.md"
+    "docs/examples/doc_templates/DEPLOYMENT_template.md"
+
+    # UI-enhanced templates
+    "docs/examples/doc_templates/ui_enhanced/API_explorer_template.md"
+    "docs/examples/doc_templates/ui_enhanced/ARCHITECTURE_diagram_template.md"
+    "docs/examples/doc_templates/ui_enhanced/DEV_wizard_template.md"
+    "docs/examples/doc_templates/ui_enhanced/UI_COST_ANALYSIS.md"
+)
+
+# Reference documents - required by multiple commands (always installed)
+# ⚠️  CRITICAL: These references are cited by command files
+#     Must be installed for proper command functionality
+declare -ga REFERENCE_FILES=(
+    "docs/reference/FRONTMATTER.md"
+    "docs/reference/AI_ROLES_LIBRARY.md"
+    "docs/reference/MARKDOWN_STYLE.md"
+)
+
 # ============================================================================
 # Installation Directories - Paths for installation targets
 # ============================================================================
@@ -106,6 +144,16 @@ validate_manifest() {
         ((errors++))
     fi
 
+    if [[ -z "${EXAMPLE_FILES[*]}" ]]; then
+        echo "❌ EXAMPLE_FILES is empty"
+        ((errors++))
+    fi
+
+    if [[ -z "${REFERENCE_FILES[*]}" ]]; then
+        echo "❌ REFERENCE_FILES is empty"
+        ((errors++))
+    fi
+
     if [[ $errors -eq 0 ]]; then
         echo "✅ Manifest validation passed"
         return 0
@@ -127,6 +175,8 @@ print_manifest_summary() {
     echo "  Config files:   ${CONFIG_FILES[*]}"
     echo "  Scripts:        ${SCRIPT_FILES[*]}"
     echo "  Guides:         ${#GUIDE_FILES[@]} files (docs/guides/)"
+    echo "  Examples:       ${#EXAMPLE_FILES[@]} files (docs/examples/)"
+    echo "  References:     ${#REFERENCE_FILES[@]} files (docs/reference/)"
     if [[ -n "${DOC_FILES[*]}" ]]; then
         echo "  Documentation:  ${DOC_FILES[*]}"
     fi
@@ -135,6 +185,8 @@ print_manifest_summary() {
     echo "  Commands:  $COMMANDS_DIR"
     echo "  Scripts:   $SCRIPTS_DIR"
     echo "  Guides:    $COMMANDS_DIR/docs/guides/"
+    echo "  Examples:  $COMMANDS_DIR/docs/examples/"
+    echo "  References: $COMMANDS_DIR/docs/reference/"
     echo "  Docs:      $DOCS_DIR"
     echo "  Backup:    $BACKUP_DIR"
     echo ""
@@ -147,7 +199,7 @@ print_manifest_summary() {
 # ============================================================================
 
 export INSTALL_DIR COMMANDS_DIR SCRIPTS_DIR DOCS_DIR BACKUP_DIR
-export COMMAND_FILES CONFIG_FILES SCRIPT_FILES DOC_FILES GUIDE_FILES
+export COMMAND_FILES CONFIG_FILES SCRIPT_FILES DOC_FILES GUIDE_FILES EXAMPLE_FILES REFERENCE_FILES
 
 # Export functions
 export -f validate_manifest print_manifest_summary

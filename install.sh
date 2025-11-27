@@ -497,6 +497,106 @@ install_guides() {
     return 0
 }
 
+install_examples() {
+    echo ""
+    info "Installing example documents..."
+
+    local examples_count=0
+    local fail_count=0
+
+    for example_file in "${EXAMPLE_FILES[@]}"; do
+        local source_file="$PROJECT_ROOT/$example_file"
+
+        if [[ ! -f "$source_file" ]]; then
+            verbose "Example file not found: $example_file"
+            continue
+        fi
+
+        local target="$COMMANDS_DIR/$example_file"
+        local target_dir=$(dirname "$target")
+
+        if [[ $DRY_RUN -eq 1 ]]; then
+            info "[DRY RUN] Would install: $example_file"
+            ((examples_count++))
+        else
+            mkdir -p "$target_dir"
+            if [[ $INSTALL_METHOD == "link" ]]; then
+                if install_file_link "$source_file" "$target"; then
+                    ((examples_count++))
+                else
+                    warning "Failed to install: $example_file"
+                    ((fail_count++))
+                fi
+            else
+                if install_file_copy "$source_file" "$target"; then
+                    ((examples_count++))
+                else
+                    warning "Failed to install: $example_file"
+                    ((fail_count++))
+                fi
+            fi
+        fi
+    done
+
+    if [[ $fail_count -gt 0 ]]; then
+        error "Failed to install $fail_count example(s)"
+        return 1
+    fi
+
+    success "Installed $examples_count example document(s)"
+    return 0
+}
+
+install_references() {
+    echo ""
+    info "Installing reference documents..."
+
+    local references_count=0
+    local fail_count=0
+
+    for reference_file in "${REFERENCE_FILES[@]}"; do
+        local source_file="$PROJECT_ROOT/$reference_file"
+
+        if [[ ! -f "$source_file" ]]; then
+            verbose "Reference file not found: $reference_file"
+            continue
+        fi
+
+        local target="$COMMANDS_DIR/$reference_file"
+        local target_dir=$(dirname "$target")
+
+        if [[ $DRY_RUN -eq 1 ]]; then
+            info "[DRY RUN] Would install: $reference_file"
+            ((references_count++))
+        else
+            mkdir -p "$target_dir"
+            if [[ $INSTALL_METHOD == "link" ]]; then
+                if install_file_link "$source_file" "$target"; then
+                    ((references_count++))
+                else
+                    warning "Failed to install: $reference_file"
+                    ((fail_count++))
+                fi
+            else
+                if install_file_copy "$source_file" "$target"; then
+                    ((references_count++))
+                else
+                    warning "Failed to install: $reference_file"
+                    ((fail_count++))
+                fi
+            fi
+        fi
+    done
+
+    if [[ $fail_count -gt 0 ]]; then
+        error "Failed to install $fail_count reference(s)"
+        return 1
+    fi
+
+    success "Installed $references_count reference document(s)"
+    return 0
+}
+
 ###############################################################################
 # Verification Phase
 ###############################################################################
@@ -632,6 +732,8 @@ main() {
     install_claude_md || exit 1
     install_scripts || exit 1
     install_guides || exit 1  # Critical - guides are referenced by commands
+    install_examples || exit 1  # Critical - examples are referenced by wf_14_doc command
+    install_references || exit 1  # Critical - references are referenced by commands
     install_documentation || exit 0  # Non-critical
 
     # Verification

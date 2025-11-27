@@ -385,6 +385,108 @@ uninstall_guides() {
     return 0
 }
 
+uninstall_examples() {
+    echo ""
+    info "Removing example documents..."
+
+    local examples_dir="$COMMANDS_DIR/docs/examples"
+    local removed_count=0
+    local fail_count=0
+
+    if [[ ! -d "$examples_dir" ]]; then
+        verbose "Examples directory does not exist"
+        return 0
+    fi
+
+    for example_file in "${EXAMPLE_FILES[@]}"; do
+        local target="$COMMANDS_DIR/$example_file"
+
+        if [[ ! -e "$target" ]]; then
+            continue
+        fi
+
+        if [[ $DRY_RUN -eq 1 ]]; then
+            info "[DRY RUN] Would remove: $example_file"
+            ((removed_count++))
+        else
+            if rm -f "$target"; then
+                ((removed_count++))
+                verbose "Removed: $target"
+            else
+                error "Failed to remove: $target"
+                ((fail_count++))
+            fi
+        fi
+    done
+
+    # Clean up empty directories
+    if [[ $DRY_RUN -ne 1 ]]; then
+        cleanup_empty_directories "$examples_dir" "$COMMANDS_DIR/docs" "$COMMANDS_DIR" 2>/dev/null
+    fi
+
+    if [[ $fail_count -gt 0 ]]; then
+        error "Failed to remove $fail_count example(s)"
+        return 1
+    fi
+
+    if [[ $removed_count -gt 0 ]]; then
+        success "Removed $removed_count example document(s)"
+    fi
+
+    return 0
+}
+
+uninstall_references() {
+    echo ""
+    info "Removing reference documents..."
+
+    local references_dir="$COMMANDS_DIR/docs/reference"
+    local removed_count=0
+    local fail_count=0
+
+    if [[ ! -d "$references_dir" ]]; then
+        verbose "References directory does not exist"
+        return 0
+    fi
+
+    for reference_file in "${REFERENCE_FILES[@]}"; do
+        local target="$COMMANDS_DIR/$reference_file"
+
+        if [[ ! -e "$target" ]]; then
+            continue
+        fi
+
+        if [[ $DRY_RUN -eq 1 ]]; then
+            info "[DRY RUN] Would remove: $reference_file"
+            ((removed_count++))
+        else
+            if rm -f "$target"; then
+                ((removed_count++))
+                verbose "Removed: $target"
+            else
+                error "Failed to remove: $target"
+                ((fail_count++))
+            fi
+        fi
+    done
+
+    # Clean up empty directories
+    if [[ $DRY_RUN -ne 1 ]]; then
+        cleanup_empty_directories "$references_dir" "$COMMANDS_DIR/docs" "$COMMANDS_DIR" 2>/dev/null
+    fi
+
+    if [[ $fail_count -gt 0 ]]; then
+        error "Failed to remove $fail_count reference(s)"
+        return 1
+    fi
+
+    if [[ $removed_count -gt 0 ]]; then
+        success "Removed $removed_count reference document(s)"
+    fi
+
+    return 0
+}
+
 uninstall_documentation() {
     echo ""
     info "Removing documentation files..."
@@ -583,6 +685,8 @@ main() {
     uninstall_claude_md || exit 1
     uninstall_scripts || exit 1
     uninstall_guides || exit 1  # Critical - guides are referenced by commands
+    uninstall_examples || exit 1  # Critical - examples are referenced by wf_14_doc command
+    uninstall_references || exit 1  # Critical - references are referenced by commands
     uninstall_documentation || exit 0  # Non-critical
 
     # Cleanup backups (if --clean-backup)

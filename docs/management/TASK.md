@@ -1,10 +1,10 @@
 # 项目任务跟踪 (TASK.md)
 
 **项目**: AI Workflow 命令系统 - Frontmatter 文档元数据处理 + 工作流闭环改进 + MCP 集成
-**版本**: v1.7
+**版本**: v1.8
 **最后更新**: 2025-11-27
 **维护者**: Claude Code
-**当前进度**: 40/42 完成 (95.2%)
+**当前进度**: 41/43 完成 (95.3%)
 
 ---
 
@@ -22,10 +22,10 @@
 | **wf 命令系统优化** | 5 | 5 | 0 | 0 |
 | **MCP 集成** | 3 | 3 | 0 | 0 |
 | **MCP & 文档架构** | 1 | 1 | 0 | 0 |
-| **系统修复** | 1 | 1 | 0 | 0 |
-| **总计** | 43 | 40 | 0 | 3 |
+| **系统修复** | 2 | 2 | 0 | 0 |
+| **总计** | 44 | 41 | 0 | 3 |
 
-**完成度**: 95.2% (40/43 tasks) ✅
+**完成度**: 93.2% (41/44 tasks) ✅
 
 **新增任务说明**:
 - 代码审查 (2025-11-15) 发现 wf 命令系统存在结构不一致和冗余问题
@@ -691,6 +691,60 @@ MCP (Model Context Protocol) 集成为 AI Workflow Command System 引入了 5 �
 - ✅ 用户执行 `make install` 后，命令文件中的 guide 链接不再断开
 - ✅ 用户执行 `make uninstall` 后，guide 文档被正确清理，无遗留文件
 - ✅ 用户执行 `make verify` 能看到 guide 文档的安装状态
+
+**相关提交**: [待提交]
+
+---
+
+## ✅ 完成：安装系统修复 #2 - 支持 Examples 和 References 文档安装/卸载 (2025-11-27)
+
+### 任务：修复安装系统以支持 Examples 和 References 文档的同步安装/卸载 (🔴 高优先级 - 完成)
+
+**背景**:
+在第一次修复Guide文档安装问题后，深度检查发现 wf_14_doc.md 引用了 21 个额外的文档 (18 个 examples + 3 个 references)，这些文档在 docs/examples/ 和 docs/reference/ 目录下，但安装系统同样没有处理这些依赖，导致 wf_14_doc 命令中的链接全部断开。
+
+**完成信息**:
+- 触发原因: wf_14_doc.md 引用 28 个依赖文档，但只有 7 个被安装
+- 发现方式: 系统化检查所有 wf_ 命令的文档引用依赖
+- 修复方式: 扩展 install.manifest 系统，添加 EXAMPLE_FILES 和 REFERENCE_FILES 支持
+- 影响文件: install.manifest, install.sh, uninstall.sh, Makefile (4 个文件)
+- 完成时间: 2025-11-27
+- 总工作量: 1.5 小时
+
+**修复内容**:
+- [x] **更新 install.manifest** - 添加 EXAMPLE_FILES 数组 (18 个条目) 和 REFERENCE_FILES 数组 (3 个条目)
+- [x] **修改 install.sh** - 添加 install_examples() 和 install_references() 函数
+- [x] **修改 uninstall.sh** - 添加 uninstall_examples() 和 uninstall_references() 函数
+- [x] **更新 Makefile** - verify 目标增加 examples 和 references 文档检查
+- [x] **功能测试** - 验证安装/卸载完整流程正常工作，包括所有 28 个文档
+
+**技术实现细节**:
+- EXAMPLE_FILES 数组: 18 个文件，包含文档模板、生成工作流、最佳实践等
+- REFERENCE_FILES 数组: 3 个文件 (FRONTMATTER.md, AI_ROLES_LIBRARY.md, MARKDOWN_STYLE.md)
+- 安装路径: `~/.claude/commands/docs/examples/` 和 `~/.claude/commands/docs/reference/`
+- 支持模式: 同时支持 symlink 和 copy 两种安装模式
+- 错误处理: 完整的错误处理和回滚机制
+- 目录清理: 卸载时自动清理空目录
+
+**验收标准**: ✅ 全部通过
+- [x] 安装脚本正确安装 18 个 example 文档和 3 个 reference 文档
+- [x] 卸载脚本正确移除所有 example 和 reference 文档
+- [x] Makefile verify 目标能检测 example 和 reference 文档状态
+- [x] 支持 dry-run 模式进行测试
+- [x] 语法检查全部通过
+- [x] 完整流程测试通过，包括 install → verify → uninstall 循环
+
+**解决的问题**:
+- ✅ 用户执行 `make install` 后，wf_14_doc 命令中的 28 个文档链接全部正常工作
+- ✅ 用户执行 `make uninstall` 后，所有依赖文档被正确清理，无遗留文件
+- ✅ 用户执行 `make verify` 能看到完整的文档安装状态 (guides + examples + references)
+- ✅ 完整支持 wf_14_doc 智能文档生成功能所需的全部依赖
+
+**影响统计**:
+- 文档链接修复: 28 个 (从 7/28 → 28/28)
+- 新增文件数量: 21 个 (18 examples + 3 references)
+- 涉及目录: docs/examples/ (含子目录), docs/reference/
+- 系统完整性: 达到 100% 文档依赖覆盖
 
 **相关提交**: [待提交]
 
