@@ -31,6 +31,9 @@
 | Frontmatter 快速参考 | [docs/examples/frontmatter_quick_reference.md](docs/examples/frontmatter_quick_reference.md) | 高 |
 | **文档维护详细流程** | [docs/guides/doc_maintenance_process.md](docs/guides/doc_maintenance_process.md) | 高 |
 | **文档维护工作流指南** | [docs/guides/doc_maintenance_workflows.md](docs/guides/doc_maintenance_workflows.md) | 高 |
+| **wf_03_prime MCP Serena 增强指南** | [docs/guides/wf_03_prime_mcp_serena.md](docs/guides/wf_03_prime_mcp_serena.md) | 高 |
+| **wf_03_prime 工作流导航指南** | [docs/guides/wf_03_prime_workflows.md](docs/guides/wf_03_prime_workflows.md) | 高 |
+| **wf_03_prime 智能加载详解** | [docs/guides/wf_03_prime_smart_loading.md](docs/guides/wf_03_prime_smart_loading.md) | 中 |
 | 架构决策记录 | [docs/adr/](docs/adr/) | 中 |
 | Frontmatter 规范 | [docs/reference/FRONTMATTER.md](docs/reference/FRONTMATTER.md) | 高 |
 | Markdown 格式约束 | [docs/reference/MARKDOWN_STYLE.md](docs/reference/MARKDOWN_STYLE.md) | 高 |
