@@ -34,6 +34,9 @@
 | **wf_03_prime MCP Serena 增强指南** | [docs/guides/wf_03_prime_mcp_serena.md](docs/guides/wf_03_prime_mcp_serena.md) | 高 |
 | **wf_03_prime 工作流导航指南** | [docs/guides/wf_03_prime_workflows.md](docs/guides/wf_03_prime_workflows.md) | 高 |
 | **wf_03_prime 智能加载详解** | [docs/guides/wf_03_prime_smart_loading.md](docs/guides/wf_03_prime_smart_loading.md) | 中 |
+| **wf_04_research MCP 增强指南** | [docs/guides/wf_04_research_mcp_guide.md](docs/guides/wf_04_research_mcp_guide.md) | 高 |
+| **wf_04_research 工作流和决策指南** | [docs/guides/wf_04_research_workflows.md](docs/guides/wf_04_research_workflows.md) | 高 |
+| **wf_04_research 输出格式规范** | [docs/guides/wf_04_research_output_formats.md](docs/guides/wf_04_research_output_formats.md) | 高 |
 | 架构决策记录 | [docs/adr/](docs/adr/) | 中 |
 | Frontmatter 规范 | [docs/reference/FRONTMATTER.md](docs/reference/FRONTMATTER.md) | 高 |
 | Markdown 格式约束 | [docs/reference/MARKDOWN_STYLE.md](docs/reference/MARKDOWN_STYLE.md) | 高 |
