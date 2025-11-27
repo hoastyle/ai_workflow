@@ -37,6 +37,9 @@
 | **wf_04_research MCP 增强指南** | [docs/guides/wf_04_research_mcp_guide.md](docs/guides/wf_04_research_mcp_guide.md) | 高 |
 | **wf_04_research 工作流和决策指南** | [docs/guides/wf_04_research_workflows.md](docs/guides/wf_04_research_workflows.md) | 高 |
 | **wf_04_research 输出格式规范** | [docs/guides/wf_04_research_output_formats.md](docs/guides/wf_04_research_output_formats.md) | 高 |
+| **wf_05_code 文档同步决策树指南** | [docs/guides/wf_05_code_doc_sync_guide.md](docs/guides/wf_05_code_doc_sync_guide.md) | 高 |
+| **wf_05_code Serena MCP 使用指南** | [docs/guides/wf_05_code_serena_guide.md](docs/guides/wf_05_code_serena_guide.md) | 高 |
+| **wf_05_code 工作流和决策路径指南** | [docs/guides/wf_05_code_workflows.md](docs/guides/wf_05_code_workflows.md) | 高 |
 | 架构决策记录 | [docs/adr/](docs/adr/) | 中 |
 | Frontmatter 规范 | [docs/reference/FRONTMATTER.md](docs/reference/FRONTMATTER.md) | 高 |
 | Markdown 格式约束 | [docs/reference/MARKDOWN_STYLE.md](docs/reference/MARKDOWN_STYLE.md) | 高 |
@@ -167,6 +170,6 @@ related_documents:
 
 ---
 
-**最后更新**: 2025-11-24
+**最后更新**: 2025-11-27
 **维护者**: Knowledge Base Management System
-**版本**: v1.4 (新增文档生成完整工作流、决策树、Frontmatter 参考和 ADR)
+**版本**: v1.5 (新增 wf_05_code 三个专业指南文档索引)

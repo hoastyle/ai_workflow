@@ -60,303 +60,71 @@ You are the Development Coordinator directing four coding specialists:
 
 ### Phase 1: 基础代码开发 (Step 1-7)
 
-#### Step 1-2: 上下文加载和架构设计
+**核心步骤快速参考**:
+
+| 步骤 | 职责 | Serena MCP 增强（可选） |
+|------|------|----------------------|
+| **1-2** | 上下文加载和架构设计 | `get_symbols_overview()` 快速理解文件结构 |
+| **3-4** | 增量开发和质量验证 | `insert_after_symbol()` 精确插入代码 |
+| **5-7** | 集成验证和准备提交 | `find_referencing_symbols()` 验证集成正确性 |
+
+**详细说明**:
 
 1. **Context Loading** (with optional Serena support):
    - Read relevant sections from PLANNING.md
    - Check TASK.md for related tasks and dependencies
    - Identify existing patterns to follow
    - **[Optional --serena]**: 使用 `get_symbols_overview()` 快速理解目标文件结构
-     - 精确定位相关类、方法、导入关系
-     - 加速代码架构理解 (30-50% 时间节省)
 
 2. **Implementation Strategy**:
    - Architect: Design components per architecture guidelines
    - Engineer: Implement with project's coding standards
    - **[Optional --serena]**: 使用 `find_symbol()` 精确定位插入点
-     - 确定在哪个方法/类后插入新代码
-     - 确认是否有依赖冲突
    - Integration: Ensure compatibility with existing systems
    - Reviewer: Validate against quality criteria
 
-#### Step 3-4: 增量开发和质量验证
-
-3. **Progressive Development** (with Serena insertion points):
+3. **Progressive Development**:
    - Build incrementally with validation
    - **[Optional --serena]**: 使用 `insert_after_symbol()` 精确插入新代码
-     - 场景：为大型类添加新方法，确保位置正确
-     - 优势：自动处理缩进、符号边界，避免人工错误
    - Update TASK.md after each milestone
-   - Document significant decisions
 
 4. **Quality Validation**:
    - Ensure code meets PLANNING.md standards
    - **[Optional --serena]**: 使用 `find_referencing_symbols()` 验证集成正确性
-     - 检查新代码是否被现有代码正确调用
-     - 发现潜在的类型不匹配或接口问题
    - Run tests as specified in workflow
-   - Prepare for review cycle
 
-### Phase 2: 文档同步决策树 (Step 8 - 约束驱动) ⭐ NEW
-
-**强制执行**: 代码完成后**必须**执行此步，文档是代码的一等公民
-
-#### Step 8.1: 文档变更范围确定（强制检查清单）
-
-执行此检查列表，**必须逐一决策**：
-
-```
-□ Q1: 添加或修改了公开 API/函数/类？
-      (数据结构、函数签名、导出接口)
-
-□ Q2: 改变了现有功能的行为？
-      (功能变更、参数改变、返回值变化)
-
-□ Q3: 使用了新的库、框架或技术依赖？
-      (第三方库、新框架、新工具)
-
-□ Q4: 改变了系统架构或设计？
-      (模块重组、新设计模式、性能优化决策)
-
-□ Q5: 引入了新的配置或部署流程改动？
-      (环境变量、配置文件、部署步骤)
-```
-
-**如果任何一项是 YES，继续 8.2；如果全部 NO，跳到 8.3**
-
-#### Step 8.2: 按层级路由文档决策树（自动化分层）
-
-```
-┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-┃ 文档决策树：根据改动类型自动路由到正确的层            ┃
-┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
-
-[START] - 这个改动是什么类型？
-
-├─ 类型A: 项目级架构改动（影响整体设计）
-│  ├─ 信号：改变了系统核心层次、模块拆分、技术栈选择
-│  └─ 决策：更新 PLANNING.md
-│     ├─ 约束: 新增内容 < 50 行
-│     ├─ 规则: 仅记录"为什么"和"架构影响"
-│     └─ 例子: "重构用户认证层，从 Session → JWT"
-│
-├─ 类型B: 架构决策（需要记录原因和权衡）
-│  ├─ 信号：多个方案权衡、长期影响、异常处理方案
-│  └─ 决策：创建或更新 ADR → docs/adr/
-│     ├─ 约束: < 200 行
-│     ├─ 规则: 遵循 ADR TEMPLATE.md 模板
-│     └─ 例子: "为什么选择异步队列而非同步处理"
-│
-├─ 类型C: API/功能文档（开发者需要了解用法）
-│  ├─ 信号：新 API、功能变更、使用示例、配置说明
-│  └─ 决策：添加/更新技术文档 → docs/
-│     ├─ 约束: 单个文件 < 500 行
-│     ├─ 规则:
-│     │  • 遵循 Frontmatter 元数据规范
-│     │  • 从代码提取，不是编造内容
-│     │  • 包含实际的代码示例
-│     └─ 例子: 新 API 端点的使用说明，参数和返回值
-│
-├─ 类型D: 常见问题或最佳实践（其他开发者可能遇到）
-│  ├─ 信号：解决方案模式、常见错误、排查指南
-│  └─ 决策：提议添加到 KNOWLEDGE.md § FAQ
-│     ├─ 约束: 每个 Q < 50 行
-│     ├─ 规则: 月末批量审查合并（不要频繁更新）
-│     └─ 例子: "如何处理并发请求的竞态条件"
-│
-└─ 类型E: 上述都不是，代码更改但不需要文档
-   └─ 决策：跳过文档同步，继续 8.3
-      ├─ 例子: 内部函数重构、变量名改进、测试添加
-      └─ 记录: 在 git commit message 中说明"无文档变更"
-```
-
-**决策方法**：
-1. 识别改动属于 A/B/C/D/E 中的哪一类
-2. 按对应的约束执行（如果需要文档）
-3. **关键**：不跨层级混合（类型 C 文档不应在类型 D 地方）
-
-#### Step 8.3: 自动更新文档索引（强制自动化）
-
-**如果生成或更新了任何文档**，必须运行：
-
-```bash
-# 验证所有新文档都有完整的 Frontmatter
-python ~/.claude/commands/scripts/frontmatter_utils.py validate docs/
-  输出: ✅ 通过 或 ❌ 缺失字段列表
-
-# 自动更新 KNOWLEDGE.md 的文档索引
-python ~/.claude/commands/scripts/frontmatter_utils.py update-index KNOWLEDGE.md
-  输出: 新增/更新的索引条目
-
-# 生成文档关系图（可选，用于理解依赖）
-python ~/.claude/commands/scripts/doc_graph_builder.py generate docs/
-  输出: docs/relationships.md (文档网络可视化)
-```
-
-**失败处理**：
-- ❌ 如果 frontmatter 验证失败 → 修复缺失字段（见 CLAUDE.md FRONTMATTER 规范）
-- ❌ 如果索引更新失败 → 检查脚本是否存在，或手工更新 KNOWLEDGE.md
-
-#### Step 8.4: 成本检查门控（强制成本约束）
-
-在步骤 8.3 后必须通过此检查，**否则拒绝进入下一步**：
-
-```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📊 文档成本检查门控
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-检查项目                        限制          实际值      状态
-─────────────────────────────────────────────────────────
-KNOWLEDGE.md 行数               < 200 行       ?         ✅/❌
-新增/修改的 docs/ 文件          < 500 行       ?         ✅/❌
-新增 ADR 大小                   < 200 行       ?         ✅/❌
-docs/ 总大小增长                < 30%          ?         ✅/❌
-KNOWLEDGE.md 增长               < 20%          ?         ✅/❌
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-```
-
-**成本检查失败时的处理方案**：
-
-🔴 **立即失败，必须修复**:
-- KNOWLEDGE.md > 200 行 → 拆分到 docs/knowledge/
-- 新文档 > 500 行 → 分章节或拆成多个文件
-- ADR > 200 行 → 精简或移除冗余内容
-
-🟠 **警告，需要改进**:
-- docs/ 增长 > 30% → 评估是否有重复，是否需要归档旧文档
-- KNOWLEDGE.md 增长 > 20% → 检查是否有可以外放的内容
-
-**如果无法通过**，选择：
-1. 修改新增文档的范围（减少内容）
-2. 先运行 `/wf_13_doc_maintain` 清理旧文档，再提交新文档
-3. 分多个 commit 逐步添加文档
-
-#### Step 8.5: 决策记录和承诺（强制明确化）
-
-在 git commit message 中记录此次的文档决策：
-
-```bash
-# 示例 commit message（必须包含文档部分）
-
-feat: 实现用户认证功能
-
-文档决策:
-- [类型C] 新增 docs/api/auth.md (认证 API 说明, 120 行)
-  ├─ Frontmatter: ✅ 完整
-  ├─ 成本检查: ✅ 通过
-  └─ 索引更新: ✅ KNOWLEDGE.md 已更新
-
-- [类型B] 新增 ADR: 为什么选择 JWT 而非 Session
-  ├─ 文件: docs/adr/2025-11-18-jwt-over-session.md (145 行)
-  └─ 索引: KNOWLEDGE.md ADR 表已更新
-
-文档成本汇总:
-- KNOWLEDGE.md: 150 → 155 行 (+3%, ✅)
-- docs/: 2400 → 2600 行 (+8%, ✅)
-- 新增文件: 2 个，总 265 行
-
-无破损链接: ✅ 验证通过
-```
-
-**如果没有文档更改**，也要明确说明：
-
-```bash
-feat: 优化认证性能
-
-文档决策:
-- [类型E] 无文档变更
-  原因: 内部性能优化，不涉及 API 或架构改动
-
-影响范围: 仅性能改善，兼容现有接口
-```
-
-#### Step 8.6: 准备进入下一步（工作流连接）
-
-完成 8.1-8.5 后，代码和文档已经对齐。
-
-下一步建议：
-```bash
-# 文档同步完成后，进入测试和审查流程
-
-# 选项A：先测试（推荐）
-/wf_07_test "为 [功能] 编写单元测试"
-
-# 选项B：直接审查（简单功能）
-/wf_08_review
-
-# 注意：/wf_08_review 会再次检查文档架构合规性
-#      如果本步骤执行正确，审查应该通过文档部分
-```
+**Serena MCP 详细使用指南**: [§ wf_05_code Serena MCP 使用指南](docs/guides/wf_05_code_serena_guide.md)
 
 ---
 
-## 🔧 Serena MCP 使用示例 (使用 --serena 标志)
+### Phase 2: 文档同步决策树 (Step 8 - 约束驱动) ⭐
 
-### 场景 1: 理解复杂代码结构（代码理解瓶颈）
-```bash
-# 用户请求
-/wf_05_code "在 UserService 类中添加 login() 方法" --serena
+**强制执行**: 代码完成后**必须**执行此步，文档是代码的一等公民
 
-# Serena 协助的步骤
-1. get_symbols_overview("src/services/UserService.ts")
-   → 快速理解类结构：
-      ├─ constructor()
-      ├─ register()
-      ├─ logout()
-      └─ [要插入 login() 的位置]
+#### 快速参考 - 6 个强制步骤
 
-2. find_symbol("UserService", depth=1)
-   → 获取所有方法列表，确定最佳插入点
+| 步骤 | 职责 | 输出 | 工具 |
+|------|------|------|------|
+| **8.1** | 文档变更范围确定 | Q1-Q5 检查清单结果 | 人工判断 |
+| **8.2** | 按层级路由文档决策 | 确定类型 (A/B/C/D/E) | 决策树 |
+| **8.3** | 自动更新文档索引 | Frontmatter 验证 + 索引同步 | Python 脚本 |
+| **8.4** | 成本检查门控 | 所有约束检查状态 | 自动检查 |
+| **8.5** | 决策记录和承诺 | commit message 文档部分 | Git commit |
+| **8.6** | 准备进入下一步 | 工作流路径选择 | 决策矩阵 |
 
-3. 开发人员编写 login() 代码
+#### 文档类型快速查找表
 
-4. insert_after_symbol("UserService/logout")
-   → 在 logout() 方法后精确插入 login() 方法
-```
+| 改动类型 | 文档类型 | 位置 | 约束 | 例子 |
+|---------|---------|------|------|------|
+| 系统核心架构改动 | 类型A | PLANNING.md | < 50 行 | 重构认证层 Session → JWT |
+| 技术决策和权衡 | 类型B | docs/adr/ | < 200 行 | 为什么选择异步队列 |
+| 新 API/功能 | 类型C | docs/ | < 500 行 | API 端点使用说明 |
+| 常见问题/最佳实践 | 类型D | KNOWLEDGE.md § FAQ | < 50 行/Q | 处理并发竞态条件 |
+| 内部重构/优化 | 类型E | 无文档 | - | 变量名改进、内部函数重构 |
 
-### 场景 2: 精确代码插入（需要高准确性）
-```bash
-# 用户请求
-/wf_05_code "为 Product 类添加 getPrice() 方法，应该在 getName() 后面" --serena
+**完整文档同步指南**: [§ wf_05_code 文档同步决策树指南](docs/guides/wf_05_code_doc_sync_guide.md)
 
-# Serena 自动化：
-1. find_symbol("Product/getName")
-   → 定位到第 45 行的 getName() 方法结尾
-
-2. insert_after_symbol("Product/getName", code="""
-   public getPrice(): number {
-     return this.price;
-   }
-   """)
-   → 自动：
-      - 保持缩进一致
-      - 添加正确的换行
-      - 处理符号边界
-      - 验证语法正确性
-
-3. 时间节省：10 分钟 → 1 分钟
-   准确性：70% → 99%（无缩进错误、无符号边界问题）
-```
-
-### 场景 3: 验证集成正确性（检查引用完整性）
-```bash
-# 用户请求
-/wf_05_code "为 API 模块添加新的 getUserById() 端点" --serena
-
-# 之后在测试前验证：
-1. find_referencing_symbols("getUserById")
-   → 检查所有引用点：
-      ✅ src/routes/users.ts:12 (route 注册)
-      ✅ src/controllers/user.ts:5 (实现)
-      ✅ src/types/api.ts:8 (类型定义)
-
-2. 发现问题：
-   ❌ docs/api/endpoints.md 未更新
-
-3. 提醒开发人员更新文档（Step 8）
-```
+---
 
 ## Output Format
 
@@ -429,76 +197,13 @@ feat: 优化认证性能
    STEP 1      STEP 2 (可选)   STEP 3        STEP 4      STEP 5     STEP 6
 ```
 
-### ✅ 已完成的步骤
+### 建议下一步（3 个选项）
 
-在执行 `/wf_05_code` 前，你应该已经完成：
-
-1. ✅ **任务确认** (`/wf_02_task update`)
-   - 从 TASK.md 选择并标记待做任务
-
-2. ✅ **架构咨询**（可选，`/wf_04_ask`）
-   - 如果需要设计指导，已运行咨询
-   - 如果任务明确，可以跳过
-
-### 📝 当前步骤
-
-**正在执行**: `/wf_05_code "功能描述"`
-
-- 遵循 PLANNING.md 的开发标准
-- 实现功能并更新代码
-- 符合 PRD 需求
-- 准备进入测试阶段
-
-### ⏭️ 建议下一步
-
-**代码实现完成后**，建议按以下顺序执行：
-
-#### 选项 A：先测试再审查（推荐）✅
-```bash
-# 第4步: 添加测试（如果功能较复杂）
-/wf_07_test "为 [功能] 添加单元测试"
-
-# 第5步: 代码审查
-/wf_08_review
-
-# 第6步: 提交保存进度
-/wf_11_commit "feat: [功能描述]"
-```
-
-#### 选项 B：先审查再测试
-```bash
-# 第5步: 代码审查
-/wf_08_review
-
-# 第4步: 根据审查意见添加测试
-/wf_07_test "为 [功能] 添加测试"
-
-# 第6步: 提交
-/wf_11_commit "feat: [功能描述]"
-```
-
-#### 选项 C：简单功能跳过测试
-```bash
-# 第5步: 代码审查
-/wf_08_review
-
-# 第6步: 提交
-/wf_11_commit "feat: [功能描述]"
-```
-
-### 📊 工作流进度提示
-
-当你完成代码实现时，确保输出中包含：
-
-✅ 已完成:
-- 代码实现完成
-- TASK.md 已更新
-- 代码符合 PLANNING.md 标准
-
-⏭️ 下一步提示:
-- 显示推荐的下一个命令
-- 说明选择的原因
-- 提供替代选项
+| 选项 | 适用场景 | 命令序列 | 优势 |
+|------|---------|---------|------|
+| **A** | 功能复杂且新增 | `/wf_07_test` → `/wf_08_review` → `/wf_11_commit` | 测试先行，确保质量 |
+| **B** | 功能修改已有代码 | `/wf_08_review` → `/wf_07_test` → `/wf_11_commit` | 快速发现设计问题 |
+| **C** | 简单功能/文档修改 | `/wf_08_review` → `/wf_11_commit` | 减少开销 |
 
 ### 💡 决策指南
 
@@ -519,9 +224,16 @@ feat: 优化认证性能
 # 修改代码后继续当前步骤
 ```
 
-### 📚 相关文档
+**完整工作流导航指南**: [§ wf_05_code 工作流和决策路径指南](docs/guides/wf_05_code_workflows.md)
 
-- **工作流指南**: WORKFLOWS.md
+---
+
+## 相关文档
+
+- **主命令系统**: WORKFLOWS.md - 完整工作流说明
 - **代码标准**: PLANNING.md (Development Standards)
 - **任务追踪**: TASK.md
 - **设计原则**: PHILOSOPHY.md (Ultrathink)
+- **文档同步指南**: [docs/guides/wf_05_code_doc_sync_guide.md](docs/guides/wf_05_code_doc_sync_guide.md)
+- **Serena MCP 指南**: [docs/guides/wf_05_code_serena_guide.md](docs/guides/wf_05_code_serena_guide.md)
+- **工作流导航指南**: [docs/guides/wf_05_code_workflows.md](docs/guides/wf_05_code_workflows.md)
