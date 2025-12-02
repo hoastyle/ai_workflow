@@ -7,6 +7,7 @@ reads: [PLANNING.md(部署要求), TASK.md(任务完成度), 测试报告]
 writes: [部署报告, TASK.md(部署任务)]
 prev_commands: [/wf_07_test, /wf_08_review, /wf_11_commit]
 next_commands: [实际部署操作]
+token_budget: simple
 context_rules:
   - "验证PRD所有需求"
   - "确认PLANNING.md部署标准"

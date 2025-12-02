@@ -7,6 +7,8 @@ reads: [PRD.md, 现有PLANNING.md, 项目代码结构]
 writes: [PLANNING.md]
 prev_commands: []
 next_commands: [/wf_02_task]
+model: sonnet
+token_budget: complex
 context_rules:
   - "PRD.md是只读的，绝不修改"
   - "PLANNING.md必须对齐PRD.md所有需求"

@@ -7,6 +7,8 @@ reads: [PLANNING.md(测试策略), TASK.md(测试任务), 代码文件]
 writes: [测试文件, TASK.md(测试状态), 覆盖率报告]
 prev_commands: [/wf_05_code, /wf_06_debug, /wf_09_refactor]
 next_commands: [/wf_08_review, /wf_09_refactor, /wf_11_commit]
+model: sonnet
+token_budget: medium
 context_rules:
   - "遵循PLANNING.md测试策略"
   - "满足PRD覆盖率要求"

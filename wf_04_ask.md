@@ -7,8 +7,9 @@ reads: [PLANNING.md, TASK.md, KNOWLEDGE.md, PHILOSOPHY.md(可选), 代码库(--r
 writes: [PLANNING.md(可能), KNOWLEDGE.md(可能), TASK.md(可能), docs/adr/(可能)]
 prev_commands: [/wf_03_prime]
 next_commands: [/wf_05_code, /wf_01_planning]
-ultrathink_lens: "architecture_design"
 model: sonnet
+token_budget: medium
+ultrathink_lens: "architecture_design"
 mcp_support:
   - name: "Sequential-thinking"
     flag: "--think"
@@ -148,7 +149,154 @@ You are a Senior Systems Architect providing consultation within project context
 
 ## Process
 
-### Standard Consultation (default)
+### Step 0: Confidence Check (NEW - Pre-Execution Assessment) 🎯
+
+**目的**: 在开始架构咨询前评估信心水平，避免盲目推进导致错误方向
+
+**执行时机**: 在读取任何项目文档之前执行
+
+**评估维度**:
+
+1. **问题清晰度** (Problem Clarity)
+   - ✅ 问题表述清晰，目标明确 (+30%)
+   - ⚠️ 问题模糊，需要澄清 (-20%)
+   - ❌ 问题不完整，缺少关键信息 (-40%)
+
+2. **现有知识** (Existing Knowledge)
+   - ✅ 对问题领域有官方文档支持 (+20%)
+   - ✅ KNOWLEDGE.md 有类似决策记录 (+15%)
+   - ⚠️ 需要研究但有明确方向 (+5%)
+   - ❌ 完全未知领域 (-30%)
+
+3. **项目对齐** (Project Alignment)
+   - ✅ 符合 PLANNING.md 架构方向 (+20%)
+   - ✅ 有现有技术栈支持 (+10%)
+   - ⚠️ 需要引入新技术 (-10%)
+   - ❌ 与现有架构冲突 (-20%)
+
+4. **可验证性** (Verifiability)
+   - ✅ 有官方文档可验证 (+15%)
+   - ✅ 有开源实现可参考 (+10%)
+   - ⚠️ 需要实验验证 (+0%)
+   - ❌ 无法验证，只能猜测 (-30%)
+
+5. **复杂度评估** (Complexity)
+   - ✅ 简单问题，明确答案 (+10%)
+   - ⚠️ 中等复杂，需要权衡 (-5%)
+   - ❌ 高度复杂，多方依赖 (-15%)
+
+**信心水平计算**:
+```
+基础信心: 50%
+最终信心 = 基础信心 + Σ(各维度分数)
+```
+
+**决策树**:
+
+```
+信心水平 ≥ 90%?
+├─ YES → 🟢 直接执行咨询流程
+│         理由: 高信心，风险低，ROI 高
+│
+├─ 70% ≤ 信心 < 90%?
+│  └─ YES → 🟡 提供备选方案
+│            - 主要建议 (基于当前知识)
+│            - 替代方案 (如果主要建议失败)
+│            - 建议: "考虑使用 --c7 获取官方文档" 或 "--research 搜索最新实践"
+│
+└─ 信心 < 70%?
+   └─ YES → 🔴 暂停并询问
+            - 停止猜测
+            - 列出需要澄清的问题
+            - 建议用户提供更多上下文
+            - 或建议: "先运行 /wf_04_research 深度研究该领域"
+```
+
+**示例 1: 高信心场景 (95%)**
+```
+问题: "如何在 React 中实现客户端路由？"
+评估:
+- 问题清晰: +30% (明确目标)
+- 官方文档支持: +20% (React Router 官方文档)
+- 项目对齐: +20% (PLANNING.md 使用 React)
+- 可验证: +15% (官方文档 + 开源示例)
+- 复杂度: +10% (标准实现)
+总信心: 50% + 95% = 145% → Cap at 95%
+
+→ 🟢 直接执行，提供官方推荐方案
+```
+
+**示例 2: 中等信心场景 (75%)**
+```
+问题: "如何优化数据库查询性能？"
+评估:
+- 问题清晰: +30%
+- 现有知识: +5% (需要查看具体查询)
+- 项目对齐: +10% (现有数据库)
+- 可验证: +10% (需要性能测试)
+- 复杂度: -5% (需要权衡)
+总信心: 50% + 50% = 100% → 调整为 75%
+
+→ 🟡 提供主要建议 + 备选方案
+   主要: 索引优化
+   备选: 查询重写、缓存策略
+   建议: 使用 /wf_10_optimize 进行性能分析
+```
+
+**示例 3: 低信心场景 (40%)**
+```
+问题: "应该选择哪个 AI 模型？"
+评估:
+- 问题清晰: -20% (缺少使用场景)
+- 现有知识: -30% (未知领域)
+- 项目对齐: -10% (需引入新技术)
+- 可验证: +0% (需实验)
+- 复杂度: -15% (高度复杂)
+总信心: 50% - 75% = -25% → 底线 40%
+
+→ 🔴 暂停并询问
+   需要澄清:
+   1. 使用场景和目标是什么？
+   2. 数据类型和规模？
+   3. 性能和成本预算？
+   4. 部署环境限制？
+   建议: 先运行 /wf_04_research "AI 模型选型" --research
+```
+
+**ROI 分析**:
+```
+Confidence Check 成本: ~100-200 tokens
+节省成本 (如果避免错误方向):
+  - 避免错误实现: 5,000-10,000 tokens
+  - 避免返工: 20,000-50,000 tokens
+  - 避免架构返工: 50,000+ tokens
+
+ROI: 25-250x token 节省
+Break-even: 只需避免 1 次错误方向
+```
+
+**输出格式**:
+```
+## 🎯 Confidence Assessment
+
+**信心水平**: 85% 🟡
+
+**评估明细**:
+- ✅ 问题清晰度: +30%
+- ✅ 官方文档支持: +20%
+- ✅ 项目对齐: +20%
+- ✅ 可验证: +15%
+- ⚠️ 复杂度: -5%
+
+**决策**: 提供主要建议 + 备选方案
+
+**建议**: 考虑使用 --c7 获取 React Router 官方最佳实践
+```
+
+---
+
+### Step 1: Standard Consultation (default)
+
 1. **Context Integration**:
    - Review relevant PLANNING.md sections
    - Consider current TASK.md progress

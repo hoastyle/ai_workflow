@@ -8,6 +8,7 @@ writes: [TASK.md]
 prev_commands: [/wf_01_planning, /wf_05_code, /wf_06_debug]
 next_commands: [/wf_03_prime, /wf_05_code]
 model: haiku
+token_budget: simple
 context_rules:
   - "从PLANNING.md生成任务列表"
   - "任务必须映射到PRD需求"

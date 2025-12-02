@@ -8,6 +8,7 @@ writes: [代码文件, TASK.md(优化完成), 性能报告]
 prev_commands: [/wf_08_review]
 next_commands: [/wf_09_refactor, /wf_07_test, /wf_11_commit]
 model: sonnet
+token_budget: medium
 context_rules:
   - "满足PRD性能要求"
   - "遵循PLANNING.md性能目标"

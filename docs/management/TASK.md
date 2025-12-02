@@ -692,7 +692,7 @@ MCP (Model Context Protocol) 集成为 AI Workflow Command System 引入了 5 �
 - ✅ 用户执行 `make uninstall` 后，guide 文档被正确清理，无遗留文件
 - ✅ 用户执行 `make verify` 能看到 guide 文档的安装状态
 
-**相关提交**: [待提交]
+**相关提交**: 6f77676
 
 ---
 
@@ -746,7 +746,7 @@ MCP (Model Context Protocol) 集成为 AI Workflow Command System 引入了 5 �
 - 涉及目录: docs/examples/ (含子目录), docs/reference/
 - 系统完整性: 达到 100% 文档依赖覆盖
 
-**相关提交**: [待提交]
+**相关提交**: 4df029e
 
 ---
 

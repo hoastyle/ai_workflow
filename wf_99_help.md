@@ -8,6 +8,7 @@ writes: []
 prev_commands: [任何命令]
 next_commands: [用户选择的命令]
 model: haiku
+token_budget: simple
 context_rules:
   - "提供中文友好界面"
   - "支持quick/guide/命令名查询"

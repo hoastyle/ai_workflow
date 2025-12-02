@@ -8,6 +8,7 @@ writes: [KNOWLEDGE.md, PLANNING.md(可能), docs/adr/(可能), TASK.md(可能)]
 prev_commands: [/wf_04_ask]
 next_commands: [/wf_01_planning, /wf_05_code]
 model: sonnet
+token_budget: complex
 mcp_support:
   - name: "Context7"
     flag: "--c7"

@@ -8,6 +8,7 @@ writes: [CONTEXT.md, TASK.md, KNOWLEDGE.md(可能), README.md(可能), Git提交
 prev_commands: [/wf_05_code, /wf_06_debug, /wf_08_review, /wf_09_refactor, /wf_10_optimize]
 next_commands: [/wf_02_task, /clear, /wf_03_prime]
 model: haiku
+token_budget: simple
 context_rules:
   - "自动更新CONTEXT.md会话状态"
   - "遵守PLANNING.md质量标准"

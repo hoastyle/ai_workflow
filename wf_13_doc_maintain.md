@@ -8,6 +8,7 @@ writes: [KNOWLEDGE.md, docs/archive/, 维护报告]
 prev_commands: [/wf_11_commit, /wf_03_prime]
 next_commands: [/wf_03_prime]
 model: haiku
+token_budget: simple
 context_rules:
   - "定期执行（每10次提交或季度末）"
   - "自动识别文档问题，提供优化建议"

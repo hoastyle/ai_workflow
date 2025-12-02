@@ -8,6 +8,7 @@ writes: [docs/, README.md, KNOWLEDGE.md(索引更新)]
 prev_commands: [/wf_05_code, /wf_08_review]
 next_commands: [/wf_13_doc_maintain, /wf_11_commit]
 ultrathink_lens: "extract_not_create"
+token_budget: medium
 mcp_support:
   - name: "Magic"
     flag: "--ui"

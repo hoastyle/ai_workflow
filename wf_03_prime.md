@@ -3,11 +3,13 @@ command: /wf_03_prime
 index: 03
 phase: "基础设施"
 description: "加载项目管理文档到AI上下文（会话必备）| MCP: Serena (自动激活)"
-reads: [PRD.md, PLANNING.md, TASK.md, CONTEXT.md, KNOWLEDGE.md, CLAUDE.md]
+reads: [PRD.md, PLANNING.md, TASK.md, CONTEXT.md, KNOWLEDGE.md, CLAUDE.md, PROJECT_INDEX.md]
 writes: []
 prev_commands: [/clear]
 next_commands: [/wf_05_code, /wf_04_ask, /wf_02_task]
 model: haiku
+token_budget: medium
+context_loading: smart
 mcp_support:
   - name: "Serena"
     flag: "自动激活"
@@ -16,6 +18,7 @@ context_rules:
   - "PRD.md是只读的，绝不修改"
   - "CONTEXT.md由/wf_11_commit自动管理"
   - "每次会话开始必须运行此命令"
+  - "优先使用轻量级模式（PROJECT_INDEX.md），需要详情使用 --full"
 ---
 
 ## ⚠️ 强制语言规则
@@ -61,6 +64,75 @@ Prime the AI assistant with comprehensive project context by reading core projec
 - Accumulated project knowledge and patterns
 
 ## Process
+
+### Step 0: 智能上下文加载策略选择 (NEW - Token Optimization)
+
+**检测和选择加载模式**:
+
+1. **检测 PROJECT_INDEX.md** - 优先使用轻量级入口
+   ```bash
+   # 首先查找 PROJECT_INDEX.md
+   if [ -f PROJECT_INDEX.md ]; then
+     mode="quick_start"  # 默认轻量级模式 (~2,000 tokens)
+   else
+     mode="full_context"  # 传统完整模式 (~10,000 tokens)
+   fi
+
+   # 检查用户标志
+   if [ "$1" = "--full" ]; then
+     mode="full_context"  # 强制完整加载
+   elif [ "$1" = "--task" ]; then
+     mode="task_focused"  # 任务聚焦模式
+   fi
+   ```
+
+2. **三种加载模式对比**:
+
+   | 模式 | Token消耗 | 适用场景 | 加载内容 |
+   |------|----------|---------|---------|
+   | **Quick Start** (默认) | ~2,000 | 日常开发、快速启动 | PROJECT_INDEX.md + CONTEXT.md |
+   | **Full Context** (--full) | ~10,000 | 复杂决策、架构咨询 | 所有5个管理文档 |
+   | **Task Focused** (--task) | ~3,000 | 特定任务实现 | PROJECT_INDEX.md + 活跃任务详情 |
+
+3. **决策逻辑**:
+   ```
+   是否存在 PROJECT_INDEX.md?
+   ├─ YES → 默认使用 Quick Start 模式
+   │         ├─ 用户指定 --full? → 切换到 Full Context
+   │         └─ 用户指定 --task? → 切换到 Task Focused
+   │
+   └─ NO  → 自动使用 Full Context 模式
+            └─ 提示用户: "建议创建 PROJECT_INDEX.md 以减少80%+ token消耗"
+   ```
+
+### Step 1: 执行选定的加载模式
+
+#### Mode A: Quick Start (默认，~2,000 tokens) ✨ 推荐
+
+**加载内容**:
+1. **PROJECT_INDEX.md** - 项目全景入口 (~1,500 tokens)
+   - 项目结构、入口点、核心模块
+   - 关键依赖、配置文件
+   - 测试覆盖、Git工作流
+   - Token效率指标
+
+2. **CONTEXT.md** - 会话指针文档 (~500 tokens)
+   - 当前工作焦点指针
+   - Git commits元数据
+   - 下次启动推荐
+
+**优势**:
+- ✅ Token消耗减少80% (10,000 → 2,000)
+- ✅ 启动速度快3-5倍
+- ✅ 足够日常开发使用
+
+**何时不够**:
+- ❌ 需要深度架构决策 → 使用 --full
+- ❌ 需要完整任务列表 → 使用 --task
+
+#### Mode B: Full Context (--full flag, ~10,000 tokens)
+
+**加载内容** - 传统完整加载:
 1. **Read Core Management Documents** (Always Load):
    - Check for existence of PRD.md, PLANNING.md, TASK.md, CONTEXT.md, and KNOWLEDGE.md
    - Read PRD.md for project requirements (read-only, never modify)
@@ -73,14 +145,41 @@ Prime the AI assistant with comprehensive project context by reading core projec
    - Read KNOWLEDGE.md for accumulated project knowledge and documentation index
    - Read CLAUDE.md for project-specific AI guidance (if exists)
 
-2. **Parse Documentation Index** (NEW - Smart Loading):
+#### Mode C: Task Focused (--task flag, ~3,000 tokens)
+
+**加载内容**:
+1. **PROJECT_INDEX.md** - 项目全景 (~1,500 tokens)
+2. **CONTEXT.md** - 会话指针 (~500 tokens)
+3. **活跃任务详情** - 从TASK.md提取 (~1,000 tokens)
+   - 当前进行中的任务
+   - 待做任务的推荐命令序列
+   - 任务相关的架构指针
+   - 任务关联的ADR决策
+
+**适用场景**:
+- ✅ 明确知道要做哪个任务
+- ✅ 需要任务的验收标准和推荐流程
+- ✅ 想了解任务的完整上下文
+
+**加载逻辑**:
+```
+1. 读取 PROJECT_INDEX.md 获得项目全景
+2. 读取 CONTEXT.md 获得当前焦点
+3. 使用 CONTEXT.md 中的指针定位到 TASK.md 的具体行
+4. 只读取活跃任务和相关上下文（不读取全部1000+行）
+5. 如果任务引用ADR，从KNOWLEDGE.md提取相关ADR摘要
+```
+
+### Step 2: 传统流程（仅 Full Context 模式）
+
+**Parse Documentation Index** (仅当使用 --full):
    - Extract "📚 文档索引" section from KNOWLEDGE.md
    - Parse technical documentation map (path, priority, last_updated)
    - Parse task-document relationship mapping
    - Understand document dependency graph
    - Build available documentation catalog
 
-3. **Context-Aware Document Loading** (NEW - On-Demand):
+**Context-Aware Document Loading** (仅当使用 --full):
    - Analyze current active tasks from TASK.md
    - Match tasks with related technical documents (from KNOWLEDGE.md index)
    - Evaluate document priority (高/中/低) and relevance
@@ -90,7 +189,39 @@ Prime the AI assistant with comprehensive project context by reading core projec
      * Priority=低 OR task-irrelevant → Skip, note availability
    - Load selected technical documents from docs/ directory
 
-4. **Context Analysis**:
+### Step 3: 上下文分析（所有模式通用）
+
+**根据加载模式执行分析**:
+
+#### Quick Start 模式分析:
+1. **从 PROJECT_INDEX.md 提取**:
+   - 项目架构和技术栈概览
+   - 核心模块和入口点
+   - 关键依赖和配置
+
+2. **从 CONTEXT.md 提取指针**:
+   - 活跃任务指针 → 记录任务名称和位置
+   - Git baseline → 理解会话间变更
+   - 下次推荐 → 准备建议下一步
+
+3. **按需深入** (如果需要更多细节):
+   - 提示用户: "需要完整任务列表？使用 --task"
+   - 提示用户: "需要架构深度分析？使用 --full"
+
+#### Task Focused 模式分析:
+1. **PROJECT_INDEX.md 分析** (同 Quick Start)
+2. **CONTEXT.md 指针解析** (同 Quick Start)
+3. **活跃任务深度分析**:
+   - 解析任务的推荐命令序列
+   - 提取验收标准
+   - 识别任务依赖和阻塞
+   - 提取相关架构指针
+4. **相关 ADR 快速查询** (如果任务引用):
+   - 从 KNOWLEDGE.md 提取 ADR 摘要
+   - 不读取完整 ADR 文件（除非明确需要）
+
+#### Full Context 模式分析:
+1. **传统完整分析**:
    - Parse project architecture and technology stack from PLANNING.md
    - **Extract pointers from CONTEXT.md** (pointer document):
      * Identify active task pointer → Navigate to TASK.md section
@@ -103,22 +234,31 @@ Prime the AI assistant with comprehensive project context by reading core projec
    - Note any blockers or dependencies
    - Review common issues and solutions from knowledge base
 
-5. **Session State Recovery** (Using Pointers):
-   - **Use CONTEXT.md pointers** to locate session state in source documents:
-     * Active task pointer → Read task details from TASK.md
-     * Git baseline → Understand what commits happened since last session
-     * Next startup recommendation → Know which command to run next
-   - Understand current development focus from TASK.md (not CONTEXT.md)
-   - Identify where work was left off using task pointers
-   - Restore development context by following pointers to source documents
+### Step 4: 会话状态恢复（所有模式通用）
 
-6. **Working Memory Setup**:
+**使用 CONTEXT.md 指针恢复状态**:
+- Active task pointer → 定位任务详情
+- Git baseline → 理解上次会话以来的提交
+- Next startup recommendation → 准备推荐命令
+
+**根据模式提供不同详细度**:
+- Quick Start: 简要摘要 + 提示如何获取更多
+- Task Focused: 任务详情 + 推荐命令序列
+- Full Context: 完整开发上下文 + 所有依赖关系
+
+### Step 5: 工作记忆设置（所有模式通用）
+
+**基础设置** (所有模式):
+- 理解项目架构和技术栈
+- 记住当前工作焦点
+- 准备继续工作的上下文
+
+**增强设置** (Full Context 模式):
    - Load relevant code patterns and conventions from KNOWLEDGE.md
    - Apply accumulated solutions to current context
    - Understand testing and deployment procedures
    - Note security considerations and constraints
    - Reference architectural decisions for consistency
-   - Prepare for continuation of work with enhanced context
    - Remember available technical documents for on-demand access
 
 7. **智能推荐下一步 (NEW - Phase 2 改进)**:
@@ -136,15 +276,78 @@ Prime the AI assistant with comprehensive project context by reading core projec
    - 在输出中突出显示这些信息，帮助用户立即知道下一步该做什么
 
 ## Output Format
-1. **Requirements Overview** - Key requirements from PRD.md (read-only reference)
-2. **Project Summary** - Brief overview from PLANNING.md aligned with PRD
-3. **Documentation Map** (NEW) - Available technical documents with priorities
-4. **Loaded Technical Docs** (NEW) - List of technical documents loaded based on current tasks
-5. **Knowledge Base Summary** - Key patterns and decisions from KNOWLEDGE.md
-6. **Session Recovery** - Pointers from CONTEXT.md to locate session state in source documents
-7. **Active Context** - Current working area and immediate tasks from TASK.md
-8. **Applicable Solutions** - Relevant past solutions and patterns for current context
-9. **On-Demand Documents** (NEW) - Available but not loaded docs (can be accessed if needed)
+
+**输出内容根据加载模式调整**:
+
+### Quick Start 模式输出 (~500 lines):
+
+1. **🔧 加载模式** - 显示当前使用的模式和 token 消耗
+   ```
+   ✅ Quick Start 模式 (轻量级)
+   Token 消耗: ~2,000 (节省 80%)
+   提示: 使用 --full 获取完整上下文，--task 聚焦任务
+   ```
+
+2. **📊 项目全景** (从 PROJECT_INDEX.md)
+   - 项目架构和技术栈
+   - 核心模块和入口点
+   - 关键统计（LOC、测试覆盖率）
+   - Token 效率指标
+
+3. **📍 会话恢复** (从 CONTEXT.md)
+   - 上次会话时间和 Git baseline
+   - 活跃任务指针 (任务名称 + TASK.md 行号)
+   - 推荐下一步命令
+
+4. **💡 智能推荐** (基于 CONTEXT.md 指针)
+   - 推荐运行的命令
+   - 简要任务说明
+   - 如需详情提示使用 --task
+
+5. **🔍 快速提示**
+   - "需要完整任务列表？→ /wf_03_prime --task"
+   - "需要架构详细分析？→ /wf_03_prime --full"
+   - "开始工作？→ [推荐的命令]"
+
+### Task Focused 模式输出 (~800 lines):
+
+1. **🔧 加载模式** + **📊 项目全景** + **📍 会话恢复** (同 Quick Start)
+
+2. **🎯 活跃任务详情** (从 TASK.md 提取)
+   - 任务名称和优先级
+   - 推荐命令序列 (完整步骤)
+   - 验收标准清单
+   - 工作流位置标记 (STEP X/Y)
+   - 预计时间和工作量
+
+3. **🔗 相关上下文** (如果任务引用)
+   - 相关架构决策 (ADR 摘要)
+   - 相关代码位置
+   - 依赖和阻塞信息
+
+4. **💡 执行指导**
+   - 下一步具体操作
+   - 需要注意的事项
+   - 相关文档位置
+
+### Full Context 模式输出 (~2,000 lines):
+
+1. **🔧 加载模式** - 显示完整加载
+   ```
+   ✅ Full Context 模式 (完整)
+   Token 消耗: ~10,000
+   已加载: 5个管理文档 + 选定技术文档
+   ```
+
+2. **Requirements Overview** - Key requirements from PRD.md (read-only reference)
+3. **Project Summary** - Brief overview from PLANNING.md aligned with PRD
+4. **Documentation Map** - Available technical documents with priorities
+5. **Loaded Technical Docs** - List of technical documents loaded based on current tasks
+6. **Knowledge Base Summary** - Key patterns and decisions from KNOWLEDGE.md
+7. **Session Recovery** - Pointers from CONTEXT.md to locate session state in source documents
+8. **Active Context** - Current working area and immediate tasks from TASK.md
+9. **Applicable Solutions** - Relevant past solutions and patterns for current context
+10. **On-Demand Documents** - Available but not loaded docs (can be accessed if needed)
 10. **🔍 Serena LSP 初始化信息** (NEW - LSP 增强输出)
     - **LSP 初始化状态** - 显示语言服务器的启动进度
       * LSP 服务器类型（Pyright for Python, TypeScript LS, etc.）
@@ -197,12 +400,132 @@ Prime the AI assistant with comprehensive project context by reading core projec
 
 ---
 
+## 🎯 使用示例和最佳实践 (NEW)
+
+### 典型使用场景
+
+#### 场景 1: 日常开发启动 (推荐 Quick Start)
+```bash
+# 用户操作
+/wf_03_prime
+
+# AI 行为
+1. 检测到 PROJECT_INDEX.md 存在
+2. 使用 Quick Start 模式 (默认)
+3. 加载 ~2,000 tokens
+4. 输出项目全景 + 会话恢复 + 智能推荐
+5. 提示: 如需更多详情使用 --task 或 --full
+
+# Token 节省: 80% (10,000 → 2,000)
+# 时间节省: 3-5x 启动更快
+```
+
+#### 场景 2: 明确任务执行 (使用 Task Focused)
+```bash
+# 用户操作
+/wf_03_prime --task
+
+# AI 行为
+1. 加载 PROJECT_INDEX.md + CONTEXT.md
+2. 使用 CONTEXT.md 指针定位到 TASK.md 活跃任务
+3. 提取任务的推荐命令序列和验收标准
+4. 如果任务引用 ADR，从 KNOWLEDGE.md 提取摘要
+5. 输出任务详情 + 执行指导
+
+# Token 消耗: ~3,000 (仍节省 70%)
+# 优势: 精确的任务上下文，无冗余信息
+```
+
+#### 场景 3: 架构决策或复杂问题 (使用 Full Context)
+```bash
+# 用户操作
+/wf_03_prime --full
+
+# AI 行为
+1. 完整加载所有5个管理文档
+2. 解析 KNOWLEDGE.md 文档索引
+3. 加载任务相关的技术文档
+4. 构建完整上下文
+5. 输出详细的架构和决策信息
+
+# Token 消耗: ~10,000 (传统模式)
+# 适用: 需要深度分析、架构咨询、复杂调试
+```
+
+### 🎓 最佳实践
+
+#### 1. 首次使用项目
+```bash
+Step 1: 创建 PROJECT_INDEX.md (一次性投入)
+  - 参考模板: docs/guides/project_index_template.md
+  - 包含: 项目结构、入口点、核心模块、依赖
+  - 时间: 15-20分钟
+  - 收益: 每次会话节省 8,000 tokens
+
+Step 2: 第一次加载使用 --full
+  /wf_03_prime --full
+
+Step 3: 后续会话使用默认模式
+  /wf_03_prime  # 自动 Quick Start
+```
+
+#### 2. 何时使用哪个模式
+
+| 情况 | 推荐模式 | 理由 |
+|------|---------|------|
+| 🔹 开始新的一天 | Quick Start (默认) | 快速恢复上下文 |
+| 🔹 继续昨天的任务 | Task Focused (--task) | 获取完整任务步骤 |
+| 🔹 技术决策或设计 | Full Context (--full) | 需要完整架构信息 |
+| 🔹 紧急 bug 修复 | Quick Start → --full (按需) | 先快速定位，需要时深入 |
+| 🔹 代码审查 | Full Context | 需要理解完整标准 |
+
+#### 3. Token 预算管理
+
+```
+会话 Token 预算分配建议:
+┌─────────────────────────────────────┬──────────┬──────────┐
+│ 阶段 | 推荐模式 | Token 消耗 | 剩余预算 |
+├─────────────────────────────────────┼──────────┼──────────┤
+│ 会话启动 | Quick Start | 2,000 | 198,000 |
+│ 简单任务实现 | /wf_05_code | 5,000 | 193,000 |
+│ 测试验证 | /wf_07_test | 3,000 | 190,000 |
+│ 代码审查 | /wf_08_review | 4,000 | 186,000 |
+│ 提交保存 | /wf_11_commit | 2,000 | 184,000 |
+└─────────────────────────────────────┴──────────┴──────────┘
+
+如果使用传统 Full Context:
+  会话启动: 10,000 tokens
+  剩余预算: 190,000 (少了 8,000)
+  影响: 可能提前触发 compact
+```
+
+#### 4. 渐进式深入策略
+
+```
+优化工作流 (推荐):
+Step 1: /wf_03_prime (Quick Start, 2K tokens)
+  ↓ 获得项目全景和任务指针
+Step 2: 评估是否需要更多信息
+  ↓ NO → 直接开始工作 (/wf_05_code)
+  ↓ YES → 按需深入
+Step 3a: /wf_03_prime --task (Task Focused, 3K tokens)
+  ↓ 获得完整任务步骤
+Step 3b: /wf_03_prime --full (Full Context, 10K tokens)
+  ↓ 仅在真正需要架构细节时使用
+
+总 Token: 2K (默认) 或 5K (按需) vs 10K (传统)
+节省: 50-80%
+```
+
 ## Integration Notes
+- **NEW**: 支持三种加载模式 (Quick Start / Task Focused / Full Context)
+- **NEW**: 优先使用 PROJECT_INDEX.md 作为轻量级入口 (80% token 节省)
+- **NEW**: 根据用户标志 (--full / --task) 动态调整加载策略
 - Run after `/clear` to restore working context
 - Use before starting new related work sessions
 - Loads CONTEXT.md as pointer document for quick session navigation (updated by `/wf_11_commit`)
 - Integrates KNOWLEDGE.md for accumulated project wisdom and documentation index
-- Smart loading strategy: Always load 5 management docs, selectively load technical docs
+- Smart loading strategy: Default to lightweight mode, upgrade on-demand
 - Context cost optimization: Technical docs loaded on-demand based on task relevance
 - Ensures continuity across context boundaries
 - Maintains development momentum without redundant information

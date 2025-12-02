@@ -9,6 +9,7 @@ prev_commands: [/wf_05_code, /wf_07_test, /wf_09_refactor]
 next_commands: [/wf_09_refactor, /wf_11_commit]
 ultrathink_lens: "design_elegance"
 model: sonnet
+token_budget: medium
 mcp_support:
   - name: "Serena"
     flag: "条件激活（自动检测符号修改）"
