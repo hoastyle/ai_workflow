@@ -43,6 +43,295 @@ Code Review Coordinator ensuring project standards:
 3. **Performance Reviewer** – assesses efficiency targets
 4. **Architecture Assessor** – verifies design alignment
 
+## 🤖 Agent 模式协调策略 (NEW - Phase 2 优化)
+
+**目的**: 使用多个专业化 review agents 并行执行全面的代码审查
+
+**何时使用 Agent 模式**:
+- ✅ 大规模代码审查（多个模块或组件）
+- ✅ 需要多维度并行评估（安全 + 性能 + 架构同时审查）
+- ✅ 复杂的重构审查（影响多个系统）
+- ❌ 简单修改审查（单文件小改动，直接审查更快）
+
+### 推荐的 Multi-Agent Review 策略
+
+**Strategy 1: Parallel Review Pattern**（并行审查模式）
+
+适用场景：大规模审查，多个维度可并行评估
+
+```
+Launch 4 review agents in PARALLEL:
+
+Agent 1: Code Quality Reviewer
+  - Focus: Dimension 1 (代码质量)
+  - Checks: Style, patterns, maintainability
+  - Output: Quality score + issues list
+
+Agent 2: Security Auditor
+  - Focus: Dimension 2 (安全性)
+  - Checks: Vulnerabilities, auth, data validation
+  - Output: Security score + critical issues
+
+Agent 3: Performance Analyst
+  - Focus: Dimension 3 (性能)
+  - Checks: Algorithmic complexity, resource usage
+  - Output: Performance score + bottlenecks
+
+Agent 4: Architecture Assessor
+  - Focus: Dimension 4 (架构合规)
+  - Checks: Design patterns, PLANNING.md alignment
+  - Output: Architecture score + violations
+
+Coordination:
+  - Wait for ALL agents to complete
+  - Consolidate findings by severity
+  - Generate unified review report
+
+Performance: 4x faster than sequential review
+```
+
+**Strategy 2: Staged Review Chain**（分阶段审查链）
+
+适用场景：有依赖的审查阶段
+
+```
+Stage 1: Quick Scan (Explore Agent)
+  - Identify changed files and scope
+  - Estimate review complexity
+  - Output: Review roadmap
+
+Stage 2: Core Review (Parallel Agents)
+  - Run 4 review agents in parallel
+  - Each agent focuses on one dimension
+  - Output: Dimension-specific findings
+
+Stage 3: Integration Review (Sequential)
+  - Cross-dimension impact analysis
+  - Serena MCP: Reference integrity check
+  - Output: Final consolidated report
+```
+
+### Multi-Agent Review 最佳实践
+
+**✅ DO**:
+- 为每个 agent 明确指定审查维度
+- 并行运行独立的审查维度
+- 在最终阶段合并所有发现
+- 使用 Serena MCP 进行符号级完整性检查
+
+**❌ DON'T**:
+- 为小改动启动多个 agents（开销大）
+- 忘记合并不同 agents 的发现
+- 忽略跨维度的影响分析
+- 跳过 Serena 的引用完整性检查（符号修改时）
+
+### 实际案例示例
+
+**案例 1: API 重构审查**（使用并行审查模式）
+
+```bash
+# 任务：审查 REST API 重构（10+ 个端点修改）
+
+启动 4 个并行 review agents:
+1. Code Quality Reviewer: 检查代码风格和模式
+2. Security Auditor: 验证认证和数据验证
+3. Performance Analyst: 评估查询性能和缓存
+4. Architecture Assessor: 确保符合 API 设计规范
+
+Stage 2: Serena 引用完整性检查
+  - 检测到 getUserById() 签名修改
+  - find_referencing_symbols() 发现 8 个调用点
+  - 验证所有调用点已更新
+
+结果：
+- 审查时间：40 分钟 → 12 分钟（3.3x 提升）
+- 覆盖维度：4 个（并行执行）
+- 发现问题：23 个（高质量并行审查）
+```
+
+**案例 2: 数据库迁移审查**（使用分阶段链）
+
+```bash
+# 任务：审查数据库 schema 迁移
+
+Stage 1: Quick Scan
+  - Explore Agent 识别所有受影响的 models 和 queries
+  - 输出：15 个文件需要审查
+
+Stage 2: Parallel Review
+  - Agent 1: 检查 schema 定义正确性
+  - Agent 2: 验证数据迁移脚本安全性
+  - Agent 3: 评估查询性能影响
+  - Agent 4: 确保向后兼容性
+
+Stage 3: Integration Review
+  - Serena: 验证所有 Model 引用已更新
+  - 跨维度分析：性能 + 安全 + 兼容性
+
+结果：
+- 全面性：4 个维度全覆盖
+- 准确性：发现 3 个跨维度问题
+- 效率：30 分钟完成（vs 顺序审查 90 分钟）
+```
+
+**更多示例**: [docs/examples/multi_agent_review_examples.md](docs/examples/multi_agent_review_examples.md)
+
+---
+
+## ⚡ 并行执行模式 (NEW - Phase 2 优化)
+
+**目的**: 通过并行读取和分析大幅提升审查速度
+
+**核心模式**: Wave → Checkpoint → Wave
+
+### 代码审查的并行执行
+
+**Pattern**: 批量读取 → 分维度并行审查 → 合并结果
+
+```
+Wave 1: Parallel File Reading
+┌─────────────────────────────────┐
+│ Read file 1 (changed)           │
+│ Read file 2 (changed)           │  ← 并行读取所有修改文件
+│ Read file 3 (changed)           │
+│ Read file 4 (related)           │
+└─────────────────────────────────┘
+         ↓
+Checkpoint: Scope Analysis
+┌─────────────────────────────────┐
+│ Categorize changes by type      │  ← 顺序分析
+│ Identify review dimensions      │
+└─────────────────────────────────┘
+         ↓
+Wave 2: Parallel Dimension Review
+┌─────────────────────────────────┐
+│ Review Dimension 1 (Quality)    │
+│ Review Dimension 2 (Security)   │  ← 并行审查各维度
+│ Review Dimension 3 (Performance)│
+│ Review Dimension 4 (Architecture)│
+└─────────────────────────────────┘
+         ↓
+Final: Consolidation & Reporting
+┌─────────────────────────────────┐
+│ Merge all findings              │  ← 顺序合并
+│ Prioritize by severity          │
+│ Generate unified report         │
+└─────────────────────────────────┘
+```
+
+### 何时使用并行执行（代码审查特定）
+
+**✅ 适用场景**:
+- 审查修改涉及 ≥5 个文件
+- 需要多维度全面审查（安全 + 性能 + 架构）
+- 大规模重构审查
+- 复杂功能审查（跨多个模块）
+
+**❌ 不适用场景**:
+- 单文件小改动
+- 仅需检查单一维度（如只看代码风格）
+- 快速 spot check
+- 简单 bug 修复审查
+
+### 实施示例
+
+**示例 1: 多文件功能审查**
+
+```javascript
+// 任务：审查新增的用户认证功能（7 个文件）
+
+// Wave 1: 并行读取所有相关文件
+[
+  Read("src/auth/login.js"),
+  Read("src/auth/register.js"),
+  Read("src/auth/middleware.js"),
+  Read("src/models/User.js"),
+  Read("tests/auth.test.js"),
+  Read("config/security.js"),
+  Read("docs/api/auth.md")
+] // 同时执行，时间 ~8 秒
+
+// Checkpoint: 审查范围分析
+确定需要审查的维度:
+- Dimension 1: 代码质量（所有文件）
+- Dimension 2: 安全性（auth/*.js, middleware.js）
+- Dimension 3: 测试覆盖（tests/*.js）
+- Dimension 4: 文档完整性（docs/）
+
+// Wave 2: 并行维度审查（可以用多个 agents）
+并行执行:
+- Agent 1: 检查代码质量和模式
+- Agent 2: 审查安全实现（JWT、密码存储）
+- Agent 3: 评估测试覆盖率
+- Agent 4: 验证文档准确性
+
+// Final: 合并和报告
+收集所有 agent 的发现
+按严重程度排序
+生成统一审查报告
+```
+
+**示例 2: API 重构审查**
+
+```javascript
+// 任务：审查 REST API 端点重构（12 个文件）
+
+// Wave 1: 并行读取（12 个文件分 3 批）
+Batch 1: [Read route files 1-4] // 并行
+Batch 2: [Read controller files 5-8] // 并行
+Batch 3: [Read model & test files 9-12] // 并行
+
+// Checkpoint: 变更影响分析
+识别关键修改:
+- 3 个端点签名变更
+- 5 个新增验证规则
+- 2 个性能优化点
+
+// Wave 2: 并行审查（使用 4 个维度）
+Agent 1: 代码质量 → 发现 8 个问题
+Agent 2: 安全性 → 发现 3 个风险
+Agent 3: 性能 → 发现 2 个瓶颈
+Agent 4: 架构 → 发现 1 个设计问题
+
+// Wave 3: Serena 引用完整性（符号修改检测）
+检测到 getUserProfile() 签名改变
+find_referencing_symbols() → 12 个调用点
+验证: 10 个已更新 ✅, 2 个遗漏 ❌
+
+// Final: 综合报告
+总问题数: 14 个
+关键问题: 5 个（需要修复）
+建议: 2 个（可选优化）
+```
+
+### 性能对比（代码审查）
+
+| 审查类型 | 文件数 | 顺序执行 | 并行执行 | 提升倍数 |
+|---------|-------|---------|---------|---------|
+| 单维度 | 5 | 15分钟 | 8分钟 | 1.9x |
+| 多维度（4个） | 5 | 40分钟 | 12分钟 | 3.3x |
+| 大规模重构 | 15+ | 90分钟 | 25分钟 | 3.6x |
+
+**平均性能提升**: **3.0-3.5x**（代码审查场景）
+
+### 实施清单（代码审查特定）
+
+**执行并行审查前检查**:
+- [ ] 修改涉及 ≥5 个文件
+- [ ] 需要 ≥2 个审查维度
+- [ ] 已明确各维度的审查重点
+- [ ] 有合并不同维度发现的计划
+
+**执行中注意事项**:
+- ⚠️ 并行读取所有相关文件（包括测试和文档）
+- ⚠️ 独立维度并行审查，避免重复工作
+- ⚠️ 符号修改必须使用 Serena 完整性检查
+- ⚠️ 最终合并时检查跨维度影响
+
+**更多示例**: [docs/examples/parallel_review_examples.md](docs/examples/parallel_review_examples.md)
+
+---
+
 ## Process
 
 ### Phase 1: 基础代码审查 (Dimension 1-5)

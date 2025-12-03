@@ -206,6 +206,277 @@ Break-even: 只需避免 1 次错误实现
 
 ---
 
+## 🤖 Agent 模式协调策略 (NEW - Phase 2 优化)
+
+**目的**: 使用 Task tool 启动专业化 agents 来处理复杂实现，实现更高效的并行开发
+
+**何时使用 Agent 模式**:
+- ✅ 复杂功能实现（涉及多个文件或模块）
+- ✅ 大型代码库（需要探索和定位代码）
+- ✅ 并行开发需求（实现 + 测试 + 文档同步进行）
+- ❌ 简单修改（单文件小改动，直接实现更快）
+
+### 推荐的 Agent 使用策略
+
+**Strategy 1: Explore-First Pattern**（探索优先模式）
+
+适用场景：不熟悉代码库结构，需要先定位相关代码
+
+```
+Step 1: Launch Explore Agent
+  - Thoroughness: "medium"
+  - Input: Feature description + codebase path
+  - Output: Relevant file list + architecture understanding
+  - Token savings: 70-80% (避免读取无关文件)
+
+Step 2: Implement based on exploration results
+  - Use standard development process
+  - Focus on identified files only
+```
+
+**Strategy 2: Parallel Development Pattern**（并行开发模式）
+
+适用场景：复杂功能，实现/测试/文档可并行进行
+
+```
+Launch 3 agents in PARALLEL:
+
+Agent 1: Implementation Agent
+  - Task: Core feature implementation
+  - Input: PLANNING.md standards + feature spec
+  - Output: Production code
+
+Agent 2: Test Agent
+  - Task: Write comprehensive tests
+  - Input: Feature spec + test requirements
+  - Output: Test suite
+
+Agent 3: Documentation Agent
+  - Task: Update relevant documentation
+  - Input: Feature changes + doc templates
+  - Output: Updated docs
+
+Coordination:
+  - Wait for ALL agents to complete
+  - Verify consistency across outputs
+  - Integrate and commit
+
+Performance: 3.5x faster than sequential
+```
+
+**Strategy 3: Sequential Agent Chain**（顺序代理链模式）
+
+适用场景：有依赖关系的任务序列
+
+```
+Agent 1 (Architect) → Wait → Agent 2 (Implementation) → Wait → Agent 3 (Integration)
+
+Step 1: Architect Agent
+  - Design component structure
+  - Output: Implementation plan
+
+Step 2: Implementation Agent
+  - Implement based on plan
+  - Output: Core code
+
+Step 3: Integration Agent
+  - Integrate with existing system
+  - Output: Final integrated code
+```
+
+### Agent 协调最佳实践
+
+**✅ DO**:
+- 为每个 agent 提供清晰的任务描述和输入
+- 明确 agent 之间的依赖关系（并行 vs 顺序）
+- 验证所有 agent 输出的一致性
+- 使用 Explore agent 减少不必要的文件读取
+
+**❌ DON'T**:
+- 为简单任务启动 agent（开销大于收益）
+- 忘记等待并行 agents 全部完成
+- 盲目并行有依赖关系的任务
+- 跳过最终的集成验证步骤
+
+### 实际案例示例
+
+**案例 1: 添加用户认证功能**（使用并行开发模式）
+
+```bash
+# 任务：实现 JWT 认证系统
+
+启动 3 个并行 agents:
+1. Implementation Agent: 实现 JWT 中间件和验证逻辑
+2. Test Agent: 编写认证测试（正常流程 + 边界情况）
+3. Doc Agent: 更新 API 文档说明认证要求
+
+结果：
+- 开发时间：45 分钟 → 15 分钟（3x 提升）
+- 代码质量：更高（专业化分工）
+- 文档同步：自动完成
+```
+
+**案例 2: 重构大型组件**（使用探索优先模式）
+
+```bash
+# 任务：重构支付处理模块
+
+Step 1: Explore Agent (thoroughness: "medium")
+  - 探索 src/payments/ 目录
+  - 识别所有相关文件和依赖
+  - 输出：8 个文件需要修改
+
+Step 2: 基于探索结果实施重构
+  - 只读取必要的 8 个文件
+  - Token 节省：~15,000 tokens
+
+结果：
+- 上下文加载：10 分钟 → 2 分钟
+- Token 消耗：20,000 → 5,000（75% 节省）
+```
+
+**更多示例**: [docs/examples/agent_coordination_examples.md](docs/examples/agent_coordination_examples.md)
+
+---
+
+## ⚡ 并行执行模式 (NEW - Phase 2 优化)
+
+**目的**: 通过并行工具调用大幅提升执行速度
+
+**核心模式**: Wave → Checkpoint → Wave
+
+### 执行模式说明
+
+**Pattern**: 波次 → 检查点 → 波次
+
+```
+Wave 1: Parallel Reading Phase
+┌─────────────────────────────────┐
+│ Read file A                     │
+│ Read file B                     │  ← 并行执行
+│ Read file C                     │
+└─────────────────────────────────┘
+         ↓
+Checkpoint: Analysis Phase
+┌─────────────────────────────────┐
+│ Analyze all read results        │  ← 顺序执行
+│ Determine edit strategy         │
+└─────────────────────────────────┘
+         ↓
+Wave 2: Parallel Editing Phase
+┌─────────────────────────────────┐
+│ Edit file A                     │
+│ Edit file B                     │  ← 并行执行
+└─────────────────────────────────┘
+         ↓
+Final: Verification Phase
+┌─────────────────────────────────┐
+│ Verify all changes consistent   │  ← 顺序执行
+└─────────────────────────────────┘
+```
+
+### 何时使用并行执行
+
+**✅ 适用场景**:
+- 需要读取/编辑多个独立文件（≥3 个）
+- 文件操作之间无依赖关系
+- 大型代码库（10+ 个文件）
+- 复杂功能实现（跨多个模块）
+
+**❌ 不适用场景**:
+- 单文件操作
+- 有顺序依赖（文件 B 依赖文件 A 的修改）
+- 简单任务（开销大于收益）
+- 小型代码库（< 5 个文件）
+
+### 实施示例
+
+**示例 1: 多文件功能实现**
+
+```javascript
+// 任务：在 3 个文件中添加日志功能
+
+// Wave 1: 并行读取
+[
+  Read("src/auth.js"),
+  Read("src/api.js"),
+  Read("src/db.js")
+] // 同时执行
+
+// Checkpoint: 分析
+确定每个文件的插入点
+
+// Wave 2: 并行编辑
+[
+  Edit("src/auth.js", add_logging),
+  Edit("src/api.js", add_logging),
+  Edit("src/db.js", add_logging)
+] // 同时执行
+
+// Final: 验证
+检查所有日志格式一致
+```
+
+**示例 2: 组件重构**
+
+```javascript
+// 任务：重构 UserComponent 及其依赖
+
+// Wave 1: 并行读取（5 个文件）
+[
+  Read("components/User.jsx"),
+  Read("components/UserProfile.jsx"),
+  Read("components/UserSettings.jsx"),
+  Read("utils/userHelpers.js"),
+  Read("tests/User.test.js")
+] // 同时执行，时间 ~5 秒
+
+// Checkpoint: 设计重构方案
+分析依赖关系，确定修改策略
+
+// Wave 2: 并行编辑（4 个文件，测试暂不修改）
+[
+  Edit("components/User.jsx", refactor_main),
+  Edit("components/UserProfile.jsx", update_props),
+  Edit("components/UserSettings.jsx", update_props),
+  Edit("utils/userHelpers.js", refactor_helpers)
+] // 同时执行，时间 ~3 秒
+
+// Wave 3: 更新测试
+Edit("tests/User.test.js", update_tests)
+
+// Final: 集成验证
+确保所有组件正常集成
+```
+
+### 性能对比
+
+| 操作模式 | 文件数 | 顺序执行 | 并行执行 | 提升倍数 |
+|---------|-------|---------|---------|---------|
+| Read only | 3 | 15s | 5s | 3.0x |
+| Read + Edit | 5 | 30s | 10s | 3.0x |
+| Complex refactor | 10+ | 60s | 18s | 3.3x |
+
+**平均性能提升**: **3.5x**
+
+### 实施清单
+
+**执行并行模式前检查**:
+- [ ] 操作的文件 ≥ 3 个
+- [ ] 文件之间无依赖关系（或依赖已明确）
+- [ ] 已规划好波次划分（读取波次、编辑波次）
+- [ ] 有验证一致性的计划
+
+**执行中注意事项**:
+- ⚠️ 每个波次内的操作必须同时调用（单个消息）
+- ⚠️ 等待当前波次全部完成再进入下一阶段
+- ⚠️ Checkpoint 阶段必须顺序执行（分析结果）
+- ⚠️ 最终验证不可省略
+
+**更多示例**: [docs/examples/parallel_execution_examples.md](docs/examples/parallel_execution_examples.md)
+
+---
+
 ### Phase 1: 基础代码开发 (Step 1-7)
 
 **核心步骤快速参考**:

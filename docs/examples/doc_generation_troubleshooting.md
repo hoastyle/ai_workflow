@@ -73,7 +73,7 @@
    async def create_user(user: UserCreate):
        """
        创建新用户
-       
+
        Args:
            user: 用户创建请求
        Returns:
