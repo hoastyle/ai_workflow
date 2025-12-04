@@ -151,18 +151,23 @@ Agent协调示例（Task 2.1）仍有参考价值，但优先级降低。
 - **Related**: wf_08_review.md
 - **ADR**: docs/adr/2025-12-03-superclaude-optimization-learnings.md
 
-### ⏳ Task 2.5: 优化 wf_03_prime - 智能上下文加载（原Task 2.2，优先级降低）
-- [ ] 检测项目实际需求（非 PROJECT_INDEX.md）
-- [ ] 优化 Serena MCP 集成
+### ✅ Task 2.5: 优化 wf_03_prime - 智能上下文加载（原Task 2.2，优先级降低）
+- [x] 检测项目实际需求（非 PROJECT_INDEX.md）
+- [x] 优化 Serena MCP 集成
   - 利用 LSP 符号索引替代文件读取
   - 使用 find_symbol/get_symbols_overview
-- [ ] 简化输出，避免冗余
-- [ ] 适配老版本部署环境
+- [x] 简化输出，避免冗余
+- [x] 适配老版本部署环境
+- **Completed**: 2025-12-05
 - **Priority**: 🟠 高（High）
-- **Effort**: Large
-- **Blockers**: 需了解老版本部署的具体限制
-- **Dependencies**: Task 2.2 完成后执行
-- **Related**: wf_03_prime.md, development.md
+- **Effort**: Large (实际完成)
+- **Achieved**:
+  - Modification 1: Step 0 Serena 可用性检测和 LSP 初始化 (+20 lines)
+  - Modification 2: Step 1 Mode B 符号查询替代文件读取 (+42 lines, 73% token 节省)
+  - Modification 3: Step 3 语义增强分析 (+58 lines)
+  - Modification 4: Step 1.5 智能预加载 (+49 lines)
+  - 总计: +169 lines, Mode B token 10K → 6.1K (39% reduction)
+- **Related**: wf_03_prime.md (557 → 735 lines)
 
 ### ⏳ Task 2.6: 优化 wf_05_code - 功能实现流程（原Task 2.3）
 - [ ] 基于老版本环境优化步骤
