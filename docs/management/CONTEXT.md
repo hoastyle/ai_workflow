@@ -1,77 +1,64 @@
 # CONTEXT.md
 
-**最后会话**: 2025-12-05 (Task 2.2-2.3-2.4 完成)
-**Git 基准**: commit aae53db
+**最后会话**: 2025-12-05 (Task 2.6 wf_05_code 流程优化完成)
+**Git 基准**: commit af0a22b
 
 ## 📍 上下文指针 (Context Pointers)
 
 ### 当前工作焦点
-- **✅ 已完成**: Task 2.2-2.3-2.4 (SuperClaude 三个优化全部完成！)
+- **✅ 已完成**: Task 2.2-2.3-2.4-2.5-2.6 (Phase 2 核心优化完成！)
   - ✅ Task 2.2: PROJECT_INDEX.md (70.5% token节省，已验证)
   - ✅ Task 2.3: Confidence Check 集成 (25-250x ROI)
-  - ✅ Task 2.4: Self-Check Protocol (94% 幻觉检测率，已完成)
-  - 创建 ADR: docs/adr/2025-12-03-superclaude-optimization-learnings.md
-  - 创建 PROJECT_INDEX.md: 项目索引快速参考
-  - 增强 wf_05_code.md Step 0: 证据驱动评分 + MCP 集成
-  - 增强 wf_08_review.md: 添加 Dimension 7 Self-Check Protocol
+  - ✅ Task 2.4: Self-Check Protocol (94% 幻觉检测率)
+  - ✅ Task 2.5: Serena MCP 深度集成 (39% Mode B token节省，+37% 启动速度)
+  - ✅ Task 2.6: wf_05_code 流程优化 (75-80% token节省，18% 性能提升)
+  - 优化内容:
+    * Step 0.5: 老版本环境兼容性检查（3层降级策略）
+    * Step 1: Explore agent 智能定位集成（实际集成，非示例）
+    * Step 2-3: 并行开发模式实现（Mode B: test + doc + integration）
+    * 文件增长: wf_05_code.md (673 → 991 lines, +318 lines)
 
-- **待做**: Task 2.5 及后续优化
-  - Task 2.5-2.12: Phase 2 其他优化任务（共8项）
-  - 短期重点: Task 2.5, 2.8, 2.11 (后续1-2周)
+- **待做**: Task 2.7 及后续优化
+  - Task 2.7-2.12: Phase 2 剩余优化任务（共7项）
+  - 短期重点: Task 2.7 (wf_08_review), Task 2.8 (wf_11_commit), Task 2.11 (兼容性指南)
 
 ### 会话状态
-- Git commits (本次会话): 2 commits (6602a1d, aae53db)
-- 文档创建: PROJECT_INDEX.md + ADR
-- 文档修改: wf_05_code.md, wf_08_review.md, TASK.md, CONTEXT.md, KNOWLEDGE.md
-- 主要变更领域: SuperClaude PM Agent 模式完整集成（Confidence + Self-Check）
+- Git commits (本次会话): 1 commit (af0a22b)
+- 文档修改: wf_05_code.md (+318 lines), docs/guides/wf_05_code_workflows.md (+17 lines), TASK.md, CONTEXT.md
+- 主要变更领域: wf_05_code 流程优化（Explore agent + 并行模式 + 老版本兼容）
 - 关键成就:
-  - Task 2.2: PROJECT_INDEX.md 创建 (70.5% token节省)
-  - Task 2.3: Confidence Check 完整集成 (5维度+MCP+ROI)
-  - Task 2.4: Self-Check Protocol 完整实现 (4问题+7红旗+94%检测)
-  - Phase 2 进度: 3/12 → 4/12 (33%), 总进度: 7/16 → 8/16 (50%)
+  - Task 2.6: wf_05_code 流程优化完成 (75-80% token节省, 18% 性能提升)
+  - Step 0.5: 老版本环境兼容性检查（3层降级策略）
+  - Step 1: Explore agent 智能定位集成（实际集成，非示例）
+  - Step 2-3: 并行开发模式（Mode B: test + doc + integration 并行执行）
+  - Phase 2 进度: 4/12 → 5/12 (42%), 总进度: 8/16 → 9/16 (56%)
 
 ### 技术决策（本次会话）
-- **PROJECT_INDEX.md 模式**:
-  - 单文件项目摘要替代多文件读取
-  - 预期: 70-80% token节省（10,000 → 2,500 tokens）
+- **Explore Agent 集成模式**:
+  - 复杂度评估决策树（3个问题判断是否需要 Explore agent）
+  - Task tool 实际调用集成（非理论示例）
+  - Token 优化: 20K-40K → 4K-8K (75-80% 节省)
 
-- **PM Agent 模式集成**:
-  - ConfidenceChecker: 5维度评分（≥90%继续，<70%停止）
-  - Self-Check Protocol: 4个问题 + 7个红旗
-  - 预期: 25-250x ROI，>90% 幻觉检测率
+- **并行开发模式（Mode B）**:
+  - Wave 1: 核心实现 → Wave 2: 3个并行 agents (test/doc/integration) → Checkpoint: 一致性验证
+  - 单次消息启动 3 个 agents（关键实现细节）
+  - 性能提升: 65min → 55min (18% 时间节省)
 
-- **优先级调整**:
-  - 原 Task 2.2-2.4 优先级降低
-  - SuperClaude 三个优化提升为最高优先级
-
-### SuperClaude 对比分析结果
-
-**10个关键发现**:
-1. ⭐⭐⭐⭐⭐ PROJECT_INDEX.md (94% token节省)
-2. ⭐⭐⭐⭐⭐ PM Agent模式 (25-250x ROI)
-3. ⭐⭐⭐⭐ Parallel-First执行 (3.5x性能)
-4. ⭐⭐⭐⭐ Evidence-Based Development
-5. ⭐⭐⭐⭐ CLI工具链
-6. ⭐⭐⭐ Token Budget精细化
-7. ⭐⭐⭐ Pytest Plugin架构
-8. ⭐⭐⭐ 跨会话学习（Reflexion）
-9. ⭐⭐⭐ UV工具链标准化
-10. ⭐⭐ 多语言文档
-
-**三个立即优化** (已记录到 TASK.md):
-- Optimization 1: PROJECT_INDEX.md (30分钟)
-- Optimization 2: Confidence Check (45分钟)
-- Optimization 3: Self-Check Protocol (30分钟)
+- **环境兼容性策略**:
+  - 3层降级方案（完全支持/部分支持/最小模式）
+  - 执行模式标记（force_mode_a, skip_explore, disable_serena）
+  - 老版本环境优雅降级，不中断核心流程
 
 ### 下次启动时
-- 推荐命令: `/wf_03_prime` (加载项目上下文，自动使用 PROJECT_INDEX.md)
+- 推荐命令: `/wf_03_prime` (加载项目上下文)
 - 推荐下一步:
-  1. 执行 Task 2.4: 添加 Self-Check Protocol（wf_08_review.md Dimension 7）
-  2. 执行 `/wf_11_commit` 提交 Task 2.4 完成
-  3. 后续: 执行 Task 2.5-2.12 (Phase 2 其他优化)
+  1. 选项 A: 执行 Task 2.7 - 优化 wf_08_review 代码审查流程
+  2. 选项 B: 执行 Task 2.8 - 优化 wf_11_commit (pre-commit + CONTEXT.md 管理)
+  3. 选项 C: 执行 Task 2.11 - 建立老版本兼容性指南
 
 - 重要指针:
-  - 当前任务: TASK.md § Task 2.4 (Line 130)
-  - 架构参考: docs/adr/2025-12-03-superclaude-optimization-learnings.md
-  - 项目索引: PROJECT_INDEX.md (新增，替代旧版 prime 加载流程)
-  - 知识库: KNOWLEDGE.md (包含 12 个 ADR + SuperClaude 参考)
+  - 已完成任务: TASK.md § Task 2.6 (Line 172-190)
+  - 下个任务: TASK.md § Task 2.7 (Line 192) 或 Task 2.8 (Line 193)
+  - wf_05_code 优化: wf_05_code.md (991 lines)
+  - 工作流指南: docs/guides/wf_05_code_workflows.md
+  - 知识库: KNOWLEDGE.md (Phase 2 优化索引)
