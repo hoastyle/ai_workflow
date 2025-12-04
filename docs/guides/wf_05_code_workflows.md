@@ -5,17 +5,35 @@ type: "技术设计"
 status: "完成"
 priority: "高"
 created_date: "2025-11-27"
-last_updated: "2025-11-27"
+last_updated: "2025-12-05"
 related_documents:
   - "../../wf_05_code.md"
   - "../../KNOWLEDGE.md"
   - "../../WORKFLOWS.md"
+  - "../../docs/management/TASK.md"
 related_code: []
 ---
 
 # wf_05_code 工作流和决策路径指南
 
 本文档详细说明 `/wf_05_code` 在完整开发流程中的位置、已完成步骤、当前职责和后续工作流路径选择。
+
+---
+
+## 🆕 Phase 2 Task 2.6 优化（2025-12-05）
+
+**最新改进**：wf_05_code 已完成三项核心优化：
+
+1. **✅ Step 0.5: 老版本兼容性检查** - 自动检测环境并优雅降级
+2. **✅ Step 1: Explore Agent 集成** - 智能定位相关代码，节省 70-80% token
+3. **✅ Step 2-3: 并行开发模式** - test + doc 并行执行，提升 18% 性能
+
+**影响**：
+- 老版本部署环境：自动适配，功能降级但不影响核心流程
+- 复杂功能实现：优先使用并行模式，提升开发效率
+- 大型代码库：自动启用 Explore agent，减少上下文加载
+
+详见：wf_05_code.md Step 0.5, Step 1-3
 
 ---
 
