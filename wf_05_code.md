@@ -72,11 +72,18 @@ You are the Development Coordinator directing four coding specialists:
    - ⚠️ 需求模糊，需要澄清细节 (-20%)
    - ❌ 需求不完整，缺少关键信息 (-40%)
 
-2. **技术可行性** (Technical Feasibility)
+2. **技术可行性** (Technical Feasibility) - 证据驱动
    - ✅ 使用现有技术栈，有成熟方案 (+25%)
-   - ✅ KNOWLEDGE.md 有类似实现模式 (+15%)
+   - ✅ KNOWLEDGE.md 有类似实现模式，避免重复发明 (+15%)
+   - ✅ 已查询官方文档验证方案（Context7 MCP）(+10%)
+   - ✅ 已研究开源实现参考（WebSearch）(+10%)
    - ⚠️ 需要学习新技术但方向明确 (+5%)
-   - ❌ 技术方案不明确 (-30%)
+   - ❌ 技术方案不明确，缺少证据支持 (-30%)
+
+   **SuperClaude 增强建议**:
+   - 🔍 使用 `--c7` 标志查询官方库文档
+   - 🌐 使用 `--research` 标志验证开源方案
+   - 📚 优先检查 KNOWLEDGE.md 避免重复发明
 
 3. **架构对齐** (Architecture Alignment)
    - ✅ 完全符合 PLANNING.md 架构 (+20%)
@@ -112,13 +119,21 @@ You are the Development Coordinator directing four coding specialists:
 │  └─ YES → 🟡 建议准备工作
 │            - 主要实现方案 + 风险点
 │            - 建议: "使用 --serena 精确定位修改点" 或 "先运行 /wf_04_ask 澄清架构"
+│            - **SuperClaude 增强**: 使用 MCP 验证方案
+│              * 技术方案不确定？→ `/wf_04_ask "..." --c7` (查询官方文档)
+│              * 需要开源参考？→ `/wf_04_research "..." --research` (深度调研)
+│              * 复杂决策？→ `/wf_04_ask "..." --think` (结构化推理)
 │            - 准备 Plan B（如果主方案失败）
 │
 └─ 信心 < 70%?
-   └─ YES → 🔴 暂停并澄清
+   └─ YES → 🔴 暂停并澄清（避免错误实现，25-250x ROI）
             - 停止编码
             - 列出需要澄清的问题
-            - 建议: "先运行 /wf_04_ask 进行架构咨询" 或 "使用 /wf_04_research 研究技术方案"
+            - **强烈建议**: 先进行深度研究和架构咨询
+              * `/wf_04_ask "..." --think --c7 --research` (完整分析)
+              * `/wf_04_research "开源方案评估"` (方案对比)
+            - 检查 KNOWLEDGE.md 是否有类似问题的解决方案
+            - 理解"为什么"（根本原因）而非只关注"做什么"
 ```
 
 **示例 1: 高信心场景 (92%)**

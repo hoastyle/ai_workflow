@@ -74,10 +74,11 @@
 
 ## 🏗️ 架构决策记录 (ADR)
 
-**已有决策** (11个):
+**已有决策** (12个):
 
 | 日期 | 标题 | 影响 | 状态 |
 |------|------|------|------|
+| 2025-12-03 | SuperClaude Framework 对比分析与优化决策 | 全局 | Proposed |
 | 2025-11-27 | Serena MCP 集成扩展策略 | 高 | Proposed |
 | 2025-11-24 | 约束驱动的文档生成最佳实践 | 高 | Accepted |
 | 2025-11-23 | MCP 与管理文档的互补架构 | 高 | Accepted |
@@ -91,6 +92,22 @@
 | 2025-11-07 | 智能文档生成 | 高 | Accepted |
 
 详见: [docs/adr/](docs/adr/)
+
+### 最新决策亮点 (2025-12-03)
+
+**SuperClaude Framework 借鉴**:
+- ✅ PROJECT_INDEX.md 模式（70-80% token节省）
+- ✅ PM Agent 模式（ConfidenceChecker, Self-Check, Reflexion）
+- ✅ Parallel-First 执行（3.5x 性能提升）
+- ✅ Evidence-Based Development（防止基于假设的实现）
+- ✅ CLI 工具链（健康检查和MCP管理）
+
+**三个立即优化**:
+1. 实现 PROJECT_INDEX.md（30分钟，75% token节省）
+2. 集成 Confidence Check（45分钟，25-250x ROI）
+3. 添加 Self-Check Protocol（30分钟，94% 幻觉检测率）
+
+详见: [docs/adr/2025-12-03-superclaude-optimization-learnings.md](docs/adr/2025-12-03-superclaude-optimization-learnings.md)
 
 **触发条件**:
 - 多个技术选项间的权衡
