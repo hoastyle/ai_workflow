@@ -158,6 +158,16 @@ validate_uninstallation_environment() {
         exit 1
     fi
 
+    # Check if manifest exists
+    if manifest_exists; then
+        local file_count=$(count_manifest_files)
+        info "Found installation manifest with $file_count tracked file(s)"
+        verbose "Manifest file: $MANIFEST_FILE"
+    else
+        warning "No installation manifest found - will use fallback detection"
+        warning "This may not preserve non-repo files in commands directory"
+    fi
+
     # Check if anything is actually installed
     if [[ ! -d "$COMMANDS_DIR" ]] || [[ -z "$(ls -A "$COMMANDS_DIR" 2>/dev/null)" ]]; then
         warning "No installed commands found in $COMMANDS_DIR"
@@ -227,11 +237,28 @@ uninstall_commands() {
         return 0
     fi
 
-    # Get list of command files
+    # Get list of command files from manifest (safe approach)
     local cmd_files=()
-    while IFS= read -r -d '' file; do
-        cmd_files+=("$file")
-    done < <(find "$COMMANDS_DIR" -name "wf_*.md" -print0 2>/dev/null)
+    if manifest_exists; then
+        # Read from manifest - only delete tracked files
+        while IFS= read -r rel_path; do
+            local full_path="${INSTALL_DIR}/${rel_path}"
+            # Only process command files (wf_*.md) from manifest
+            if [[ "$(basename "$full_path")" == wf_*.md ]]; then
+                if [[ -e "$full_path" ]]; then
+                    cmd_files+=("$full_path")
+                fi
+            fi
+        done < <(read_manifest)
+        verbose "Found ${#cmd_files[@]} command file(s) in manifest"
+    else
+        # Fallback: use find pattern (legacy installations without manifest)
+        warning "No manifest found - using fallback file detection"
+        warning "This may affect non-repo files in commands directory"
+        while IFS= read -r -d '' file; do
+            cmd_files+=("$file")
+        done < <(find "$COMMANDS_DIR" -maxdepth 1 -name "wf_*.md" -print0 2>/dev/null)
+    fi
 
     if [[ ${#cmd_files[@]} -eq 0 ]]; then
         verbose "No command files to remove"
@@ -304,23 +331,49 @@ uninstall_scripts() {
         return 0
     fi
 
-    for script_file in "${SCRIPT_FILES[@]}"; do
-        local target="$scripts_dir/$script_file"
+    # Use manifest-based deletion if available
+    if manifest_exists; then
+        # Read from manifest - only delete tracked script files
+        while IFS= read -r rel_path; do
+            local full_path="${INSTALL_DIR}/${rel_path}"
+            # Only process files in scripts directory
+            if [[ "$full_path" == "$scripts_dir"/* ]]; then
+                if [[ ! -e "$full_path" ]]; then
+                    continue
+                fi
 
-        if [[ ! -e "$target" ]]; then
-            continue
-        fi
-
-        if [[ $DRY_RUN -eq 1 ]]; then
-            info "[DRY RUN] Would remove: $(basename $target)"
-            ((removed_count++))
-        else
-            if rm -f "$target"; then
-                ((removed_count++))
-                verbose "Removed: $target"
+                if [[ $DRY_RUN -eq 1 ]]; then
+                    info "[DRY RUN] Would remove: $(basename $full_path)"
+                    ((removed_count++))
+                else
+                    if rm -f "$full_path"; then
+                        ((removed_count++))
+                        verbose "Removed: $full_path"
+                    fi
+                fi
             fi
-        fi
-    done
+        done < <(read_manifest)
+    else
+        # Fallback: use SCRIPT_FILES array (legacy)
+        warning "No manifest found - using fallback script detection"
+        for script_file in "${SCRIPT_FILES[@]}"; do
+            local target="$scripts_dir/$script_file"
+
+            if [[ ! -e "$target" ]]; then
+                continue
+            fi
+
+            if [[ $DRY_RUN -eq 1 ]]; then
+                info "[DRY RUN] Would remove: $(basename $target)"
+                ((removed_count++))
+            else
+                if rm -f "$target"; then
+                    ((removed_count++))
+                    verbose "Removed: $target"
+                fi
+            fi
+        done
+    fi
 
     # Clean up empty directories
     if [[ $DRY_RUN -ne 1 ]]; then
@@ -347,26 +400,55 @@ uninstall_guides() {
         return 0
     fi
 
-    for guide_file in "${GUIDE_FILES[@]}"; do
-        local target="$COMMANDS_DIR/$guide_file"
+    # Use manifest-based deletion if available
+    if manifest_exists; then
+        # Read from manifest - only delete tracked guide files
+        while IFS= read -r rel_path; do
+            local full_path="${INSTALL_DIR}/${rel_path}"
+            # Only process files in guides directory
+            if [[ "$full_path" == "$guides_dir"/* ]]; then
+                if [[ ! -e "$full_path" ]]; then
+                    continue
+                fi
 
-        if [[ ! -e "$target" ]]; then
-            continue
-        fi
-
-        if [[ $DRY_RUN -eq 1 ]]; then
-            info "[DRY RUN] Would remove: $guide_file"
-            ((removed_count++))
-        else
-            if rm -f "$target"; then
-                ((removed_count++))
-                verbose "Removed: $target"
-            else
-                error "Failed to remove: $target"
-                ((fail_count++))
+                if [[ $DRY_RUN -eq 1 ]]; then
+                    info "[DRY RUN] Would remove: ${rel_path#commands/}"
+                    ((removed_count++))
+                else
+                    if rm -f "$full_path"; then
+                        ((removed_count++))
+                        verbose "Removed: $full_path"
+                    else
+                        error "Failed to remove: $full_path"
+                        ((fail_count++))
+                    fi
+                fi
             fi
-        fi
-    done
+        done < <(read_manifest)
+    else
+        # Fallback: use GUIDE_FILES array (legacy)
+        warning "No manifest found - using fallback guide detection"
+        for guide_file in "${GUIDE_FILES[@]}"; do
+            local target="$COMMANDS_DIR/$guide_file"
+
+            if [[ ! -e "$target" ]]; then
+                continue
+            fi
+
+            if [[ $DRY_RUN -eq 1 ]]; then
+                info "[DRY RUN] Would remove: $guide_file"
+                ((removed_count++))
+            else
+                if rm -f "$target"; then
+                    ((removed_count++))
+                    verbose "Removed: $target"
+                else
+                    error "Failed to remove: $target"
+                    ((fail_count++))
+                fi
+            fi
+        done
+    fi
 
     # Clean up empty directories
     if [[ $DRY_RUN -ne 1 ]]; then
@@ -398,26 +480,55 @@ uninstall_examples() {
         return 0
     fi
 
-    for example_file in "${EXAMPLE_FILES[@]}"; do
-        local target="$COMMANDS_DIR/$example_file"
+    # Use manifest-based deletion if available
+    if manifest_exists; then
+        # Read from manifest - only delete tracked example files
+        while IFS= read -r rel_path; do
+            local full_path="${INSTALL_DIR}/${rel_path}"
+            # Only process files in examples directory
+            if [[ "$full_path" == "$examples_dir"/* ]]; then
+                if [[ ! -e "$full_path" ]]; then
+                    continue
+                fi
 
-        if [[ ! -e "$target" ]]; then
-            continue
-        fi
-
-        if [[ $DRY_RUN -eq 1 ]]; then
-            info "[DRY RUN] Would remove: $example_file"
-            ((removed_count++))
-        else
-            if rm -f "$target"; then
-                ((removed_count++))
-                verbose "Removed: $target"
-            else
-                error "Failed to remove: $target"
-                ((fail_count++))
+                if [[ $DRY_RUN -eq 1 ]]; then
+                    info "[DRY RUN] Would remove: ${rel_path#commands/}"
+                    ((removed_count++))
+                else
+                    if rm -f "$full_path"; then
+                        ((removed_count++))
+                        verbose "Removed: $full_path"
+                    else
+                        error "Failed to remove: $full_path"
+                        ((fail_count++))
+                    fi
+                fi
             fi
-        fi
-    done
+        done < <(read_manifest)
+    else
+        # Fallback: use EXAMPLE_FILES array (legacy)
+        warning "No manifest found - using fallback example detection"
+        for example_file in "${EXAMPLE_FILES[@]}"; do
+            local target="$COMMANDS_DIR/$example_file"
+
+            if [[ ! -e "$target" ]]; then
+                continue
+            fi
+
+            if [[ $DRY_RUN -eq 1 ]]; then
+                info "[DRY RUN] Would remove: $example_file"
+                ((removed_count++))
+            else
+                if rm -f "$target"; then
+                    ((removed_count++))
+                    verbose "Removed: $target"
+                else
+                    error "Failed to remove: $target"
+                    ((fail_count++))
+                fi
+            fi
+        done
+    fi
 
     # Clean up empty directories
     if [[ $DRY_RUN -ne 1 ]]; then
@@ -449,26 +560,55 @@ uninstall_references() {
         return 0
     fi
 
-    for reference_file in "${REFERENCE_FILES[@]}"; do
-        local target="$COMMANDS_DIR/$reference_file"
+    # Use manifest-based deletion if available
+    if manifest_exists; then
+        # Read from manifest - only delete tracked reference files
+        while IFS= read -r rel_path; do
+            local full_path="${INSTALL_DIR}/${rel_path}"
+            # Only process files in references directory
+            if [[ "$full_path" == "$references_dir"/* ]]; then
+                if [[ ! -e "$full_path" ]]; then
+                    continue
+                fi
 
-        if [[ ! -e "$target" ]]; then
-            continue
-        fi
-
-        if [[ $DRY_RUN -eq 1 ]]; then
-            info "[DRY RUN] Would remove: $reference_file"
-            ((removed_count++))
-        else
-            if rm -f "$target"; then
-                ((removed_count++))
-                verbose "Removed: $target"
-            else
-                error "Failed to remove: $target"
-                ((fail_count++))
+                if [[ $DRY_RUN -eq 1 ]]; then
+                    info "[DRY RUN] Would remove: ${rel_path#commands/}"
+                    ((removed_count++))
+                else
+                    if rm -f "$full_path"; then
+                        ((removed_count++))
+                        verbose "Removed: $full_path"
+                    else
+                        error "Failed to remove: $full_path"
+                        ((fail_count++))
+                    fi
+                fi
             fi
-        fi
-    done
+        done < <(read_manifest)
+    else
+        # Fallback: use REFERENCE_FILES array (legacy)
+        warning "No manifest found - using fallback reference detection"
+        for reference_file in "${REFERENCE_FILES[@]}"; do
+            local target="$COMMANDS_DIR/$reference_file"
+
+            if [[ ! -e "$target" ]]; then
+                continue
+            fi
+
+            if [[ $DRY_RUN -eq 1 ]]; then
+                info "[DRY RUN] Would remove: $reference_file"
+                ((removed_count++))
+            else
+                if rm -f "$target"; then
+                    ((removed_count++))
+                    verbose "Removed: $target"
+                else
+                    error "Failed to remove: $target"
+                    ((fail_count++))
+                fi
+            fi
+        done
+    fi
 
     # Clean up empty directories
     if [[ $DRY_RUN -ne 1 ]]; then
@@ -694,6 +834,16 @@ main() {
 
     # Verification
     verify_uninstallation || exit 1
+
+    # Clean up manifest file (last step)
+    if [[ $DRY_RUN -eq 0 ]] && manifest_exists; then
+        verbose "Removing installation manifest: $MANIFEST_FILE"
+        if rm -f "$MANIFEST_FILE"; then
+            verbose "Manifest file removed"
+        else
+            warning "Failed to remove manifest file: $MANIFEST_FILE"
+        fi
+    fi
 
     # Report
     print_uninstallation_report

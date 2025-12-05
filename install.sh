@@ -204,6 +204,14 @@ prepare_installation() {
         exit_with_error "Failed to create installation directories"
     fi
 
+    # Create installation manifest (skip in dry-run mode)
+    if [[ $DRY_RUN -eq 0 ]]; then
+        if ! create_installation_manifest; then
+            exit_with_error "Failed to create installation manifest"
+        fi
+        verbose "Created installation manifest: $MANIFEST_FILE"
+    fi
+
     # Check for conflicts
     check_installation_conflicts
 
@@ -312,6 +320,7 @@ install_commands() {
             if [[ $INSTALL_METHOD == "link" ]]; then
                 if install_file_link "$cmd_file" "$target"; then
                     ((cmd_count++))
+                    add_to_manifest "$target"  # Track installed file
                 else
                     warning "Failed to install: $basename"
                     ((fail_count++))
@@ -319,6 +328,7 @@ install_commands() {
             else
                 if install_file_copy "$cmd_file" "$target"; then
                     ((cmd_count++))
+                    add_to_manifest "$target"  # Track installed file
                 else
                     warning "Failed to install: $basename"
                     ((fail_count++))
@@ -357,6 +367,7 @@ install_claude_md() {
         fi
     fi
 
+    add_to_manifest "$INSTALL_DIR/CLAUDE.md"  # Track installed file
     success "Installed CLAUDE.md"
     return 0
 }
@@ -386,6 +397,7 @@ install_scripts() {
             if [[ $INSTALL_METHOD == "link" ]]; then
                 if install_file_link "$source_file" "$target"; then
                     ((scripts_count++))
+                    add_to_manifest "$target"  # Track installed file
                 else
                     warning "Failed to install: $script_file"
                     ((fail_count++))
@@ -393,6 +405,7 @@ install_scripts() {
             else
                 if install_file_copy "$source_file" "$target"; then
                     ((scripts_count++))
+                    add_to_manifest "$target"  # Track installed file
                 else
                     warning "Failed to install: $script_file"
                     ((fail_count++))
@@ -473,6 +486,7 @@ install_guides() {
             if [[ $INSTALL_METHOD == "link" ]]; then
                 if install_file_link "$source_file" "$target"; then
                     ((guides_count++))
+                    add_to_manifest "$target"  # Track installed file
                 else
                     warning "Failed to install: $guide_file"
                     ((fail_count++))
@@ -480,6 +494,7 @@ install_guides() {
             else
                 if install_file_copy "$source_file" "$target"; then
                     ((guides_count++))
+                    add_to_manifest "$target"  # Track installed file
                 else
                     warning "Failed to install: $guide_file"
                     ((fail_count++))
@@ -523,6 +538,7 @@ install_examples() {
             if [[ $INSTALL_METHOD == "link" ]]; then
                 if install_file_link "$source_file" "$target"; then
                     ((examples_count++))
+                    add_to_manifest "$target"  # Track installed file
                 else
                     warning "Failed to install: $example_file"
                     ((fail_count++))
@@ -530,6 +546,7 @@ install_examples() {
             else
                 if install_file_copy "$source_file" "$target"; then
                     ((examples_count++))
+                    add_to_manifest "$target"  # Track installed file
                 else
                     warning "Failed to install: $example_file"
                     ((fail_count++))
@@ -573,6 +590,7 @@ install_references() {
             if [[ $INSTALL_METHOD == "link" ]]; then
                 if install_file_link "$source_file" "$target"; then
                     ((references_count++))
+                    add_to_manifest "$target"  # Track installed file
                 else
                     warning "Failed to install: $reference_file"
                     ((fail_count++))
@@ -580,6 +598,7 @@ install_references() {
             else
                 if install_file_copy "$source_file" "$target"; then
                     ((references_count++))
+                    add_to_manifest "$target"  # Track installed file
                 else
                     warning "Failed to install: $reference_file"
                     ((fail_count++))

@@ -405,6 +405,128 @@ exit_with_error() {
 }
 
 ###############################################################################
+# Installation Manifest Functions (NEW - Track installed files)
+###############################################################################
+
+# Manifest file location
+MANIFEST_FILE="${COMMANDS_DIR}/.ai_workflow_manifest"
+
+# Create or reset installation manifest
+create_installation_manifest() {
+    verbose "Creating installation manifest: $MANIFEST_FILE"
+
+    # Create manifest with header
+    cat > "$MANIFEST_FILE" << 'EOF'
+# AI Workflow Installation Manifest
+# This file tracks files installed by ai_workflow
+# DO NOT EDIT MANUALLY - Managed by install.sh/uninstall.sh
+#
+# Format: One file path per line (relative to ~/.claude/)
+# Lines starting with # are comments
+EOF
+
+    if [[ ! -f "$MANIFEST_FILE" ]]; then
+        error "Failed to create manifest file: $MANIFEST_FILE"
+        return 1
+    fi
+
+    verbose "Manifest created successfully"
+    return 0
+}
+
+# Add file to installation manifest
+add_to_manifest() {
+    local installed_file="$1"
+
+    # Convert to relative path from INSTALL_DIR
+    local rel_path="${installed_file#${INSTALL_DIR}/}"
+
+    # Avoid duplicates
+    if grep -Fxq "$rel_path" "$MANIFEST_FILE" 2>/dev/null; then
+        verbose "Already in manifest: $rel_path"
+        return 0
+    fi
+
+    echo "$rel_path" >> "$MANIFEST_FILE"
+    verbose "Added to manifest: $rel_path"
+    return 0
+}
+
+# Read manifest and return list of installed files
+read_manifest() {
+    if [[ ! -f "$MANIFEST_FILE" ]]; then
+        warning "Manifest file not found: $MANIFEST_FILE"
+        return 1
+    fi
+
+    # Read non-comment, non-empty lines
+    grep -v '^#' "$MANIFEST_FILE" | grep -v '^$' || true
+    return 0
+}
+
+# Check if manifest exists
+manifest_exists() {
+    [[ -f "$MANIFEST_FILE" ]]
+}
+
+# Remove file from manifest
+remove_from_manifest() {
+    local file_to_remove="$1"
+    local rel_path="${file_to_remove#${INSTALL_DIR}/}"
+
+    if [[ ! -f "$MANIFEST_FILE" ]]; then
+        return 0
+    fi
+
+    # Create temporary file without the line
+    grep -Fxv "$rel_path" "$MANIFEST_FILE" > "${MANIFEST_FILE}.tmp" 2>/dev/null || true
+    mv "${MANIFEST_FILE}.tmp" "$MANIFEST_FILE"
+
+    verbose "Removed from manifest: $rel_path"
+    return 0
+}
+
+# Count files in manifest
+count_manifest_files() {
+    if [[ ! -f "$MANIFEST_FILE" ]]; then
+        echo 0
+        return 0
+    fi
+
+    read_manifest | wc -l
+    return 0
+}
+
+# Verify all manifest files exist
+verify_manifest_files() {
+    if [[ ! -f "$MANIFEST_FILE" ]]; then
+        warning "No manifest file to verify"
+        return 1
+    fi
+
+    local missing_count=0
+    local total_count=0
+
+    while IFS= read -r rel_path; do
+        ((total_count++))
+        local full_path="${INSTALL_DIR}/${rel_path}"
+
+        if [[ ! -e "$full_path" ]]; then
+            warning "Missing file from manifest: $rel_path"
+            ((missing_count++))
+        fi
+    done < <(read_manifest)
+
+    if [[ $missing_count -gt 0 ]]; then
+        error "Manifest verification failed: $missing_count/$total_count files missing"
+        return 1
+    fi
+
+    success "Manifest verification passed: all $total_count files present"
+    return 0
+}
+
+###############################################################################
 # Export functions for use in scripts
 ###############################################################################
 
@@ -418,5 +540,10 @@ export -f list_installed_files count_installed_files list_backup_snapshots promp
 export -f print_install_summary print_uninstall_summary print_backup_info
 export -f cleanup_on_error exit_with_error
 
+# NEW: Export manifest functions
+export -f create_installation_manifest add_to_manifest read_manifest manifest_exists
+export -f remove_from_manifest count_manifest_files verify_manifest_files
+
 export INSTALL_DIR COMMANDS_DIR BACKUP_DIR
 export RED GREEN YELLOW BLUE NC
+export MANIFEST_FILE
