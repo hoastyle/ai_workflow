@@ -40,45 +40,143 @@ Create git commits with integrated formatting, validation, and context updates:
 ### 🔧 Stage 1: Preparation (修复和校验)
 **目标**: 清理代码、修复常见问题、校验质量
 
-1. **Pre-Commit Auto-Repair & Validation**:
+1. **Dynamic Pre-Commit Detection & Execution** (NEW):
    - Check git status for changes
    - Identify files for staging
-   - **Run enhanced pre-commit hooks with auto-repair**:
-     * **Auto-fix Trailing Whitespace**: 100% safe, automatic removal
-     * **Auto-fix Line Endings**: Convert CRLF to Unix LF automatically
-     * **Auto-fix Markdown Formatting**: Basic formatting improvements
-   - Apply language-specific formatting:
-     * Python: black formatter
-     * JavaScript/TypeScript: prettier
-     * C++: clang-format
-     * Go: gofmt
-     * Other: project-specific formatters
-   - **Auto-Update Maintenance Dates**:
+   - **Detect pre-commit configuration**:
+     ```bash
+     # Step 1.1: Check for .pre-commit-config.yaml
+     if [ -f .pre-commit-config.yaml ]; then
+       echo "✅ Detected .pre-commit-config.yaml in project"
+
+       # Step 1.2: Check if pre-commit tool is installed
+       if command -v pre-commit >/dev/null 2>&1; then
+         echo "✅ pre-commit tool is installed"
+         echo "🚀 Using project's pre-commit configuration..."
+
+         # Path A: Use pre-commit framework (STAGED FILES ONLY)
+         # ⚠️ IMPORTANT: NO --all-files flag allowed
+         pre-commit run
+
+         echo "✅ pre-commit hooks executed on staged files"
+       else
+         echo "⚠️  pre-commit tool NOT installed (despite .pre-commit-config.yaml exists)"
+         echo "💡 Install: pip install pre-commit && pre-commit install"
+         echo "🔄 Falling back to basic self-managed fixes..."
+
+         # Path B: Fallback to self-managed fixes
+         USE_FALLBACK=true
+       fi
+     else
+       echo "ℹ️  No .pre-commit-config.yaml found in project"
+       echo "🔄 Using self-managed quality fixes..."
+
+       # Path B: Fallback to self-managed fixes
+       USE_FALLBACK=true
+     fi
+     ```
+
+   - **Path A (Recommended): Use Pre-Commit Framework**:
+     * Execute `pre-commit run` (staged files only, NO --all-files)
+     * Hooks defined in .pre-commit-config.yaml will handle:
+       - Trailing whitespace removal
+       - Line ending fixes (CRLF → LF)
+       - Markdown formatting
+       - File format validation
+       - Custom project checks
+     * Language-specific formatting (if configured):
+       - Python: black formatter
+       - JavaScript/TypeScript: prettier
+       - C++: clang-format
+       - Go: gofmt
+
+   - **Path B (Fallback): Self-Managed Basic Fixes** (when pre-commit unavailable):
+     * **Auto-fix Trailing Whitespace**:
+       ```bash
+       echo "🔧 Removing trailing whitespace..."
+       find . -name "*.md" -exec sed -i 's/[[:space:]]*$//' {} \; 2>/dev/null
+       ```
+     * **Auto-fix Line Endings**:
+       ```bash
+       echo "🔧 Converting line endings to Unix LF..."
+       if command -v dos2unix >/dev/null 2>&1; then
+         find . -name "*.md" -exec dos2unix {} \; 2>/dev/null
+       else
+         find . -name "*.md" -exec sed -i 's/\r$//' {} \; 2>/dev/null
+       fi
+       ```
+     * **Basic Markdown Formatting**:
+       ```bash
+       echo "🔧 Fixing basic markdown formatting..."
+       # Remove excessive blank lines at end of files
+       find . -name "*.md" -exec sed -i -e :a -e '/^\n*$/{ $d; N; ba }' {} \; 2>/dev/null
+       # Fix header spacing (## Header → ## Header)
+       find . -name "*.md" -exec sed -i 's/^##\([^# ]\)/## \1/g' {} \; 2>/dev/null
+       ```
+
+   - **Auto-Update Maintenance Dates** (applies to both paths):
      * Update "最后更新" fields to current date: `$(date +%Y-%m-%d)`
      * Preserve historical dates (创建日期、发布日期、决策日期)
-   - **Auto-Update Frontmatter Dates**:
+
+   - **Auto-Update Frontmatter Dates** (applies to both paths):
      * Update `last_updated` field in all modified docs/ files: `$(date +%Y-%m-%d)`
      * Preserve `created_date` (historical, never modify)
      * Validate `created_date` <= `last_updated` logic
 
-2. **Validation & Error Handling**:
-   - **Run enhanced pre-commit validation** on all staged files
-   - **Frontmatter Script Dependency Check** (⚠️ NEW):
+2. **Validation & Error Handling** (Adaptive to Execution Path):
+   - **Path A Validation** (when using pre-commit framework):
+     ```bash
+     # pre-commit run already performs validation
+     # Check exit code to ensure all hooks passed
+     if [ $? -eq 0 ]; then
+       echo "✅ All pre-commit hooks passed"
+     else
+       echo "❌ Some pre-commit hooks failed"
+       echo "💡 Review the output above for specific issues"
+       echo "💡 Fix issues and retry, or use 'git commit --no-verify' to skip (not recommended)"
+       exit 1
+     fi
+     ```
+
+   - **Path B Validation** (when using self-managed fixes):
+     * **Basic Quality Checks**:
+       ```bash
+       echo "🔍 Validating self-managed fixes..."
+
+       # Check for remaining trailing whitespace
+       if find . -name "*.md" -exec grep -l " $" {} \; 2>/dev/null | grep -q .; then
+         echo "❌ Trailing whitespace still present after fixes"
+         exit 1
+       fi
+
+       # Check for remaining CRLF line endings
+       if find . -name "*.md" -exec file {} \; 2>/dev/null | grep -q CRLF; then
+         echo "❌ CRLF line endings still present after fixes"
+         exit 1
+       fi
+
+       echo "✅ Self-managed quality checks passed"
+       ```
+
+   - **Frontmatter Script Dependency Check** (applies to both paths):
      ```bash
      if [ ! -f ~/.claude/commands/scripts/frontmatter_utils.py ]; then
-       echo "⚠️ Frontmatter script missing: ~/.claude/commands/scripts/frontmatter_utils.py"
-       echo "Skipping Frontmatter validation (script not available)"
+       echo "⚠️  Frontmatter script missing: ~/.claude/commands/scripts/frontmatter_utils.py"
+       echo "ℹ️  Skipping Frontmatter validation (script not available)"
      else
        python ~/.claude/commands/scripts/frontmatter_utils.py validate-batch docs/
      fi
      ```
-   - **If validation fails**:
-     * Display specific error messages with file:line locations
-     * Provide auto-repair suggestions for common issues
-     * Offer automated recovery for safe problems (whitespace, line endings)
-     * For unsafe problems: pause and require user confirmation to proceed
-     * Document failure reason for troubleshooting
-   - **If validation passes**: Proceed to Stage 2
+
+   - **Common Error Handling** (applies to both paths):
+     * **If validation fails**:
+       - Display specific error messages with file:line locations
+       - Provide auto-repair suggestions for common issues
+       - Path A: Suggest reviewing pre-commit hook output
+       - Path B: Offer automated recovery for safe problems (whitespace, line endings)
+       - For unsafe problems: pause and require user confirmation to proceed
+       - Document failure reason for troubleshooting
+     * **If validation passes**: Proceed to Stage 2
 
 ---
 
@@ -317,49 +415,152 @@ Types:
 
 ## Pre-commit Framework Integration
 
-### Installation & Setup
+### 🔄 Dynamic Detection and Smart Execution (NEW)
+
+**wf_11_commit** now intelligently detects and adapts to your project's setup:
+
+1. **Auto-Detection**:
+   - Checks for `.pre-commit-config.yaml` in project root
+   - Verifies `pre-commit` tool installation
+   - Selects optimal execution path automatically
+
+2. **Execution Paths**:
+   - **Path A (Recommended)**: Uses pre-commit framework when available
+   - **Path B (Fallback)**: Self-managed fixes when pre-commit unavailable
+
+### Path A: Pre-Commit Framework (Recommended)
+
+**When to use**:
+- ✅ `.pre-commit-config.yaml` exists in project
+- ✅ `pre-commit` tool is installed (`pip install pre-commit`)
+
+**Behavior**:
 ```bash
-# Install pre-commit framework
+# Automatically executes (STAGED FILES ONLY):
+pre-commit run
+
+# ⚠️ IMPORTANT: --all-files flag is NEVER used
+# This prevents:
+# - Performance issues on large codebases
+# - Unexpected modifications to unstaged files
+# - Conflicts with partial commits
+```
+
+**What it handles** (defined in your .pre-commit-config.yaml):
+- ✅ Trailing whitespace removal
+- ✅ Line ending fixes (CRLF → LF)
+- ✅ Markdown formatting
+- ✅ File format validation
+- ✅ Custom project-specific checks
+- ✅ Language-specific formatting (black, prettier, clang-format, gofmt)
+
+### Path B: Self-Managed Fixes (Fallback)
+
+**When to use**:
+- ⚠️ No `.pre-commit-config.yaml` in project
+- ⚠️ `pre-commit` tool not installed
+
+**Behavior**:
+```bash
+# Executes basic quality fixes:
+1. Remove trailing whitespace (sed)
+2. Convert line endings CRLF → LF (dos2unix or sed)
+3. Fix basic markdown formatting (sed)
+4. Validate results
+```
+
+**Installation Recommendation**:
+```bash
+# If you see "Falling back to self-managed fixes", consider:
+pip install pre-commit
+pre-commit install
+```
+
+### Installation & Setup (for Path A)
+
+```bash
+# Step 1: Install pre-commit framework
 pip install pre-commit
 
-# Install the hooks in your repository
+# Step 2: Install hooks in your repository (one-time)
 pre-commit install
 
-# Run hooks manually on all files
-pre-commit run --all-files
-
-# Run hooks on staged files only
-pre-commit run
+# Step 3: (Optional) Test hooks manually
+pre-commit run  # Runs on staged files only
 ```
 
 ### Auto-Repair Capabilities
-- **Trailing Whitespace**: 100% safe automatic removal using sed
-- **Line Endings**: Automatic CRLF to Unix LF conversion (dos2unix or sed fallback)
-- **Markdown Formatting**: Basic formatting improvements (blank lines, header spacing)
-- **Smart Detection**: Only attempts repairs when issues are found
-- **Clear Feedback**: Detailed reporting of what was fixed
+
+**Path A (Pre-Commit Framework)**:
+- All capabilities defined in `.pre-commit-config.yaml`
+- Customizable per project
+- Extensible with additional hooks
+
+**Path B (Self-Managed Fallback)**:
+- **Trailing Whitespace**: sed-based removal
+- **Line Endings**: dos2unix or sed fallback
+- **Markdown Formatting**: Basic sed fixes
+- **Limited Scope**: Only essential fixes
 
 ### Quality Gates Enforced
-- **Post-Repair Validation**: Ensures all auto-repairs were successful
-- **File Format Validation**: Ensures consistent file formats across the project
-- **Line Ending Verification**: Confirms Unix LF line endings after conversion
-- **Markdown Links**: Validates external and internal links
-- **Command References**: Ensures consistent command references across documentation
-- **Final Quality Check**: Comprehensive validation ensuring all standards met
 
-### Enhanced Hook Configuration
-The `.pre-commit-config.yaml` file contains:
-- **Auto-repair hooks**: 3 safe automatic repair operations
-- **Validation hooks**: 4 comprehensive quality validation steps
-- **Progressive reporting**: Clear feedback on each operation
-- **Fallback mechanisms**: Multiple tools available for each repair type
-- **Fail-fast behavior**: Stops on critical errors that cannot be auto-repaired
+**Path A**:
+- All hooks in `.pre-commit-config.yaml`
+- Pre-commit framework's built-in validation
+- Custom project-specific checks
+
+**Path B**:
+- Basic quality checks (whitespace, line endings)
+- Manual validation after self-managed fixes
+- Frontmatter validation (if script available)
 
 ### Integration Benefits
-- **Automated Quality Control**: No manual checks needed for common issues
-- **Instant Fixes**: Most formatting problems resolved automatically
-- **User-Friendly**: Clear feedback on what was repaired
-- **Consistent Standards**: Enforced across all commits
-- **Early Detection**: Issues caught and fixed before commit
-- **Reduced Overhead**: Minimal user intervention required
-- **Reliable Enforcement**: Zero tolerance for remaining quality issues
+
+**Path A (Pre-Commit Framework)**:
+- ✅ **Automated Quality Control**: Comprehensive project-specific checks
+- ✅ **Instant Fixes**: Auto-repair defined in config
+- ✅ **Consistent Standards**: Framework-enforced consistency
+- ✅ **Extensible**: Easy to add new hooks
+- ✅ **Community Support**: Well-documented, widely adopted
+
+**Path B (Self-Managed Fallback)**:
+- ✅ **No Dependencies**: Works without pre-commit installation
+- ✅ **Basic Coverage**: Essential quality fixes
+- ⚠️ **Limited Scope**: Only fundamental checks
+- 💡 **Upgrade Path**: Easy to migrate to Path A later
+
+### Migration from Manual to Pre-Commit
+
+If your project uses self-managed fixes (Path B), consider migrating:
+
+```bash
+# 1. Create .pre-commit-config.yaml
+cat > .pre-commit-config.yaml << 'EOF'
+repos:
+  - repo: local
+    hooks:
+      - id: trailing-whitespace
+        name: Remove Trailing Whitespace
+        entry: sed -i 's/[[:space:]]*$//'
+        language: system
+        files: \.md$
+      # Add more hooks as needed
+EOF
+
+# 2. Install pre-commit
+pip install pre-commit
+pre-commit install
+
+# 3. Test
+pre-commit run
+
+# 4. wf_11_commit will now auto-detect and use Path A
+```
+
+### Key Design Decisions
+
+1. **No --all-files Flag**: Prevents performance issues and unexpected file modifications
+2. **Staged Files Only**: Respects partial commits and staged changes
+3. **Smart Fallback**: Ensures basic quality even without pre-commit
+4. **Clear Feedback**: Shows which path is being used
+5. **Zero Breaking Changes**: Existing projects continue to work
