@@ -302,36 +302,44 @@ Agent协调示例（Task 2.1）仍有参考价值，但优先级降低。
 - **SuperClaude 对比**: 可用 150k tokens (75%), **差距 8 倍**
 - **改进潜力**: 节省 80k+ tokens, 可用空间提升至 100k (50%)
 
-### ⏳ Task 3.1: Memory Files 优化 (节省 25k tokens)
+### ✅ Task 3.1: Memory Files 优化 (节省 28k tokens - COMPLETED Phase 1-2)
 
 **目标**: 减少 ~/.claude/ 下的 memory files 占用，从 39.6k 降至 15k
+**实际成果**: 39.6k → 11.7k (27,873 tokens, **70% reduction** - **超目标8%**)
 
-**子任务**:
-- [ ] 审计当前 memory files 大小和内容
-  - 识别冗余、过时、重复的内容
-  - 统计每个文件的 token 占用
-- [ ] 实现 Lazy Loading 策略
-  - 将大型文档拆分为多个小文件
-  - 创建索引文件，按需加载详细内容
-  - 参考 SuperClaude 的 on-demand loading 模式
-- [ ] 压缩高频访问文档
-  - 使用更简洁的格式（表格 vs 长文本）
-  - 移除冗余的说明和示例
-  - 保留核心信息和索引
-- [ ] 文档归档机制
-  - 将不常用文档移至 docs/archive/
-  - 定期清理临时文件（docs/research/）
-  - 建立文档生命周期管理
+**已完成**:
+- ✅ **Phase 1**: PROJECT_INDEX.md 增强 (8,000 tokens saved)
+  - docs/research/2025-12-05-task-3.1-memory-files-audit.md (500行完整审计)
+  - TOKEN来源分析: docs/~23.6k (58.6%), management/~10k (25.1%), Serena/~4k (10.2%), configs/~2.6k (6.7%)
+  - PROJECT_INDEX.md增强: Before/After token对比, Command-to-Docs映射
 
-**预期成果**:
-- Token 节省: 39.6k → 15k (~25k tokens, 62% 减少)
-- 加载速度: 提升 40-50%
-- 维护成本: 降低（自动化归档）
+- ✅ **Phase 2**: Lazy Loading 懒加载策略 (19,873 tokens saved)
+  - 创建 docs_index.json (213行): 7个命令映射, 4个分类, 排除模板
+  - 更新命令frontmatter: wf_03_prime.md, wf_05_code.md, wf_14_doc.md (docs_dependencies声明)
+  - wf_03_prime.md核心修改: Quick Start跳过docs/, Full Context也不自动加载, --load-docs flag实现
+  - docs/research/2025-12-05-task-3.1-implementation-plan.md (728行Phase 2-4详细步骤)
 
+**待做**:
+- [ ] **Phase 3**: 压缩Serena memory files (~1,200 tokens, 3%)
+  - 合并 suggested_commands 到 project_commands_and_tools
+  - 压缩冗余说明
+- [ ] **Phase 4**: Smart TASK/KNOWLEDGE loading (~1,090 tokens, 3%)
+  - 使用Serena查询代替完整读取
+
+**Token节省对比**:
+| 阶段 | 方式 | 节省额 | 占比 |
+|-----|------|-------|------|
+| Phase 1 | PROJECT_INDEX.md | 8,000 | 20% |
+| Phase 2 | Lazy Loading | 19,873 | 50% |
+| Phase 3 | Serena压缩 | 1,200 | 3% |
+| Phase 4 | Smart Loading | 1,090 | 3% |
+| **总计** | **全部** | **28,290** | **71%** |
+
+**完成日期**: 2025-12-06 (Phase 1-2)
+**Git commits**: a7f6311 (Phase 2完成)
 **Priority**: 🔴 最高
-**Effort**: Medium (3-4 小时)
-**Dependencies**: 无
-**Related**: ~/.claude/ 目录, KNOWLEDGE.md 索引
+**Status**: Phase 1-2 ✅ 完成 (70%), Phase 3-4 ⏳ 待实施
+**Related**: docs_index.json, KNOWLEDGE.md 索引
 
 ### ⏳ Task 3.2: MCP Gateway 实现 (节省 40k tokens)
 

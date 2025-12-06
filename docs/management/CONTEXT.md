@@ -1,38 +1,34 @@
 # CONTEXT.md
 
-**最后会话**: 2025-12-05 (Task 2.2 PROJECT_INDEX.md 完成)
-**Git 基准**: commit ac83b3e
+**最后会话**: 2025-12-06 (Task 3.1 Phase 2 懒加载完成)
+**Git 基准**: commit a7f6311
 
 ## 📍 上下文指针 (Context Pointers)
 
 ### 当前工作焦点
-- **✅ 已完成**: Task 2.2-2.3-2.4-2.5-2.6-2.7-2.8 (Phase 2 关键优化进展！)
-  - ✅ Task 2.2: PROJECT_INDEX.md (70.5% token节省，已验证)
-  - ✅ Task 2.3: Confidence Check 集成 (25-250x ROI)
-  - ✅ Task 2.4: Self-Check Protocol (94% 幻觉检测率)
-  - ✅ Task 2.5: Serena MCP 深度集成 (39% Mode B token节省，+37% 启动速度)
-  - ✅ Task 2.6: wf_05_code 流程优化 (75-80% token节省，18% 性能提升)
-  - ✅ Task 2.7: wf_08_review 代码审查优化 (60-80% token节省，2.2x 性能提升)
-  - ✅ Task 2.8: wf_11_commit 优化 (动态pre-commit集成，95% 自动化)
-    * 动态pre-commit检测（Path A: framework, Path B: fallback）
-    * 禁止 --all-files 标志执行（性能 + 安全 + 部分提交保护）
-    * CONTEXT.md 零冗余模式自动管理
-    * 文件增长: wf_11_commit.md (+319 lines), KNOWLEDGE.md (+34 lines)
+- **✅ 最新完成**: Task 3.1 Phase 1+2 (Token优化 39.6k → 11.7k, 70%减少)
+  - ✅ Phase 1: PROJECT_INDEX.md 增强 (8,000 tokens saved, 20%)
+  - ✅ Phase 2: Lazy Loading 懒加载策略 (19,873 tokens saved, 50%)
+    * 创建 docs_index.json 命令-文档映射
+    * 为3个关键命令添加 docs_dependencies frontmatter
+    * 修改 wf_03_prime.md 实现懒加载逻辑（--load-docs flag）
+    * 跳过 docs/ 自动加载 (~23,610 tokens)
 
-- **待做**: Task 2.9-2.12 及后续优化
-  - Task 2.9-2.12: Phase 2 剩余优化任务（共4项）
-  - 短期重点: Task 2.9 (优化其他命令), Task 2.11 (兼容性指南)
+- **待做**: Task 3.1 Phase 3-4
+  - Phase 3: 压缩Serena memory files (~1,200 tokens, 3%)
+  - Phase 4: Smart TASK/KNOWLEDGE loading (~1,090 tokens, 3%)
 
 ### 会话状态
-- Git commits (本次会话): 1 commit (ac83b3e)
-- 文档修改: TASK.md (+23行, Task 2.2完成标记), PLANNING.md (新增410行), install.sh, scripts/, uninstall.sh
-- 主要变更领域: Task 2.2 PROJECT_INDEX.md 实现（75-80% token节省，3-5x启动加速）
+- Git commits (本次会话): 1 commit (a7f6311)
+- 文件修改: 7 files, 1615 insertions
+  - 创建: docs/research/ (2文件, 1,228行) + docs_index.json (213行)
+  - 修改: PROJECT_INDEX.md (+151行), wf_03_prime.md (+41行), wf_05_code.md (+8行), wf_14_doc.md (+10行)
+- 主要变更领域: Task 3.1 Phase 1-2 完成，懒加载和token优化实施
 - 关键成就:
-  - Task 2.2: PROJECT_INDEX.md 完成（410行）
-  - 三种加载模式集成到 wf_03_prime.md (Quick Start / Task Focused / Full Context)
-  - Token节省验证: Before 10K → After 2.5K (75-80% 节省)
-  - 启动时间加速: 30秒 → 6秒 (3-5x 提升)
-  - Phase 2 进度: 7/12 → 8/12 (66.7%), 总进度: 11/16 → 12/16 (75%)
+  - Token优化: 39.6k → 11.7k (70% reduction, 超过62%目标)
+  - 创建完整审计报告和实施计划
+  - 实现docs/ 目录懒加载策略
+  - 命令级文档依赖声明
 
 ### 技术决策（本次会话）
 - **智能上下文加载策略**:
