@@ -14,6 +14,14 @@ mcp_support:
   - name: "Serena"
     flag: "自动激活"
     detail: "语义级别的项目理解和代码索引"
+docs_dependencies:
+  guides:
+    - docs/guides/wf_03_prime_mcp_serena.md
+    - docs/guides/wf_03_prime_smart_loading.md
+    - docs/guides/wf_03_prime_workflows.md
+  estimated_tokens: 766
+  lazy_load: true
+  note: "仅在需要详细指导时加载，Quick Start模式不自动加载"
 context_rules:
   - "PRD.md是只读的，绝不修改"
   - "CONTEXT.md由/wf_11_commit自动管理"
@@ -152,6 +160,29 @@ Prime the AI assistant with comprehensive project context by reading core projec
 - ❌ 需要深度架构决策 → 使用 --full
 - ❌ 需要完整任务列表 → 使用 --task
 
+**文档懒加载策略** (NEW - Phase 2 Optimization):
+- ✅ **docs/ 目录文档永不自动加载** - 节省 ~23,000 tokens
+- ✅ **基于 docs_index.json 映射** - 仅在命令执行时按需加载
+- ✅ **命令级依赖声明** - frontmatter 中的 `docs_dependencies` 字段
+- ✅ **用户显式请求** - 使用 `--load-docs` 标志手动加载特定文档
+
+**懒加载实施**:
+```
+Quick Start模式加载顺序:
+1. 读取 PROJECT_INDEX.md (~1,500 tokens)
+2. 读取 CONTEXT.md (~500 tokens)
+3. 检查 docs_index.json (如果存在)
+   ├─ 找到当前命令的 docs_dependencies
+   ├─ 仅在用户请求时加载（--load-docs flag）
+   └─ 否则：提示用户"可用文档已映射，使用 --load-docs 加载"
+4. ❌ **跳过 docs/ 目录的所有文档** (guides, examples, references)
+```
+
+**Token节省**:
+- 原有方式：自动加载所有 docs/ (~23,610 tokens)
+- 懒加载后：仅加载 PROJECT_INDEX.md + CONTEXT.md (~2,000 tokens)
+- **节省：~21,610 tokens (91% reduction)**
+
 #### Mode B: Full Context (--full flag, ~10,000 tokens)
 
 **加载内容** - Serena 增强加载:
@@ -208,6 +239,16 @@ Prime the AI assistant with comprehensive project context by reading core projec
 **阶段 3：传统文件读取降级** (Serena 不可用时):
 - Read TASK.md, KNOWLEDGE.md (传统完整读取)
 - Read CLAUDE.md (if exists)
+
+**文档懒加载（Full Context模式下）**:
+- ❌ **即使在Full Context模式，docs/目录也不自动加载**
+- ✅ 只加载5个管理层文档：PRD, PLANNING, TASK, CONTEXT, KNOWLEDGE
+- ✅ docs/ 目录文档通过 docs_index.json 按需加载
+- ✅ 用户可使用 `--load-docs=<category>` 显式加载特定分类：
+  ```bash
+  /wf_03_prime --full --load-docs=mcp_integration  # 加载MCP文档
+  /wf_03_prime --full --load-docs=adr_docs         # 加载ADR决策记录
+  ```
 
 #### Mode C: Task Focused (--task flag, ~3,000 tokens)
 

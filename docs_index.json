@@ -1,0 +1,213 @@
+{
+  "version": "1.0",
+  "last_updated": "2025-12-06",
+  "description": "Command-to-documentation mapping for lazy loading strategy. Only loads relevant docs when specific commands are invoked in THIS PROJECT REPO.",
+
+  "project_context": {
+    "repo_path": "/home/hao/Workspace/MM/utility/ai_workflow",
+    "total_docs": 73,
+    "total_lines": 26439,
+    "estimated_total_tokens": 31727,
+    "optimization_target": "Reduce auto-loaded tokens from ~23,610 to ~6,000 (74% reduction)"
+  },
+
+  "always_load": {
+    "description": "Documents that MUST be loaded by /wf_03_prime in Quick Start mode",
+    "files": [
+      "PROJECT_INDEX.md",
+      "docs/management/CONTEXT.md"
+    ],
+    "estimated_tokens": 2000,
+    "rationale": "Minimal context for session initialization"
+  },
+
+  "command_mappings": {
+    "/wf_03_prime": {
+      "description": "Context loading - loads management docs and guides",
+      "guides": [
+        "docs/guides/wf_03_prime_mcp_serena.md",
+        "docs/guides/wf_03_prime_smart_loading.md",
+        "docs/guides/wf_03_prime_workflows.md"
+      ],
+      "examples": [],
+      "references": [],
+      "estimated_tokens": 766,
+      "priority": "high",
+      "auto_load_in_full_mode": [
+        "docs/management/PLANNING.md",
+        "docs/management/TASK.md",
+        "KNOWLEDGE.md"
+      ]
+    },
+
+    "/wf_04_ask": {
+      "description": "Architecture consultation",
+      "guides": [
+        "docs/guides/wf_04_research_mcp_guide.md",
+        "docs/guides/wf_04_research_workflows.md",
+        "docs/guides/wf_04_research_output_formats.md"
+      ],
+      "examples": [],
+      "references": [],
+      "estimated_tokens": 1066,
+      "priority": "high"
+    },
+
+    "/wf_04_research": {
+      "description": "Deep research",
+      "guides": [
+        "docs/guides/wf_04_research_mcp_guide.md",
+        "docs/guides/wf_04_research_workflows.md",
+        "docs/guides/wf_04_research_output_formats.md"
+      ],
+      "examples": [],
+      "references": [],
+      "estimated_tokens": 1066,
+      "priority": "high"
+    },
+
+    "/wf_05_code": {
+      "description": "Feature implementation",
+      "guides": [
+        "docs/guides/wf_05_code_workflows.md",
+        "docs/guides/wf_05_code_serena_guide.md",
+        "docs/guides/wf_05_code_doc_sync_guide.md"
+      ],
+      "examples": [],
+      "references": [],
+      "estimated_tokens": 1243,
+      "priority": "high"
+    },
+
+    "/wf_14_doc": {
+      "description": "Intelligent documentation generation",
+      "guides": [],
+      "examples": [
+        "docs/examples/doc_generation_quick_guide.md",
+        "docs/examples/doc_generation_decision_tree.md",
+        "docs/examples/frontmatter_quick_reference.md"
+      ],
+      "references": [
+        "docs/reference/FRONTMATTER.md"
+      ],
+      "estimated_tokens": 1728,
+      "priority": "high"
+    },
+
+    "/wf_13_doc_maintain": {
+      "description": "Documentation maintenance",
+      "guides": [
+        "docs/guides/doc_maintenance_process.md",
+        "docs/guides/doc_maintenance_workflows.md"
+      ],
+      "examples": [],
+      "references": [],
+      "estimated_tokens": 943,
+      "priority": "medium"
+    },
+
+    "/wf_08_review": {
+      "description": "Code review",
+      "guides": [],
+      "examples": [],
+      "references": [
+        "docs/reference/MARKDOWN_STYLE.md"
+      ],
+      "estimated_tokens": 329,
+      "priority": "medium"
+    }
+  },
+
+  "category_mappings": {
+    "mcp_integration": {
+      "description": "MCP integration documentation (loaded on-demand when MCP flags used)",
+      "files": [
+        "docs/integration/MCP_ARCHITECTURE.md",
+        "docs/integration/MCP_IMPLEMENTATION_GUIDE.md",
+        "docs/integration/MCP_INTEGRATION_STRATEGY.md",
+        "docs/integration/MCP_USER_GUIDE.md",
+        "docs/integration/VALIDATION_FRAMEWORK.md"
+      ],
+      "estimated_tokens": 3738,
+      "trigger": "When --mcp, --think, --c7, --research, --ui flags detected"
+    },
+
+    "adr_docs": {
+      "description": "Architecture Decision Records (loaded only when needed for context)",
+      "files": [
+        "docs/adr/*.md"
+      ],
+      "estimated_tokens": 4800,
+      "trigger": "When architectural decisions are being discussed or referenced"
+    },
+
+    "examples_pool": {
+      "description": "Examples library (loaded on-demand, never auto-loaded)",
+      "files": [
+        "docs/examples/multi_agent_review_examples.md",
+        "docs/examples/parallel_execution_examples.md",
+        "docs/examples/parallel_review_examples.md",
+        "docs/examples/agent_coordination_examples.md"
+      ],
+      "estimated_tokens": 4200,
+      "trigger": "When user asks for examples of specific patterns"
+    },
+
+    "knowledge_base": {
+      "description": "Knowledge base documents (already indexed in KNOWLEDGE.md)",
+      "files": [
+        "docs/knowledge/DESIGN_PATTERNS.md",
+        "docs/knowledge/DOCUMENTATION_PRACTICES.md",
+        "docs/knowledge/FAQ.md"
+      ],
+      "estimated_tokens": 1800,
+      "trigger": "Linked from KNOWLEDGE.md, load when user navigates to specific topic"
+    }
+  },
+
+  "excluded_from_auto_load": {
+    "description": "Documents that should NEVER be auto-loaded",
+    "categories": {
+      "templates": [
+        "docs/examples/doc_templates/**/*.md",
+        "docs/templates/*.md"
+      ],
+      "optional_troubleshooting": [
+        "docs/examples/doc_generation_troubleshooting.md",
+        "docs/examples/doc_generation_best_practices.md",
+        "docs/examples/doc_generation_next_steps.md",
+        "docs/examples/doc_generation_outputs.md",
+        "docs/examples/doc_generation_workflow.md",
+        "docs/examples/wf_14_doc_examples.md"
+      ],
+      "specialized_integration": [
+        "docs/integration/SERENA_LSP_SETUP.md",
+        "docs/integration/MCP_EXAMPLES.md",
+        "docs/integration/MCP_INTEGRATION_REPORT.md",
+        "docs/integration/MCP_VALIDATION_CHECKLIST.md"
+      ],
+      "research_docs": [
+        "docs/research/*.md",
+        "docs/analysis/*.md"
+      ]
+    },
+    "estimated_excluded_tokens": 15000
+  },
+
+  "optimization_summary": {
+    "baseline_tokens": 31727,
+    "always_load_tokens": 2000,
+    "command_specific_tokens": 7141,
+    "max_per_session_tokens": 6000,
+    "projected_savings": 25727,
+    "reduction_percentage": "81%"
+  },
+
+  "implementation_notes": [
+    "This file is the source of truth for lazy loading in the project repo",
+    "After modifying, run: make install (or ./install.sh) to deploy to ~/.claude/commands/",
+    "wf_03_prime.md should read this file and only load mapped docs",
+    "Command files should reference their dependencies in frontmatter for transparency",
+    "Templates and examples are never auto-loaded - user must explicitly request them"
+  ]
+}

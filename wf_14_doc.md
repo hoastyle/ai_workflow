@@ -13,6 +13,16 @@ mcp_support:
   - name: "Magic"
     flag: "--ui"
     detail: "UI文档和组件示例生成"
+docs_dependencies:
+  examples:
+    - docs/examples/doc_generation_quick_guide.md
+    - docs/examples/doc_generation_decision_tree.md
+    - docs/examples/frontmatter_quick_reference.md
+  references:
+    - docs/reference/FRONTMATTER.md
+  estimated_tokens: 1728
+  lazy_load: true
+  note: "仅在需要详细指导时加载（如Frontmatter规范、决策树）"
 context_rules:
   - "文档从代码中提取，而非凭空生成"
   - "交互式选择，不是批量生成"

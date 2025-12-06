@@ -17,6 +17,14 @@ mcp_support:
   - name: "Serena"
     flag: "--serena"
     detail: "深度代码理解、精确定位、智能代码插入点"
+docs_dependencies:
+  guides:
+    - docs/guides/wf_05_code_workflows.md
+    - docs/guides/wf_05_code_serena_guide.md
+    - docs/guides/wf_05_code_doc_sync_guide.md
+  estimated_tokens: 1243
+  lazy_load: true
+  note: "仅在需要深入指导时加载（如Serena使用、文档同步流程）"
 context_rules:
   - "遵循PLANNING.md的代码标准"
   - "满足PRD需求"
