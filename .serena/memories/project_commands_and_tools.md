@@ -1,232 +1,222 @@
-# 项目常用命令和工具
+# 项目命令和工具完整参考
 
-## 完成任务后应运行的命令
+## 🚀 核心工作流命令（14个）
 
-### 标准开发流程
+所有命令都是 Slash Commands，格式为 `/wf_XX_name`
 
-**代码完成后的完整流程**：
+### 快速决策：我应该用哪个命令？
 
+| 场景 | 推荐命令 | 说明 |
+|------|---------|------|
+| 需要设计建议 | `/wf_04_ask` | 架构咨询、技术决策 |
+| 要实现功能 | `/wf_05_code` | 功能开发、代码编写 |
+| 遇到 Bug | `/wf_06_debug` | 系统化调试修复 |
+| 要添加测试 | `/wf_07_test` | 测试开发和覆盖率 |
+| 要审查代码 | `/wf_08_review` | 7维度代码审查 |
+| 要改进结构 | `/wf_09_refactor` | 代码重构优化 |
+| 要优化性能 | `/wf_10_optimize` | 性能分析调优 |
+| 要生成文档 | `/wf_14_doc` | 约束驱动文档生成 |
+| 要提交代码 | `/wf_11_commit` | Git提交+上下文更新 |
+| 丢失上下文 | `/wf_03_prime` | 重新加载项目上下文 |
+
+### 命令分类和参数
+
+**1. 项目初始化和管理**
 ```bash
-# 1. 代码审查（自动检查代码质量）
-/wf_08_review
-
-# 2. 运行测试（验证功能）
-/wf_07_test "相关组件"
-
-# 3. 运行覆盖率检查（确保测试充分）
-/wf_07_test --coverage
-
-# 4. 智能文档生成（如果需要）
-/wf_14_doc
-
-# 5. 提交代码（包含所有自动检查和更新）
-/wf_11_commit "提交信息"
+/wf_01_planning "项目描述"      # 创建项目规划
+/wf_02_task create              # 初始化任务
+/wf_02_task update "任务"       # 更新任务状态
+/wf_03_prime                    # 加载项目上下文 ⭐
 ```
 
-### 单个功能完整流程
-
+**2. 开发实现**
 ```bash
-/wf_03_prime                    # 加载项目上下文
-/wf_04_ask "架构问题"            # 获取设计指导（可选）
-/wf_05_code "功能描述"           # 实现功能
-/wf_07_test "组件名"             # 添加测试
-/wf_08_review                   # 代码审查
-/wf_11_commit "feat: 功能名"    # 提交
+/wf_04_ask "技术问题"                       # 架构咨询
+/wf_04_ask "问题" --review-codebase         # 深度代码库分析
+/wf_04_ask "问题" --think                   # 启用结构化思考
+/wf_04_ask "问题" --c7                      # 查询官方库文档
+
+/wf_05_code "功能描述"                      # 功能实现
+/wf_06_debug "错误描述"                     # 调试修复
+/wf_06_debug "错误" --quick                 # 快速修复模式
+/wf_06_debug "错误" --deep                  # 深度分析模式
+```
+
+**3. 质量保证**
+```bash
+/wf_07_test "组件名"                        # 测试开发
+/wf_07_test "组件" --coverage               # 覆盖率分析
+/wf_08_review                              # 代码审查
+/wf_09_refactor "组件名"                    # 代码重构
+/wf_10_optimize "目标"                     # 性能优化
+```
+
+**4. 提交和部署**
+```bash
+/wf_11_commit "提交信息"                    # 提交代码（自动更新CONTEXT.md）
+/wf_12_deploy_check                        # 部署检查
+```
+
+**5. 文档管理**
+```bash
+/wf_14_doc                                 # 智能文档生成
+/wf_14_doc --ui                            # UI增强模式
+/wf_13_doc_maintain                        # 文档维护清理
+/wf_99_help                                # 帮助系统
+```
+
+### 命令参数和标志快速参考
+
+| 标志 | 适用命令 | 功能说明 |
+|------|---------|---------|
+| `--coverage` | `/wf_07_test` | 显示测试覆盖率分析 |
+| `--quick` | `/wf_06_debug` | 快速修复模式 |
+| `--deep` | `/wf_06_debug` | 深度分析模式 |
+| `--think` | `/wf_04_ask` | 启用结构化思考（Sequential-thinking MCP） |
+| `--c7` | `/wf_04_ask` | 查询官方库文档（Context7 MCP） |
+| `--research` | `/wf_04_ask` | Web搜索模式（Tavily MCP） |
+| `--review-codebase` | `/wf_04_ask` | 深度代码库分析（Serena MCP） |
+| `--ui` | `/wf_14_doc` | UI增强模式（Magic MCP） |
+
+## 📋 标准工作流程
+
+### 新功能开发流程（完整）
+```bash
+/wf_03_prime                    # 1. 加载上下文
+/wf_04_ask "架构设计"            # 2. 获取指导（可选）
+/wf_05_code "实现功能"           # 3. 编写代码
+/wf_07_test "组件名"             # 4. 添加测试
+/wf_08_review                   # 5. 代码审查
+/wf_11_commit "feat: 新功能"     # 6. 提交
 ```
 
 ### Bug 修复流程
-
 ```bash
-/wf_06_debug "错误描述"           # 调试和修复
-/wf_07_test "相关组件"            # 验证修复
-/wf_08_review                   # 代码审查
-/wf_11_commit "fix: Bug描述"     # 提交
+/wf_06_debug "错误描述"           # 1. 调试和修复
+/wf_07_test "相关组件"            # 2. 验证修复
+/wf_11_commit "fix: Bug描述"      # 3. 提交
 ```
 
-### 文档生成流程
-
+### 代码质量改进流程
 ```bash
-/wf_05_code "功能"               # 完成代码（步骤8自动决策树）
-/wf_08_review                   # 代码审查（Dimension 6检查）
-/wf_14_doc                      # 生成文档（三阶段门控）
-/wf_13_doc_maintain             # 验证索引和链接
-/wf_11_commit "docs: 新文档"    # 提交
+/wf_08_review                   # 1. 分析质量
+/wf_09_refactor "组件"           # 2. 重构代码
+/wf_10_optimize "目标"           # 3. 性能优化
+/wf_07_test --coverage          # 4. 验证覆盖率
+/wf_11_commit "refactor: 改进"  # 5. 提交
 ```
 
-## 项目特定的 Unix/Linux 命令
-
-### Git 操作
-
+### 文档生成流程（约束驱动）
 ```bash
-# 查看当前状态
-git status
-
-# 查看最近 10 条提交
-git log --oneline -10
-
-# 查看本次会话的变更
-git diff
-
-# 查看已暂存的变更
-git diff --staged
-
-# 回退到最后一次提交
-git reset --hard HEAD
-
-# 查看分支
-git branch -a
+/wf_05_code "功能"               # 1. 完成代码（Step 8自动决策树）
+/wf_08_review                   # 2. 代码审查（Dimension 6检查）
+/wf_14_doc                      # 3. 生成文档（三阶段门控）
+/wf_13_doc_maintain             # 4. 验证索引
+/wf_11_commit "docs: 新文档"    # 5. 提交
 ```
 
-### 文件操作
+## 🔧 项目特定 Git 命令
 
+### 状态查询
 ```bash
-# 列出项目根目录
-ls -la
-
-# 列出 docs 目录
-ls -la docs/
-
-# 查找 Markdown 文件
-find . -name "*.md" -type f
-
-# 搜索文本内容
-grep -r "关键词" docs/
-
-# 统计行数
-wc -l *.md
+git status                      # 查看当前状态
+git log --oneline -10           # 查看最近10条提交
+git diff                        # 查看本次会话变更
+git diff --staged               # 查看已暂存变更
+git branch -a                   # 查看分支
 ```
 
-### 项目特定操作
-
+### 常用操作
 ```bash
-# 运行 pre-commit 检查（所有文件）
-pre-commit run --all-files
-
-# 运行 pre-commit 检查（已暂存文件）
-pre-commit run
-
-# 安装 pre-commit 钩子
-pre-commit install
-
-# 更新工具版本
-pre-commit autoupdate
-
-# 显示帮助
-/wf_99_help
+git reset --hard HEAD           # 回退到最后一次提交
+pre-commit run --all-files      # 运行所有质量检查
+pre-commit run                  # 检查已暂存文件
+pre-commit install              # 安装pre-commit钩子
+pre-commit autoupdate           # 更新工具版本
 ```
 
-## 环境和路径
-
-### 项目目录结构
+## 📂 项目目录结构
 
 ```bash
-# 项目根目录
-/home/hao/Workspace/MM/utility/ai_workflow
+/home/hao/Workspace/MM/utility/ai_workflow/    # 项目根目录
 
-# 工作流命令
-wf_*.md 文件（根目录）
+# 核心文件
+wf_*.md                         # 14个工作流命令
+CLAUDE.md                       # AI执行规则
+KNOWLEDGE.md                    # 知识库和文档索引
+PROJECT_INDEX.md                # 项目索引（轻量级）
 
-# 项目文档
-docs/management/     # 项目管理文档
-docs/adr/            # 架构决策记录
-docs/guides/         # 工作流指导
-docs/examples/       # 使用示例
-docs/reference/      # 参考文档
+# 文档目录
+docs/management/                # 项目管理文档
+  ├── PRD.md                    # 项目需求（只读）
+  ├── PLANNING.md               # 技术规划
+  ├── TASK.md                   # 任务追踪
+  └── CONTEXT.md                # 会话上下文（自动管理）
 
-# 脚本
-scripts/             # 自动化脚本
+docs/adr/                       # 架构决策记录
+docs/guides/                    # 工作流指导（11个）
+docs/examples/                  # 使用示例（15个）
+docs/reference/                 # 参考文档（3个）
+docs/integration/               # MCP集成文档
 
-# MCP 配置
-src/mcp/configs/     # MCP 服务器配置
+# 脚本和配置
+scripts/                        # 自动化脚本
+  ├── frontmatter_utils.py      # Frontmatter验证工具
+  └── doc_graph_builder.py      # 文档关系图生成
 ```
 
-### 重要文件路径
+## 🛠️ 常用工具和命令
 
-```bash
-# 项目管理
-docs/management/PRD.md         # 项目需求（只读）
-docs/management/PLANNING.md    # 技术规划
-docs/management/TASK.md        # 任务追踪
-docs/management/CONTEXT.md     # 会话上下文（自动管理）
+### 项目工具表
 
-# 知识库
-KNOWLEDGE.md                   # 知识库和文档索引
-
-# 核心文档
-README.md                      # 项目介绍
-COMMANDS.md                    # 命令完整参考
-WORKFLOWS.md                   # 工作流指导
-TROUBLESHOOTING.md             # 故障排查
-CLAUDE.md                      # AI 执行规则
-DOC_ARCHITECTURE.md            # 文档架构
-PHILOSOPHY.md                  # 设计哲学
-```
-
-## 常见工具和快捷键
-
-### 项目相关的文件和工具
-
-| 工具/文件 | 用途 | 运行方式 |
-|----------|------|--------|
+| 工具/命令 | 用途 | 运行方式 |
+|----------|------|---------|
 | `pre-commit` | 自动质量检查 | `pre-commit run --all-files` |
-| `git` | 版本控制 | `git status`, `git log`, etc. |
+| `git` | 版本控制 | `git status`, `git log` |
 | `/wf_11_commit` | 提交代码 | `/wf_11_commit "消息"` |
 | `/wf_08_review` | 代码审查 | `/wf_08_review` |
 | `/wf_07_test` | 运行测试 | `/wf_07_test "组件"` |
 | `/wf_14_doc` | 生成文档 | `/wf_14_doc` |
-| `/wf_13_doc_maintain` | 文档维护 | `/wf_13_doc_maintain` |
 
-### 常用命令行快捷方式
-
+### 文件操作快捷命令
 ```bash
-# 查看所有 wf_* 命令
-ls -1 wf_*.md
-
-# 快速查看命令列表
-/wf_99_help
-
-# 清理上下文（会话过大时）
-/clear
-
-# 重新加载项目上下文
-/wf_03_prime
+ls -la                          # 列出项目根目录
+ls -la docs/                    # 列出docs目录
+find . -name "*.md" -type f     # 查找Markdown文件
+grep -r "关键词" docs/          # 搜索文本内容
+wc -l *.md                      # 统计行数
 ```
 
-## 项目特定的最佳实践
+## 🎯 项目特定最佳实践
 
-1. **每次会话开始**: `/wf_03_prime`
+1. **每次会话开始**: `/wf_03_prime` ⭐
 2. **编码前获取指导**: `/wf_04_ask "问题"`
-3. **代码完成后**: `/wf_08_review` → `/wf_07_test` → `/wf_11_commit`
-4. **文档生成时**: 遵守约束规范（< 500 行/文件，< 30% 增长）
+3. **代码完成后三步**: `/wf_08_review` → `/wf_07_test` → `/wf_11_commit`
+4. **文档生成约束**: < 500行/文件，< 30%增长率
 5. **提交前检查**: `pre-commit run --all-files`
 6. **遇到问题**: `/wf_06_debug "错误"` 或查看 TROUBLESHOOTING.md
 
-## Makefile 命令（如有）
-
-项目使用 `Makefile` 进行构建和测试（如 Makefile 存在）：
+## 📦 Makefile 命令（如存在）
 
 ```bash
-# 查看可用 make 命令
-make help
-
-# 运行构建
-make build
-
-# 运行测试
-make test
-
-# 运行格式化
-make format
-
-# 清理构建产物
-make clean
+make help                       # 查看可用命令
+make build                      # 运行构建
+make test                       # 运行测试
+make format                     # 代码格式化
+make clean                      # 清理构建产物
 ```
 
-## 系统环境
+## 🖥️ 系统环境信息
 
 - **操作系统**: Linux
 - **Shell**: Bash/Zsh
-- **Python**: 支持（使用 Black 格式化）
-- **Node.js**: 支持（使用 Prettier 格式化）
-- **Git**: 用于版本控制
-- **Pre-commit**: 自动质量检查
+- **Python**: 支持（Black格式化）
+- **Node.js**: 支持（Prettier格式化）
+- **Git**: 版本控制
+- **Pre-commit**: 质量门控
+
+---
+
+**最后更新**: 2025-12-06
+**版本**: v2.0（合并 suggested_commands）
+**Token节省**: ~360 tokens（通过合并冗余内容）
