@@ -53,6 +53,43 @@ context_rules:
 
 **快速说明**: Serena 自动激活，提供项目结构理解、知识图谱构建、智能文档加载、上下文记忆持久化等能力。详细的 MCP 功能和 LSP 初始化过程请参考专用指南文档。
 
+### 🔧 MCP Gateway 集成 (NEW - Task 3.2)
+
+**Gateway 初始化** (所有模式开始前执行):
+```python
+# 导入 MCP Gateway
+from src.mcp.gateway import get_mcp_gateway
+
+# 获取全局 Gateway 实例
+gateway = get_mcp_gateway()
+
+# 检查 Serena 可用性
+serena_available = gateway.is_available("serena")
+```
+
+**Serena 工具调用模式**:
+```python
+# 旧模式 (直接 MCP 调用) - 已废弃
+# get_symbols_overview("path/to/file.py")
+
+# 新模式 (通过 Gateway)
+if gateway.is_available("serena"):
+    # 获取工具
+    symbols_tool = gateway.get_tool("serena", "get_symbols_overview")
+
+    # 调用工具
+    result = symbols_tool.call(relative_path="path/to/file.py")
+else:
+    # 降级到传统文件读取
+    print("⚠️ Serena MCP 不可用，使用传统 Read 工具")
+```
+
+**Gateway 优势**:
+- ✅ 统一的 MCP 服务器管理
+- ✅ 自动降级机制（Serena 不可用时）
+- ✅ 连接池复用（减少启动开销）
+- ✅ 工具懒加载（按需初始化）
+
 ---
 
 ## 执行上下文
@@ -113,23 +150,35 @@ Prime the AI assistant with comprehensive project context by reading core projec
             └─ 提示用户: "建议创建 PROJECT_INDEX.md 以减少80%+ token消耗"
    ```
 
-4. **Serena MCP 可用性检测** (NEW - Serena Deep Integration):
-   ```
-   1. 检查 Serena MCP 是否已激活
-      ├─ YES → 启用 LSP 符号索引模式
-      │         └─ 使用 get_current_config() 确认 Serena 可用
-      │
-      └─ NO  → 降级到传统文件读取模式
-               └─ 提示: "启用 Serena MCP 可获得 40-70% 性能提升"
+4. **Serena MCP 可用性检测** (NEW - Serena Deep Integration + MCP Gateway):
+   ```python
+   # Step 1: 初始化 MCP Gateway
+   from src.mcp.gateway import get_mcp_gateway
+   gateway = get_mcp_gateway()
 
-   2. 如果 Serena 可用，初始化项目 LSP:
-      - 调用 activate_project(<项目根目录>)
-      - 等待 LSP 语言服务器启动
-      - 建立符号索引（自动后台进行）
+   # Step 2: 检查 Serena 可用性（通过 Gateway）
+   serena_available = gateway.is_available("serena")
 
-   3. 根据 Serena 可用性调整加载策略:
-      - Serena 可用 → 优先使用符号查询（find_symbol, get_symbols_overview）
-      - Serena 不可用 → 使用传统文件读取（Read 工具）
+   if serena_available:
+       # Step 3: 启用 LSP 符号索引模式
+       # 获取 activate_project 工具
+       activate_tool = gateway.get_tool("serena", "activate_project")
+
+       # 初始化项目 LSP
+       result = activate_tool.call(project="/home/hao/Workspace/MM/utility/ai_workflow")
+
+       # 等待 LSP 语言服务器启动（自动后台进行）
+       print("✅ Serena LSP 已激活，符号索引构建中...")
+
+       # Step 4: 调整加载策略
+       # 优先使用符号查询工具
+       loading_mode = "serena_enhanced"
+   else:
+       # Step 5: 降级到传统文件读取模式
+       print("⚠️ Serena MCP 不可用，使用传统 Read 工具")
+       print("💡 提示: 启用 Serena MCP 可获得 40-70% 性能提升")
+
+       loading_mode = "traditional_read"
    ```
 
 **Token 预算影响**: +50-100 tokens (Serena 检测逻辑)
@@ -191,25 +240,35 @@ Quick Start模式加载顺序:
 - Read PRD.md, CONTEXT.md, PLANNING.md (必读管理文档)
 - 延迟读取 TASK.md 和 KNOWLEDGE.md（使用 Serena 按需查询）
 
-**阶段 2：Serena 符号级加载** (Serena 可用时) (~2,000 tokens):
+**阶段 2：Serena 符号级加载** (Serena 可用时，通过 Gateway) (~2,000 tokens):
 
 1. **TASK.md 符号级查询** (替代完整读取):
    ```python
+   # 通过 Gateway 获取工具
+   symbols_overview_tool = gateway.get_tool("serena", "get_symbols_overview")
+   find_symbol_tool = gateway.get_tool("serena", "find_symbol")
+
    # 不读取完整 TASK.md（可能 1000+ 行）
    # 使用 Serena get_symbols_overview() 快速扫描
-   task_overview = get_symbols_overview("docs/management/TASK.md")
+   task_overview = symbols_overview_tool.call(relative_path="docs/management/TASK.md")
    # 返回：章节标题、任务数量、优先级分布
    # Token 消耗：~300 tokens (vs 完整读取 2,000+ tokens)
 
    # 如果需要特定任务详情，使用 find_symbol()
-   active_task = find_symbol("当前任务名称", relative_path="TASK.md")
+   active_task = find_symbol_tool.call(
+       name_path_pattern="当前任务名称",
+       relative_path="TASK.md"
+   )
    # 精确定位并读取单个任务（~100 tokens）
    ```
 
 2. **KNOWLEDGE.md 索引查询** (替代完整读取):
    ```python
+   # 通过 Gateway 获取 search_for_pattern 工具
+   search_tool = gateway.get_tool("serena", "search_for_pattern")
+
    # 使用 Serena search_for_pattern() 快速提取索引部分
-   doc_index = search_for_pattern(
+   doc_index = search_tool.call(
        substring_pattern="📚 文档索引.*?(?=\n\n##)",
        relative_path="KNOWLEDGE.md",
        context_lines_after=0
@@ -219,14 +278,21 @@ Quick Start模式加载顺序:
 
 3. **代码库结构快速扫描** (新增能力):
    ```python
+   # 通过 Gateway 获取 list_dir 工具
+   list_dir_tool = gateway.get_tool("serena", "list_dir")
+
    # 使用 Serena list_dir() 递归扫描项目结构
-   project_structure = list_dir(".", recursive=True, skip_ignored_files=True)
+   project_structure = list_dir_tool.call(
+       relative_path=".",
+       recursive=True,
+       skip_ignored_files=True
+   )
    # 返回：目录树、文件统计、关键目录识别
    # Token 消耗：~200 tokens
 
    # 对关键代码文件使用 get_symbols_overview()
    for key_file in ["src/main.py", "src/core/engine.py"]:
-       symbols = get_symbols_overview(key_file)
+       symbols = symbols_overview_tool.call(relative_path=key_file)
        # 返回：类名、函数名、依赖关系
        # Token 消耗：每文件 ~150 tokens
    ```
@@ -281,12 +347,19 @@ Quick Start模式加载顺序:
 
 **执行条件**: Serena MCP 可用 AND (Mode B 或 Mode C)
 
-**智能预加载步骤**:
+**智能预加载步骤** (通过 Gateway):
 
 1. **项目结构快速扫描** (所有模式):
    ```python
+   # 通过 Gateway 获取 list_dir 工具
+   list_dir_tool = gateway.get_tool("serena", "list_dir")
+
    # 快速扫描项目目录结构
-   project_tree = list_dir(".", recursive=True, skip_ignored_files=True)
+   project_tree = list_dir_tool.call(
+       relative_path=".",
+       recursive=True,
+       skip_ignored_files=True
+   )
    # 输出：目录层次、文件统计、关键目录识别
    ```
    - Token 消耗：~100 tokens
@@ -294,12 +367,15 @@ Quick Start模式加载顺序:
 
 2. **核心文件符号索引** (Mode B/C):
    ```python
+   # 通过 Gateway 获取 get_symbols_overview 工具
+   symbols_overview_tool = gateway.get_tool("serena", "get_symbols_overview")
+
    # 识别核心代码文件（通常是入口点、主要模块）
    core_files = ["src/main.py", "src/__init__.py", "src/core/"]
 
    for file in core_files:
        if file_exists(file):
-           symbols = get_symbols_overview(file)
+           symbols = symbols_overview_tool.call(relative_path=file)
            # 建立符号索引（类、函数、变量）
    ```
    - Token 消耗：~300 tokens（3-5 个核心文件）
@@ -307,11 +383,17 @@ Quick Start模式加载顺序:
 
 3. **任务相关代码热点定位** (Mode C):
    ```python
+   # 通过 Gateway 获取 find_symbol 工具
+   find_symbol_tool = gateway.get_tool("serena", "find_symbol")
+
    # 根据 TASK.md 中的活跃任务，预加载相关代码位置
    active_task_keywords = extract_keywords_from_task()  # 如 ["auth", "login", "JWT"]
 
    for keyword in active_task_keywords:
-       related_symbols = find_symbol(keyword, substring_matching=True)
+       related_symbols = find_symbol_tool.call(
+           name_path_pattern=keyword,
+           substring_matching=True
+       )
        # 找到所有相关文件和符号
    ```
    - 精确定位任务热点（避免后续重复搜索）
@@ -389,17 +471,25 @@ Quick Start模式加载顺序:
    - Note any blockers or dependencies
    - Review common issues and solutions from knowledge base
 
-2. **Serena 语义增强分析** (Serena 可用时，新增):
+2. **Serena 语义增强分析** (Serena 可用时，通过 Gateway):
 
    **2.1 代码库架构语义理解**:
    ```python
+   # 通过 Gateway 获取工具
+   list_dir_tool = gateway.get_tool("serena", "list_dir")
+   symbols_overview_tool = gateway.get_tool("serena", "get_symbols_overview")
+
    # 使用 Serena list_dir() 和 get_symbols_overview() 理解代码库结构
-   project_dirs = list_dir(".", recursive=True, skip_ignored_files=True)
+   project_dirs = list_dir_tool.call(
+       relative_path=".",
+       recursive=True,
+       skip_ignored_files=True
+   )
    # 识别核心模块、入口点、主要组件
 
    key_files = ["src/main.py", "src/core/", "src/services/"]
    for file in key_files:
-       symbols = get_symbols_overview(file)
+       symbols = symbols_overview_tool.call(relative_path=file)
        # 提取：类继承关系、函数调用链、依赖图
    ```
    - Token 消耗：~300 tokens（vs 读取所有文件 ~2,000 tokens）
@@ -407,12 +497,21 @@ Quick Start模式加载顺序:
 
    **2.2 任务相关代码定位**:
    ```python
+   # 通过 Gateway 获取 find_symbol 工具
+   find_symbol_tool = gateway.get_tool("serena", "find_symbol")
+
    # 根据 TASK.md 中的当前任务，使用 Serena 定位相关代码
    active_task = "实现用户认证功能"
 
    # 搜索相关符号
-   auth_symbols = find_symbol("auth", substring_matching=True)
-   user_symbols = find_symbol("User", relative_path="src/models/")
+   auth_symbols = find_symbol_tool.call(
+       name_path_pattern="auth",
+       substring_matching=True
+   )
+   user_symbols = find_symbol_tool.call(
+       name_path_pattern="User",
+       relative_path="src/models/"
+   )
 
    # 找到所有相关文件和函数
    relevant_code = {
@@ -426,11 +525,14 @@ Quick Start模式加载顺序:
 
    **2.3 ADR 决策的代码实现验证**:
    ```python
+   # 通过 Gateway 获取 search_for_pattern 工具
+   search_tool = gateway.get_tool("serena", "search_for_pattern")
+
    # 验证 KNOWLEDGE.md 中的 ADR 是否在代码中实现
    adr_decision = "使用 JWT 进行用户认证"
 
    # 搜索 JWT 相关实现
-   jwt_usage = search_for_pattern(
+   jwt_usage = search_tool.call(
        substring_pattern="jwt.*encode|jwt.*decode",
        relative_path="src/"
    )

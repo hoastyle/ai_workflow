@@ -33,6 +33,165 @@ context_rules:
   - "✅ 支持 --serena 标志用于复杂修改，精确定位代码位置"
 ---
 
+## 🔌 MCP 增强能力
+
+本命令支持以下 MCP 服务器的可选增强：
+
+### Serena (深度代码理解)
+
+**启用**: `--serena` 标志
+**用途**: 复杂代码修改时的精确定位和智能插入点检测
+**自动激活**: 否 (用户明确启用)
+
+**示例**:
+```bash
+# 在大型类中精确添加新方法
+/wf_05_code "在 UserService 中添加密码重置方法" --serena
+
+# 理解复杂代码结构后进行修改
+/wf_05_code "重构支付模块的事务处理逻辑" --serena
+```
+
+**改进点**:
+- 精确代码位置识别（准确率 95%）
+- 智能插入点检测（避免破坏现有代码）
+- 符号级代码理解（类、方法、变量关系）
+- 时间节省 50-70%
+
+---
+
+### Magic (UI 组件生成)
+
+**启用**: `--ui` 标志
+**用途**: 生成交互式 UI 组件和设计系统集成
+**自动激活**: 否 (用户明确启用)
+
+**示例**:
+```bash
+# 生成 Material Design 按钮组件
+/wf_05_code "创建用户登录表单" --ui
+
+# 设计系统集成
+/wf_05_code "添加响应式导航栏" --ui
+```
+
+**改进点**:
+- 自动生成 UI 组件代码
+- 设计系统集成（Material, Ant Design 等）
+- 响应式布局支持
+- 交互逻辑生成
+
+---
+
+### 组合使用
+
+```bash
+# 同时启用 Serena 和 Magic
+/wf_05_code "在 Dashboard 中添加数据可视化组件" --serena --ui
+
+# 输出包含:
+# 1. Serena: 精确定位 Dashboard 组件位置
+# 2. Magic: 生成可视化组件 UI 代码
+# 3. Integration: 智能合并到现有代码
+```
+
+---
+
+### 🔧 MCP Gateway 集成 (NEW - Task 3.2)
+
+**Gateway 初始化** (所有 MCP 使用前执行):
+```python
+# 导入 MCP Gateway
+from src.mcp.gateway import get_mcp_gateway
+
+# 获取全局 Gateway 实例
+gateway = get_mcp_gateway()
+```
+
+**Serena 工具调用** (--serena):
+```python
+# 检查可用性
+if gateway.is_available("serena"):
+    # 获取符号概览工具
+    symbols_tool = gateway.get_tool("serena", "get_symbols_overview")
+
+    # 调用工具获取文件结构
+    result = symbols_tool.call(relative_path="src/services/user_service.py")
+
+    # 获取精确定位工具
+    find_tool = gateway.get_tool("serena", "find_symbol")
+
+    # 定位具体符号
+    symbol_result = find_tool.call(
+        name_path_pattern="UserService/authenticate",
+        relative_path="src/services/user_service.py"
+    )
+else:
+    print("⚠️ Serena MCP 不可用，使用传统 Read 工具")
+```
+
+**Magic 工具调用** (--ui):
+```python
+# 检查可用性
+if gateway.is_available("magic"):
+    # 获取 UI 组件生成工具
+    ui_tool = gateway.get_tool("magic", "21st_magic_component_builder")
+
+    # 调用工具生成组件
+    result = ui_tool.call(
+        message="Create a login form with email and password fields",
+        searchQuery="login form",
+        absolutePathToCurrentFile="/path/to/component.tsx",
+        absolutePathToProjectDirectory="/path/to/project",
+        standaloneRequestQuery="Generate Material Design login form"
+    )
+else:
+    print("⚠️ Magic MCP 不可用，使用标准 UI 生成")
+```
+
+**组合使用示例** (--serena --ui):
+```python
+# 初始化 Gateway
+gateway = get_mcp_gateway()
+
+# 检查所有 MCP 可用性
+mcp_status = {
+    "serena": gateway.is_available("serena"),
+    "magic": gateway.is_available("magic")
+}
+
+# 根据可用性组合使用
+if mcp_status["serena"]:
+    # Step 1: 使用 Serena 精确定位修改位置
+    symbols_tool = gateway.get_tool("serena", "get_symbols_overview")
+    structure = symbols_tool.call(relative_path="src/components/Dashboard.tsx")
+
+    # Step 2: 使用 Serena 找到插入点
+    insert_tool = gateway.get_tool("serena", "insert_after_symbol")
+    insertion_point = insert_tool.call(
+        name_path_pattern="Dashboard/renderHeader",
+        relative_path="src/components/Dashboard.tsx"
+    )
+
+if mcp_status["magic"]:
+    # Step 3: 使用 Magic 生成 UI 组件
+    ui_tool = gateway.get_tool("magic", "21st_magic_component_builder")
+    ui_component = ui_tool.call(
+        message="Create data visualization chart component",
+        searchQuery="chart component"
+    )
+
+    # Step 4: 将生成的组件插入到 Serena 定位的位置
+```
+
+**Gateway 优势**:
+- ✅ 统一的 MCP 管理接口
+- ✅ 自动降级（MCP 不可用时回退到标准方法）
+- ✅ 连接池复用（减少多次启动开销）
+- ✅ 工具懒加载（按需初始化）
+
+---
+
 ## 执行上下文
 **输入**: PLANNING.md标准 + TASK.md任务 + KNOWLEDGE.md模式
 **输出**: 代码实现 + TASK.md更新

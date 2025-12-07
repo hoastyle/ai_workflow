@@ -124,6 +124,109 @@ context_rules:
 
 ---
 
+### 🔧 MCP Gateway 集成 (NEW - Task 3.2)
+
+**Gateway 初始化** (所有 MCP 使用前执行):
+```python
+# 导入 MCP Gateway
+from src.mcp.gateway import get_mcp_gateway
+
+# 获取全局 Gateway 实例
+gateway = get_mcp_gateway()
+```
+
+**Sequential-thinking 工具调用** (--think):
+```python
+# 检查可用性
+if gateway.is_available("sequential-thinking"):
+    # 获取工具
+    think_tool = gateway.get_tool("sequential-thinking", "sequentialthinking")
+
+    # 调用工具进行结构化思考
+    result = think_tool.call(
+        thought="分析架构决策的第一步...",
+        thoughtNumber=1,
+        totalThoughts=5,
+        nextThoughtNeeded=True
+    )
+else:
+    print("⚠️ Sequential-thinking 不可用，使用标准分析")
+```
+
+**Context7 工具调用** (--c7):
+```python
+# 检查可用性
+if gateway.is_available("context7"):
+    # Step 1: 解析库名到库 ID
+    resolve_tool = gateway.get_tool("context7", "resolve-library-id")
+    library_id_result = resolve_tool.call(libraryName="react")
+
+    # Step 2: 获取官方文档
+    docs_tool = gateway.get_tool("context7", "get-library-docs")
+    docs = docs_tool.call(
+        context7CompatibleLibraryID=library_id_result["library_id"],
+        mode="code",  # or "info"
+        topic="routing"
+    )
+else:
+    print("⚠️ Context7 不可用，使用通用知识库")
+```
+
+**Tavily 工具调用** (--research):
+```python
+# 检查可用性
+if gateway.is_available("tavily"):
+    # 获取搜索工具
+    search_tool = gateway.get_tool("tavily", "tavily-search")
+
+    # 执行 Web 搜索
+    results = search_tool.call(
+        query="Rust vs Go for backend services 2025",
+        search_depth="advanced",
+        max_results=10,
+        include_images=False
+    )
+else:
+    print("⚠️ Tavily 不可用，使用有限的知识库")
+```
+
+**组合使用示例** (--think --c7 --research):
+```python
+# 初始化 Gateway
+gateway = get_mcp_gateway()
+
+# 检查所有 MCP 可用性
+mcp_status = {
+    "think": gateway.is_available("sequential-thinking"),
+    "c7": gateway.is_available("context7"),
+    "research": gateway.is_available("tavily")
+}
+
+# 根据可用性组合使用
+if mcp_status["think"]:
+    # Step 1: 结构化分解问题
+    think_tool = gateway.get_tool("sequential-thinking", "sequentialthinking")
+    # ...
+
+if mcp_status["c7"]:
+    # Step 2: 获取官方文档
+    docs_tool = gateway.get_tool("context7", "get-library-docs")
+    # ...
+
+if mcp_status["research"]:
+    # Step 3: Web 搜索最新信息
+    search_tool = gateway.get_tool("tavily", "tavily-search")
+    # ...
+```
+
+**Gateway 优势**:
+- ✅ 统一的 MCP 管理接口
+- ✅ 自动降级（MCP 不可用时回退到标准分析）
+- ✅ 连接池复用（减少多次启动开销）
+- ✅ 工具懒加载（按需初始化）
+
+---
+
 ## 执行上下文
 **输入**: 技术问题 + PLANNING.md架构 + KNOWLEDGE.md经验
 **输出**: 架构建议 + 可能的PLANNING.md/KNOWLEDGE.md更新

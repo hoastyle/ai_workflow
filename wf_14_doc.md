@@ -80,6 +80,132 @@ context_rules:
 
 ---
 
+### 🔧 MCP Gateway 集成 (NEW - Task 3.2)
+
+**Gateway 初始化** (所有 MCP 使用前执行):
+```python
+# 导入 MCP Gateway
+from src.mcp.gateway import get_mcp_gateway
+
+# 获取全局 Gateway 实例
+gateway = get_mcp_gateway()
+```
+
+**Magic 工具调用** (--ui):
+```python
+# 检查可用性
+if gateway.is_available("magic"):
+    # 获取 UI 组件生成工具
+    ui_builder = gateway.get_tool("magic", "21st_magic_component_builder")
+
+    # 调用工具生成交互式文档组件
+    result = ui_builder.call(
+        message="Generate interactive API documentation with live testing interface",
+        searchQuery="api explorer swagger",
+        absolutePathToCurrentFile="/path/to/docs/api/endpoint.md",
+        absolutePathToProjectDirectory="/path/to/project",
+        standaloneRequestQuery="Create Swagger-style API explorer with live testing for REST endpoints"
+    )
+
+    # 获取 Logo 搜索工具（用于技术栈图标）
+    logo_tool = gateway.get_tool("magic", "logo_search")
+
+    # 搜索技术栈 Logo
+    logos = logo_tool.call(
+        queries=["react", "typescript", "fastapi", "postgresql"],
+        format="SVG"
+    )
+
+    # 获取组件 Refiner（优化生成的 UI）
+    refiner = gateway.get_tool("magic", "21st_magic_component_refiner")
+
+    # 优化生成的文档组件
+    refined = refiner.call(
+        userMessage="Make the API explorer more responsive and add dark mode support",
+        absolutePathToRefiningFile="/path/to/generated/api-explorer.tsx",
+        context="Optimize for mobile devices and add theme toggle"
+    )
+else:
+    print("⚠️ Magic MCP 不可用，使用标准文档生成")
+```
+
+**Magic 在文档生成中的具体应用**:
+
+```python
+# 示例 1: 生成交互式 API 文档
+if gateway.is_available("magic"):
+    # Step 1: 从代码提取 API 端点
+    api_endpoints = extract_api_endpoints("src/api/")
+
+    # Step 2: 使用 Magic 生成交互式 API Explorer
+    ui_builder = gateway.get_tool("magic", "21st_magic_component_builder")
+
+    for endpoint in api_endpoints:
+        api_doc = ui_builder.call(
+            message=f"Create interactive API documentation for {endpoint.name}",
+            searchQuery="api explorer live testing",
+            absolutePathToCurrentFile=f"docs/api/{endpoint.name}.md",
+            absolutePathToProjectDirectory=str(project_root),
+            standaloneRequestQuery=f"Generate Swagger-style interface for {endpoint.method} {endpoint.path}"
+        )
+
+        # 将生成的组件保存到文档
+        save_interactive_component(api_doc, f"docs/api/{endpoint.name}.md")
+
+# 示例 2: 生成架构可视化组件
+if gateway.is_available("magic"):
+    # Step 1: 分析代码库架构
+    architecture = analyze_codebase_architecture()
+
+    # Step 2: 使用 Magic 生成交互式架构图
+    ui_builder = gateway.get_tool("magic", "21st_magic_component_builder")
+
+    arch_component = ui_builder.call(
+        message="Create interactive architecture diagram with clickable components",
+        searchQuery="architecture diagram interactive mermaid",
+        absolutePathToCurrentFile="docs/architecture/system-design.md",
+        absolutePathToProjectDirectory=str(project_root),
+        standaloneRequestQuery="Generate interactive system architecture diagram with component details and relationships"
+    )
+
+    # 将组件嵌入到架构文档
+    embed_interactive_diagram(arch_component, "docs/architecture/system-design.md")
+
+# 示例 3: 生成开发环境配置向导
+if gateway.is_available("magic"):
+    # Step 1: 提取环境配置需求
+    config_requirements = extract_env_requirements()
+
+    # Step 2: 使用 Magic 生成配置向导
+    ui_builder = gateway.get_tool("magic", "21st_magic_component_builder")
+
+    wizard = ui_builder.call(
+        message="Create step-by-step environment setup wizard with validation",
+        searchQuery="setup wizard form multi-step",
+        absolutePathToCurrentFile="docs/development/setup.md",
+        absolutePathToProjectDirectory=str(project_root),
+        standaloneRequestQuery="Generate interactive setup wizard for development environment configuration"
+    )
+
+    # 将向导嵌入到开发指南
+    embed_wizard(wizard, "docs/development/setup.md")
+```
+
+**Gateway 优势**:
+- ✅ 统一的 MCP 管理接口
+- ✅ 自动降级（Magic 不可用时回退到标准 Markdown 文档）
+- ✅ 连接池复用（减少多次启动开销）
+- ✅ 工具懒加载（按需初始化）
+- ✅ 更丰富的交互式文档体验
+
+**Token 节省分析**:
+- 传统方式：每次 Magic 调用需重新加载工具描述 (~8k tokens)
+- Gateway 方式：工具描述压缩 + 缓存 (~800 tokens)
+- **节省比例**: 90% (8k → 800 tokens per call)
+- **多次调用收益**: 使用 3 次以上时，总节省 >20k tokens
+
+---
+
 ## ⚠️ 强制语言规则
 
 **此命令为强制语言规则的关键执行命令**。详细的强制语言规则定义请参考 [CLAUDE.md § 强制语言规则](CLAUDE.md#⚠️-强制语言规则)。
