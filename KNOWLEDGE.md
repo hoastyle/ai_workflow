@@ -1,6 +1,6 @@
 # 知识库 (Knowledge Base)
 
-**版本**: v1.4
+**版本**: v1.6
 **创建日期**: 2025-11-06
 **最后更新**: 2025-12-08
 **目的**: 项目架构决策、设计模式和技术文档的索引中心
@@ -54,6 +54,7 @@
 | **AgentRegistry** | [commands/lib/agent_registry.py](commands/lib/agent_registry.py) | 高 | 智能路由和自动激活引擎 |
 | **TaskAnalyzer** | [commands/lib/task_analyzer.py](commands/lib/task_analyzer.py) | 高 | 任务分析和意图识别 (9种意图分类) |
 | **AgentRouter** | [commands/lib/agent_router.py](commands/lib/agent_router.py) | 高 | Multi-agent协调和工作流编排 |
+| **CoordinationEngine** | [commands/lib/coordination_engine.py](commands/lib/coordination_engine.py) | 高 | Multi-agent工作流执行引擎 (3种协调模式) |
 | **Auto-Activation Demo** | [commands/lib/auto_activation_demo.py](commands/lib/auto_activation_demo.py) | 中 | 完整自动激活流程演示 |
 | **PM Agent** | [commands/agents/pm_agent.md](commands/agents/pm_agent.md) | 高 | 项目管理和任务协调 |
 | **Architect Agent** | [commands/agents/architect_agent.md](commands/agents/architect_agent.md) | 高 | 系统设计和技术选型 |
@@ -286,6 +287,6 @@ related_documents:
 
 ---
 
-**最后更新**: 2025-11-27
+**最后更新**: 2025-12-08
 **维护者**: Knowledge Base Management System
-**版本**: v1.5 (新增 wf_05_code 三个专业指南文档索引)
+**版本**: v1.6 (新增 CoordinationEngine multi-agent 工作流执行引擎)

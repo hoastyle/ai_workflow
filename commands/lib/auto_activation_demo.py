@@ -162,7 +162,7 @@ def demonstrate_auto_activation(task_description: str, mode: str = None):
     # Step 7: Summary
     print_separator("=", 70)
     print("\n✅ AUTO-ACTIVATION COMPLETE")
-    print_separator("=", 70))
+    print_separator("=", 70)
 
     print(f"""
 Summary:
