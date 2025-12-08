@@ -1,8 +1,8 @@
 # 知识库 (Knowledge Base)
 
-**版本**: v1.2
+**版本**: v1.4
 **创建日期**: 2025-11-06
-**最后更新**: 2025-12-07
+**最后更新**: 2025-12-08
 **目的**: 项目架构决策、设计模式和技术文档的索引中心
 
 > ℹ️ **注意**: 本文件为纯索引和指针，详细内容已分离到 `docs/knowledge/` 目录以减少维护成本和上下文消耗。
@@ -44,6 +44,29 @@
 | Frontmatter 规范 | [docs/reference/FRONTMATTER.md](docs/reference/FRONTMATTER.md) | 高 |
 | Markdown 格式约束 | [docs/reference/MARKDOWN_STYLE.md](docs/reference/MARKDOWN_STYLE.md) | 高 |
 | MCP 集成 | [docs/integration/](docs/integration/) | 高 |
+
+### Agent System (新增 2025-12-08)
+
+**核心组件**:
+
+| 主题 | 路径 | 优先级 | 说明 |
+|------|------|--------|------|
+| **AgentRegistry** | [commands/lib/agent_registry.py](commands/lib/agent_registry.py) | 高 | 智能路由和自动激活引擎 |
+| **TaskAnalyzer** | [commands/lib/task_analyzer.py](commands/lib/task_analyzer.py) | 高 | 任务分析和意图识别 (9种意图分类) |
+| **AgentRouter** | [commands/lib/agent_router.py](commands/lib/agent_router.py) | 高 | Multi-agent协调和工作流编排 |
+| **Auto-Activation Demo** | [commands/lib/auto_activation_demo.py](commands/lib/auto_activation_demo.py) | 中 | 完整自动激活流程演示 |
+| **PM Agent** | [commands/agents/pm_agent.md](commands/agents/pm_agent.md) | 高 | 项目管理和任务协调 |
+| **Architect Agent** | [commands/agents/architect_agent.md](commands/agents/architect_agent.md) | 高 | 系统设计和技术选型 |
+| **Code Agent** | [commands/agents/code_agent.md](commands/agents/code_agent.md) | 高 | 代码实现和功能开发 |
+| **Debug Agent** | [commands/agents/debug_agent.md](commands/agents/debug_agent.md) | 高 | 错误分析和问题修复 |
+| **Test Agent** | [commands/agents/test_agent.md](commands/agents/test_agent.md) | 高 | 测试开发和覆盖率分析 |
+| **Review Agent** | [commands/agents/review_agent.md](commands/agents/review_agent.md) | 高 | 代码审查和质量检查 |
+| **Refactor Agent** | [commands/agents/refactor_agent.md](commands/agents/refactor_agent.md) | 中 | 代码重构和技术债务 |
+| **Doc Agent** | [commands/agents/doc_agent.md](commands/agents/doc_agent.md) | 中 | 文档生成和维护 |
+| **Research Agent** | [commands/agents/research_agent.md](commands/agents/research_agent.md) | 中 | 技术调研和方案评估 |
+| **Context Agent** | [commands/agents/context_agent.md](commands/agents/context_agent.md) | 高 | 上下文加载和会话管理 |
+
+**设计决策**: 参见 ADR 2025-12-08 Agent System Architecture
 
 ### 并行开发和审查示例 (新增 2025-12-07)
 
@@ -115,10 +138,11 @@
 
 ## 🏗️ 架构决策记录 (ADR)
 
-**已有决策** (12个):
+**已有决策** (13个):
 
 | 日期 | 标题 | 影响 | 状态 |
 |------|------|------|------|
+| 2025-12-08 | Agent System Architecture | 全局 | Accepted |
 | 2025-12-03 | SuperClaude Framework 对比分析与优化决策 | 全局 | Proposed |
 | 2025-11-27 | Serena MCP 集成扩展策略 | 高 | Proposed |
 | 2025-11-24 | 约束驱动的文档生成最佳实践 | 高 | Accepted |
