@@ -86,6 +86,9 @@ else:
 | **wf_05_code 文档同步决策树指南** | [docs/guides/wf_05_code_doc_sync_guide.md](docs/guides/wf_05_code_doc_sync_guide.md) | 高 |
 | **wf_05_code Serena MCP 使用指南** | [docs/guides/wf_05_code_serena_guide.md](docs/guides/wf_05_code_serena_guide.md) | 高 |
 | **wf_05_code 工作流和决策路径指南** | [docs/guides/wf_05_code_workflows.md](docs/guides/wf_05_code_workflows.md) | 高 |
+| **老版本部署兼容性指南** (NEW) | [docs/guides/deployment_compatibility_guide.md](docs/guides/deployment_compatibility_guide.md) | 高 | 环境版本检测、命令兼容性、迁移指南 (Task 2.11) |
+| **兼容性验证脚本** (NEW) | [scripts/validate_command_compatibility.py](scripts/validate_command_compatibility.py) | 高 | 自动检测环境和MCP可用性、14命令验证 (Task 2.12) |
+| **上下文加载优化脚本** (NEW) | [scripts/optimize_context_loading.py](scripts/optimize_context_loading.py) | 中 | Prime分析、Docs索引覆盖率、优化建议 (Task 2.12) |
 | 架构决策记录 | [docs/adr/](docs/adr/) | 中 |
 | Frontmatter 规范 | [docs/reference/FRONTMATTER.md](docs/reference/FRONTMATTER.md) | 高 |
 | Markdown 格式约束 | [docs/reference/MARKDOWN_STYLE.md](docs/reference/MARKDOWN_STYLE.md) | 高 |
@@ -319,6 +322,126 @@ related_documents:
 - 过多相关说明设计有问题
 
 详见 [Frontmatter 实例集合](docs/examples/frontmatter_examples.md)
+
+---
+
+## 🔧 技术模式参考 (NEW - 2025-12-08)
+
+### 环境和依赖检测模式
+
+**Python 模块可用性检测** (推荐模式 - Task 2.12):
+```python
+import importlib.util
+
+# 检测模块是否可用
+if importlib.util.find_spec("module_name") is not None:
+    # 模块可用
+    import module_name
+else:
+    # 使用降级方案
+```
+
+**Python 版本检测** (兼容性检查):
+```python
+import sys
+
+# 十六进制版本比较
+if sys.hexversion >= 0x030A00F0:  # Python 3.10+
+    # 使用高级特性
+else:
+    # 使用兼容模式
+```
+
+**包版本查询** (依赖验证):
+```python
+from importlib.metadata import version
+
+try:
+    ver = version('package_name')  # '2.22.0'
+except ImportError:
+    # 包未安装
+```
+
+### 测试模式
+
+**条件测试跳过** (Pytest - Task 2.12):
+```python
+import pytest
+import sys
+
+# 基于 Python 版本跳过
+@pytest.mark.skipif(
+    sys.version_info < (3, 10),
+    reason="requires python3.10 or higher"
+)
+def test_function(): ...
+
+# 基于环境变量跳过
+@pytest.mark.skipif(
+    not is_mcp_available("serena"),
+    reason="Serena MCP not available"
+)
+def test_serena_integration(): ...
+
+# 基于平台跳过
+@pytest.mark.darwin  # macOS only
+def test_macos_specific(): ...
+```
+
+**Tox 多环境测试矩阵** (跨版本兼容):
+```ini
+[tox]
+envlist = py{39,310,311}-{with_mcp,no_mcp}
+
+[testenv]
+deps =
+    pytest
+    with_mcp: mcp-servers
+commands =
+    pytest tests/
+```
+
+### 降级和容错模式
+
+**Circuit Breaker 模式** (MCP 故障处理 - Task 2.11):
+```python
+class MCPCircuitBreaker:
+    def __init__(self, threshold=5, timeout=60):
+        self.state = "CLOSED"  # CLOSED/OPEN/HALF-OPEN
+        self.failure_count = 0
+        self.threshold = threshold
+
+    def call_with_fallback(self, mcp_func, fallback_func):
+        try:
+            if self.state == "CLOSED":
+                result = mcp_func()
+                self.failure_count = 0
+                return result
+        except Exception:
+            self.failure_count += 1
+            if self.failure_count > self.threshold:
+                self.state = "OPEN"
+
+        # 使用降级方案
+        return fallback_func()
+```
+
+**Graceful Degradation 策略** (Task 2.11):
+1. **缓存数据降级**: MCP 不可用时使用本地缓存
+2. **默认值降级**: 返回安全的默认值而非失败
+3. **功能降级**: 提供基础功能，标注高级功能不可用
+
+**相关文档**:
+- Task 2.11 文档: deployment_compatibility_guide.md (完整降级场景)
+- Task 2.12 脚本: validate_command_compatibility.py (自动检测实现)
+
+**应用场景**:
+- 老版本环境部署 (v1.0-v1.6)
+- MCP 服务器不可用
+- 网络环境受限
+- CI/CD 流程中的兼容性测试
+
+**研究来源**: Context7 (Python/pytest 官方文档) + Tavily (graceful degradation 最佳实践)
 
 ---
 
