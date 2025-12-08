@@ -1,6 +1,6 @@
 # 知识库 (Knowledge Base)
 
-**版本**: v1.6
+**版本**: v1.7
 **创建日期**: 2025-11-06
 **最后更新**: 2025-12-08
 **目的**: 项目架构决策、设计模式和技术文档的索引中心
@@ -21,6 +21,52 @@
 | 会话上下文 | [docs/management/CONTEXT.md](docs/management/CONTEXT.md) | 高 |
 | AI执行规则 | [CLAUDE.md](CLAUDE.md) | 中 |
 | 设计哲学 | [PHILOSOPHY.md](PHILOSOPHY.md) | 中 |
+
+### MCP 集成参考 (新增 2025-12-08)
+
+**完整 MCP 覆盖率** - 所有 14 个命令均已集成 MCP 支持:
+
+| 命令 | MCP 服务器 | 文档路径 | 优先级 |
+|------|-----------|---------|--------|
+| wf_01_planning | Context7 + Tavily | [wf_01_planning.md](wf_01_planning.md) | 高 |
+| wf_02_task | Serena | [wf_02_task.md](wf_02_task.md) | 高 |
+| wf_03_prime | Serena | [wf_03_prime.md](wf_03_prime.md) | 高 |
+| wf_04_ask | Sequential-thinking + Context7 + Tavily | [wf_04_ask.md](wf_04_ask.md) | 高 |
+| wf_04_research | Context7 + Tavily | [wf_04_research.md](wf_04_research.md) | 高 |
+| wf_05_code | Serena + Magic | [wf_05_code.md](wf_05_code.md) | 高 |
+| wf_06_debug | Sequential-thinking + Serena | [wf_06_debug.md](wf_06_debug.md) | 高 |
+| wf_07_test | Serena + Sequential-thinking | [wf_07_test.md](wf_07_test.md) | 高 |
+| wf_08_review | Serena + Sequential-thinking | [wf_08_review.md](wf_08_review.md) | 高 |
+| wf_09_refactor | Serena | [wf_09_refactor.md](wf_09_refactor.md) | 中 |
+| wf_10_optimize | Serena | [wf_10_optimize.md](wf_10_optimize.md) | 中 |
+| wf_11_commit | Serena | [wf_11_commit.md](wf_11_commit.md) | 高 |
+| wf_12_deploy_check | Playwright | [wf_12_deploy_check.md](wf_12_deploy_check.md) | 高 |
+| wf_14_doc | Magic | [wf_14_doc.md](wf_14_doc.md) | 高 |
+
+**Gateway 使用模式** (统一实现):
+```python
+# 标准 Gateway 调用模式
+from src.mcp.gateway import get_mcp_gateway
+
+gateway = get_mcp_gateway()
+if gateway.is_available("mcp_server_name"):
+    tool = gateway.get_tool("mcp_server_name", "tool_name")
+    result = tool.call(**parameters)
+else:
+    # 降级处理
+```
+
+**MCP 服务器功能总览**:
+- **Serena**: 语义代码理解、符号操作、项目内存
+- **Context7**: 官方库文档查询
+- **Sequential-thinking**: 结构化多步推理
+- **Tavily**: Web 搜索和实时信息
+- **Playwright**: 浏览器自动化和 E2E 测试
+- **Magic**: UI 组件生成
+
+**关键文档**:
+- MCP Gateway 实现: [src/mcp/gateway.py](src/mcp/gateway.py)
+- MCP 集成策略: [docs/integration/MCP_INTEGRATION_STRATEGY.md](docs/integration/MCP_INTEGRATION_STRATEGY.md)
 
 ### 技术层文档 (按需加载)
 
@@ -289,4 +335,4 @@ related_documents:
 
 **最后更新**: 2025-12-08
 **维护者**: Knowledge Base Management System
-**版本**: v1.6 (新增 CoordinationEngine multi-agent 工作流执行引擎)
+**版本**: v1.7 (新增 MCP 集成参考 - 100% 命令覆盖率)

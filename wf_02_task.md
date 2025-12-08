@@ -9,10 +9,101 @@ prev_commands: [/wf_01_planning, /wf_05_code, /wf_06_debug]
 next_commands: [/wf_03_prime, /wf_05_code]
 model: haiku
 token_budget: simple
+mcp_support:
+  - name: "Serena"
+    flag: "自动激活"
+    detail: "任务关联代码符号和进度跟踪"
 context_rules:
   - "从PLANNING.md生成任务列表"
   - "任务必须映射到PRD需求"
   - "实时更新任务状态"
+---
+
+## 🔌 MCP 增强能力
+
+本命令支持 Serena MCP 服务器的自动增强。
+
+### Serena (语义代码理解)
+
+**启用**: 自动激活（检测到任务操作时）
+**用途**: 任务关联到具体代码符号，基于代码变更跟踪进度
+**自动激活**: 创建、更新或审查任务时
+
+**示例**:
+```bash
+# 创建任务并自动关联代码
+/wf_02_task create "实现用户认证API"
+
+# 更新任务并追踪代码进度
+/wf_02_task update "完成登录功能"
+
+# 审查任务时分析代码覆盖率
+/wf_02_task review
+```
+
+**改进点**:
+- 任务自动关联到具体代码符号（类、函数、模块）
+- 进度跟踪基于实际代码变更
+- 符号级依赖分析（find_referencing_symbols）
+- 代码覆盖率评估（未测试路径识别）
+- 智能任务拆分建议（基于代码复杂度）
+
+---
+
+### 🔧 MCP Gateway 集成 (NEW - Task 3.2)
+
+**Gateway 初始化** (所有 MCP 使用前执行):
+```python
+# 导入 MCP Gateway
+from src.mcp.gateway import get_mcp_gateway
+
+# 获取全局 Gateway 实例
+gateway = get_mcp_gateway()
+```
+
+**Serena 工具调用** (任务-代码关联):
+```python
+# 检查可用性
+if gateway.is_available("serena"):
+    # 任务关联到代码符号
+    find_symbol_tool = gateway.get_tool("serena", "find_symbol")
+    get_overview_tool = gateway.get_tool("serena", "get_symbols_overview")
+
+    # 示例1：关联任务到类
+    task_name = "实现用户认证"
+    symbol_result = find_symbol_tool.call(
+        name_path_pattern="AuthService",
+        include_body=False,
+        depth=1
+    )
+    # 将 task_name 关联到 symbol_result 中的符号
+
+    # 示例2：追踪任务进度（基于代码变更）
+    file_path = "src/auth/auth_service.py"
+    overview_result = get_overview_tool.call(
+        relative_path=file_path
+    )
+    # 分析 overview_result 判断任务完成度
+
+    # 示例3：查找任务相关的所有引用
+    find_refs_tool = gateway.get_tool("serena", "find_referencing_symbols")
+    refs_result = find_refs_tool.call(
+        name_path="AuthService/login",
+        relative_path=file_path
+    )
+    # 识别任务影响范围
+
+else:
+    # 降级到手动任务管理
+    print("⚠️ Serena MCP 不可用，使用标准任务追踪流程")
+```
+
+**Gateway 优势**:
+- ✅ 统一的 MCP 服务器管理
+- ✅ 自动降级机制（MCP 不可用时）
+- ✅ 连接池复用（减少启动开销）
+- ✅ 工具懒加载（按需初始化）
+
 ---
 
 ## 执行上下文

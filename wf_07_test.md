@@ -9,6 +9,13 @@ prev_commands: [/wf_05_code, /wf_06_debug, /wf_09_refactor]
 next_commands: [/wf_08_review, /wf_09_refactor, /wf_11_commit]
 model: sonnet
 token_budget: medium
+mcp_support:
+  - name: "Serena"
+    flag: "自动激活"
+    detail: "代码覆盖率分析和测试生成"
+  - name: "Sequential-thinking"
+    flag: "--think"
+    detail: "结构化测试策略分析"
 context_rules:
   - "遵循PLANNING.md测试策略"
   - "满足PRD覆盖率要求"

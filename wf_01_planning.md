@@ -9,10 +9,132 @@ prev_commands: []
 next_commands: [/wf_02_task]
 model: sonnet
 token_budget: complex
+mcp_support:
+  - name: "Context7"
+    flag: "--c7"
+    detail: "技术栈官方文档查询和最佳实践"
+  - name: "Tavily"
+    flag: "--research"
+    detail: "开源方案搜索和社区评估"
 context_rules:
   - "PRD.md是只读的，绝不修改"
   - "PLANNING.md必须对齐PRD.md所有需求"
   - "这是项目架构的权威文档"
+---
+
+## 🔌 MCP 增强能力
+
+本命令支持以下 MCP 服务器的可选增强：
+
+### Context7 (官方文档查询)
+
+**启用**: `--c7` 标志或自动检测
+**用途**: 获取技术栈官方文档、API 参考、最佳实践
+**自动激活**: 检测到框架/库名时
+
+**示例**:
+```bash
+# 明确启用
+/wf_01_planning "使用 React + FastAPI 的全栈应用" --c7
+
+# 自动启用 (检测到 React, FastAPI)
+/wf_01_planning "构建实时聊天应用"
+```
+
+**改进点**:
+- 官方文档链接和版本兼容性信息
+- 推荐的项目结构和最佳实践
+- API 参考和配置建议
+- 框架特定的开发标准
+
+---
+
+### Tavily (开源方案评估)
+
+**启用**: `--research` 标志
+**用途**: 搜索开源方案、社区讨论、技术评估
+**自动激活**: 否（用户明确启用）
+
+**示例**:
+```bash
+# 研究开源方案
+/wf_01_planning "需要选择消息队列方案" --research
+
+# 组合使用
+/wf_01_planning "微服务架构" --c7 --research
+```
+
+**改进点**:
+- 开源方案对比（功能、性能、社区）
+- GitHub 项目评估（stars、活跃度、维护状态）
+- 技术文章和最佳实践
+- 社区反馈和案例研究
+
+---
+
+### 禁用 MCP
+
+```bash
+# 使用标准规划流程，不启用 MCP
+/wf_01_planning "项目规划" --no-mcp
+```
+
+---
+
+### 🔧 MCP Gateway 集成 (NEW - Task 3.2)
+
+**Gateway 初始化** (所有 MCP 使用前执行):
+```python
+# 导入 MCP Gateway
+from src.mcp.gateway import get_mcp_gateway
+
+# 获取全局 Gateway 实例
+gateway = get_mcp_gateway()
+```
+
+**Context7 工具调用** (--c7):
+```python
+# 检查可用性
+if gateway.is_available("context7"):
+    # 查询技术栈文档
+    resolve_tool = gateway.get_tool("context7", "resolve-library-id")
+    docs_tool = gateway.get_tool("context7", "get-library-docs")
+
+    # 示例：查询 React 文档
+    library_result = resolve_tool.call(libraryName="react")
+    docs_result = docs_tool.call(
+        context7CompatibleLibraryID=library_result["libraryID"],
+        topic="best-practices"
+    )
+else:
+    # 降级到手动研究
+    print("⚠️ Context7 MCP 不可用，使用手动文档查询")
+```
+
+**Tavily 工具调用** (--research):
+```python
+# 检查可用性
+if gateway.is_available("tavily"):
+    # Web 搜索开源方案
+    search_tool = gateway.get_tool("tavily", "tavily-search")
+
+    # 示例：搜索消息队列方案
+    search_result = search_tool.call(
+        query="message queue comparison RabbitMQ vs Kafka 2025",
+        search_depth="advanced",
+        max_results=10
+    )
+else:
+    # 降级到标准规划
+    print("⚠️ Tavily MCP 不可用，使用标准技术调研流程")
+```
+
+**Gateway 优势**:
+- ✅ 统一的 MCP 服务器管理
+- ✅ 自动降级机制（MCP 不可用时）
+- ✅ 连接池复用（减少启动开销）
+- ✅ 工具懒加载（按需初始化）
+
 ---
 
 ## 执行上下文
