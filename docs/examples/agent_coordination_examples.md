@@ -8,7 +8,7 @@ created_date: "2025-12-03"
 last_updated: "2025-12-03"
 related_documents:
   - "wf_05_code.md"
-  - "docs/examples/parallel_execution_examples.md"
+  - "docs/examples/parallel_execution_overview.md"
 related_code: []
 tags: ["Agent模式", "并行开发", "Phase2优化"]
 authors: ["Claude"]
@@ -473,7 +473,7 @@ Agent 3 (Documentation):
 
 ## 下一步
 
-- 阅读 [并行执行模式示例](./parallel_execution_examples.md) 了解 Wave→Checkpoint→Wave 模式
+- 阅读 [并行执行模式示例](./parallel_execution_overview.md) 了解 Wave→Checkpoint→Wave 模式
 - 参考 wf_05_code.md 的完整 Agent 协调策略说明
 - 实践：在下一个功能开发中尝试使用 Agent 模式
 
@@ -481,7 +481,7 @@ Agent 3 (Documentation):
 
 **相关文档**:
 - [wf_05_code.md](../../wf_05_code.md) - 功能实现协调器
-- [并行执行模式示例](./parallel_execution_examples.md)
+- [并行执行模式示例](./parallel_execution_overview.md)
 - [PLANNING.md](../management/PLANNING.md) - 开发标准
 
 **最后更新**: 2025-12-03

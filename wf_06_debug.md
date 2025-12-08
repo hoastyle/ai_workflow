@@ -132,6 +132,94 @@ Step 5: 解决方案
 
 ---
 
+### 🔧 MCP Gateway 集成 (NEW - Task 3.2)
+
+**Gateway 初始化** (所有 MCP 使用前执行):
+```python
+# 导入 MCP Gateway
+from src.mcp.gateway import get_mcp_gateway
+
+# 获取全局 Gateway 实例
+gateway = get_mcp_gateway()
+```
+
+**Sequential-thinking 工具调用** (--think):
+```python
+# 检查可用性
+if gateway.is_available("sequential-thinking"):
+    # 获取工具
+    think_tool = gateway.get_tool("sequential-thinking", "sequentialthinking")
+
+    # 调用工具进行结构化调试
+    result = think_tool.call(
+        thought="分析错误的第一步...",
+        thoughtNumber=1,
+        totalThoughts=5,
+        nextThoughtNeeded=True
+    )
+else:
+    print("⚠️ Sequential-thinking 不可用，使用标准调试分析")
+```
+
+**Serena 工具调用** (--deep):
+```python
+# 检查可用性
+if gateway.is_available("serena"):
+    # Step 1: 精确定位错误代码位置
+    find_tool = gateway.get_tool("serena", "find_symbol")
+    symbol_result = find_tool.call(
+        name_path_pattern="error_function_name",
+        include_body=True
+    )
+
+    # Step 2: 查找所有引用位置
+    ref_tool = gateway.get_tool("serena", "find_referencing_symbols")
+    references = ref_tool.call(
+        name_path="error_function_name",
+        relative_path="src/module.py"
+    )
+
+    # Step 3: 搜索相关代码模式
+    search_tool = gateway.get_tool("serena", "search_for_pattern")
+    patterns = search_tool.call(
+        substring_pattern="error.*handling",
+        relative_path="src/"
+    )
+else:
+    print("⚠️ Serena MCP 不可用，使用 Grep/Read 工具")
+```
+
+**组合使用示例** (--think --deep):
+```python
+# 初始化 Gateway
+gateway = get_mcp_gateway()
+
+# 检查所有 MCP 可用性
+mcp_status = {
+    "think": gateway.is_available("sequential-thinking"),
+    "deep": gateway.is_available("serena")
+}
+
+# 根据可用性组合使用
+if mcp_status["think"]:
+    # Step 1: 结构化分析错误
+    think_tool = gateway.get_tool("sequential-thinking", "sequentialthinking")
+    # ...
+
+if mcp_status["deep"]:
+    # Step 2: 深度代码定位
+    find_tool = gateway.get_tool("serena", "find_symbol")
+    # ...
+```
+
+**Gateway 优势**:
+- ✅ 统一的 MCP 管理接口
+- ✅ 自动降级（MCP 不可用时回退到标准工具）
+- ✅ 连接池复用（减少多次启动开销）
+- ✅ 工具懒加载（按需初始化）
+
+---
+
 ## 执行上下文
 **输入**: 错误描述 + PLANNING.md系统设计 + KNOWLEDGE.md已知问题
 **输出**: 代码修复 + TASK.md记录 + KNOWLEDGE.md新模式

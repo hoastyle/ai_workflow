@@ -3,7 +3,7 @@
 **版本**: v3.0 (重新调整 - 关键背景: 优化整个 workflow 流程)
 **创建日期**: 2025-12-03
 **最后更新**: 2025-12-07
-**状态**: Phase 2 SuperClaude 优化进行中
+**状态**: Phase 2 SuperClaude 优化进行中 (83% - Task 2.10完成)
 
 **关键背景**:
 - 项目目标: 构建/优化 AI Workflow 命令系统 (wf_01 - wf_14)
@@ -18,15 +18,15 @@
 | 阶段 | 任务数 | 完成 | 进度 | 状态 |
 |------|--------|------|------|------|
 | **Phase 1** | 4 | 4 | 100% | ✅ 完成 |
-| **Phase 2** | 12 | 8 | 66.7% | 🟡 进行中 (Task 2.8完成) |
+| **Phase 2** | 12 | 10 | 83% | 🟡 进行中 (Task 2.10完成) |
 | **Phase 3** | 3 | 0 | 0% | ⏸️ 待开始 (Token紧急优化) |
 | **Phase 4** | 3 | 0 | 0% | ⏸️ 待开始 (Agent架构设计) |
 | **Phase 5** | 2 | 0 | 0% | ⏸️ 待开始 (MCP深度集成) |
-| **总计** | 24 | 12 | 50% | 🟡 进行中 |
+| **总计** | 24 | 13 | 54% | 🟡 进行中 |
 
 **关键里程碑**:
 - ✅ Phase 1: 智能上下文加载 + Confidence Check + Token预算 (完成)
-- 🟡 Phase 2: Workflow 优化 + 新功能集成 (66.7%)
+- 🟡 Phase 2: Workflow 优化 + 新功能集成 (83%)
 - 🔴 Phase 3: Token 紧急优化 (基于 SuperClaude 对比分析，**最高优先级**)
 - 🟠 Phase 4: Agent 架构设计 (独立 Agent 系统)
 - 🟢 Phase 5: MCP 深度集成 (100% 命令覆盖)
@@ -52,7 +52,7 @@
 **目标**: 优化整个 AI Workflow 命令系统 (wf_01 - wf_14)，适配当前老版本部署环境
 
 **预计完成**: 2-3 周
-**当前进度**: 42% (5/12 任务完成)
+**当前进度**: 83% (10/12 任务完成)
 
 **说明**: Phase 2 重点从"Agent示例文档"转向"实际Workflow优化和新功能集成"。
 Agent协调示例（Task 2.1）仍有参考价值，但优先级降低。
@@ -77,23 +77,37 @@ Agent协调示例（Task 2.1）仍有参考价值，但优先级降低。
 ### ✅ Task 2.6: 优化 wf_05_code - 功能实现流程（原Task 2.3）
 ### ✅ Task 2.7: 优化 wf_08_review - 代码审查流程（原Task 2.4）
 ### ✅ Task 2.8: 优化 wf_11_commit - 提交和上下文管理（原Task 2.5）
-### ⏳ Task 2.9: 优化其他高频命令（原Task 2.6）
-- [ ] wf_04_ask: 优化架构咨询流程
-- [ ] wf_06_debug: 优化调试修复流程
-- [ ] wf_07_test: 优化测试开发流程
+### ✅ Task 2.9: 优化其他高频命令（原Task 2.6）
+- [x] wf_04_ask: 优化架构咨询流程
+- [x] wf_06_debug: 优化调试修复流程
+- [x] wf_07_test: 优化测试开发流程
 - **Priority**: 🟠 高
 - **Effort**: Large
 - **Dependencies**: Task 2.2, 2.3, 2.4 完成
 - **Related**: 对应的 wf_xx.md 文件
+- **Completed**: 2025-12-07
+- **Changes**:
+  - wf_06_debug.md: +86行 MCP Gateway集成 (Sequential-thinking + Serena)
+  - wf_07_test.md: +160行 MCP Gateway集成 (Serena + Sequential-thinking)
+  - wf_04_ask.md: 已包含完整MCP集成 (Sequential-thinking + Context7 + Tavily + Confidence Check)
 
-### ⏳ Task 2.10: 优化文档层次（原Task 2.7）
-- [ ] 分析 docs/examples/ 下文档大小
-- [ ] 识别过大文档（>500行）
-- [ ] 拆分或精简（遵循 <500 行约束）
-- [ ] 更新索引和引用
+### ✅ Task 2.10: 优化文档层次（原Task 2.7）
+- [x] 分析 docs/examples/ 下文档大小
+- [x] 识别过大文档（>500行）
+- [x] 拆分或精简（遵循 <500 行约束）
+- [x] 更新索引和引用
 - **Priority**: Medium
 - **Effort**: Medium
 - **Related**: development.md 行 401, KNOWLEDGE.md
+- **Completed**: 2025-12-07
+- **Changes**:
+  - 拆分 3 个超大文档为 18 个小文档 (3,165 lines → 18 files, avg ~175 lines)
+    - multi_agent_review_examples.md (1,175 lines) → 6 files
+    - parallel_review_examples.md (1,167 lines) → 6 files
+    - parallel_execution_examples.md (823 lines) → 6 files
+  - 更新 21 处文档引用 (frontmatter + inline links)
+  - 删除 3 个原文件
+  - 更新 KNOWLEDGE.md 索引 (新增 "并行开发和审查示例" 部分, 19 个条目)
 
 ### ⏳ Task 2.11: 建立老版本部署兼容性指南（原Task 2.8）
 - [ ] 文档当前环境的约束和限制
@@ -545,10 +559,9 @@ Agent协调示例（Task 2.1）仍有参考价值，但优先级降低。
 ### 🔴 Phase 2 剩余任务 (当前阶段 - 66.7% 完成)
 
 **Phase 2 待完成**:
-1. ⏳ Task 2.9 - 优化其他高频命令 (wf_04_ask, wf_06_debug, wf_07_test)
-2. ⏳ Task 2.10 - 优化文档层次 (docs/examples/ 精简)
-3. ⏳ Task 2.11 - 建立老版本部署兼容性指南
-4. ⏳ Task 2.12 - 工具脚本和自动化
+1. ⏳ Task 2.10 - 优化文档层次 (docs/examples/ 精简)
+2. ⏳ Task 2.11 - 建立老版本部署兼容性指南
+3. ⏳ Task 2.12 - 工具脚本和自动化
 
 **建议**: 可以先完成 Phase 2 剩余任务，或直接进入 Phase 3 (Token 紧急优化)
 

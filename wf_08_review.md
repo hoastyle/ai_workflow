@@ -174,7 +174,7 @@ Stage 3: Integration Review
 - 效率：30 分钟完成（vs 顺序审查 90 分钟）
 ```
 
-**更多示例**: [docs/examples/multi_agent_review_examples.md](docs/examples/multi_agent_review_examples.md)
+**更多示例**: [docs/examples/multi_agent_review_overview.md](docs/examples/multi_agent_review_overview.md)
 
 ---
 
@@ -328,7 +328,7 @@ find_referencing_symbols() → 12 个调用点
 - ⚠️ 符号修改必须使用 Serena 完整性检查
 - ⚠️ 最终合并时检查跨维度影响
 
-**更多示例**: [docs/examples/parallel_review_examples.md](docs/examples/parallel_review_examples.md)
+**更多示例**: [docs/examples/parallel_review_overview.md](docs/examples/parallel_review_overview.md)
 
 ---
 

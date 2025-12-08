@@ -15,6 +15,166 @@ context_rules:
   - "--coverage模式分析测试覆盖率"
 ---
 
+## 🔌 MCP 增强能力
+
+本命令支持以下 MCP 服务器的可选增强：
+
+### Serena (深度代码理解)
+
+**启用**: 自动激活（在 /wf_07_test 中）
+**用途**: 语义级别的代码理解和测试生成
+
+**改进点**:
+- 精确定位需要测试的函数和类
+- 自动识别代码依赖关系
+- 生成针对性强的测试用例
+- 分析代码覆盖率缺口
+
+**使用场景**:
+- 为复杂函数生成测试
+- 识别未测试的代码路径
+- 理解函数调用关系以生成集成测试
+
+### Sequential-thinking (结构化测试策略)
+
+**启用**: `--think` 标志（可选）
+**用途**: 结构化多步推理分析测试策略
+
+**示例**:
+```bash
+# 启用结构化测试策略
+/wf_07_test "复杂组件" --think
+
+# 组合启用
+/wf_07_test "..." --think --coverage
+```
+
+**改进点**:
+- 系统化分解测试需求
+- 优先级排序测试用例
+- 覆盖率提升策略规划
+- 测试场景全面性分析
+
+**输出示例**:
+```
+Step 1: 测试需求分析
+  - 识别核心功能和边界条件
+  - 列出潜在的失败场景
+
+Step 2: 测试用例设计
+  - 正常路径测试
+  - 异常路径测试
+  - 边界条件测试
+
+Step 3: 优先级排序
+  - 关键功能优先
+  - 高风险场景优先
+  - 覆盖率缺口优先
+
+Step 4: 实施计划
+  - 单元测试生成
+  - 集成测试设计
+  - 验证策略
+```
+
+---
+
+### 禁用 MCP
+
+```bash
+# 使用传统测试方法，不启用任何 MCP
+/wf_07_test "..." --no-mcp
+```
+
+---
+
+### 🔧 MCP Gateway 集成 (NEW - Task 3.2)
+
+**Gateway 初始化** (所有 MCP 使用前执行):
+```python
+# 导入 MCP Gateway
+from src.mcp.gateway import get_mcp_gateway
+
+# 获取全局 Gateway 实例
+gateway = get_mcp_gateway()
+```
+
+**Serena 工具调用** (自动启用):
+```python
+# 检查可用性
+if gateway.is_available("serena"):
+    # Step 1: 定位需要测试的函数
+    find_tool = gateway.get_tool("serena", "find_symbol")
+
+    target_function = find_tool.call(
+        name_path_pattern="target_function_name",
+        include_body=True
+    )
+
+    # Step 2: 查找函数的所有引用
+    ref_tool = gateway.get_tool("serena", "find_referencing_symbols")
+
+    references = ref_tool.call(
+        name_path="target_function_name",
+        relative_path="src/module.py"
+    )
+
+    # Step 3: 分析依赖关系生成测试
+    # 基于函数体和引用关系设计测试用例
+
+else:
+    print("⚠️ Serena MCP 不可用，使用传统 Grep/Read 工具")
+```
+
+**Sequential-thinking 工具调用** (--think):
+```python
+# 检查可用性
+if gateway.is_available("sequential-thinking"):
+    # 获取工具
+    think_tool = gateway.get_tool("sequential-thinking", "sequentialthinking")
+
+    # 调用工具进行结构化测试策略
+    result = think_tool.call(
+        thought="分析测试需求的第一步...",
+        thoughtNumber=1,
+        totalThoughts=5,
+        nextThoughtNeeded=True
+    )
+else:
+    print("⚠️ Sequential-thinking 不可用，使用标准测试策略")
+```
+
+**组合使用示例** (--think + Serena):
+```python
+# 初始化 Gateway
+gateway = get_mcp_gateway()
+
+# 检查所有 MCP 可用性
+mcp_status = {
+    "think": gateway.is_available("sequential-thinking"),
+    "serena": gateway.is_available("serena")
+}
+
+# 根据可用性组合使用
+if mcp_status["think"]:
+    # Step 1: 结构化分析测试策略
+    think_tool = gateway.get_tool("sequential-thinking", "sequentialthinking")
+    # ...
+
+if mcp_status["serena"]:
+    # Step 2: 精确定位测试目标
+    find_tool = gateway.get_tool("serena", "find_symbol")
+    # ...
+```
+
+**Gateway 优势**:
+- ✅ 统一的 MCP 管理接口
+- ✅ 自动降级（MCP 不可用时回退到标准工具）
+- ✅ 连接池复用（减少多次启动开销）
+- ✅ 工具懒加载（按需初始化）
+
+---
+
 ## 执行上下文
 **输入**: PLANNING.md测试策略 + 代码实现
 **输出**: 测试代码 + 覆盖率报告 + TASK.md更新

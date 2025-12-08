@@ -778,7 +778,7 @@ Edit("tests/User.test.js", update_tests)
 - ⚠️ Checkpoint 阶段必须顺序执行（分析结果）
 - ⚠️ 最终验证不可省略
 
-**更多示例**: [docs/examples/parallel_execution_examples.md](docs/examples/parallel_execution_examples.md)
+**更多示例**: [docs/examples/parallel_execution_overview.md](docs/examples/parallel_execution_overview.md)
 
 ---
 

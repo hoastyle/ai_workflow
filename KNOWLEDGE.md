@@ -2,7 +2,7 @@
 
 **版本**: v1.2
 **创建日期**: 2025-11-06
-**最后更新**: 2025-11-23
+**最后更新**: 2025-12-07
 **目的**: 项目架构决策、设计模式和技术文档的索引中心
 
 > ℹ️ **注意**: 本文件为纯索引和指针，详细内容已分离到 `docs/knowledge/` 目录以减少维护成本和上下文消耗。
@@ -44,6 +44,47 @@
 | Frontmatter 规范 | [docs/reference/FRONTMATTER.md](docs/reference/FRONTMATTER.md) | 高 |
 | Markdown 格式约束 | [docs/reference/MARKDOWN_STYLE.md](docs/reference/MARKDOWN_STYLE.md) | 高 |
 | MCP 集成 | [docs/integration/](docs/integration/) | 高 |
+
+### 并行开发和审查示例 (新增 2025-12-07)
+
+**多代理审查模式** (Multi-agent Review):
+
+| 主题 | 路径 | 优先级 | 说明 |
+|------|------|--------|------|
+| 多代理审查概览 | [docs/examples/multi_agent_review_overview.md](docs/examples/multi_agent_review_overview.md) | 高 | Agent 协调和角色分工策略 |
+| 案例1: API重构审查 | [docs/examples/multi_agent_review_case1_api_refactor.md](docs/examples/multi_agent_review_case1_api_refactor.md) | 中 | 5个专家并行审查REST API |
+| 案例2: 数据库迁移审查 | [docs/examples/multi_agent_review_case2_database_migration.md](docs/examples/multi_agent_review_case2_database_migration.md) | 中 | MongoDB→PostgreSQL迁移验证 |
+| 案例3: 安全加固审查 | [docs/examples/multi_agent_review_case3_security.md](docs/examples/multi_agent_review_case3_security.md) | 中 | 6个安全维度并行评估 |
+| 案例4: 性能优化审查 | [docs/examples/multi_agent_review_case4_performance.md](docs/examples/multi_agent_review_case4_performance.md) | 中 | 5倍性能提升方案验证 |
+| 多代理审查技巧 | [docs/examples/multi_agent_review_tips.md](docs/examples/multi_agent_review_tips.md) | 中 | Agent选择、避坑和最佳实践 |
+
+**并行审查模式** (Parallel Review - Wave→Checkpoint→Wave):
+
+| 主题 | 路径 | 优先级 | 说明 |
+|------|------|--------|------|
+| 并行审查概览 | [docs/examples/parallel_review_overview.md](docs/examples/parallel_review_overview.md) | 高 | Wave→Checkpoint→Wave模式 |
+| 案例1: 多文件代码审查 | [docs/examples/parallel_review_case1_multifile.md](docs/examples/parallel_review_case1_multifile.md) | 中 | 8文件并行读取和4维度审查 |
+| 案例2: 大规模重构审查 | [docs/examples/parallel_review_case2_refactoring.md](docs/examples/parallel_review_case2_refactoring.md) | 中 | 15文件React Hooks重构验证 |
+| 案例3: 测试覆盖率审查 | [docs/examples/parallel_review_case3_test_coverage.md](docs/examples/parallel_review_case3_test_coverage.md) | 中 | 78%→92%覆盖率提升路线图 |
+| 案例4: 文档代码同步审查 | [docs/examples/parallel_review_case4_doc_sync.md](docs/examples/parallel_review_case4_doc_sync.md) | 中 | API文档与代码一致性验证 |
+| 并行审查技巧 | [docs/examples/parallel_review_tips.md](docs/examples/parallel_review_tips.md) | 中 | 性能优化和决策树 |
+
+**并行执行模式** (Parallel Execution):
+
+| 主题 | 路径 | 优先级 | 说明 |
+|------|------|--------|------|
+| 并行执行概览 | [docs/examples/parallel_execution_overview.md](docs/examples/parallel_execution_overview.md) | 高 | Wave→Checkpoint→Wave核心机制 |
+| 案例1: 功能开发 | [docs/examples/parallel_execution_case1_feature_development.md](docs/examples/parallel_execution_case1_feature_development.md) | 中 | 3 agents并行开发注册功能 |
+| 案例2: 数据迁移 | [docs/examples/parallel_execution_case2_migration.md](docs/examples/parallel_execution_case2_migration.md) | 中 | 顺序链模式迁移3阶段 |
+| 案例3: 测试开发 | [docs/examples/parallel_execution_case3_testing.md](docs/examples/parallel_execution_case3_testing.md) | 中 | 并行测试策略和覆盖率 |
+| 案例4: 系统集成 | [docs/examples/parallel_execution_case4_integration.md](docs/examples/parallel_execution_case4_integration.md) | 中 | 微服务集成3阶段协调 |
+| 并行执行技巧 | [docs/examples/parallel_execution_tips.md](docs/examples/parallel_execution_tips.md) | 中 | 性能优化和常见问题 |
+
+**Agent协调示例**:
+
+| 主题 | 路径 | 优先级 | 说明 |
+|------|------|--------|------|
+| Agent模式协调实战 | [docs/examples/agent_coordination_examples.md](docs/examples/agent_coordination_examples.md) | 高 | 3种策略6个完整案例 |
 
 ### 文档生成模板和工作流 (新增 2025-11-27)
 
