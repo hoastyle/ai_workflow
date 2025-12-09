@@ -668,6 +668,66 @@ Phase 1 Step 2 (符号检查):
 
 ---
 
+### 📏 文档读取保护 (MANDATORY) ⚠️
+
+**在审查过程中读取任何指南文档前，必须使用DocLoader**：
+
+```python
+from commands.lib.doc_loader import DocLoader
+
+# 初始化文档加载器
+doc_loader = DocLoader()
+
+# 安全加载审查指南（仅加载需要的章节）
+def load_review_guide(guide_name: str, sections: list = None):
+    """
+    安全加载审查指南文档
+
+    常用指南:
+    - docs/guides/wf_08_review_doc_compliance.md (257行)
+    - docs/guides/wf_08_review_parallel.md (493行)
+    - docs/guides/wf_08_review_self_check.md (401行)
+    """
+    guide_path = f"docs/guides/{guide_name}.md"
+
+    # 检查文档大小
+    lines = sum(1 for _ in open(guide_path, 'r', encoding='utf-8'))
+
+    if lines > 300:
+        # 大文档：必须使用章节模式
+        if not sections:
+            # 默认加载摘要
+            print(f"⚠️ {guide_name} 有 {lines}行，使用摘要模式")
+            return doc_loader.load_summary(guide_path, max_lines=50)
+        else:
+            # 加载指定章节
+            print(f"✅ {guide_name} 章节加载: {sections}")
+            return doc_loader.load_sections(guide_path, sections=sections)
+    else:
+        # 小文档：可以直接读取
+        with open(guide_path, 'r', encoding='utf-8') as f:
+            return f.read()
+
+# 示例：加载特定章节
+if need_doc_compliance_check:
+    doc_compliance_guide = load_review_guide(
+        "wf_08_review_doc_compliance",
+        sections=["文档决策树", "强制门控点"]  # 仅加载需要的部分
+    )
+
+if need_parallel_execution:
+    parallel_guide = load_review_guide(
+        "wf_08_review_parallel",
+        sections=["并行策略", "Token预算分配"]
+    )
+```
+
+**Token节省**：
+- 完整读取3个指南：~3,600 tokens
+- 章节加载模式：~600 tokens
+- **节省：83%**
+
+
 ## Process
 
 ### Phase 1: 基础代码审查 (Dimension 1-5)

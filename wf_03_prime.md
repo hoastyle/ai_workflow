@@ -196,6 +196,83 @@ Prime the AI assistant with comprehensive project context by reading core projec
 **Token 预算影响**: +50-100 tokens (Serena 检测逻辑)
 **性能提升**: 启用后可节省 40-70% 文件读取时间
 
+### Step 0.5: 文档读取保护检查 ⚠️ (MANDATORY)
+
+**在执行任何模式前，必须启用文档读取保护**：
+
+```python
+# 导入DocLoader保护工具
+from commands.lib.doc_loader import DocLoader, estimate_doc_tokens
+
+# 创建文档加载器实例
+doc_loader = DocLoader(serena_available=gateway.is_available("serena") if gateway else False)
+
+# 启用保护模式
+ENABLE_DOC_PROTECTION = True  # 强制开启
+
+def safe_document_load(doc_path: str, mode: str = "auto"):
+    """
+    安全文档加载函数 - 遵循CLAUDE.md中的保护规则
+
+    Args:
+        doc_path: 文档路径
+        mode: 加载模式 ("auto", "summary", "sections", "full")
+
+    Returns:
+        文档内容（根据模式）
+    """
+    import os
+
+    # Step 1: 检查文档大小
+    lines = sum(1 for _ in open(doc_path, 'r', encoding='utf-8'))
+
+    print(f"📏 文档检查: {doc_path} ({lines}行)")
+
+    # Step 2: 根据大小选择策略
+    if mode == "auto":
+        if lines < 100:
+            mode = "full"
+            print("  ✅ 策略: 直接读取（<100行，安全）")
+        elif lines < 300:
+            mode = "summary"
+            print("  ✅ 策略: 摘要模式（100-300行）")
+        elif lines < 800:
+            mode = "sections"
+            print("  ⚠️  策略: 章节模式（300-800行，必须指定sections）")
+        else:
+            mode = "sections"
+            print("  🔴 策略: 强制章节模式（>800行，禁止完整读取）")
+
+    # Step 3: 执行加载
+    if mode == "full" and lines < 100:
+        # 使用 Read tool
+        with open(doc_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+        tokens = estimate_doc_tokens(content)
+        print(f"  📊 Token消耗: ~{tokens}")
+        return content
+    elif mode == "summary":
+        summary = doc_loader.load_summary(doc_path, max_lines=50)
+        tokens = estimate_doc_tokens(summary)
+        print(f"  📊 Token消耗: ~{tokens} (vs ~{lines*3} 全文)")
+        return summary
+    elif mode == "sections":
+        # 需要调用者指定sections参数
+        raise ValueError(f"章节模式需要指定sections参数。文档: {doc_path} ({lines}行)")
+    else:
+        raise ValueError(f"未知模式: {mode}")
+
+# 注册到全局
+globals()['safe_document_load'] = safe_document_load
+```
+
+**保护效果**：
+- ✅ 防止意外读取大文档（>300行）
+- ✅ Token消耗透明化（每次显示预估）
+- ✅ 强制使用DocLoader工具
+- ⚠️ 违规时抛出异常（阻止执行）
+
+
 ### Step 1: 执行选定的加载模式
 
 #### Mode A: Quick Start (默认，~2,500 tokens) ✨ 推荐
