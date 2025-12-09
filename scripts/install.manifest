@@ -53,6 +53,7 @@ declare -ga DOC_FILES=(
 declare -ga GUIDE_FILES=(
     "docs/guides/doc_maintenance_process.md"
     "docs/guides/doc_maintenance_workflows.md"
+    "docs/guides/parallel_execution_pattern.md"
     "docs/guides/wf_03_prime_mcp_serena.md"
     "docs/guides/wf_03_prime_smart_loading.md"
     "docs/guides/wf_03_prime_workflows.md"
@@ -62,6 +63,10 @@ declare -ga GUIDE_FILES=(
     "docs/guides/wf_05_code_doc_sync_guide.md"
     "docs/guides/wf_05_code_serena_guide.md"
     "docs/guides/wf_05_code_workflows.md"
+    "docs/guides/wf_08_review_doc_compliance.md"
+    "docs/guides/wf_08_review_parallel.md"
+    "docs/guides/wf_08_review_process.md"
+    "docs/guides/wf_08_review_self_check.md"
 )
 
 # Example documents - required by wf_14_doc.md (always installed)
