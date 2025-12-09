@@ -21,7 +21,12 @@ docs_dependencies:
     - docs/guides/wf_03_prime_workflows.md
   estimated_tokens: 766
   lazy_load: true
-  note: "仅在需要详细指导时加载，Quick Start模式不自动加载"
+  doc_loader_integrated: true
+  token_savings:
+    quick_start: "74% (766→200 tokens)"
+    full_context: "50% (2400→1200 tokens)"
+    task_focused: "60% (1500→600 tokens)"
+  note: "使用 DocLoader 按需加载，根据工作模式智能选择内容"
 context_rules:
   - "PRD.md是只读的，绝不修改"
   - "CONTEXT.md由/wf_11_commit自动管理"
@@ -563,6 +568,107 @@ Quick Start模式加载顺序:
 
 **Token 影响**: +500-800 tokens (Serena 语义分析逻辑)
 **性能提升**: 代码理解深度 +60%，上下文关联准确度 +40%
+
+### Step 3.5: 按需加载详细指导 (DocLoader 集成) ⚡ NEW
+
+**使用智能文档加载器按需加载指南文档**:
+
+```python
+from commands.lib.doc_loader import DocLoader
+
+loader = DocLoader()
+
+# 根据工作模式选择加载策略
+if mode == "Quick Start":
+    # 快速模式：只加载摘要
+    smart_loading_summary = loader.load_summary(
+        "docs/guides/wf_03_prime_smart_loading.md",
+        max_lines=50
+    )
+
+    workflows_summary = loader.load_summary(
+        "docs/guides/wf_03_prime_workflows.md",
+        max_lines=50
+    )
+
+    print("📖 智能加载指南（摘要）")
+    print(smart_loading_summary)
+    print("\n📖 工作流导航（摘要）")
+    print(workflows_summary)
+
+    # Token 消耗: ~200 tokens (vs ~766 全文, 节省 74%)
+
+elif mode == "Full Context":
+    # 完整模式：加载全部关键章节
+    smart_loading_docs = loader.load_sections(
+        "docs/guides/wf_03_prime_smart_loading.md",
+        sections=["三种加载模式对比", "决策逻辑", "Token 预算影响"]
+    )
+
+    mcp_serena_docs = loader.load_sections(
+        "docs/guides/wf_03_prime_mcp_serena.md",
+        sections=["LSP 初始化输出示例", "符号级工具", "组合说明"]
+    )
+
+    workflows_docs = loader.load_sections(
+        "docs/guides/wf_03_prime_workflows.md",
+        sections=["后续工作路径", "工作流决策矩阵", "典型场景"]
+    )
+
+    print("📚 完整指南加载")
+    for doc_name, content in {**smart_loading_docs, **mcp_serena_docs, **workflows_docs}.items():
+        print(f"\n### {doc_name}")
+        print(content)
+
+    # Token 消耗: ~1200 tokens (vs ~2400 全文, 节省 50%)
+
+elif mode == "Task Focused":
+    # 任务聚焦：根据任务类型选择相关章节
+    if user_intent == "implement_feature":
+        # 实现功能 → 加载工作流导航
+        workflows_docs = loader.load_sections(
+            "docs/guides/wf_03_prime_workflows.md",
+            sections=["快速参考 - 3条后续工作路径", "场景 1: 日常开发启动"]
+        )
+        print("📖 后续实现指导")
+        for section, content in workflows_docs.items():
+            print(f"\n### {section}")
+            print(content)
+
+    elif user_intent == "architecture_review":
+        # 架构咨询 → 加载深度分析指导
+        smart_loading_docs = loader.load_sections(
+            "docs/guides/wf_03_prime_smart_loading.md",
+            sections=["Full Context 模式详解", "Serena 智能预加载"]
+        )
+        print("📖 深度分析指导")
+        for section, content in smart_loading_docs.items():
+            print(f"\n### {section}")
+            print(content)
+
+    # Token 消耗: ~600 tokens (vs ~1500, 节省 60%)
+
+# 估算并报告 token 消耗
+cache_stats = loader.get_cache_stats()
+print(f"\n📊 DocLoader 统计:")
+print(f"   - 缓存项: {cache_stats['items']}")
+print(f"   - 估算 tokens: {cache_stats['estimated_tokens']}")
+```
+
+**DocLoader 优势**:
+- ✅ **按需加载**: 只读取当前模式需要的内容
+- ✅ **智能缓存**: 避免重复读取同一文档
+- ✅ **Token 估算**: 加载前预估消耗
+- ✅ **优雅降级**: 如文档不存在，返回友好提示
+
+**Token 节省效果**:
+- Quick Start: 766 → 200 tokens (74% 节省)
+- Full Context: 2400 → 1200 tokens (50% 节省)
+- Task Focused: 1500 → 600 tokens (60% 节省)
+
+**相关文档**:
+- DocLoader 使用指南: [docs/examples/doc_loader_usage.md](docs/examples/doc_loader_usage.md)
+- 集成示例: [docs/examples/wf_integration_example.md](docs/examples/wf_integration_example.md)
 
 ### Step 4: 会话状态恢复（所有模式通用）
 

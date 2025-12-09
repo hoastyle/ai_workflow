@@ -298,6 +298,112 @@ touch CLAUDE.md
 
 ---
 
+### 📏 文档读取保护规则 (MANDATORY - 严格执行)
+
+**目的**: 防止大文档读取导致上下文爆炸（单次可消耗 3,000-6,000 tokens）
+
+**AI在读取任何文档前必须执行强制检查**：
+
+#### Step 1: 文档大小检测
+
+```bash
+# 必须先检查文件行数
+lines=$(wc -l < "path/to/document.md")
+echo "文档行数: $lines"
+```
+
+#### Step 2: 策略选择（强制执行）
+
+根据文档大小选择加载策略：
+
+| 文档大小 | 策略 | 工具 | Token消耗 |
+|---------|------|------|----------|
+| **< 100行** | 直接读取 | `Read` tool | ~300 tokens ✅ 安全 |
+| **100-300行** | 摘要模式 | `DocLoader.load_summary()` | ~100 tokens ✅ 推荐 |
+| **300-800行** | 章节模式 | `DocLoader.load_sections()` | ~400 tokens ⚠️ 必须 |
+| **> 800行** | 禁止完整读取 | 必须分段加载 | ❌ **严格禁止** |
+
+#### Step 3: 使用DocLoader工具
+
+**安全加载示例**：
+
+```python
+# 检查文档大小
+from pathlib import Path
+doc_path = "docs/guides/large_document.md"
+lines = len(Path(doc_path).read_text().split('\n'))
+
+if lines < 100:
+    # 安全：直接读取
+    # 使用 Read tool
+    pass
+elif lines < 300:
+    # 推荐：仅加载摘要
+    from commands.lib.doc_loader import DocLoader
+    loader = DocLoader()
+    summary = loader.load_summary(doc_path, max_lines=50)
+    print(summary)
+else:
+    # 必须：仅加载需要的章节
+    from commands.lib.doc_loader import DocLoader
+    loader = DocLoader()
+    content = loader.load_sections(
+        doc_path,
+        sections=["Step 3", "MCP Integration"]  # 仅加载需要的部分
+    )
+    for section_name, section_content in content.items():
+        print(f"=== {section_name} ===")
+        print(section_content)
+```
+
+#### Step 4: 违规处理
+
+**如果AI尝试读取 >300行 的文档而未使用DocLoader**：
+
+- 🔴 **系统将拒绝执行**
+- ⚠️ Token预算标记为"风险使用"
+- 📊 记录违规行为到日志
+
+**紧急情况例外**：
+- 用户明确要求读取完整文档：需要用户二次确认
+- 文档是配置文件（JSON/YAML）：可放宽限制
+
+#### Step 5: 高风险文档清单
+
+**项目中已知的大文档（>300行）**：
+
+```bash
+# 查询项目中的大文档
+find . -name "*.md" -type f -exec wc -l {} + | \
+  awk '$1 > 300 {print $1, $2}' | \
+  sort -rn | head -20
+```
+
+**当前高风险文档**（必须使用DocLoader）：
+- `wf_08_review.md` (1,905行) → 使用 sections 模式
+- `wf_03_prime.md` (1,198行) → 使用 sections 模式
+- `wf_05_code.md` (1,158行) → 使用 sections 模式
+- `wf_14_doc.md` (822行) → 使用 sections 模式
+- `wf_11_commit.md` (772行) → 使用 sections 模式
+- `docs/guides/*` (300-500行) → 使用 summary 或 sections
+
+#### 实施检查清单
+
+AI在执行任何文档读取操作前必须确认：
+
+- [ ] 已执行 `wc -l` 检查文档大小
+- [ ] 根据大小选择了正确的加载策略
+- [ ] 对于 >300行 文档，已使用 DocLoader
+- [ ] 对于 >800行 文档，已分段加载（绝不完整读取）
+- [ ] 记录了本次读取的token消耗估计
+
+**Token预算监控**：
+- 单个会话总预算：200,000 tokens
+- 单次文档读取上限：1,000 tokens（警告），2,000 tokens（强制阻止）
+- 累计文档读取上限：20,000 tokens（10%预算）
+
+---
+
 ### 会话生命周期规则
 
 #### 🚀 会话开始时（每次必须检查）

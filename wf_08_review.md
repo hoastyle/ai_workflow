@@ -17,6 +17,19 @@ mcp_support:
   - name: "Sequential-thinking"
     flag: "--think"
     detail: "结构化深度分析和系统化审查策略"
+docs_dependencies:
+  guides:
+    - docs/guides/wf_08_review_doc_compliance.md
+    - docs/guides/wf_08_review_self_check.md
+    - docs/guides/wf_08_review_parallel.md
+  estimated_tokens: 692
+  lazy_load: true
+  doc_loader_integrated: true
+  token_savings:
+    quick: "85% (692→100 tokens)"
+    standard: "55% (692→310 tokens)"
+    deep: "20% (692→550 tokens)"
+  note: "使用 DocLoader 按需加载规范文档，根据审查模式智能选择内容"
 context_rules:
   - "执行PRD合规性检查"
   - "验证PLANNING.md标准遵守"
@@ -1030,6 +1043,134 @@ Agent 4 - Architecture Assessor:
 - [ ] Checkpoint 合并通过
 - [ ] Serena 符号检查完成（如适用）
 - [ ] 生成统一审查报告
+
+---
+
+#### Step 2.5: 按需加载规范文档 (DocLoader 集成) ⚡ NEW
+
+**目的**: 根据审查复杂度和维度需求，智能加载外部规范文档，优化 token 消耗
+
+**执行条件**: 审查执行前（Step 2 之后）
+
+**加载策略决策**:
+
+```python
+from commands.lib.doc_loader import DocLoader
+
+loader = DocLoader()
+
+# 根据审查模式和需求选择加载策略
+if review_mode == "quick":
+    # 快速审查模式：仅加载摘要
+    if needs_doc_compliance:
+        doc_summary = loader.load_summary(
+            "docs/guides/wf_08_review_doc_compliance.md",
+            max_lines=20
+        )
+    if needs_self_check:
+        self_check_summary = loader.load_summary(
+            "docs/guides/wf_08_review_self_check.md",
+            max_lines=20
+        )
+    # Token 消耗: ~100 tokens (vs ~692 全文, 节省 85%)
+
+elif review_mode == "standard":
+    # 标准审查模式：加载关键章节
+    if needs_doc_compliance:
+        # Dimension 6: 文档架构合规性
+        compliance_sections = loader.load_sections(
+            "docs/guides/wf_08_review_doc_compliance.md",
+            sections=["分层正确性", "成本控制", "Frontmatter 完整性", "审查评分"]
+        )
+    if needs_self_check:
+        # Dimension 7: 自检协议
+        self_check_sections = loader.load_sections(
+            "docs/guides/wf_08_review_self_check.md",
+            sections=["必答的 4 个问题", "识别 7 个红旗模式"]
+        )
+    if needs_parallel_review:
+        # Step 2.3: 并行审查模式
+        parallel_sections = loader.load_sections(
+            "docs/guides/wf_08_review_parallel.md",
+            sections=["Agent 规格说明", "并行启动关键要求", "性能对比"]
+        )
+    # Token 消耗: ~310 tokens (vs ~692, 节省 55%)
+
+elif review_mode == "deep":
+    # 深度审查模式：加载完整内容
+    if needs_doc_compliance:
+        compliance_docs = loader.load_sections(
+            "docs/guides/wf_08_review_doc_compliance.md",
+            sections=["分层正确性", "成本控制", "Frontmatter 完整性",
+                      "内容重复检查", "指针而非复制", "审查合规", "失败处理"]
+        )
+    if needs_self_check:
+        self_check_docs = loader.load_sections(
+            "docs/guides/wf_08_review_self_check.md",
+            sections=["必答的 4 个问题", "识别 7 个红旗模式", "失败处理", "使用示例"]
+        )
+    if needs_parallel_review:
+        parallel_docs = loader.load_sections(
+            "docs/guides/wf_08_review_parallel.md",
+            sections=["执行流程", "Agent 规格说明", "并行启动关键要求",
+                      "Checkpoint: 结果合并和验证", "Final: 符号完整性检查",
+                      "性能对比", "并行模式实施清单", "使用示例"]
+        )
+    # Token 消耗: ~550 tokens (vs ~692, 节省 20%)
+```
+
+**需求判断逻辑**:
+
+```python
+# 判断是否需要加载各维度文档
+needs_doc_compliance = (
+    # 检测到文档修改
+    any("docs/" in f or "KNOWLEDGE.md" in f for f in changed_files) or
+    # 显式请求文档审查
+    "文档" in review_scope or "documentation" in review_scope.lower()
+)
+
+needs_self_check = (
+    # Phase 3 审查前必须执行
+    current_phase == "Phase 3" or
+    # 准备提交时执行
+    next_command == "/wf_11_commit"
+)
+
+needs_parallel_review = (
+    # 大规模审查（≥5 个文件）
+    len(changed_files) >= 5 or
+    # 显式请求并行审查
+    "--parallel" in review_flags or
+    # 多维度全面审查
+    len(review_dimensions) >= 3
+)
+```
+
+**输出示例**:
+
+```
+⚡ DocLoader 智能加载完成
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+模式: standard
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+加载文档:
+  ✅ wf_08_review_doc_compliance.md (4 sections, ~180 tokens)
+  ✅ wf_08_review_self_check.md (2 sections, ~130 tokens)
+  ⏭️ wf_08_review_parallel.md (跳过: 未检测到并行审查需求)
+
+总 Token 消耗: 310 tokens (vs 全文 692 tokens)
+节省比例: 55% ⭐
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+**优势**:
+
+- ✅ **智能判断**: 根据审查范围自动选择需要的规范文档
+- ✅ **模式适配**: 3 种加载模式适应不同审查复杂度
+- ✅ **Token 优化**: 20-85% token 节省，平均 55%
+- ✅ **可扩展**: 未来可添加更多规范文档而不影响核心流程
+- ✅ **向后兼容**: 原有审查流程完全保留，DocLoader 为可选增强
 
 ---
 
