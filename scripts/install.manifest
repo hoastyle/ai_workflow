@@ -37,6 +37,7 @@ declare -ga SCRIPT_FILES=(
     "install_utils.sh"
     "frontmatter_utils.py"
     "doc_graph_builder.py"
+    "doc_guard.py"
 )
 
 # Optional documentation files (installed with --include-docs)

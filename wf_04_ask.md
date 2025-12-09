@@ -400,6 +400,11 @@ Break-even: 只需避免 1 次错误方向
 
 ### Step 1: Standard Consultation (default)
 
+**加载项目上下文（使用 Doc Guard）**:
+```bash
+python scripts/doc_guard.py --docs "docs/management/PLANNING.md,KNOWLEDGE.md"
+```
+
 1. **Context Integration**:
    - Review relevant PLANNING.md sections
    - Consider current TASK.md progress

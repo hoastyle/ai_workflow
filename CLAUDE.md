@@ -6,6 +6,26 @@ This file provides essential execution rules for Claude Code when working with t
 
 ---
 
+## 🚨 强制执行规则（ZERO TOLERANCE）
+
+**1. 文档读取保护**：
+- ❌ **严格禁止**：直接 Read 任何 >300 行的文档
+- ✅ **必须使用**：`python scripts/doc_guard.py` 工具
+- ⚠️ **违规后果**：上下文消耗 15,000-30,000 tokens，会话轮次减少 60%+
+
+**2. 工具强制使用**：
+```bash
+# 正确：使用 Doc Guard 工具
+python scripts/doc_guard.py --docs "PLANNING.md,TASK.md"
+
+# 错误：直接 Read 大文档
+Read docs/architecture/LARGE_FILE.md  # ❌ 禁止
+```
+
+**详细规则**: [§ 文档读取保护规则](#📏-文档读取保护规则-mandatory---严格执行)
+
+---
+
 ## 📋 配置层级说明
 
 本文件是**全局默认配置**，通过软链接 `~/.claude/CLAUDE.md` 使所有使用命令系统的项目共享。
@@ -401,6 +421,64 @@ AI在执行任何文档读取操作前必须确认：
 - 单个会话总预算：200,000 tokens
 - 单次文档读取上限：1,000 tokens（警告），2,000 tokens（强制阻止）
 - 累计文档读取上限：20,000 tokens（10%预算）
+
+#### 强制执行工具：Doc Guard
+
+**工具路径**：`scripts/doc_guard.py`
+
+**核心功能**：
+- ✅ 自动检测文档大小（`wc -l`）
+- ✅ 智能选择加载策略（summary/sections/full）
+- ❌ 拦截 >300 行文档的直接读取
+- ✅ Token 预算管理和统计
+- ✅ 提供清晰的错误提示和建议
+
+**使用方式**：
+```bash
+# 基础用法
+python scripts/doc_guard.py --docs "PLANNING.md,TASK.md"
+
+# 指定章节（大文档必须）
+python scripts/doc_guard.py \
+  --docs "docs/guides/large_guide.md" \
+  --sections '{"docs/guides/large_guide.md": ["Step 3", "MCP Integration"]}'
+
+# 自定义 token 预算
+python scripts/doc_guard.py --docs "PLANNING.md" --budget 5000
+```
+
+**AI 职责**：
+- ✅ **必须使用** `doc_guard.py` 工具加载所有文档
+- ❌ **不得直接** 调用 Read 工具读取 >100 行的文档
+- ✅ 如果工具报错，根据提示指定 `--sections` 参数
+
+**示例场景**：
+```bash
+# ❌ 错误：直接 Read 大文档
+Read docs/architecture/LCPS_COMPREHENSIVE_GUIDE.md  # 1119 行
+
+# ✅ 正确：使用 doc_guard 工具
+python scripts/doc_guard.py \
+  --docs "docs/architecture/LCPS_COMPREHENSIVE_GUIDE.md" \
+  --sections '{"docs/architecture/LCPS_COMPREHENSIVE_GUIDE.md": ["系统架构", "核心模块"]}'
+```
+
+**工具输出示例**：
+```
+📚 Doc Guard 开始加载 1 个文档...
+
+📄 KNOWLEDGE.md: 519 行
+❌ 文档 KNOWLEDGE.md 有 519 行，必须指定 --sections 参数
+  建议: 使用 --sections '{"KNOWLEDGE.md": ["章节1", "章节2"]}'
+
+================================================================================
+📊 Doc Guard 加载统计
+================================================================================
+  • Token 消耗: ~0
+  • Token 预算: 20000
+  • 预算使用率: 0.0%
+⚠️  违规记录: 1 个文档被拒绝
+```
 
 ---
 

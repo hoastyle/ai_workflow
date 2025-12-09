@@ -124,6 +124,11 @@ Prime the AI assistant with comprehensive project context by reading core projec
 2. **Task Focused** (任务导向): 加载当前任务相关上下文 (~600 tokens)
 3. **Full Context** (完整上下文): 加载所有管理文档 (~1200 tokens)
 
+**文档加载（强制使用 Doc Guard 工具）**:
+```bash
+python scripts/doc_guard.py --docs "docs/management/PLANNING.md,docs/management/TASK.md,KNOWLEDGE.md"
+```
+
 **执行步骤**:
 1. 检测文档可用性（PLANNING.md, TASK.md 等）
 2. 选择加载模式（默认：Quick Start）
