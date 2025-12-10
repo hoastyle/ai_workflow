@@ -6,12 +6,73 @@
 
 ## 📑 目录
 
+- [Serena MCP 连接问题](#serena-mcp-连接问题) ⭐ **新增**
 - [上下文和会话问题](#上下文和会话问题)
 - [命令执行问题](#命令执行问题)
 - [文件和权限问题](#文件和权限问题)
 - [Git和提交问题](#git和提交问题)
 - [Pre-commit问题](#pre-commit问题)
 - [其他常见问题](#其他常见问题)
+
+---
+
+## Serena MCP 连接问题
+
+### 问题：`/wf_03_prime` 出现 "Error retrieving agent output"
+
+**症状**:
+- 运行 `/wf_03_prime` 时看到以下错误：
+  ```
+  ● Agent Output wf_03_prime
+    ⎿ Error retrieving agent output
+  ```
+- 或者间歇性出现无法连接到 Serena MCP 的问题
+- `/wf_03_prime` 执行速度变慢或超时
+
+**根本原因**:
+- Serena MCP 服务器未启动或已崩溃
+- LSP 初始化超时（项目代码库过大）
+- 网络或文件系统延迟导致连接失败
+
+**快速解决**:
+
+**方案 1: 重启 Claude Code（最简单）**
+```bash
+# 关闭 Claude Code
+pkill -f "claude"
+
+# 重新启动 Claude Code 或终端
+
+# 重试
+/wf_03_prime
+```
+
+**方案 2: 运行诊断脚本**
+```bash
+# 自动诊断所有问题
+bash scripts/diagnose_mcp.sh
+
+# 根据输出按步骤解决
+```
+
+**方案 3: 临时禁用 Serena（快速规避）**
+```bash
+# 编辑 ~/.claude/mcp.json，注释掉 "serena" 部分
+nano ~/.claude/mcp.json
+
+# 重启 Claude Code
+# 系统会自动降级到传统模式
+```
+
+**完整故障排查指南**：
+👉 详见 [docs/SERENA_MCP_TROUBLESHOOTING.md](docs/SERENA_MCP_TROUBLESHOOTING.md)
+
+该文档包含：
+- ✅ 完整的根本原因分析
+- ✅ 逐步诊断流程
+- ✅ 针对不同情况的解决方案
+- ✅ 预防措施和最佳实践
+- ✅ 性能优化建议
 
 ---
 

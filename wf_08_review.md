@@ -46,8 +46,8 @@ docs: ["wf_08_review_process.md", "parallel_execution_pattern.md"]
 
 ---
 ## 执行上下文
-**输入**: PLANNING.md标准 + KNOWLEDGE.md模式 + 代码  
-**输出**: 审查报告 + TASK.md改进任务  
+**输入**: PLANNING.md标准 + KNOWLEDGE.md模式 + 代码
+**输出**: 审查报告 + TASK.md改进任务
 **依赖**: /wf_07_test → **审查** → /wf_09_refactor → /wf_11_commit
 
 ## Usage

@@ -38,6 +38,8 @@ declare -ga SCRIPT_FILES=(
     "frontmatter_utils.py"
     "doc_graph_builder.py"
     "doc_guard.py"
+    "diagnose_mcp.sh"
+    "wf_03_prime_launcher.py"
 )
 
 # Optional documentation files (installed with --include-docs)
@@ -46,6 +48,9 @@ declare -ga DOC_FILES=(
     "WORKFLOWS.md"
     "TROUBLESHOOTING.md"
     "PHILOSOPHY.md"
+    "SERENA_MCP_SOLUTION.md"
+    "docs/QUICK_START_MCP.md"
+    "docs/SERENA_MCP_TROUBLESHOOTING.md"
 )
 
 # Guide documents - extracted from Tier 1 optimization (always installed)

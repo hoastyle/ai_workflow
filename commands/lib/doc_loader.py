@@ -293,13 +293,18 @@ class DocLoader:
         - ## Section Title (h2)
         - ### Section Title (h3)
 
+        Supports:
+        - Emoji prefixes (e.g., "📚 文档索引")
+        - Fuzzy matching (partial title match)
+        - Extra content in parentheses (e.g., "ADR (Architecture Decision Records)")
+
         Stops at:
         - Next heading of same or higher level
         - End of file
 
         Args:
             doc_path: Absolute document path
-            section: Section title to extract
+            section: Section title to extract (can be partial, e.g., "文档索引" matches "📚 文档索引")
 
         Returns:
             Section content (including heading)
@@ -307,10 +312,13 @@ class DocLoader:
         with open(doc_path, 'r', encoding='utf-8') as f:
             content = f.read()
 
-        # Pattern to match section and all content until next heading
-        # Supports h1/h2/h3 headings
-        # Note: {{1,3}} escapes curly braces in f-string
-        pattern = rf'^(#{{1,3}}\s+{re.escape(section)}.*?)(?=\n#{{1,3}}\s+|\Z)'
+        # Fuzzy pattern: matches any h1-h3 heading containing the section title
+        # Supports emoji prefixes and parenthetical additions
+        # Examples:
+        #   section="文档索引" matches "## 📚 文档索引"
+        #   section="ADR" matches "## 🏗️ 架构决策记录 (ADR)"
+        #   section="常见问题" matches "## ❓ 文档生成常见问题"
+        pattern = rf'^(#{{1,3}}\s+.*?{re.escape(section)}.*?)(?=\n#{{1,3}}\s+|\Z)'
 
         match = re.search(pattern, content, re.MULTILINE | re.DOTALL)
 

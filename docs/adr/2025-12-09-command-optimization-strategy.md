@@ -471,7 +471,7 @@ docs/integration/.summaries/MCP_INTEGRATION_STRATEGY.summary.md (80行)
 ### 🔄 下次审查
 
 **时间**: Phase 2完成后（预计 2025-12-16）
-**重点**: 
+**重点**:
 - 命令瘦身效果评估
 - Token节省的实际使用数据
 - 用户反馈收集
@@ -561,7 +561,7 @@ docs/integration/.summaries/MCP_INTEGRATION_STRATEGY.summary.md (80行)
 ### 🔄 下次审查
 
 **时间**: Phase 2.2完成后（预计 2025-12-12）
-**重点**: 
+**重点**:
 - wf_08_review 和 wf_05_code 进一步瘦身效果
 - Frontmatter 简化的影响
 - 整体平均行数是否达到300行目标
@@ -678,7 +678,7 @@ docs/integration/.summaries/MCP_INTEGRATION_STRATEGY.summary.md (80行)
 ### 🔄 下次审查
 
 **时间**: Phase 2.3完成后（预计 2025-12-13）或根据用户需求决定是否继续
-**重点**: 
+**重点**:
 - wf_08_review 和 wf_05_code 是否达到目标行数
 - Frontmatter 简化的实际效果
 - 整体命令平均行数是否<300行

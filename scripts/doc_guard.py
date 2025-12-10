@@ -146,7 +146,9 @@ class DocGuard:
                 )
             strategy = f"章节模式 {sections}"
             if self.loader:
-                content = self.loader.load_sections(doc_path, sections)
+                section_dict = self.loader.load_sections(doc_path, sections)
+                # 合并所有章节内容
+                content = "\n\n".join(section_dict.values())
             else:
                 # 降级：读取前100行并提示
                 content = self._read_head(doc_path, 100)

@@ -402,7 +402,7 @@ Break-even: 只需避免 1 次错误方向
 
 **加载项目上下文（使用 Doc Guard）**:
 ```bash
-python scripts/doc_guard.py --docs "docs/management/PLANNING.md,KNOWLEDGE.md"
+python ~/.claude/commands/scripts/doc_guard.py --docs "docs/management/PLANNING.md,KNOWLEDGE.md"
 ```
 
 1. **Context Integration**:

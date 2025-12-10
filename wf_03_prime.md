@@ -126,7 +126,7 @@ Prime the AI assistant with comprehensive project context by reading core projec
 
 **文档加载（强制使用 Doc Guard 工具）**:
 ```bash
-python scripts/doc_guard.py --docs "docs/management/PLANNING.md,docs/management/TASK.md,KNOWLEDGE.md"
+python ~/.claude/commands/scripts/doc_guard.py --docs "docs/management/PLANNING.md,docs/management/TASK.md,KNOWLEDGE.md"
 ```
 
 **执行步骤**:
