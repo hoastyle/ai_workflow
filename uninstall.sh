@@ -627,6 +627,246 @@ uninstall_references() {
     return 0
 }
 
+uninstall_commands_lib() {
+    echo ""
+    info "Removing commands library files..."
+
+    local lib_dir="$COMMANDS_DIR/commands/lib"
+    local removed_count=0
+    local fail_count=0
+
+    if [[ ! -d "$lib_dir" ]]; then
+        verbose "Commands library directory does not exist"
+        return 0
+    fi
+
+    # Use manifest-based deletion if available
+    if manifest_exists; then
+        # Read from manifest - only delete tracked library files
+        while IFS= read -r rel_path; do
+            local full_path="${INSTALL_DIR}/${rel_path}"
+            # Only process files in library directory
+            if [[ "$full_path" == "$lib_dir"/* ]]; then
+                if [[ ! -e "$full_path" ]]; then
+                    continue
+                fi
+
+                if [[ $DRY_RUN -eq 1 ]]; then
+                    info "[DRY RUN] Would remove: ${rel_path#commands/}"
+                    ((removed_count++))
+                else
+                    if rm -f "$full_path"; then
+                        ((removed_count++))
+                        verbose "Removed: $full_path"
+                    else
+                        error "Failed to remove: $full_path"
+                        ((fail_count++))
+                    fi
+                fi
+            fi
+        done < <(read_manifest)
+    else
+        # Fallback: use COMMANDS_LIB_FILES array (legacy)
+        warning "No manifest found - using fallback library detection"
+        for lib_file in "${COMMANDS_LIB_FILES[@]}"; do
+            local target="$COMMANDS_DIR/$lib_file"
+
+            if [[ ! -e "$target" ]]; then
+                continue
+            fi
+
+            if [[ $DRY_RUN -eq 1 ]]; then
+                info "[DRY RUN] Would remove: $lib_file"
+                ((removed_count++))
+            else
+                if rm -f "$target"; then
+                    ((removed_count++))
+                    verbose "Removed: $target"
+                else
+                    error "Failed to remove: $target"
+                    ((fail_count++))
+                fi
+            fi
+        done
+    fi
+
+    # Clean up empty directories
+    if [[ $DRY_RUN -ne 1 ]]; then
+        cleanup_empty_directories "$lib_dir" "$COMMANDS_DIR/commands" "$COMMANDS_DIR" 2>/dev/null
+    fi
+
+    if [[ $fail_count -gt 0 ]]; then
+        error "Failed to remove $fail_count library file(s)"
+        return 1
+    fi
+
+    if [[ $removed_count -gt 0 ]]; then
+        success "Removed $removed_count library file(s)"
+    fi
+
+    return 0
+}
+
+uninstall_commands_agents() {
+    echo ""
+    info "Removing commands agent files..."
+
+    local agents_dir="$COMMANDS_DIR/commands/agents"
+    local removed_count=0
+    local fail_count=0
+
+    if [[ ! -d "$agents_dir" ]]; then
+        verbose "Commands agents directory does not exist"
+        return 0
+    fi
+
+    # Use manifest-based deletion if available
+    if manifest_exists; then
+        # Read from manifest - only delete tracked agent files
+        while IFS= read -r rel_path; do
+            local full_path="${INSTALL_DIR}/${rel_path}"
+            # Only process files in agents directory
+            if [[ "$full_path" == "$agents_dir"/* ]]; then
+                if [[ ! -e "$full_path" ]]; then
+                    continue
+                fi
+
+                if [[ $DRY_RUN -eq 1 ]]; then
+                    info "[DRY RUN] Would remove: ${rel_path#commands/}"
+                    ((removed_count++))
+                else
+                    if rm -f "$full_path"; then
+                        ((removed_count++))
+                        verbose "Removed: $full_path"
+                    else
+                        error "Failed to remove: $full_path"
+                        ((fail_count++))
+                    fi
+                fi
+            fi
+        done < <(read_manifest)
+    else
+        # Fallback: use COMMANDS_AGENTS_FILES array (legacy)
+        warning "No manifest found - using fallback agents detection"
+        for agent_file in "${COMMANDS_AGENTS_FILES[@]}"; do
+            local target="$COMMANDS_DIR/$agent_file"
+
+            if [[ ! -e "$target" ]]; then
+                continue
+            fi
+
+            if [[ $DRY_RUN -eq 1 ]]; then
+                info "[DRY RUN] Would remove: $agent_file"
+                ((removed_count++))
+            else
+                if rm -f "$target"; then
+                    ((removed_count++))
+                    verbose "Removed: $target"
+                else
+                    error "Failed to remove: $target"
+                    ((fail_count++))
+                fi
+            fi
+        done
+    fi
+
+    # Clean up empty directories
+    if [[ $DRY_RUN -ne 1 ]]; then
+        cleanup_empty_directories "$agents_dir" "$COMMANDS_DIR/commands" "$COMMANDS_DIR" 2>/dev/null
+    fi
+
+    if [[ $fail_count -gt 0 ]]; then
+        error "Failed to remove $fail_count agent file(s)"
+        return 1
+    fi
+
+    if [[ $removed_count -gt 0 ]]; then
+        success "Removed $removed_count agent file(s)"
+    fi
+
+    return 0
+}
+
+uninstall_src_mcp() {
+    echo ""
+    info "Removing MCP source files..."
+
+    local mcp_dir="$COMMANDS_DIR/src/mcp"
+    local removed_count=0
+    local fail_count=0
+
+    if [[ ! -d "$mcp_dir" ]]; then
+        verbose "MCP source directory does not exist"
+        return 0
+    fi
+
+    # Use manifest-based deletion if available
+    if manifest_exists; then
+        # Read from manifest - only delete tracked MCP files
+        while IFS= read -r rel_path; do
+            local full_path="${INSTALL_DIR}/${rel_path}"
+            # Only process files in MCP directory
+            if [[ "$full_path" == "$mcp_dir"/* || "$full_path" == "$COMMANDS_DIR/src/__init__.py" ]]; then
+                if [[ ! -e "$full_path" ]]; then
+                    continue
+                fi
+
+                if [[ $DRY_RUN -eq 1 ]]; then
+                    info "[DRY RUN] Would remove: ${rel_path#commands/}"
+                    ((removed_count++))
+                else
+                    if rm -f "$full_path"; then
+                        ((removed_count++))
+                        verbose "Removed: $full_path"
+                    else
+                        error "Failed to remove: $full_path"
+                        ((fail_count++))
+                    fi
+                fi
+            fi
+        done < <(read_manifest)
+    else
+        # Fallback: use SRC_MCP_FILES array (legacy)
+        warning "No manifest found - using fallback MCP detection"
+        for mcp_file in "${SRC_MCP_FILES[@]}"; do
+            local target="$COMMANDS_DIR/$mcp_file"
+
+            if [[ ! -e "$target" ]]; then
+                continue
+            fi
+
+            if [[ $DRY_RUN -eq 1 ]]; then
+                info "[DRY RUN] Would remove: $mcp_file"
+                ((removed_count++))
+            else
+                if rm -f "$target"; then
+                    ((removed_count++))
+                    verbose "Removed: $target"
+                else
+                    error "Failed to remove: $target"
+                    ((fail_count++))
+                fi
+            fi
+        done
+    fi
+
+    # Clean up empty directories
+    if [[ $DRY_RUN -ne 1 ]]; then
+        cleanup_empty_directories "$mcp_dir" "$COMMANDS_DIR/src" "$COMMANDS_DIR" 2>/dev/null
+    fi
+
+    if [[ $fail_count -gt 0 ]]; then
+        error "Failed to remove $fail_count MCP file(s)"
+        return 1
+    fi
+
+    if [[ $removed_count -gt 0 ]]; then
+        success "Removed $removed_count MCP file(s)"
+    fi
+
+    return 0
+}
+
 uninstall_documentation() {
     echo ""
     info "Removing documentation files..."
@@ -827,6 +1067,9 @@ main() {
     uninstall_guides || exit 1  # Critical - guides are referenced by commands
     uninstall_examples || exit 1  # Critical - examples are referenced by wf_14_doc command
     uninstall_references || exit 1  # Critical - references are referenced by commands
+    uninstall_commands_lib || exit 1  # Critical - libraries used by coordination engine
+    uninstall_commands_agents || exit 1  # Critical - agent definitions for multi-agent workflows
+    uninstall_src_mcp || exit 1  # Critical - MCP Gateway required by all commands
     uninstall_documentation || exit 0  # Non-critical
 
     # Cleanup backups (if --clean-backup)

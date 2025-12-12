@@ -66,6 +66,30 @@ verify: ## Verify installation is working correctly
 		echo "   ⚠️  Reference documents directory not found"; \
 	fi
 	@echo ""
+	@echo "📚 Installed library files:"
+	@if [ -d ~/.claude/commands/commands/lib ]; then \
+		find ~/.claude/commands/commands/lib -name "*.py" 2>/dev/null | wc -l | xargs -I {} echo "   {} library files found"; \
+		find ~/.claude/commands/commands/lib -name "*.py" 2>/dev/null | sed 's|.*/||' | sed 's/^/   - /'; \
+	else \
+		echo "   ❌ Library directory not found"; \
+	fi
+	@echo ""
+	@echo "🤖 Installed agent files:"
+	@if [ -d ~/.claude/commands/commands/agents ]; then \
+		find ~/.claude/commands/commands/agents -name "*.md" 2>/dev/null | wc -l | xargs -I {} echo "   {} agent files found"; \
+		find ~/.claude/commands/commands/agents -name "*.md" 2>/dev/null | sed 's|.*/||' | sed 's/^/   - /'; \
+	else \
+		echo "   ❌ Agents directory not found"; \
+	fi
+	@echo ""
+	@echo "🔌 Installed MCP source files:"
+	@if [ -d ~/.claude/commands/src/mcp ]; then \
+		find ~/.claude/commands/src/mcp -name "*.py" 2>/dev/null | wc -l | xargs -I {} echo "   {} MCP source files found"; \
+		find ~/.claude/commands/src/mcp -name "*.py" 2>/dev/null | sed 's|.*/||' | sed 's/^/   - /'; \
+	else \
+		echo "   ❌ MCP source directory not found"; \
+	fi
+	@echo ""
 	@echo "✅ Configuration file:"
 	@[ -f ~/.claude/CLAUDE.md ] && echo "   ✅ ~/.claude/CLAUDE.md exists" || echo "   ❌ ~/.claude/CLAUDE.md not found"
 	@echo ""

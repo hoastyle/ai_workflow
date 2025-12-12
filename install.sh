@@ -616,6 +616,162 @@ install_references() {
     return 0
 }
 
+install_commands_lib() {
+    echo ""
+    info "Installing commands library files..."
+
+    local lib_count=0
+    local fail_count=0
+
+    for lib_file in "${COMMANDS_LIB_FILES[@]}"; do
+        local source_file="$PROJECT_ROOT/$lib_file"
+
+        if [[ ! -f "$source_file" ]]; then
+            verbose "Library file not found: $lib_file"
+            continue
+        fi
+
+        local target="$COMMANDS_DIR/$lib_file"
+        local target_dir=$(dirname "$target")
+
+        if [[ $DRY_RUN -eq 1 ]]; then
+            info "[DRY RUN] Would install: $lib_file"
+            ((lib_count++))
+        else
+            mkdir -p "$target_dir"
+            if [[ $INSTALL_METHOD == "link" ]]; then
+                if install_file_link "$source_file" "$target"; then
+                    ((lib_count++))
+                    add_to_manifest "$target"  # Track installed file
+                else
+                    warning "Failed to install: $lib_file"
+                    ((fail_count++))
+                fi
+            else
+                if install_file_copy "$source_file" "$target"; then
+                    ((lib_count++))
+                    add_to_manifest "$target"  # Track installed file
+                else
+                    warning "Failed to install: $lib_file"
+                    ((fail_count++))
+                fi
+            fi
+        fi
+    done
+
+    if [[ $fail_count -gt 0 ]]; then
+        error "Failed to install $fail_count library file(s)"
+        return 1
+    fi
+
+    success "Installed $lib_count library file(s)"
+    return 0
+}
+
+install_commands_agents() {
+    echo ""
+    info "Installing commands agent files..."
+
+    local agents_count=0
+    local fail_count=0
+
+    for agent_file in "${COMMANDS_AGENTS_FILES[@]}"; do
+        local source_file="$PROJECT_ROOT/$agent_file"
+
+        if [[ ! -f "$source_file" ]]; then
+            verbose "Agent file not found: $agent_file"
+            continue
+        fi
+
+        local target="$COMMANDS_DIR/$agent_file"
+        local target_dir=$(dirname "$target")
+
+        if [[ $DRY_RUN -eq 1 ]]; then
+            info "[DRY RUN] Would install: $agent_file"
+            ((agents_count++))
+        else
+            mkdir -p "$target_dir"
+            if [[ $INSTALL_METHOD == "link" ]]; then
+                if install_file_link "$source_file" "$target"; then
+                    ((agents_count++))
+                    add_to_manifest "$target"  # Track installed file
+                else
+                    warning "Failed to install: $agent_file"
+                    ((fail_count++))
+                fi
+            else
+                if install_file_copy "$source_file" "$target"; then
+                    ((agents_count++))
+                    add_to_manifest "$target"  # Track installed file
+                else
+                    warning "Failed to install: $agent_file"
+                    ((fail_count++))
+                fi
+            fi
+        fi
+    done
+
+    if [[ $fail_count -gt 0 ]]; then
+        error "Failed to install $fail_count agent file(s)"
+        return 1
+    fi
+
+    success "Installed $agents_count agent file(s)"
+    return 0
+}
+
+install_src_mcp() {
+    echo ""
+    info "Installing MCP source files..."
+
+    local mcp_count=0
+    local fail_count=0
+
+    for mcp_file in "${SRC_MCP_FILES[@]}"; do
+        local source_file="$PROJECT_ROOT/$mcp_file"
+
+        if [[ ! -f "$source_file" ]]; then
+            verbose "MCP source file not found: $mcp_file"
+            continue
+        fi
+
+        local target="$COMMANDS_DIR/$mcp_file"
+        local target_dir=$(dirname "$target")
+
+        if [[ $DRY_RUN -eq 1 ]]; then
+            info "[DRY RUN] Would install: $mcp_file"
+            ((mcp_count++))
+        else
+            mkdir -p "$target_dir"
+            if [[ $INSTALL_METHOD == "link" ]]; then
+                if install_file_link "$source_file" "$target"; then
+                    ((mcp_count++))
+                    add_to_manifest "$target"  # Track installed file
+                else
+                    warning "Failed to install: $mcp_file"
+                    ((fail_count++))
+                fi
+            else
+                if install_file_copy "$source_file" "$target"; then
+                    ((mcp_count++))
+                    add_to_manifest "$target"  # Track installed file
+                else
+                    warning "Failed to install: $mcp_file"
+                    ((fail_count++))
+                fi
+            fi
+        fi
+    done
+
+    if [[ $fail_count -gt 0 ]]; then
+        error "Failed to install $fail_count MCP source file(s)"
+        return 1
+    fi
+
+    success "Installed $mcp_count MCP source file(s)"
+    return 0
+}
+
 ###############################################################################
 # Verification Phase
 ###############################################################################
@@ -753,6 +909,9 @@ main() {
     install_guides || exit 1  # Critical - guides are referenced by commands
     install_examples || exit 1  # Critical - examples are referenced by wf_14_doc command
     install_references || exit 1  # Critical - references are referenced by commands
+    install_commands_lib || exit 1  # Critical - libraries used by coordination engine
+    install_commands_agents || exit 1  # Critical - agent definitions for multi-agent workflows
+    install_src_mcp || exit 1  # Critical - MCP Gateway required by all commands
     install_documentation || exit 0  # Non-critical
 
     # Verification
