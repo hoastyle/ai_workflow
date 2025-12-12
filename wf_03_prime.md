@@ -58,7 +58,7 @@ context_rules:
 
 **快速说明**: Serena 自动激活，提供项目结构理解、知识图谱构建、智能文档加载、上下文记忆持久化等能力。详细的 MCP 功能和 LSP 初始化过程请参考专用指南文档。
 
-### 🔧 MCP Gateway 集成 (NEW - Task 3.2)
+### 🔧 MCP Gateway 集成
 
 **Gateway 初始化** (所有模式开始前执行):
 ```python
@@ -74,10 +74,6 @@ serena_available = gateway.is_available("serena")
 
 **Serena 工具调用模式**:
 ```python
-# 旧模式 (直接 MCP 调用) - 已废弃
-# get_symbols_overview("path/to/file.py")
-
-# 新模式 (通过 Gateway)
 if gateway.is_available("serena"):
     # 获取工具
     symbols_tool = gateway.get_tool("serena", "get_symbols_overview")
@@ -115,28 +111,54 @@ Prime the AI assistant with comprehensive project context by reading core projec
 
 ## Process
 
-**详细执行流程**: 完整的加载流程、模式选择和后续工作流导航请参考 [wf_03_prime 工作流指南](docs/guides/wf_03_prime_workflows.md)
+⚠️ **AI执行强制规则**: 本命令的执行必须严格遵循以下步骤，不得跳过或随意解释。
 
-### 快速参考
+### Step 0: 读取执行指南（强制）
+
+**AI必须首先执行此步骤**，读取详细的执行流程文档：
+
+```bash
+# 强制执行 - 读取工作流指南的关键章节
+python ~/.claude/commands/scripts/doc_guard.py \
+  --docs "docs/guides/wf_03_prime_workflows.md" \
+  --sections '{"docs/guides/wf_03_prime_workflows.md": ["AI执行协议", "模式选择决策树", "执行流程"]}'
+```
+
+**如果Doc Guard工具不可用**，降级使用Read工具读取完整文档（警告：token消耗会增加）
+
+### Step 1-5: 按指南执行
+
+**详细执行流程**: 所有步骤必须严格遵循 [wf_03_prime 工作流指南](docs/guides/wf_03_prime_workflows.md) 中的"AI执行协议"部分
+
+**快速参考**（仅供理解，不得作为执行依据）:
 
 **三种加载模式**:
 1. **Quick Start** (快速启动): 仅加载项目索引 (~200 tokens)
 2. **Task Focused** (任务导向): 加载当前任务相关上下文 (~600 tokens)
 3. **Full Context** (完整上下文): 加载所有管理文档 (~1200 tokens)
 
-**文档加载（强制使用 Doc Guard 工具）**:
-```bash
-python ~/.claude/commands/scripts/doc_guard.py --docs "docs/management/PLANNING.md,docs/management/TASK.md,KNOWLEDGE.md"
-```
+**关键步骤**:
+1. 模式选择（根据决策树）
+2. 文档可用性检查
+3. 按模式加载文档（使用Doc Guard）
+4. 生成标准化输出
+5. 添加模式切换提示
 
-**执行步骤**:
-1. 检测文档可用性（PLANNING.md, TASK.md 等）
-2. 选择加载模式（默认：Quick Start）
-3. 智能加载文档（使用 DocLoader 按需加载）
-4. 生成上下文摘要
-5. 推荐下一步命令
+**所有详细规范**: 必须参照 [工作流指南](docs/guides/wf_03_prime_workflows.md)
 
-**详细流程、模式切换条件、后续工作流**: 参见 [工作流指南](docs/guides/wf_03_prime_workflows.md)
+### 执行检查清单（AI必须验证）
+
+在输出结果前，AI必须确认以下所有项目：
+
+- [ ] ✅ 已读取 docs/guides/wf_03_prime_workflows.md
+- [ ] ✅ 已根据决策树选择模式并说明理由
+- [ ] ✅ 已检查文档可用性
+- [ ] ✅ 已按选定模式加载文档
+- [ ] ✅ 输出格式符合指南中的标准模板
+- [ ] ✅ 已添加模式切换提示
+- [ ] ✅ 遵循CLAUDE.md语言规范
+
+**如果任何检查项未通过，必须重新执行对应步骤**
 
 ---
 ## Output Format
@@ -197,15 +219,12 @@ python ~/.claude/commands/scripts/doc_guard.py --docs "docs/management/PLANNING.
 ### 典型场景
 
 **会话开始**: `/wf_03_prime` → 加载上下文 → 推荐下一步
-
 **功能开发**: prime → `/wf_05_code` → 实现 → 测试 → 提交
-
 **Bug修复**: prime → `/wf_06_debug` → 修复 → 验证
-
 **详细示例、命令参数、后续工作流决策**: 参见 [工作流指南](docs/guides/wf_03_prime_workflows.md)
 
 ---
-## 🔄 Command Lazy Loading (Task 3.3)
+## 🔄 Command Lazy Loading
 
 **详细说明**: 完整的智能加载机制、DocLoader 使用和性能优化请参考 [智能加载策略指南](docs/guides/wf_03_prime_smart_loading.md)
 
@@ -233,29 +252,3 @@ summary = loader.load_summary("docs/guides/large_doc.md", max_lines=50)
 **详细 API、配置和最佳实践**: 参见 [智能加载策略指南](docs/guides/wf_03_prime_smart_loading.md)
 
 ---
-## Integration Notes
-- **NEW**: 支持三种加载模式 (Quick Start / Task Focused / Full Context)
-- **NEW**: 优先使用 PROJECT_INDEX.md 作为轻量级入口 (80% token 节省)
-- **NEW**: 根据用户标志 (--full / --task) 动态调整加载策略
-- **NEW (Task 2.5)**: Serena MCP 深度集成 - LSP 符号级代码理解和智能预加载
-- **NEW (Task 3.3)**: Command Lazy Loading - 命令按需加载机制 (67.5% token 节省)
-  * Quick Start 模式加载 COMMAND_INDEX.md (500 tokens) 而非所有命令 (15,000 tokens)
-  * 命令在调用时才加载完整定义，会话级缓存避免重复读取
-  * 向后兼容：无 COMMAND_INDEX.md 时自动降级到传统模式
-  * 性能提升：启动速度 70-75% faster，典型会话节省 13,500 tokens
-  * Step 0: Serena 可用性检测和 LSP 初始化
-  * Step 1 Mode B: 符号查询替代完整文件读取 (73% token 节省 for TASK/KNOWLEDGE)
-  * Step 1.5: 智能预加载 (项目结构扫描、符号索引、任务热点定位)
-  * Step 3: 语义增强分析 (架构理解、代码定位、ADR 验证)
-  * 效果: Mode B token 消耗 10K → 6.1K (39% reduction), 启动速度 +37%
-- Run after `/clear` to restore working context
-- Use before starting new related work sessions
-- Loads CONTEXT.md as pointer document for quick session navigation (updated by `/wf_11_commit`)
-- Integrates KNOWLEDGE.md for accumulated project wisdom and documentation index
-- Smart loading strategy: Default to lightweight mode, upgrade on-demand
-- Context cost optimization: Technical docs loaded on-demand based on task relevance
-- Ensures continuity across context boundaries
-- Maintains development momentum without redundant information
-- Provides intelligent context enhancement through past decisions
-- Core component of the closed-loop workflow system with long-term memory
-

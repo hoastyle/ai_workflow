@@ -141,7 +141,25 @@ content = doc_loader.load_sections("docs/guides/large_guide.md", sections=["Step
 ---
 ## Process
 
-**详细执行流程**: 完整的审查流程、步骤说明和决策树请参考 [代码审查详细流程指南](docs/guides/wf_08_review_process.md)
+⚠️ **AI执行强制规则**: 本命令的执行必须严格遵循以下步骤，所有7个审查维度必须覆盖，不得遗漏。评分必须基于明确标准，而非主观判断。
+
+### Step 0: 读取执行指南（强制）
+
+**AI必须首先执行此步骤**，读取详细的代码审查流程文档：
+
+```bash
+# 强制执行 - 读取审查工作流指南的关键章节
+python ~/.claude/commands/scripts/doc_guard.py \
+  --docs "docs/guides/wf_08_review_workflows.md" \
+  --sections '{"docs/guides/wf_08_review_workflows.md": ["AI执行协议", "审查维度", "执行检查清单"]}'
+```
+
+**本步骤为强制性**，确保AI理解：
+- 7个审查维度的评分标准
+- 标准输出模板格式
+- 必须通过的检查清单项
+
+**详细执行流程**: 完整的审查流程、步骤说明和决策树请参考 [代码审查详细流程指南](docs/guides/wf_08_review_process.md) 和 [审查工作流指南](docs/guides/wf_08_review_workflows.md)
 
 ### 快速流程概览
 
@@ -296,5 +314,27 @@ Serena MCP 在检测到以下符号修改时自动激活：
 Bug修复流程:
   /wf_06_debug → /wf_07_test → /wf_08_review → /wf_11_commit
 ```
+
+---
+
+## ✅ 执行检查清单（AI必须验证）
+
+在输出审查报告前，AI必须确认以下所有项目：
+
+- [ ] ✅ 已读取 docs/guides/wf_08_review_workflows.md 的关键章节
+- [ ] ✅ 已使用 Git diff 识别所有变更文件
+- [ ] ✅ 已覆盖所有7个审查维度（代码正确性、代码质量、架构对齐、测试覆盖、性能考虑、文档完整性、安全性）
+- [ ] ✅ 每个维度都有明确的评分（X/10）和评级（优秀/良好/需改进/不合格）
+- [ ] ✅ 已提供具体的改进建议（包括位置和优先级）
+- [ ] ✅ 总分计算正确（总分 = 各维度得分之和）
+- [ ] ✅ 输出格式符合标准模板
+- [ ] ✅ 遵循CLAUDE.md语言规范
+
+**评分标准参考**：
+- 通过：总分 ≥ 49/70
+- 需改进：35 ≤ 总分 < 49
+- 不通过：总分 < 35
+
+**如果任何检查项未通过，必须重新执行对应步骤**
 
 ---

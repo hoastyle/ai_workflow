@@ -82,6 +82,7 @@ else:
 | **wf_03_prime MCP Serena 增强指南** | [docs/guides/wf_03_prime_mcp_serena.md](docs/guides/wf_03_prime_mcp_serena.md) | 高 |
 | **wf_03_prime 工作流导航指南** | [docs/guides/wf_03_prime_workflows.md](docs/guides/wf_03_prime_workflows.md) | 高 |
 | **wf_03_prime 智能加载详解** | [docs/guides/wf_03_prime_smart_loading.md](docs/guides/wf_03_prime_smart_loading.md) | 中 |
+| **命令执行一致性策略** (NEW) | [docs/guides/command_consistency_strategy.md](docs/guides/command_consistency_strategy.md) | 🔴 最高 | 引用文档+强制约束模式，提升AI执行一致性 (2025-12-12) |
 | **wf_04_research MCP 增强指南** | [docs/guides/wf_04_research_mcp_guide.md](docs/guides/wf_04_research_mcp_guide.md) | 高 |
 | **wf_04_research 工作流和决策指南** | [docs/guides/wf_04_research_workflows.md](docs/guides/wf_04_research_workflows.md) | 高 |
 | **wf_04_research 输出格式规范** | [docs/guides/wf_04_research_output_formats.md](docs/guides/wf_04_research_output_formats.md) | 高 |
@@ -194,6 +195,7 @@ else:
 
 | 日期 | 标题 | 影响 | 状态 |
 |------|------|------|------|
+| 2025-12-12 | 命令执行一致性策略 | 全局 | Accepted |
 | 2025-12-09 | Workflow 系统三层架构迁移策略 | 全局 | Proposed |
 | 2025-12-08 | Agent System Architecture | 全局 | Accepted |
 | 2025-12-03 | SuperClaude Framework 对比分析与优化决策 | 全局 | Proposed |
@@ -211,7 +213,61 @@ else:
 
 详见: [docs/adr/](docs/adr/)
 
-### 最新决策亮点 (2025-12-09)
+### 最新决策亮点 (2025-12-12)
+
+**命令执行一致性优化** (引用文档 + 强制约束模式):
+- ✅ **问题**：wf_03_prime 等命令执行结果不一致，AI 理解存在随机性
+- ✅ **核心原因**：
+  - 命令文件详细描述不足 → AI 自由解释
+  - 缺少强制验证点 → AI 可能跳过步骤
+  - 输出格式描述模糊 → 结果格式不统一
+- ✅ **方案**：引用文档 + 强制约束模式
+  - **Step 0.0**: 强制读取工作流指南（使用 Doc Guard）
+  - **执行检查清单**: AI 必须验证的检查项
+  - **标准输出模板**: 明确的输出格式
+  - **决策树**: 替代模糊的自然语言描述
+
+**实施成果** (2025-12-12):
+- ✅ **标准化模板创建**: `docs/guides/_TEMPLATE_workflows.md`
+- ✅ **wf_06_debug 优化完成**:
+  - 创建：`docs/guides/wf_06_debug_workflows.md` (524行)
+  - 修改：添加强制规则 + 执行检查清单
+  - 三种调试模式决策树（Quick Fix / Standard / Deep Analysis）
+- ✅ **wf_08_review 优化完成**:
+  - 创建：`docs/guides/wf_08_review_workflows.md` (321行)
+  - 修改：添加强制规则 + 7维度审查检查清单
+  - 明确的评分标准和输出模板
+- ✅ **已应用命令** (5/15):
+  - wf_03_prime.md ✅（之前已优化）
+  - wf_04_ask.md ✅（之前已优化）
+  - wf_05_code.md ✅（之前已优化）
+  - wf_06_debug.md ✅（本次优化）
+  - wf_08_review.md ✅（本次优化）
+
+**待优化命令** (10/15 - 优先级排序):
+- 🔴 **高优先级** (>500行):
+  - wf_11_commit.md (773行) - Git 提交，多验证步骤
+  - wf_14_doc.md (822行) - 文档生成，复杂度高
+  - wf_12_deploy_check.md (508行) - 部署检查，多层验证
+- 🟡 **中优先级** (300-500行):
+  - wf_07_test.md (382行) - 测试开发
+  - wf_09_refactor.md (395行) - 代码重构
+  - wf_10_optimize.md (341行) - 性能优化
+  - wf_01_planning.md (353行) - 项目规划
+  - wf_99_help.md (334行) - 帮助系统
+- ⚪ **低优先级** (~300行):
+  - wf_02_task.md (301行) - 任务管理
+
+**预期效果**:
+- 一致性提升：执行结果稳定性 70% → >90%
+- Token 优化：主命令文件轻量（~300行），详细指南按需加载
+- 维护成本降低：详细指南集中管理，减少重复
+
+详见: [docs/guides/command_consistency_strategy.md](docs/guides/command_consistency_strategy.md)
+
+---
+
+### 前次决策亮点 (2025-12-09)
 
 **Workflow 系统优化策略**:
 - ✅ **问题**：命令文件膨胀（>1000行），文档读取上下文超限

@@ -132,7 +132,7 @@ Step 5: 解决方案
 
 ---
 
-### 🔧 MCP Gateway 集成 (NEW - Task 3.2)
+### 🔧 MCP Gateway 集成
 
 **Gateway 初始化** (所有 MCP 使用前执行):
 ```python
@@ -244,7 +244,25 @@ Debug Coordinator orchestrating specialists within project context:
 
 ## Process
 
-### Step 0: Confidence Check (NEW - Pre-Debugging Assessment) 🎯
+⚠️ **AI执行强制规则**: 本命令的执行必须严格遵循以下步骤，不得跳过或随意解释。调试过程必须理解根本原因，而非仅修复症状。
+
+### Step 0.0: 读取执行指南（强制）
+
+**AI必须首先执行此步骤**，读取详细的调试流程文档：
+
+```bash
+# 强制执行 - 读取调试工作流指南的关键章节
+python ~/.claude/commands/scripts/doc_guard.py \
+  --docs "docs/guides/wf_06_debug_workflows.md" \
+  --sections '{"docs/guides/wf_06_debug_workflows.md": ["AI执行协议", "模式选择决策树", "执行检查清单"]}'
+```
+
+**本步骤为强制性**，确保AI理解：
+- 三种调试模式的适用场景和决策树
+- 每种模式的标准输出模板
+- 必须通过的检查清单项
+
+### Step 0.1: Confidence Check (Pre-Debugging Assessment) 🎯
 
 **目的**: 在开始调试前评估信心水平，避免盲目修复导致更多问题
 
@@ -667,6 +685,41 @@ When both MCP services are enabled, the output provides:
 - 涉及多个模块或系统组件
 - 有潜在的副作用风险
 - 需要学习新的问题模式
+
+---
+
+## ✅ 执行检查清单（AI必须验证）
+
+在输出调试报告前，AI必须确认以下所有项目：
+
+### 通用检查项
+- [ ] ✅ 已读取 docs/guides/wf_06_debug_workflows.md 的关键章节
+- [ ] ✅ 已执行 Confidence Check 并记录信心水平
+- [ ] ✅ 已根据决策树选择正确的调试模式
+- [ ] ✅ 已完整阅读错误输出和堆栈跟踪
+- [ ] ✅ 理解根本原因（而非仅修复症状）
+- [ ] ✅ 输出格式符合对应模式的标准模板
+- [ ] ✅ 遵循CLAUDE.md语言规范
+
+### 模式特定检查项
+
+**Quick Fix Mode** (如果使用):
+- [ ] ✅ 确认错误属于常见类型
+- [ ] ✅ 已验证修复成功（重新运行原始命令）
+- [ ] ✅ 提供预防措施
+
+**Standard Debugging** (如果使用):
+- [ ] ✅ 已进行系统化分析（Analyzer → Inspector → Checker → Strategist）
+- [ ] ✅ 已验证无新错误引入
+- [ ] ✅ 已更新相关文档（TASK.md, KNOWLEDGE.md）
+
+**Deep Analysis** (如果使用):
+- [ ] ✅ 已收集完整的诊断信息
+- [ ] ✅ 已使用结构化推理（如果启用 --think）
+- [ ] ✅ 已评估多个解决方案
+- [ ] ✅ 已部署监控（如果适用）
+
+**如果任何检查项未通过，必须重新执行对应步骤**
 
 ---
 

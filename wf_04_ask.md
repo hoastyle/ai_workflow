@@ -124,7 +124,7 @@ context_rules:
 
 ---
 
-### 🔧 MCP Gateway 集成 (NEW - Task 3.2)
+### 🔧 MCP Gateway 集成
 
 **Gateway 初始化** (所有 MCP 使用前执行):
 ```python
@@ -252,7 +252,72 @@ You are a Senior Systems Architect providing consultation within project context
 
 ## Process
 
-### Step 0: Confidence Check (NEW - Pre-Execution Assessment) 🎯
+⚠️ **AI执行强制规则**: 本命令的执行必须严格遵循以下步骤，不得跳过或随意解释。
+
+### Step 0: 读取执行指南（强制）
+
+**AI必须首先执行此步骤**，读取详细的执行流程文档：
+
+```bash
+# 强制执行 - 读取工作流指南的关键章节
+python ~/.claude/commands/scripts/doc_guard.py \
+  --docs "docs/guides/wf_04_ask_workflows.md" \
+  --sections '{"docs/guides/wf_04_ask_workflows.md": ["AI执行协议", "MCP模式选择决策树", "咨询类型决策树", "后续路径决策树"]}'
+```
+
+**如果Doc Guard工具不可用**，降级使用Read工具读取完整文档（警告：token消耗会增加）
+
+### Step 1-N: 按指南执行
+
+**详细执行流程**: 所有步骤必须严格遵循 [wf_04_ask 工作流指南](docs/guides/wf_04_ask_workflows.md) 中的"AI执行协议"部分
+
+**快速参考**（仅供理解，不得作为执行依据）:
+
+**六种执行模式**:
+1. **标准咨询模式**: 无MCP标志，基于项目上下文
+2. **结构化推理模式 (--think)**: Sequential-thinking MCP
+3. **官方文档模式 (--c7)**: Context7 MCP
+4. **社区研究模式 (--research)**: Tavily MCP
+5. **代码审查模式 (--review-codebase)**: 代码库分析
+6. **综合分析模式**: 组合多个MCP标志
+
+**三个关键决策点**:
+1. **MCP模式选择**: 根据问题类型和用户标志（标准/--think/--c7/--research/--review-codebase/组合）
+2. **咨询类型识别**: 技术选型/架构设计/实现方案/代码质量
+3. **后续路径选择**: 直接实现/更新规划/深度研究/修复问题
+
+**所有详细规范**: 必须参照 [工作流指南](docs/guides/wf_04_ask_workflows.md)
+
+### 执行检查清单（AI必须验证）
+
+在输出结果前，AI必须确认以下所有项目：
+
+- [ ] ✅ 已读取 docs/guides/wf_04_ask_workflows.md
+- [ ] ✅ 已完成 Confidence Check 并输出评估结果
+- [ ] ✅ 已根据决策树选择MCP模式并说明理由
+- [ ] ✅ 已加载项目上下文（PLANNING.md, KNOWLEDGE.md）
+- [ ] ✅ 如果是技术选型，已完成开源方案调研（3+个候选方案）
+- [ ] ✅ 输出格式完全符合对应场景的标准模板
+- [ ] ✅ 已根据后续路径决策树选择并说明下一步
+- [ ] ✅ 已添加明确的后续命令和替代选项
+- [ ] ✅ 遵循CLAUDE.md语言规范
+
+**如果任何检查项未通过，必须重新执行对应步骤**
+
+### 故障排除
+
+| 问题 | 解决方案 |
+|------|--------------|
+| PLANNING.md不存在 | 提示运行 `/wf_01_planning` 建立项目规划 |
+| KNOWLEDGE.md中无类似决策 | 标注为新决策，建议记录到ADR |
+| 问题表述不清楚 | Confidence Check 低于70%，暂停并询问 |
+| MCP工具不可用 | 自动降级到标准咨询模式，警告功能受限 |
+| 无法找到开源方案 | 说明研究不足，建议使用 /wf_04_research 深度调研 |
+| 代码库审查失败 | 检查项目结构，提供基本建议 |
+
+---
+
+### Step 0.1: Confidence Check (Pre-Execution Assessment) 🎯
 
 **目的**: 在开始架构咨询前评估信心水平，避免盲目推进导致错误方向
 

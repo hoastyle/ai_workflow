@@ -95,7 +95,7 @@ Step 4: 实施计划
 
 ---
 
-### 🔧 MCP Gateway 集成 (NEW - Task 3.2)
+### 🔧 MCP Gateway 集成
 
 **Gateway 初始化** (所有 MCP 使用前执行):
 ```python

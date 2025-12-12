@@ -17,15 +17,10 @@ version: "1.0"
 ---
 
 # 并行审查模式 (Mode B - Parallel Review)
-
 ## 概述
-
 **适用场景**: 复杂审查，多文件改动，需要多维度全面审查
-
 **核心策略**: Wave → Checkpoint → Final 模式
-
 **性能优势**: 2.2x 时间节省（40min → 18min）
-
 **质量提升**: 并行验证，更早发现跨维度问题
 
 ---
@@ -41,7 +36,6 @@ version: "1.0"
 - Dimension 2: Security
 - Dimension 3: Performance
 - Dimension 4: Architecture Compliance
-
 ---
 
 ## Agent 规格说明

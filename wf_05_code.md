@@ -97,7 +97,7 @@ context_rules:
 
 ---
 
-### 🔧 MCP Gateway 集成 (NEW - Task 3.2)
+### 🔧 MCP Gateway 集成
 
 **Gateway 初始化** (所有 MCP 使用前执行):
 ```python
@@ -226,7 +226,59 @@ You are the Development Coordinator directing four coding specialists:
 
 ## Process
 
-### Step 0: Confidence Check (NEW - Pre-Implementation Assessment) 🎯
+⚠️ **AI执行强制规则**: 本命令的执行必须严格遵循以下步骤，不得跳过或随意解释。
+
+### Step 0: 读取执行指南（强制）
+
+**AI必须首先执行此步骤**，读取详细的执行流程文档：
+
+```bash
+# 强制执行 - 读取工作流指南的关键章节
+python ~/.claude/commands/scripts/doc_guard.py \
+  --docs "docs/guides/wf_05_code_workflows.md" \
+  --sections '{"docs/guides/wf_05_code_workflows.md": ["AI执行协议", "实现模式决策树", "文档决策树", "后续路径决策树"]}'
+```
+
+**如果Doc Guard工具不可用**，降级使用Read工具读取完整文档（警告：token消耗会增加）
+
+### Step 1-N: 按指南执行
+
+**详细执行流程**: 所有步骤必须严格遵循 [wf_05_code 工作流指南](docs/guides/wf_05_code_workflows.md) 中的"AI执行协议"部分
+
+**快速参考**（仅供理解，不得作为执行依据）:
+
+**四种实现模式**:
+1. **标准实现模式**: 单文件，简单逻辑
+2. **多代理协调模式**: 复杂功能，>3个文件
+3. **MCP 增强模式 (--serena)**: 深度代码理解
+4. **MCP 增强模式 (--ui)**: 前端UI组件开发
+
+**三个关键决策点**:
+1. **实现模式选择**: 根据功能复杂度决策树（标准/多代理/MCP增强/UI组件）
+2. **文档决策**: Q1-Q5检查清单确定文档类型 (A/B/C/D/E)
+3. **后续路径选择**: Options A/B/C（先测试/先审查/直接审查）
+
+**所有详细规范**: 必须参照 [工作流指南](docs/guides/wf_05_code_workflows.md)
+
+### 执行检查清单（AI必须验证）
+
+在输出结果前，AI必须确认以下所有项目：
+
+- [ ] ✅ 已读取 docs/guides/wf_05_code_workflows.md
+- [ ] ✅ 已根据决策树选择实现模式并明确说明理由
+- [ ] ✅ 已遵循 PLANNING.md 开发标准
+- [ ] ✅ 已完成代码实现且功能正常工作
+- [ ] ✅ 已完成 Step 8 文档决策（Q1-Q5检查清单）
+- [ ] ✅ 已根据决策树选择后续路径（A/B/C）
+- [ ] ✅ 输出格式完全符合对应场景的标准模板
+- [ ] ✅ 已添加明确的后续命令和替代选项
+- [ ] ✅ 遵循CLAUDE.md语言规范
+
+**如果任何检查项未通过，必须重新执行对应步骤**
+
+---
+
+### Step 0.1: Confidence Check (Pre-Implementation Assessment) 🎯
 
 **目的**: 在开始编码前评估实现信心，避免盲目开发导致大量返工
 

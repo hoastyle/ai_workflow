@@ -243,6 +243,11 @@ touch CLAUDE.md
 - **CHANGELOG.md** - 变更历史
 ```
 
+### 注意事项
+该Repo是Claude Code Workflow的源码目录，而非安装目录（一般在当前用户主目录/.claude/commands下）。
+需要注意workflow的实际使用场景，往往是在目标目录（任意目录中）开启Claude Code，通过commands机制调用该repo安装后
+提供的wf_系列命令。（而该系列命令将位于用户主目录/.claude/commands下，相关的脚本、文档等同样位于该目录下）
+
 ---
 
 ## AI 执行规则

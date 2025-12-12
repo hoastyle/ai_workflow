@@ -326,7 +326,7 @@ Commands with MCP (Model Context Protocol) integration:
 | `/wf_09_refactor` | Serena | 自动激活 | Auto |
 | `/wf_14_doc` | Magic | --ui | Manual |
 
-**Note**: MCP server initialization is also lazy-loaded via `src/mcp/gateway.py` (Task 3.2).
+**Note**: MCP server initialization is also lazy-loaded via `src/mcp/gateway.py`
 
 ---
 
