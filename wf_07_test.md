@@ -16,6 +16,12 @@ mcp_support:
   - name: "Sequential-thinking"
     flag: "--think"
     detail: "结构化测试策略分析"
+docs_dependencies:
+  guides:
+    - docs/guides/wf_07_test_workflows.md
+  estimated_tokens: 600
+  lazy_load: true
+  note: "仅在需要深入指导时加载（如测试策略选择、覆盖率分析）"
 context_rules:
   - "遵循PLANNING.md测试策略"
   - "满足PRD覆盖率要求"
@@ -206,6 +212,26 @@ Test Strategy Coordinator ensuring comprehensive validation:
 
 ## Process
 
+⚠️ **AI执行强制规则**: 本命令的执行必须严格遵循以下步骤，不得跳过或随意解释。测试开发必须有明确的覆盖率目标和验证。
+
+### Step 0: 读取执行指南（强制）
+
+**AI必须首先执行此步骤**，读取详细的测试开发流程文档：
+
+```bash
+# 强制执行 - 读取测试工作流指南的关键章节
+python ~/.claude/commands/scripts/doc_guard.py \
+  --docs "docs/guides/wf_07_test_workflows.md" \
+  --sections '{"docs/guides/wf_07_test_workflows.md": ["AI执行协议", "模式选择决策树", "执行检查清单"]}'
+```
+
+**本步骤为强制性**，确保AI理解：
+- 三种测试模式的适用场景和决策树
+- 每种模式的标准输出模板
+- 必须通过的检查清单项
+
+---
+
 ### Standard Testing (default)
 1. **Test Planning**:
    - Review testing strategy in PLANNING.md
@@ -380,3 +406,46 @@ Test Strategy Coordinator ensuring comprehensive validation:
 - **测试策略**: PLANNING.md (Testing Strategy)
 - **任务追踪**: TASK.md
 - **代码质量**: PLANNING.md (Code Quality)
+
+---
+
+## ✅ 执行检查清单（AI必须验证）
+
+**在输出最终测试报告前，AI必须确认以下所有项目**：
+
+### 基础检查（所有模式）
+- [ ] ✅ 已读取 `docs/guides/wf_07_test_workflows.md` 的关键章节
+- [ ] ✅ 已根据决策树选择了唯一的测试模式并说明理由
+- [ ] ✅ 已读取 PLANNING.md 中的测试策略
+- [ ] ✅ 测试代码遵循项目的测试框架和模式
+
+### Standard Testing Mode 检查
+- [ ] ✅ 至少包含正常路径、异常处理、边界条件测试
+- [ ] ✅ 所有测试用例独立且可重复运行
+- [ ] ✅ 测试代码有清晰的描述和断言消息
+- [ ] ✅ 已运行测试并验证通过
+
+### Coverage Analysis Mode 检查
+- [ ] ✅ 已生成覆盖率报告（实际运行或使用项目现有报告）
+- [ ] ✅ 已识别并分类覆盖率缺口（高/中/低优先级）
+- [ ] ✅ 改进计划包含具体的测试用例描述
+- [ ] ✅ 预估了覆盖率提升幅度
+
+### Strategic Planning Mode 检查
+- [ ] ✅ 使用 Sequential-thinking MCP 进行了系统化分析（如使用 --think）
+- [ ] ✅ 测试金字塔设计合理（单元 > 集成 > E2E）
+- [ ] ✅ 测试用例覆盖了所有关键维度（功能、错误、边界）
+- [ ] ✅ 策略思考过程完整且逻辑清晰
+
+### 输出格式检查
+- [ ] ✅ 使用了工作流指南提供的标准输出模板
+- [ ] ✅ 报告包含明确的测试结果和覆盖率数据
+- [ ] ✅ 提供了清晰的下一步建议
+- [ ] ✅ 已更新 TASK.md（如适用）
+
+### MCP 使用检查（如适用）
+- [ ] ✅ Serena MCP 用于精确定位被测代码（如可用）
+- [ ] ✅ Sequential-thinking MCP 用于策略分析（如使用 --think）
+- [ ] ✅ 如 MCP 不可用，已使用标准工具（Grep/Read）替代
+
+**如果任何检查项未通过，必须重新执行对应步骤**

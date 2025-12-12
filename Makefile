@@ -1,4 +1,4 @@
-.PHONY: install install-link verify verify-manifest uninstall clean lint help mcp-install mcp-list mcp-check
+.PHONY: install install-link verify verify-manifest uninstall clean lint help mcp-install mcp-list mcp-check test test-unit test-integration test-deployment test-coverage
 
 # Default target
 .DEFAULT_GOAL := help
@@ -156,6 +156,47 @@ lint: ## Run linting checks (validate shell scripts and manifests)
 format: ## Format shell scripts (with shfmt if available)
 	@echo "📝 Formatting shell scripts..."
 	@if command -v shfmt > /dev/null 2>&1; then echo "Using shfmt for formatting..."; shfmt -i 4 -w install.sh uninstall.sh scripts/*.sh; echo "✅ Formatting complete"; else echo "⚠️  shfmt not found. Install with: sudo apt-get install shfmt"; fi
+
+###############################################################################
+# Testing
+###############################################################################
+
+test: ## Run all tests (unit + integration)
+	@echo "🧪 Running all tests..."
+	@echo ""
+	@$(MAKE) test-unit
+	@echo ""
+	@$(MAKE) test-integration
+	@echo ""
+	@echo "✅ All tests complete"
+
+test-unit: ## Run unit tests (Python)
+	@echo "🧪 Running unit tests..."
+	@if command -v pytest > /dev/null 2>&1; then \
+		pytest tests/ -v --ignore=tests/integration; \
+		echo "✅ Unit tests complete"; \
+	else \
+		echo "⚠️  pytest not found. Install with: pip install pytest"; \
+		exit 1; \
+	fi
+
+test-integration: ## Run integration tests (deployment cycle)
+	@echo "🧪 Running integration tests..."
+	@[ -f tests/integration/test_deployment.sh ] || (echo "❌ Integration test not found"; exit 1)
+	@bash tests/integration/test_deployment.sh
+	@echo "✅ Integration tests complete"
+
+test-deployment: test-integration ## Alias for integration tests
+
+test-coverage: ## Run tests with coverage report
+	@echo "📊 Running tests with coverage..."
+	@if command -v pytest > /dev/null 2>&1; then \
+		pytest tests/ -v --ignore=tests/integration --cov=. --cov-report=html --cov-report=term; \
+		echo "✅ Coverage report generated (see htmlcov/index.html)"; \
+	else \
+		echo "⚠️  pytest-cov not found. Install with: pip install pytest pytest-cov"; \
+		exit 1; \
+	fi
 
 ###############################################################################
 # MCP (Model Context Protocol) Integration

@@ -57,22 +57,30 @@ declare -ga DOC_FILES=(
 # ⚠️  CRITICAL: These guides are referenced by main command files
 #     Must be installed for commands to function correctly
 declare -ga GUIDE_FILES=(
+    "docs/guides/command_consistency_strategy.md"
+    "docs/guides/deployment_compatibility_guide.md"
     "docs/guides/doc_maintenance_process.md"
     "docs/guides/doc_maintenance_workflows.md"
     "docs/guides/parallel_execution_pattern.md"
     "docs/guides/wf_03_prime_mcp_serena.md"
     "docs/guides/wf_03_prime_smart_loading.md"
     "docs/guides/wf_03_prime_workflows.md"
+    "docs/guides/wf_04_ask_workflows.md"
     "docs/guides/wf_04_research_mcp_guide.md"
     "docs/guides/wf_04_research_output_formats.md"
     "docs/guides/wf_04_research_workflows.md"
     "docs/guides/wf_05_code_doc_sync_guide.md"
     "docs/guides/wf_05_code_serena_guide.md"
     "docs/guides/wf_05_code_workflows.md"
+    "docs/guides/wf_06_debug_workflows.md"
+    "docs/guides/wf_07_test_workflows.md"
     "docs/guides/wf_08_review_doc_compliance.md"
     "docs/guides/wf_08_review_parallel.md"
     "docs/guides/wf_08_review_process.md"
     "docs/guides/wf_08_review_self_check.md"
+    "docs/guides/wf_08_review_serena_guide.md"
+    "docs/guides/wf_08_review_workflows.md"
+    "docs/guides/wf_11_commit_workflows.md"
 )
 
 # Example documents - required by wf_14_doc.md (always installed)

@@ -13,6 +13,12 @@ mcp_support:
   - name: "Serena"
     flag: "自动激活"
     detail: "提交前代码完整性验证和符号级变更检查"
+docs_dependencies:
+  guides:
+    - docs/guides/wf_11_commit_workflows.md
+  estimated_tokens: 800
+  lazy_load: true
+  note: "仅在需要深入指导时加载（如质量门控选择、MCP验证流程）"
 context_rules:
   - "自动更新CONTEXT.md会话状态"
   - "遵守PLANNING.md质量标准"
@@ -243,6 +249,26 @@ Create git commits with integrated formatting, validation, and context updates:
 - Ensure full traceability
 
 ## Process (4-Stage Simplified Workflow)
+
+⚠️ **AI执行强制规则**: 本命令的执行必须严格遵循以下步骤，不得跳过或随意解释。提交前必须通过所有质量门控检查。
+
+### Step 0: 读取执行指南（强制）
+
+**AI必须首先执行此步骤**，读取详细的提交流程文档：
+
+```bash
+# 强制执行 - 读取提交工作流指南的关键章节
+python ~/.claude/commands/scripts/doc_guard.py \
+  --docs "docs/guides/wf_11_commit_workflows.md" \
+  --sections '{"docs/guides/wf_11_commit_workflows.md": ["AI执行协议", "4阶段提交流程", "执行检查清单"]}'
+```
+
+**本步骤为强制性**，确保AI理解：
+- 4阶段提交流程的顺序和要求
+- 质量门控的决策逻辑和选择策略
+- 必须通过的检查清单项
+
+---
 
 ### 🔧 Stage 1: Preparation (修复和校验)
 **目标**: 清理代码、修复常见问题、校验质量
@@ -771,3 +797,54 @@ pre-commit run
 3. **Smart Fallback**: Ensures basic quality even without pre-commit
 4. **Clear Feedback**: Shows which path is being used
 5. **Zero Breaking Changes**: Existing projects continue to work
+
+---
+
+## ✅ 执行检查清单（AI必须验证）
+
+**在输出最终提交报告前，AI必须确认以下所有项目**：
+
+### Stage 1 检查（Preparation）
+- [ ] ✅ 已读取 `docs/guides/wf_11_commit_workflows.md` 的关键章节
+- [ ] ✅ 已检测项目的质量门控配置（pre-commit vs self-managed）
+- [ ] ✅ 已执行相应的质量修复流程
+- [ ] ✅ 已更新所有维护日期为当前日期
+- [ ] ✅ 已验证 Frontmatter 格式完整性
+- [ ] ✅ 所有质量检查通过（无 trailing whitespace, 正确 line endings）
+
+### Stage 2 检查（Analysis）
+- [ ] ✅ 已分析变更影响范围（代码/文档/配置）
+- [ ] ✅ 已确定文档更新需求（README/KNOWLEDGE/PLANNING）
+- [ ] ✅ 如使用 Serena MCP，已执行符号完整性检查
+- [ ] ✅ 已识别新的设计模式或解决方案（如适用）
+
+### Stage 3 检查（Commit）
+- [ ] ✅ 已生成语义化提交消息（[type] subject 格式）
+- [ ] ✅ 提交消息包含 Co-Authored-By 签名
+- [ ] ✅ 已成功执行 `git commit`
+- [ ] ✅ 已验证提交哈希和内容
+
+### Stage 4 检查（Finalization）
+- [ ] ✅ 已按指针文档模式更新 CONTEXT.md（~50行，无冗余）
+- [ ] ✅ CONTEXT.md 包含正确的 git 基准和会话状态
+- [ ] ✅ 已基于 TASK.md 提供下一步建议
+- [ ] ✅ 已更新相关文档（README/KNOWLEDGE，如适用）
+
+### 输出格式检查
+- [ ] ✅ 使用了工作流指南提供的标准输出模板
+- [ ] ✅ 提交报告包含完整的4阶段执行总结
+- [ ] ✅ 提供了明确的后续工作建议
+- [ ] ✅ 错误和警告都有清晰的解决方案
+
+### 质量验证检查
+- [ ] ✅ 所有文件无 trailing whitespace
+- [ ] ✅ 所有文件使用统一的 line endings (LF)
+- [ ] ✅ Markdown 格式符合项目标准
+- [ ] ✅ Git 仓库状态clean（无未提交的临时更改）
+
+### MCP 使用检查（如适用）
+- [ ] ✅ Serena MCP 用于符号完整性验证（如可用）
+- [ ] ✅ 代码重构的引用完整性已验证
+- [ ] ✅ 如 MCP 不可用，已使用标准工具替代
+
+**如果任何检查项未通过，必须重新执行对应阶段**
