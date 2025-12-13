@@ -1,73 +1,82 @@
 # CONTEXT.md
 
-**最后会话**: 2025-12-08 (完成 Phase 2 Task 2.12)
-**Git 基准**: commit 316308b (Task 2.12: 工具脚本实现和测试)
+**最后会话**: 2025-12-13 (Agent 系统 Phase 1 - 核心实现和试点集成)
+**Git 基准**: commit 2bbea17 (Agent 系统 Phase 1 完成)
 
 ## 📍 上下文指针 (Context Pointers)
 
 ### 当前工作焦点
-- ✅ **刚完成**: Task 2.12 工具脚本实现和测试 (TASK.md § Task 2.12)
-- ✅ **Phase 2 进展**: 100% 完成 (12/12 tasks)
-- ✅ **Project 完成度**: 100% (24/24 tasks, 所有任务完成)
-- **相关架构**: PLANNING.md § 技术栈
-- **相关知识**: KNOWLEDGE.md § Phase 2 完成总结
+- ✅ **刚完成**: Agent 系统 Phase 1 - 核心实现和试点集成
+- **相关任务**: TASK.md § Agent 系统集成
+- **相关架构**: PLANNING.md § Agent 系统架构
+- **相关知识**: KNOWLEDGE.md § Agent 系统设计（装饰器模式）
 
 ### 会话状态
 - **Git commits (本次会话)**: 1 commit
-  - 316308b: Phase 2 完成 - Task 2.12 工具脚本实现和测试
-- **修改文件数**: 4 files (本次会话)
-  - **创建**: scripts/optimize_context_loading.py (513行), tests/test_optimize_context_loading.py (492行), tests/test_validate_command_compatibility.py (478行)
-  - **修改**: TASK.md
-- **主要变更领域**: 工具脚本实现和测试覆盖
-- **代码变更**: 2,554 insertions (+) [本次commit]，总计 3,892+ insertions
+  - 2bbea17: Agent 系统 Phase 1 - 核心实现和试点集成
+- **修改文件数**: 6 files (本次会话)
+  - **创建**: commands/lib/agent_coordinator.py, tests/test_agent_coordinator.py, docs/examples/agent_coordinator_usage.md
+  - **修改**: wf_05_code.md (Step 0.1), wf_08_review.md (Step 0.1), KNOWLEDGE.md (索引更新)
+- **主要变更领域**: Agent 系统集成和工作流扩展
+- **代码变更**: 1,195 insertions (+)
 
-### Task 5.1 + 5.2 核心成果
+### Agent 系统 Phase 1 核心成果
 
-**Task 5.1 - MCP 深度集成**:
-- MCP 覆盖率提升: 42% → 100% (6 → 14 命令)
-- 文档更新: KNOWLEDGE.md v1.7 新增 MCP 集成参考
-- Gateway 模式标准化: get_mcp_gateway() → is_available() → get_tool() → call()
-- 测试验证: 100% 完成 (8/8 files)
+**AgentCoordinator 实现**:
+- 单例模式核心类（commands/lib/agent_coordinator.py）
+- 自动 agent 选择算法（匹配度 ≥ 85% 自动激活）
+- MCP 工具集成建议（基于 agent.mcp_integrations）
+- 使用统计和协作模式追踪
 
-**Task 5.2 - Agent-MCP 协同模式** (新增，100% 完成):
-- **MCPSelector 实现** (295 lines):
-  - 三层 MCP 选择策略 (Default → Role-based → Conditional)
-  - 关键词检测和条件激活
-  - 缓存机制 (TTL 300s)
-  - 性能优化: 10-50x 查询加速
+**测试和文档**:
+- 7 个单元测试，100% 通过（test_agent_coordinator.py）
+- 415 行完整使用指南（docs/examples/agent_coordinator_usage.md）
+- Frontmatter 元数据标准化（7个必需字段）
 
-- **MCPOptimizer 实现** (389 lines):
-  - 批量初始化 (降低启动时间 3-5x)
-  - 异步查询模式
-  - 结果缓存策略
+**工作流集成 (Phase 1 - 2个试点命令)**:
+- ✅ wf_05_code.md: Step 0.1 Agent 选择和激活
+  - code-agent 自动选择（92% 预期匹配度）
+  - Serena + Magic MCP 集成
+  - 协作建议（sequential: test-agent, parallel: review-agent）
+- ✅ wf_08_review.md: Step 0.1 Agent 选择和激活
+  - review-agent 自动选择（94% 预期匹配度）
+  - Serena + Sequential-thinking MCP 集成
+  - 协作建议（sequential: refactor-agent, parallel: test-agent）
 
-- **完整测试覆盖**:
-  - test_mcp_selector.py (289 lines, 20+ 测试用例)
-  - test_agent_router_mcp.py (289 lines, 15+ 集成测试)
-  - 覆盖所有4种协调模式 (single/sequential/parallel/hierarchical)
+**架构设计**:
+- 装饰器模式，最小代码侵入性
+- 单一职责：Agent 协调与命令流程完全解耦
+- 自动化优先：85% 以上匹配度自动激活，无需用户干预
+- 降级处理：无合适 agent 时自动降级，不影响命令功能
 
-- **10个使用示例** (examples/agent_mcp_coordination_examples.py):
-  - 基础单 Agent (with auto MCP selection)
-  - UI 任务 (Magic 条件激活)
-  - 多 Agent 编排 (3种模式)
-  - 框架特定调试 (Context7 条件激活)
-  - 高级场景 (hierarchical workflows)
-
-### 项目整体状态
-- **Phase 1** ✅ 100% 完成 (智能上下文+Confidence Check)
-- **Phase 2** ✅ 100% 完成 (文档优化+MCP Gateway+工具脚本, 12/12 tasks)
-- **Phase 3** ✅ 100% 完成 (Token 优化, 31k+ tokens saved)
-- **Phase 4** ✅ 100% 完成 (Agent架构设计, 10 agents)
-- **Phase 5** ✅ 100% 完成 (MCP深度集成, 2/2 tasks - Task 5.1 + 5.2)
-- **总进度**: 100% (24/24 tasks) - 所有任务完成
+### Agent 系统集成进度
+- **Phase 1** ✅ 100% 完成 (核心实现 + 2个试点命令)
+  - ✅ AgentCoordinator 实现（单例模式）
+  - ✅ 自动 agent 选择（匹配度 ≥ 85%）
+  - ✅ wf_05_code 集成（Step 0.1）
+  - ✅ wf_08_review 集成（Step 0.1）
+- **Phase 2** ⏳ 待开始 (5个基础命令)
+  - ⏳ wf_04_ask (architect-agent)
+  - ⏳ wf_06_debug (debug-agent)
+  - ⏳ wf_07_test (test-agent)
+  - ⏳ wf_02_task (pm-agent)
+  - ⏳ wf_09_refactor (refactor-agent)
+- **Phase 3** 📋 规划中 (高级特性)
 
 ### 下次启动时
 - **推荐命令**: `/wf_03_prime` (加载完整项目上下文)
 - **推荐下一步**:
-  - 项目已 100% 完成，可选择：
-    - 运行完整测试套件验证所有功能
-    - 部署到生产环境
-    - 开发新功能或扩展模块
+  - **立即继续**: Phase 2 - 集成 5 个基础命令
+  - **选项 A**: 继续 Agent 集成（推荐）
+    - 集成 wf_04_ask (architect-agent)
+    - 集成 wf_06_debug (debug-agent)
+    - 集成 wf_07_test (test-agent)
+  - **选项 B**: 测试验证当前 Phase 1
+    - 运行 pytest tests/test_agent_coordinator.py
+    - 手动测试 wf_05_code 和 wf_08_review 中的 agent 选择
+  - **选项 C**: 优化和文档
+    - 完善 agent 匹配算法
+    - 添加更多使用示例
 
 ### MCP 集成完整状态
 **14/14 命令 100% 覆盖**:
