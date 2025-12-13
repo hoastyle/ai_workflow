@@ -464,8 +464,8 @@ class MCPSelector:
         if feature_alignment > 0.3:
             reasons.append(f"特征对齐 ({feature_alignment:.0%})")
 
-        # Cap confidence at 1.0
-        confidence = min(confidence, 1.0)
+        # Cap confidence at [0.0, 1.0]
+        confidence = max(0.0, min(confidence, 1.0))
 
         # Generate final reasoning
         if reasons:
