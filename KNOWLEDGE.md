@@ -72,6 +72,7 @@ else:
 
 | 主题 | 路径 | 优先级 |
 |------|------|--------|
+| **AgentCoordinator 使用指南** | [docs/examples/agent_coordinator_usage.md](docs/examples/agent_coordinator_usage.md) | 🔴 最高 |
 | **DocLoader 使用指南** | [docs/examples/doc_loader_usage.md](docs/examples/doc_loader_usage.md) | 🔴 最高 |
 | **DocLoader 集成示例** | [docs/examples/wf_integration_example.md](docs/examples/wf_integration_example.md) | 🔴 最高 |
 | 文档生成快速指南 | [docs/examples/doc_generation_quick_guide.md](docs/examples/doc_generation_quick_guide.md) | 高 |

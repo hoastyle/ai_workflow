@@ -241,6 +241,83 @@ python ~/.claude/commands/scripts/doc_guard.py \
 
 **如果Doc Guard工具不可用**，降级使用Read工具读取完整文档（警告：token消耗会增加）
 
+---
+
+### Step 0.1: Agent 选择和激活 🤖
+
+**目的**: 自动选择合适的 agent 协助实现，提升开发效率和代码质量
+
+**执行时机**: 在读取执行指南之后、开始编码之前
+
+**Agent 协调流程**:
+
+```python
+from commands.lib.agent_coordinator import get_agent_coordinator
+
+# 1. 初始化协调器（单例模式）
+coordinator = get_agent_coordinator()
+
+# 2. 拦截命令执行，选择 agent
+agent_context = coordinator.intercept(
+    task_description=user_task_description,  # 用户提供的功能描述
+    command_name="wf_05_code",
+    auto_activate=True,      # 自动激活高匹配度 agent
+    min_confidence=0.85      # 最低置信度阈值（85%）
+)
+
+# 3. 显示 agent 信息
+print(coordinator.format_agent_info(agent_context, verbose=True))
+```
+
+**输出示例**:
+```markdown
+## 🤖 Agent 协助
+
+**使用 Agent**: Implementation Engineer (`code-agent`)
+**匹配度**: 92% 🟢 自动激活
+**专长**: 功能实现和代码编写, 设计模式应用, 代码质量和可读性
+
+**MCP 工具**:
+  - Serena: 精确代码定位和智能插入点检测
+  - Magic: UI 组件生成
+  - Sequential-thinking: 复杂实现的逻辑推理
+
+**建议协作**:
+  - sequential: test-agent (实现后编写测试)
+  - parallel: review-agent (代码审查)
+```
+
+**Agent 上下文使用**:
+
+如果 agent 成功激活，后续步骤应参考其建议：
+
+```python
+if agent_context['auto_activated']:
+    agent = agent_context['agent']
+
+    # 1. 参考 agent 的 MCP 集成建议
+    mcp_hints = agent_context['mcp_hints']
+    # 例如: ["Serena: 精确代码定位和智能插入点检测", ...]
+
+    # 2. 根据 agent expertise 调整实现策略
+    expertise = agent.expertise
+    # 例如: ["功能实现和代码编写", "设计模式应用", ...]
+
+    # 3. 考虑协作建议（后续命令）
+    collaborators = agent_context['collaborators']
+    # 例如: [{'mode': 'sequential', 'agent': 'test-agent', 'scenario': '实现后编写测试'}]
+```
+
+**降级处理**:
+
+如果未匹配到合适的 agent (匹配度 < 85%)：
+- ℹ️ 显示: "未匹配到合适的 agent，使用标准流程"
+- 继续执行后续步骤，不影响命令功能
+
+**相关文档**: [AgentCoordinator 使用指南](docs/examples/agent_coordinator_usage.md)
+
+---
+
 ### Step 1-N: 按指南执行
 
 **详细执行流程**: 所有步骤必须严格遵循 [wf_05_code 工作流指南](docs/guides/wf_05_code_workflows.md) 中的"AI执行协议"部分
@@ -278,11 +355,11 @@ python ~/.claude/commands/scripts/doc_guard.py \
 
 ---
 
-### Step 0.1: Confidence Check (Pre-Implementation Assessment) 🎯
+### Step 0.2: Confidence Check (Pre-Implementation Assessment) 🎯
 
 **目的**: 在开始编码前评估实现信心，避免盲目开发导致大量返工
 
-**执行时机**: 在读取 PLANNING.md 之前执行
+**执行时机**: 在 Agent 选择之后、读取 PLANNING.md 之前执行
 
 **评估维度** (代码实现特定):
 
