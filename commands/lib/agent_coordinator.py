@@ -117,12 +117,65 @@ class AgentCoordinator:
 
         return context
 
-    def _extract_mcp_hints(self, agent: Agent) -> List[str]:
-        """提取 MCP 使用建议"""
-        return [
-            f"{mcp['name']}: {mcp['usage']}"
-            for mcp in agent.mcp_integrations
-        ]
+    def _extract_mcp_hints(self, agent: Agent) -> List[Dict[str, Any]]:
+        """
+        智能提取 MCP 工具推荐（使用 MCPSelector V2 API）
+
+        Args:
+            agent: Agent 对象
+
+        Returns:
+            List of Dict containing:
+                - tool: MCP tool name
+                - usage: Tool usage description
+                - confidence: Confidence score (0.0-1.0)
+                - priority: "high" | "medium" | "low"
+                - reason: Recommendation reason
+        """
+        try:
+            # Import MCPSelector and Gateway
+            from .mcp_selector import get_mcp_selector
+            try:
+                from src.mcp.gateway import get_mcp_gateway
+                gateway = get_mcp_gateway()
+            except ImportError:
+                # Gateway not available, create selector without it
+                gateway = None
+
+            # Create MCPSelector with gateway
+            selector = get_mcp_selector(gateway)
+
+            # Use V2 API for intelligent tool selection
+            recommendations = selector.select_tools_v2(
+                agent=agent,
+                task_description=self.task_description,
+                auto_filter=True  # Filter out low-confidence tools
+            )
+
+            # Convert MCPToolRecommendation objects to dicts
+            return [
+                {
+                    'tool': rec.tool_name,
+                    'usage': rec.usage_description,
+                    'confidence': rec.confidence,
+                    'priority': rec.priority,
+                    'reason': rec.reason
+                }
+                for rec in recommendations
+            ]
+
+        except (ImportError, AttributeError) as e:
+            # Fallback to legacy behavior if MCPSelector not available
+            return [
+                {
+                    'tool': mcp['name'],
+                    'usage': mcp['usage'],
+                    'confidence': 0.5,  # Default confidence
+                    'priority': 'medium',
+                    'reason': 'Legacy mode - no confidence scoring'
+                }
+                for mcp in agent.mcp_integrations
+            ]
 
     def _get_collaborators(self, agent: Agent) -> List[Dict[str, str]]:
         """获取协作建议"""
@@ -206,13 +259,35 @@ class AgentCoordinator:
             f"**专长**: {', '.join(agent.expertise[:3])}",
         ]
 
-        # MCP 集成提示
+        # MCP 集成提示（V2 格式 - 包含置信度和优先级）
         if context['mcp_hints'] and verbose:
             output.extend([
                 "",
-                "**MCP 工具**:",
-                *[f"  - {hint}" for hint in context['mcp_hints'][:3]]
+                "**MCP 工具推荐**:"
             ])
+
+            # Priority emoji mapping
+            priority_emoji = {
+                "high": "🔴",
+                "medium": "🟠",
+                "low": "🟡"
+            }
+
+            for hint in context['mcp_hints'][:3]:
+                # Handle both dict format (V2) and string format (legacy)
+                if isinstance(hint, dict):
+                    emoji = priority_emoji.get(hint.get('priority', 'medium'), '⚪')
+                    confidence = hint.get('confidence', 0.5)
+                    tool = hint.get('tool', 'Unknown')
+                    usage = hint.get('usage', '')
+
+                    # Format: 🔴 Tool (90%) - Usage
+                    output.append(
+                        f"  - {emoji} **{tool}** ({confidence:.0%}): {usage}"
+                    )
+                else:
+                    # Legacy string format
+                    output.append(f"  - {hint}")
 
         # 协作建议
         if context['collaborators'] and verbose:
