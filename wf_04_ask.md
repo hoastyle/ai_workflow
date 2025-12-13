@@ -267,6 +267,82 @@ python ~/.claude/commands/scripts/doc_guard.py \
 
 **如果Doc Guard工具不可用**，降级使用Read工具读取完整文档（警告：token消耗会增加）
 
+---
+
+### Step 0.1: Agent 选择和激活 🤖
+
+**目的**: 自动选择合适的 agent 协助咨询，提升架构决策的深度和专业性
+
+**执行时机**: 在读取执行指南之后、开始咨询之前
+
+**Agent 协调流程**:
+
+```python
+from commands.lib.agent_coordinator import get_agent_coordinator
+
+# 1. 初始化协调器（单例模式）
+coordinator = get_agent_coordinator()
+
+# 2. 拦截命令执行，选择 agent
+agent_context = coordinator.intercept(
+    task_description=user_question,  # 用户提供的技术问题
+    command_name="wf_04_ask",
+    auto_activate=True,      # 自动激活高匹配度 agent
+    min_confidence=0.85      # 最低置信度阈值（85%）
+)
+
+# 3. 显示 agent 信息
+print(coordinator.format_agent_info(agent_context, verbose=True))
+```
+
+**输出示例**:
+```markdown
+## 🤖 Agent 协助
+
+**使用 Agent**: Software Architect (`architect-agent`)
+**匹配度**: 96% 🟢 自动激活
+**专长**: 系统架构设计, 技术选型和评估, 微服务和分布式系统
+
+**MCP 工具**:
+  - Sequential-thinking: 复杂架构决策的结构化推理
+  - Context7: 查询最新技术文档和最佳实践
+  - Tavily: 社区方案和开源项目研究
+
+**建议协作**:
+  - sequential: code-agent (设计后实现)
+  - sequential: review-agent (架构审查)
+```
+
+**Agent 上下文使用**:
+
+如果 agent 成功激活，后续步骤应参考其建议：
+
+```python
+if agent_context['auto_activated']:
+    agent = agent_context['agent']
+
+    # 1. 参考 agent 的咨询重点
+    expertise = agent.expertise
+    # 例如: ["系统架构设计", "技术选型和评估", ...]
+
+    # 2. 调整咨询深度和方向
+    # architect-agent 可能建议重点关注架构模式和扩展性
+
+    # 3. 使用 MCP 工具增强咨询
+    mcp_hints = agent_context['mcp_hints']
+    # 例如: 使用 Context7 查询最新技术文档
+```
+
+**降级处理**:
+
+如果未匹配到合适的 agent (匹配度 < 85%)：
+- ℹ️ 显示: "未匹配到合适的 agent，使用标准咨询流程"
+- 继续执行后续步骤，不影响命令功能
+
+**相关文档**: [AgentCoordinator 使用指南](docs/examples/agent_coordinator_usage.md)
+
+---
+
 ### Step 1-N: 按指南执行
 
 **详细执行流程**: 所有步骤必须严格遵循 [wf_04_ask 工作流指南](docs/guides/wf_04_ask_workflows.md) 中的"AI执行协议"部分
@@ -317,11 +393,11 @@ python ~/.claude/commands/scripts/doc_guard.py \
 
 ---
 
-### Step 0.1: Confidence Check (Pre-Execution Assessment) 🎯
+### Step 0.2: Confidence Check (Pre-Execution Assessment) 🎯
 
 **目的**: 在开始架构咨询前评估信心水平，避免盲目推进导致错误方向
 
-**执行时机**: 在读取任何项目文档之前执行
+**执行时机**: 在 Agent 选择之后、读取项目文档之前执行
 
 **评估维度**:
 

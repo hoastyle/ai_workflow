@@ -122,6 +122,81 @@ Manage TASK.md to track project progress and maintain task continuity:
 - Maintain context across development sessions
 
 ## Process
+
+### Step 0.1: Agent 选择和激活 🤖
+
+**目的**: 自动选择合适的 agent 协助任务管理，提升任务规划和追踪效率
+
+**执行时机**: 在开始任务管理操作（create/update/review）之前
+
+**Agent 协调流程**:
+
+```python
+from commands.lib.agent_coordinator import get_agent_coordinator
+
+# 1. 初始化协调器（单例模式）
+coordinator = get_agent_coordinator()
+
+# 2. 拦截命令执行，选择 agent
+agent_context = coordinator.intercept(
+    task_description=f"{mode} 任务管理",  # mode: create/update/review
+    command_name="wf_02_task",
+    auto_activate=True,      # 自动激活高匹配度 agent
+    min_confidence=0.85      # 最低置信度阈值（85%）
+)
+
+# 3. 显示 agent 信息
+print(coordinator.format_agent_info(agent_context, verbose=True))
+```
+
+**输出示例**:
+```markdown
+## 🤖 Agent 协助
+
+**使用 Agent**: Project Manager (`pm-agent`)
+**匹配度**: 89% 🟢 自动激活
+**专长**: 任务规划和分解, 进度追踪, 风险管理
+
+**MCP 工具**:
+  - Serena: 任务关联到具体代码符号和进度跟踪
+  - Sequential-thinking: 系统化任务拆分策略
+  - Context7: 查询项目管理最佳实践
+
+**建议协作**:
+  - sequential: architect-agent (架构相关任务)
+  - parallel: code-agent (实现任务)
+```
+
+**Agent 上下文使用**:
+
+如果 agent 成功激活，后续步骤应参考其建议：
+
+```python
+if agent_context['auto_activated']:
+    agent = agent_context['agent']
+
+    # 1. 参考 agent 的任务管理重点
+    expertise = agent.expertise
+    # 例如: ["任务规划和分解", "进度追踪", "风险管理"]
+
+    # 2. 调整任务管理策略
+    # pm-agent 可能建议重点关注依赖关系和关键路径
+
+    # 3. 使用 MCP 工具增强任务管理
+    mcp_hints = agent_context['mcp_hints']
+    # 例如: 使用 Serena 关联任务到代码符号
+```
+
+**降级处理**:
+
+如果未匹配到合适的 agent (匹配度 < 85%)：
+- ℹ️ 显示: "未匹配到合适的 agent，使用标准任务管理流程"
+- 继续执行后续步骤，不影响命令功能
+
+**相关文档**: [AgentCoordinator 使用指南](docs/examples/agent_coordinator_usage.md)
+
+---
+
 ### Create Mode
 1. **Read PLANNING.md** thoroughly
 2. **Generate Task Categories**:

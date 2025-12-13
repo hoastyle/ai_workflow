@@ -51,6 +51,80 @@ Refactoring Coordinator ensuring project consistency:
 
 ## Process
 
+### Step 0.1: Agent 选择和激活 🤖
+
+**目的**: 自动选择合适的 agent 协助重构，提升代码结构改进的质量
+
+**执行时机**: 在开始重构规划之前
+
+**Agent 协调流程**:
+
+```python
+from commands.lib.agent_coordinator import get_agent_coordinator
+
+# 1. 初始化协调器（单例模式）
+coordinator = get_agent_coordinator()
+
+# 2. 拦截命令执行，选择 agent
+agent_context = coordinator.intercept(
+    task_description=refactor_target,  # 用户提供的重构目标
+    command_name="wf_09_refactor",
+    auto_activate=True,      # 自动激活高匹配度 agent
+    min_confidence=0.85      # 最低置信度阈值（85%）
+)
+
+# 3. 显示 agent 信息
+print(coordinator.format_agent_info(agent_context, verbose=True))
+```
+
+**输出示例**:
+```markdown
+## 🤖 Agent 协助
+
+**使用 Agent**: Refactoring Specialist (`refactor-agent`)
+**匹配度**: 90% 🟢 自动激活
+**专长**: 代码重构和优化, 设计模式应用, 架构改进
+
+**MCP 工具**:
+  - Serena: 符号级精确重构（find_symbol, rename_symbol, find_referencing_symbols）
+  - Sequential-thinking: 系统化重构策略规划
+  - Context7: 查询重构最佳实践
+
+**建议协作**:
+  - sequential: test-agent (重构后验证)
+  - sequential: review-agent (重构质量审查)
+```
+
+**Agent 上下文使用**:
+
+如果 agent 成功激活，后续步骤应参考其建议：
+
+```python
+if agent_context['auto_activated']:
+    agent = agent_context['agent']
+
+    # 1. 参考 agent 的重构重点
+    expertise = agent.expertise
+    # 例如: ["代码重构和优化", "设计模式应用", "架构改进"]
+
+    # 2. 调整重构策略
+    # refactor-agent 可能建议重点关注代码结构和可维护性
+
+    # 3. 使用 MCP 工具增强重构
+    mcp_hints = agent_context['mcp_hints']
+    # 例如: 使用 Serena 进行符号级精确重构
+```
+
+**降级处理**:
+
+如果未匹配到合适的 agent (匹配度 < 85%)：
+- ℹ️ 显示: "未匹配到合适的 agent，使用标准重构流程"
+- 继续执行后续步骤，不影响命令功能
+
+**相关文档**: [AgentCoordinator 使用指南](docs/examples/agent_coordinator_usage.md)
+
+---
+
 ### Serena MCP 驱动的重构工作流
 
 #### 阶段 1: 符号定位与分析 (Serena find_symbol)

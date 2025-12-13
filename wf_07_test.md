@@ -232,6 +232,80 @@ python ~/.claude/commands/scripts/doc_guard.py \
 
 ---
 
+### Step 0.1: Agent 选择和激活 🤖
+
+**目的**: 自动选择合适的 agent 协助测试开发，提升测试覆盖率和质量
+
+**执行时机**: 在读取执行指南之后、开始测试开发之前
+
+**Agent 协调流程**:
+
+```python
+from commands.lib.agent_coordinator import get_agent_coordinator
+
+# 1. 初始化协调器（单例模式）
+coordinator = get_agent_coordinator()
+
+# 2. 拦截命令执行，选择 agent
+agent_context = coordinator.intercept(
+    task_description=component_to_test,  # 用户提供的测试目标
+    command_name="wf_07_test",
+    auto_activate=True,      # 自动激活高匹配度 agent
+    min_confidence=0.85      # 最低置信度阈值（85%）
+)
+
+# 3. 显示 agent 信息
+print(coordinator.format_agent_info(agent_context, verbose=True))
+```
+
+**输出示例**:
+```markdown
+## 🤖 Agent 协助
+
+**使用 Agent**: Test Engineer (`test-agent`)
+**匹配度**: 93% 🟢 自动激活
+**专长**: 测试用例设计, 覆盖率分析, 边界条件测试
+
+**MCP 工具**:
+  - Serena: 分析代码结构和测试覆盖缺口
+  - Sequential-thinking: 系统化测试策略设计
+  - Context7: 查询测试框架最佳实践
+
+**建议协作**:
+  - sequential: code-agent (实现后添加测试)
+  - parallel: review-agent (测试代码审查)
+```
+
+**Agent 上下文使用**:
+
+如果 agent 成功激活，后续步骤应参考其建议：
+
+```python
+if agent_context['auto_activated']:
+    agent = agent_context['agent']
+
+    # 1. 参考 agent 的测试重点
+    expertise = agent.expertise
+    # 例如: ["测试用例设计", "覆盖率分析", "边界条件测试"]
+
+    # 2. 调整测试策略
+    # test-agent 可能建议重点关注边界条件和错误处理
+
+    # 3. 使用 MCP 工具增强测试
+    mcp_hints = agent_context['mcp_hints']
+    # 例如: 使用 Serena 分析未覆盖的代码路径
+```
+
+**降级处理**:
+
+如果未匹配到合适的 agent (匹配度 < 85%)：
+- ℹ️ 显示: "未匹配到合适的 agent，使用标准测试流程"
+- 继续执行后续步骤，不影响命令功能
+
+**相关文档**: [AgentCoordinator 使用指南](docs/examples/agent_coordinator_usage.md)
+
+---
+
 ### Standard Testing (default)
 1. **Test Planning**:
    - Review testing strategy in PLANNING.md
