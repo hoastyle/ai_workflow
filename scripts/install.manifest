@@ -57,10 +57,12 @@ declare -ga DOC_FILES=(
 # ⚠️  CRITICAL: These guides are referenced by main command files
 #     Must be installed for commands to function correctly
 declare -ga GUIDE_FILES=(
+    "docs/guides/_TEMPLATE_workflows.md"
     "docs/guides/command_consistency_strategy.md"
     "docs/guides/deployment_compatibility_guide.md"
     "docs/guides/doc_maintenance_process.md"
     "docs/guides/doc_maintenance_workflows.md"
+    "docs/guides/OPTIMIZATION_GUIDE.md"
     "docs/guides/parallel_execution_pattern.md"
     "docs/guides/wf_03_prime_mcp_serena.md"
     "docs/guides/wf_03_prime_smart_loading.md"
@@ -87,7 +89,7 @@ declare -ga GUIDE_FILES=(
 # ⚠️  CRITICAL: These examples are referenced by wf_14_doc command
 #     Must be installed for document generation functionality
 declare -ga EXAMPLE_FILES=(
-    # Core examples
+    # Core examples (wf_14_doc)
     "docs/examples/wf_14_doc_examples.md"
     "docs/examples/doc_generation_workflow.md"
     "docs/examples/doc_generation_outputs.md"
@@ -97,6 +99,41 @@ declare -ga EXAMPLE_FILES=(
     "docs/examples/doc_generation_decision_tree.md"
     "docs/examples/doc_generation_quick_guide.md"
     "docs/examples/frontmatter_quick_reference.md"
+
+    # Agent coordination examples (Phase 4)
+    "docs/examples/agent_coordination_examples.md"
+    "docs/examples/agent_coordinator_usage.md"
+
+    # Doc loader examples (文档读取优化)
+    "docs/examples/doc_loader_quick_ref.md"
+    "docs/examples/doc_loader_usage.md"
+
+    # Multi-Agent Review examples (wf_08_review 并行审查)
+    "docs/examples/multi_agent_review_overview.md"
+    "docs/examples/multi_agent_review_tips.md"
+    "docs/examples/multi_agent_review_case1_api_refactor.md"
+    "docs/examples/multi_agent_review_case2_database_migration.md"
+    "docs/examples/multi_agent_review_case3_security.md"
+    "docs/examples/multi_agent_review_case4_performance.md"
+
+    # Parallel Execution examples (并行执行模式)
+    "docs/examples/parallel_execution_overview.md"
+    "docs/examples/parallel_execution_tips.md"
+    "docs/examples/parallel_execution_case1_logging.md"
+    "docs/examples/parallel_execution_case2_component_refactor.md"
+    "docs/examples/parallel_execution_case3_api_batch.md"
+    "docs/examples/parallel_execution_case4_test_update.md"
+
+    # Parallel Review examples (并行代码审查)
+    "docs/examples/parallel_review_overview.md"
+    "docs/examples/parallel_review_tips.md"
+    "docs/examples/parallel_review_case1_multifile.md"
+    "docs/examples/parallel_review_case2_refactoring.md"
+    "docs/examples/parallel_review_case3_test_coverage.md"
+    "docs/examples/parallel_review_case4_doc_sync.md"
+
+    # Workflow integration
+    "docs/examples/wf_integration_example.md"
 
     # Document templates
     "docs/examples/doc_templates/README_template.md"
@@ -125,6 +162,7 @@ declare -ga REFERENCE_FILES=(
 # ⚠️  CRITICAL: These Python libraries are used by commands for advanced features
 #     Must be installed for agent coordination and DocLoader functionality
 declare -ga COMMANDS_LIB_FILES=(
+    "commands/lib/agent_coordinator.py"
     "commands/lib/agent_registry.py"
     "commands/lib/agent_router.py"
     "commands/lib/auto_activation_demo.py"
@@ -155,7 +193,6 @@ declare -ga COMMANDS_AGENTS_FILES=(
 # ⚠️  CRITICAL: All wf_*.md commands use "from src.mcp.gateway import get_mcp_gateway"
 #     Must be installed for MCP functionality to work
 declare -ga SRC_MCP_FILES=(
-    "src/__init__.py"
     "src/mcp/__init__.py"
     "src/mcp/gateway.py"
     "src/mcp/serena_manager.py"
