@@ -238,9 +238,9 @@ if gateway.is_available("serena"):
 `/wf_11_commit [message]`
 
 ## Purpose
-Create git commits with integrated formatting, validation, and context updates:
-- Validate changes against standards
-- Auto-format code before commit
+Create git commits with integrated preparation, formatting, and context updates:
+- Prepare files for commit (date updates, basic formatting, staging)
+- Automatically delegate validation to git hooks during commit
 - Update TASK.md task completion status
 - Auto-update CONTEXT.md with work summary
 - **Auto-update README.md when important work completed**
@@ -270,128 +270,75 @@ python ~/.claude/commands/scripts/doc_guard.py \
 
 ---
 
-### 🔧 Stage 1: Preparation (修复和校验)
-**目标**: 清理代码、修复常见问题、校验质量
+### 🔧 Stage 1: Preparation (准备和格式化)
+**目标**: 为提交准备文件，更新维护信息
 
-1. **Dynamic Pre-Commit Detection & Execution** (NEW):
-   - Check git status for changes
-   - Identify files for staging
-   - **Detect pre-commit configuration**:
+1. **文件准备和自动化更新**:
+   - 分析已修改的文件
+   - 自动执行基础格式化和维护更新
+
+2. **自动日期更新**:
+   - 更新 "最后更新" 字段为当前日期: `$(date +%Y-%m-%d)`
+   - 保留历史日期（创建日期、发布日期、决策日期）
+
+3. **自动 Frontmatter 日期更新**:
+   - 更新 `last_updated` 字段到当前日期
+   - 保留 `created_date`（历史，永不修改）
+   - 验证 `created_date` <= `last_updated` 逻辑
+
+4. **基础格式化和维护**:
+   * **自动修复尾部空格**:
      ```bash
-     # Step 1.1: Check for .pre-commit-config.yaml
+     echo "🔧 Removing trailing whitespace..."
+     find . -name "*.md" -exec sed -i 's/[[:space:]]*$//' {} \; 2>/dev/null
+     ```
+   * **自动修复行结尾**:
+     ```bash
+     echo "🔧 Converting line endings to Unix LF..."
+     if command -v dos2unix >/dev/null 2>&1; then
+       find . -name "*.md" -exec dos2unix {} \; 2>/dev/null
+     else
+       find . -name "*.md" -exec sed -i 's/\r$//' {} \; 2>/dev/null
+     fi
+     ```
+   * **基础 Markdown 格式化**:
+     ```bash
+     echo "🔧 Fixing basic markdown formatting..."
+     # 移除文件末尾多余空行
+     find . -name "*.md" -exec sed -i -e :a -e '/^\n*$/{ $d; N; ba }' {} \; 2>/dev/null
+     # 修复标题格式
+     find . -name "*.md" -exec sed -i 's/^##\([^# ]\)/## \1/g' {} \; 2>/dev/null
+     ```
+
+5. **预提交验证提示**:
+   - **如果存在 `.pre-commit-config.yaml`**:
+     ```bash
      if [ -f .pre-commit-config.yaml ]; then
        echo "✅ Detected .pre-commit-config.yaml in project"
-
-       # Step 1.2: Check if pre-commit tool is installed
-       if command -v pre-commit >/dev/null 2>&1; then
-         echo "✅ pre-commit tool is installed"
-         echo "🚀 Using project's pre-commit configuration..."
-
-         # Path A: Use pre-commit framework (STAGED FILES ONLY)
-         # ⚠️ IMPORTANT: NO --all-files flag allowed
-         pre-commit run
-
-         echo "✅ pre-commit hooks executed on staged files"
-       else
-         echo "⚠️  pre-commit tool NOT installed (despite .pre-commit-config.yaml exists)"
-         echo "💡 Install: pip install pre-commit && pre-commit install"
-         echo "🔄 Falling back to basic self-managed fixes..."
-
-         # Path B: Fallback to self-managed fixes
-         USE_FALLBACK=true
-       fi
-     else
-       echo "ℹ️  No .pre-commit-config.yaml found in project"
-       echo "🔄 Using self-managed quality fixes..."
-
-       # Path B: Fallback to self-managed fixes
-       USE_FALLBACK=true
+       echo "ℹ️  Pre-commit hooks will run automatically during git commit"
+       echo "💡 Ensure you have run 'pre-commit install' in this repository"
      fi
      ```
 
-   - **Path A (Recommended): Use Pre-Commit Framework**:
-     * Execute `pre-commit run` (staged files only, NO --all-files)
-     * Hooks defined in .pre-commit-config.yaml will handle:
-       - Trailing whitespace removal
-       - Line ending fixes (CRLF → LF)
-       - Markdown formatting
-       - File format validation
-       - Custom project checks
-     * Language-specific formatting (if configured):
-       - Python: black formatter
-       - JavaScript/TypeScript: prettier
-       - C++: clang-format
-       - Go: gofmt
-
-   - **Path B (Fallback): Self-Managed Basic Fixes** (when pre-commit unavailable):
-     * **Auto-fix Trailing Whitespace**:
-       ```bash
-       echo "🔧 Removing trailing whitespace..."
-       find . -name "*.md" -exec sed -i 's/[[:space:]]*$//' {} \; 2>/dev/null
-       ```
-     * **Auto-fix Line Endings**:
-       ```bash
-       echo "🔧 Converting line endings to Unix LF..."
-       if command -v dos2unix >/dev/null 2>&1; then
-         find . -name "*.md" -exec dos2unix {} \; 2>/dev/null
-       else
-         find . -name "*.md" -exec sed -i 's/\r$//' {} \; 2>/dev/null
-       fi
-       ```
-     * **Basic Markdown Formatting**:
-       ```bash
-       echo "🔧 Fixing basic markdown formatting..."
-       # Remove excessive blank lines at end of files
-       find . -name "*.md" -exec sed -i -e :a -e '/^\n*$/{ $d; N; ba }' {} \; 2>/dev/null
-       # Fix header spacing (## Header → ## Header)
-       find . -name "*.md" -exec sed -i 's/^##\([^# ]\)/## \1/g' {} \; 2>/dev/null
-       ```
-
-   - **Auto-Update Maintenance Dates** (applies to both paths):
-     * Update "最后更新" fields to current date: `$(date +%Y-%m-%d)`
-     * Preserve historical dates (创建日期、发布日期、决策日期)
-
-   - **Auto-Update Frontmatter Dates** (applies to both paths):
-     * Update `last_updated` field in all modified docs/ files: `$(date +%Y-%m-%d)`
-     * Preserve `created_date` (historical, never modify)
-     * Validate `created_date` <= `last_updated` logic
-
-2. **Validation & Error Handling** (Adaptive to Execution Path):
-   - **Path A Validation** (when using pre-commit framework):
+6. **格式验证**:
+   - 检查基础质量约束：
      ```bash
-     # pre-commit run already performs validation
-     # Check exit code to ensure all hooks passed
-     if [ $? -eq 0 ]; then
-       echo "✅ All pre-commit hooks passed"
-     else
-       echo "❌ Some pre-commit hooks failed"
-       echo "💡 Review the output above for specific issues"
-       echo "💡 Fix issues and retry, or use 'git commit --no-verify' to skip (not recommended)"
-       exit 1
+     echo "🔍 Validating base formatting..."
+
+     # 检查尾部空格
+     if find . -name "*.md" -exec grep -l " $" {} \; 2>/dev/null | grep -q .; then
+       echo "⚠️  Trailing whitespace found - pre-commit hooks will handle this"
      fi
+
+     # 检查行结尾
+     if find . -name "*.md" -exec file {} \; 2>/dev/null | grep -q CRLF; then
+       echo "⚠️  CRLF line endings found - pre-commit hooks will handle this"
+     fi
+
+     echo "🎯 Staging prepared files for validation via git hooks"
      ```
 
-   - **Path B Validation** (when using self-managed fixes):
-     * **Basic Quality Checks**:
-       ```bash
-       echo "🔍 Validating self-managed fixes..."
-
-       # Check for remaining trailing whitespace
-       if find . -name "*.md" -exec grep -l " $" {} \; 2>/dev/null | grep -q .; then
-         echo "❌ Trailing whitespace still present after fixes"
-         exit 1
-       fi
-
-       # Check for remaining CRLF line endings
-       if find . -name "*.md" -exec file {} \; 2>/dev/null | grep -q CRLF; then
-         echo "❌ CRLF line endings still present after fixes"
-         exit 1
-       fi
-
-       echo "✅ Self-managed quality checks passed"
-       ```
-
-   - **Frontmatter Script Dependency Check** (applies to both paths):
+   - **Frontmatter 完整性检查**:
      ```bash
      if [ ! -f ~/.claude/commands/scripts/frontmatter_utils.py ]; then
        echo "⚠️  Frontmatter script missing: ~/.claude/commands/scripts/frontmatter_utils.py"
@@ -401,15 +348,10 @@ python ~/.claude/commands/scripts/doc_guard.py \
      fi
      ```
 
-   - **Common Error Handling** (applies to both paths):
-     * **If validation fails**:
-       - Display specific error messages with file:line locations
-       - Provide auto-repair suggestions for common issues
-       - Path A: Suggest reviewing pre-commit hook output
-       - Path B: Offer automated recovery for safe problems (whitespace, line endings)
-       - For unsafe problems: pause and require user confirmation to proceed
-       - Document failure reason for troubleshooting
-     * **If validation passes**: Proceed to Stage 2
+7. **阶段完成确认**:
+   - 总结准备完成情况
+   - 确认所有修改已正确暂存
+   - 准备进入提交流程（验证将通过 git hooks 自动执行）
 
 ---
 
@@ -514,10 +456,11 @@ python ~/.claude/commands/scripts/doc_guard.py \
    - Execute git commit with semantic message
    - Verify commit hash and completion
 
-2. **Post-Commit Validation**:
+2. **Post-Commit Verification** (Documentation):
    - Confirm CONTEXT.md updated successfully
    - Verify TASK.md status changes applied
    - Check KNOWLEDGE.md additions if any
+   - Code quality validation automatically executed by git hooks during `git commit`
 
 3. **Next Steps Guidance**:
    - Display remaining work items from TASK.md
@@ -546,10 +489,10 @@ Types:
 ## Output Format
 
 ### Stage 1: Preparation Output
-1. **Auto-Repair Report** – automatic fixes applied (whitespace, line endings, formatting)
-2. **Formatting Report** – language-specific auto-formatting applied
+1. **File Preparation Report** – date updates, basic formatting, staging completed
+2. **Formatting Report** – automatic fixes applied (whitespace, line endings, Markdown format)
 3. **Date Update Report** – maintenance and frontmatter dates synchronized
-4. **Validation Report** – quality gate checks, error handling if needed
+4. **Pre-Commit Validation Hint** – confirmation that .pre-commit-config.yaml exists and will run during `git commit`
 
 ### Stage 2: Analysis & Generation Output
 5. **Change Summary** – grouped files and modifications by scope
@@ -564,7 +507,7 @@ Types:
 
 ### Stage 4: Completion Output
 12. **Commit Result** – success confirmation with hash
-13. **Post-Commit Validation** – CONTEXT/TASK/KNOWLEDGE verification
+13. **Post-Commit Status** – Git hooks validation automatically executed during `git commit`; CONTEXT/TASK/KNOWLEDGE verification
 14. **Next Steps** – remaining work items and recommended actions
 
 ## 📌 工作流导航
@@ -595,13 +538,13 @@ Types:
 - ✅ **下一步**: `/wf_02_task update` 标记任务完成，或直接 `/clear` 清理上下文
 
 ## Workflow Integration
-- **Auto-Repair System**: Automatically fixes trailing whitespace, line endings, basic formatting
-- **Quality Gates**: Enforced through enhanced pre-commit hooks with validation
-- **Error Handling**: Comprehensive validation with clear recovery paths for failures
+- **Preparation System**: Prepares files for commit through date updates, basic formatting, and staging
+- **Quality Gates**: Delegated to .pre-commit-config.yaml hooks that run automatically during `git commit`
+- **Clear Separation of Concerns**: wf_11_commit handles preparation; git hooks handle validation
 - **Script Dependencies**: Checks for required tools (e.g., Frontmatter script) before execution
-- **User Experience**: Reduces manual fixes, provides clear feedback on auto-repairs
-- Validates against PLANNING.md standards
-- Auto-formats code (integrates wf_format.md functionality)
+- **User Experience**: Clear feedback on preparation steps; automatic validation via git hooks
+- Validates against PLANNING.md standards (via git hooks)
+- Auto-formats code (integrates basic formatting during Stage 1)
 - **Auto-updates README.md for important work completions**
 - Updates completed tasks in TASK.md
 - Auto-updates CONTEXT.md for session continuity
@@ -611,6 +554,7 @@ Types:
 - Maintains complete project history and context
 - **Ensures README stays synchronized with project state**
 - Enables seamless `/wf_03_prime` context loading with long-term memory
+- **Trusts .pre-commit-config.yaml as single source of truth for quality standards**
 
 ## CONTEXT.md Pointer Document Template
 
@@ -646,157 +590,151 @@ Types:
 
 ---
 
-## Pre-commit Framework Integration
+## Git Hook 集成和自动验证哲学
 
-### 🔄 Dynamic Detection and Smart Execution (NEW)
+### 🎯 核心设计理念
 
-**wf_11_commit** now intelligently detects and adapts to your project's setup:
+**wf_11_commit 信任 git hooks 在提交时自动运行验证**:
 
-1. **Auto-Detection**:
-   - Checks for `.pre-commit-config.yaml` in project root
-   - Verifies `pre-commit` tool installation
-   - Selects optimal execution path automatically
+新的设计哲学是：
+1. **Stage 1 只负责准备**：更新日期、基础格式化、暂存文件
+2. **Git hooks 负责验证**：.pre-commit-config.yaml 定义的 hooks 在 `git commit` 时自动运行
+3. **简化职责**：避免重复的验证逻辑，让 .pre-commit-config.yaml 成为唯一的质量标准定义
 
-2. **Execution Paths**:
-   - **Path A (Recommended)**: Uses pre-commit framework when available
-   - **Path B (Fallback)**: Self-managed fixes when pre-commit unavailable
+### 为什么这样设计？
 
-### Path A: Pre-Commit Framework (Recommended)
+✅ **优势**:
+- **清晰的职责分工**：wf_11_commit 不再重复 git hooks 的工作
+- **自动化和可靠**：git 原生支持 hook 机制，无需额外维护
+- **避免绕过**：项目的 .pre-commit-config.yaml 成为强制执行的标准
+- **简化代码**：去除复杂的"Path A vs Path B"逻辑
+- **提高可维护性**：所有质量标准在一个文件中定义
 
-**When to use**:
-- ✅ `.pre-commit-config.yaml` exists in project
-- ✅ `pre-commit` tool is installed (`pip install pre-commit`)
+### 预提交 Hook 安装和配置
 
-**Behavior**:
+**前置条件**：项目必须有 `.pre-commit-config.yaml` 并运行 `pre-commit install`
+
 ```bash
-# Automatically executes (STAGED FILES ONLY):
-pre-commit run
+# Step 1: 创建 .pre-commit-config.yaml（如果不存在）
+# 参考: https://pre-commit.com/
 
-# ⚠️ IMPORTANT: --all-files flag is NEVER used
-# This prevents:
-# - Performance issues on large codebases
-# - Unexpected modifications to unstaged files
-# - Conflicts with partial commits
-```
-
-**What it handles** (defined in your .pre-commit-config.yaml):
-- ✅ Trailing whitespace removal
-- ✅ Line ending fixes (CRLF → LF)
-- ✅ Markdown formatting
-- ✅ File format validation
-- ✅ Custom project-specific checks
-- ✅ Language-specific formatting (black, prettier, clang-format, gofmt)
-
-### Path B: Self-Managed Fixes (Fallback)
-
-**When to use**:
-- ⚠️ No `.pre-commit-config.yaml` in project
-- ⚠️ `pre-commit` tool not installed
-
-**Behavior**:
-```bash
-# Executes basic quality fixes:
-1. Remove trailing whitespace (sed)
-2. Convert line endings CRLF → LF (dos2unix or sed)
-3. Fix basic markdown formatting (sed)
-4. Validate results
-```
-
-**Installation Recommendation**:
-```bash
-# If you see "Falling back to self-managed fixes", consider:
+# Step 2: 安装预提交 hook（一次性）
 pip install pre-commit
 pre-commit install
+
+# Step 3: Git hooks 现在会在 git commit 时自动运行
+# 无需 wf_11_commit 中的手动调用
 ```
 
-### Installation & Setup (for Path A)
+### Git Hooks 自动验证流程
 
-```bash
-# Step 1: Install pre-commit framework
-pip install pre-commit
+当执行 `git commit` 时，以下流程自动发生：
 
-# Step 2: Install hooks in your repository (one-time)
-pre-commit install
-
-# Step 3: (Optional) Test hooks manually
-pre-commit run  # Runs on staged files only
+```
+用户运行: git commit -m "message"
+  ↓
+Git 检查是否安装了 pre-commit hooks
+  ↓
+If pre-commit 已安装:
+  - 自动运行 .pre-commit-config.yaml 中定义的所有 hooks
+  - Hooks 检查暂存文件
+  - If 检查失败 → 提示错误，阻止提交
+  - If 检查通过 → 继续提交
+  ↓
+提交完成或被 hooks 阻止
 ```
 
-### Auto-Repair Capabilities
+### Hook 定义示例
 
-**Path A (Pre-Commit Framework)**:
-- All capabilities defined in `.pre-commit-config.yaml`
-- Customizable per project
-- Extensible with additional hooks
+**.pre-commit-config.yaml** 中定义验证规则：
 
-**Path B (Self-Managed Fallback)**:
-- **Trailing Whitespace**: sed-based removal
-- **Line Endings**: dos2unix or sed fallback
-- **Markdown Formatting**: Basic sed fixes
-- **Limited Scope**: Only essential fixes
-
-### Quality Gates Enforced
-
-**Path A**:
-- All hooks in `.pre-commit-config.yaml`
-- Pre-commit framework's built-in validation
-- Custom project-specific checks
-
-**Path B**:
-- Basic quality checks (whitespace, line endings)
-- Manual validation after self-managed fixes
-- Frontmatter validation (if script available)
-
-### Integration Benefits
-
-**Path A (Pre-Commit Framework)**:
-- ✅ **Automated Quality Control**: Comprehensive project-specific checks
-- ✅ **Instant Fixes**: Auto-repair defined in config
-- ✅ **Consistent Standards**: Framework-enforced consistency
-- ✅ **Extensible**: Easy to add new hooks
-- ✅ **Community Support**: Well-documented, widely adopted
-
-**Path B (Self-Managed Fallback)**:
-- ✅ **No Dependencies**: Works without pre-commit installation
-- ✅ **Basic Coverage**: Essential quality fixes
-- ⚠️ **Limited Scope**: Only fundamental checks
-- 💡 **Upgrade Path**: Easy to migrate to Path A later
-
-### Migration from Manual to Pre-Commit
-
-If your project uses self-managed fixes (Path B), consider migrating:
-
-```bash
-# 1. Create .pre-commit-config.yaml
-cat > .pre-commit-config.yaml << 'EOF'
+```yaml
 repos:
-  - repo: local
+  # 基础文件修复
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
     hooks:
       - id: trailing-whitespace
-        name: Remove Trailing Whitespace
-        entry: sed -i 's/[[:space:]]*$//'
-        language: system
-        files: \.md$
-      # Add more hooks as needed
-EOF
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-merge-conflict
+      - id: fix-byte-order-marker
 
-# 2. Install pre-commit
-pip install pre-commit
-pre-commit install
+  # Markdown 格式化（可选）
+  - repo: https://github.com/markdownlint/markdownlint
+    rev: v0.13.0
+    hooks:
+      - id: markdownlint
 
-# 3. Test
-pre-commit run
-
-# 4. wf_11_commit will now auto-detect and use Path A
+  # 自定义本地 hooks（项目特定）
+  - repo: local
+    hooks:
+      - id: custom-project-check
+        name: Custom Project Validation
+        entry: ./scripts/validate.sh
+        language: script
+        stages: [commit]
 ```
 
-### Key Design Decisions
+### Stage 1 与 Git Hooks 的交互
 
-1. **No --all-files Flag**: Prevents performance issues and unexpected file modifications
-2. **Staged Files Only**: Respects partial commits and staged changes
-3. **Smart Fallback**: Ensures basic quality even without pre-commit
-4. **Clear Feedback**: Shows which path is being used
-5. **Zero Breaking Changes**: Existing projects continue to work
+**Stage 1 准备文件，Git Hooks 验证文件**：
+
+| 阶段 | 职责 | 执行时机 |
+|------|------|--------|
+| **Stage 1** | 更新日期、基础格式化、暂存文件 | `/wf_11_commit` 执行时 |
+| **Git Hooks** | 运行所有 .pre-commit-config.yaml 规则 | `git commit` 执行时 |
+| **提交** | 如果 hooks 通过，提交成功 | git 原生机制 |
+
+### 项目配置检查清单
+
+确保你的项目正确配置：
+
+- [ ] ✅ 项目根目录有 `.pre-commit-config.yaml`
+- [ ] ✅ 已运行 `pip install pre-commit`
+- [ ] ✅ 已运行 `pre-commit install`（在项目目录中）
+- [ ] ✅ Git hooks 已安装到 `.git/hooks/`
+- [ ] ✅ `.pre-commit-config.yaml` 定义了所有必要的 hooks
+
+### 验证 Git Hooks 已安装
+
+```bash
+# 检查 hooks 是否已安装
+ls -la .git/hooks/ | grep pre-commit
+
+# 应该看到类似输出：
+# -rwxr-xr-x  1 user  staff   159 Nov 14 10:30 pre-commit
+
+# 手动测试 hooks（可选）
+pre-commit run --all-files
+```
+
+### 如果 Hooks 失败
+
+当 `git commit` 时 hooks 失败：
+
+1. **阅读错误信息**：Hook 会显示具体问题
+2. **修复问题**：更新相关文件
+3. **重新提交**：`git commit` 再次运行 hooks
+
+### 跳过 Hooks（不推荐）
+
+如果需要临时跳过 hooks（仅在紧急情况下）：
+
+```bash
+# ⚠️ 不推荐，会绕过质量检查
+git commit --no-verify
+
+# 更好的做法是修复问题，然后正常提交
+```
+
+### 关键设计决策
+
+1. **信任 .pre-commit-config.yaml**：作为唯一的质量标准定义
+2. **自动运行**：无需 wf_11_commit 中的显式调用
+3. **简化 wf_11_commit**：Focus on 准备，不关心验证
+4. **清晰反馈**：Stage 1 提示 hooks 将在 commit 时运行
+5. **向后兼容**：没有 .pre-commit-config.yaml 的项目仍可工作（基础格式化）
 
 ---
 
@@ -806,11 +744,12 @@ pre-commit run
 
 ### Stage 1 检查（Preparation）
 - [ ] ✅ 已读取 `docs/guides/wf_11_commit_workflows.md` 的关键章节
-- [ ] ✅ 已检测项目的质量门控配置（pre-commit vs self-managed）
-- [ ] ✅ 已执行相应的质量修复流程
+- [ ] ✅ 已执行文件准备和日期更新
+- [ ] ✅ 已执行基础格式化（修复尾部空格、行结尾、Markdown 格式）
 - [ ] ✅ 已更新所有维护日期为当前日期
 - [ ] ✅ 已验证 Frontmatter 格式完整性
-- [ ] ✅ 所有质量检查通过（无 trailing whitespace, 正确 line endings）
+- [ ] ✅ 所有修改文件已正确暂存（git add）
+- [ ] ✅ 已验证 .pre-commit-config.yaml 存在（如项目使用）
 
 ### Stage 2 检查（Analysis）
 - [ ] ✅ 已分析变更影响范围（代码/文档/配置）
