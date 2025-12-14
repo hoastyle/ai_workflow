@@ -253,8 +253,8 @@ Debug Coordinator orchestrating specialists within project context:
 ```bash
 # 强制执行 - 读取调试工作流指南的关键章节
 python ~/.claude/commands/scripts/doc_guard.py \
-  --docs "docs/guides/wf_06_debug_workflows.md" \
-  --sections '{"docs/guides/wf_06_debug_workflows.md": ["AI执行协议", "模式选择决策树", "执行检查清单"]}'
+  --docs "~/.claude/commands/docs/guides/wf_06_debug_workflows.md" \
+  --sections '{"~/.claude/commands/docs/guides/wf_06_debug_workflows.md": ["AI执行协议", "模式选择决策树", "执行检查清单"]}'
 ```
 
 **本步骤为强制性**，确保AI理解：

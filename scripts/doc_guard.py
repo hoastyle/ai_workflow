@@ -83,10 +83,18 @@ class DocGuard:
         results = {}
         sections_map = sections_map or {}
 
+        # Normalize all paths in sections_map to handle ~ expansion
+        normalized_sections_map = {}
+        for key, value in sections_map.items():
+            normalized_key = str(Path(key).expanduser())
+            normalized_sections_map[normalized_key] = value
+
         print(f"\n📚 Doc Guard 开始加载 {len(doc_paths)} 个文档...\n", file=sys.stderr)
 
         for doc_path in doc_paths:
-            sections = sections_map.get(doc_path)
+            # Normalize doc_path for lookup
+            normalized_path = str(Path(doc_path).expanduser())
+            sections = normalized_sections_map.get(normalized_path)
             try:
                 content = self._load_single(doc_path, sections)
                 results[doc_path] = content
