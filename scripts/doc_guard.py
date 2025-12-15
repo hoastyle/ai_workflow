@@ -164,10 +164,24 @@ class DocGuard:
             tokens = self._estimate_tokens(content)
 
         else:
-            raise DocGuardError(
-                f"文档 {doc_path} 有 {lines} 行，超过限制（{self.SIZE_LARGE}行）\n"
-                f"  建议: 必须指定 --sections 加载部分章节"
-            )
+            # 文档超过 800 行
+            if not sections:
+                raise DocGuardError(
+                    f"文档 {doc_path} 有 {lines} 行，超过限制（{self.SIZE_LARGE}行）\n"
+                    f"  建议: 必须指定 --sections 加载部分章节"
+                )
+
+            # 如果提供了 sections，则加载指定章节（即使文档很大）
+            strategy = f"章节模式（大文档，{lines}行） {sections}"
+            if self.loader:
+                section_dict = self.loader.load_sections(doc_path, sections)
+                # 合并所有章节内容
+                content = "\n\n".join(section_dict.values())
+            else:
+                # 降级：读取前100行并提示
+                content = self._read_head(doc_path, 100)
+                content = f"[降级模式: 文档过大，仅加载前100行]\n\n{content}"
+            tokens = self._estimate_tokens(content)
 
         # 更新统计
         self.token_used += tokens

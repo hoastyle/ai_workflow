@@ -383,7 +383,74 @@ pre-commit install
 
 ---
 
-### Q1：如何判断某个代码改动是否需要文档？
+### Q1：doc_guard.py 提供了 sections 参数但仍报错 (NEW - 2025-12-16)
+
+**症状**:
+```
+❌ 文档 /path/to/doc.md 有 946 行，超过限制（800行）
+  建议: 必须指定 --sections 加载部分章节
+```
+即使在命令中已经指定了 `--sections` 参数。
+
+**根本原因**:
+- 位置: `scripts/doc_guard.py:166-170`
+- 问题: 当文档 > 800 行时，代码无条件抛出错误
+- 缺陷: **没有检查 sections 参数是否已提供**
+
+**修复方案** (已在源码中修复):
+```python
+else:  # lines > 800
+    if not sections:
+        raise DocGuardError(...)  # 只在没有 sections 时报错
+
+    # 如果提供了 sections，则加载指定章节
+    strategy = f"章节模式（大文档，{lines}行） {sections}"
+    section_dict = self.loader.load_sections(doc_path, sections)
+    content = "\n\n".join(section_dict.values())
+```
+
+**修复后效果**:
+- ✅ 可以正确处理 > 800 行的文档（如 946 行）
+- ✅ 正确加载指定的 sections
+- ✅ Token 消耗：~345 tokens（仅加载指定章节）
+
+---
+
+### Q2：Agent 协调器导入失败 "No module named 'lib'" (NEW - 2025-12-16)
+
+**症状**:
+```python
+from lib.agent_coordinator import get_agent_coordinator
+ModuleNotFoundError: No module named 'lib'
+```
+
+**根本原因**:
+- **导入路径错误**（非安装问题）
+- 安装目录正确: `~/.claude/commands/commands/lib/agent_coordinator.py` ✅ 存在
+- 错误的导入: `from lib.agent_coordinator import ...` ❌
+- 正确的导入: `from commands.lib.agent_coordinator import ...` ✅
+
+**修复方案**:
+```python
+# ❌ 错误的导入
+from lib.agent_coordinator import get_agent_coordinator
+
+# ✅ 正确的导入
+from commands.lib.agent_coordinator import get_agent_coordinator
+```
+
+**验证命令**:
+```bash
+cd ~/.claude/commands && python3 -c "
+from commands.lib.agent_coordinator import get_agent_coordinator
+coordinator = get_agent_coordinator()
+print('✅ Agent 协调器导入成功！')
+"
+```
+
+---
+
+### Q3：如何判断某个代码改动是否需要文档？
 
 **A**: 使用决策树判断：
 - **改动了公开 API** → 需要（Type C - API文档）
@@ -395,7 +462,7 @@ pre-commit install
 
 **经验法则**：如果下一个维护者需要了解"为什么"和"如何用"，就需要文档。
 
-### Q2：为什么文档有大小约束？
+### Q4：为什么文档有大小约束？
 
 **A**: 约束的三个价值：
 1. **成本控制** - 管理人员和上下文消耗
