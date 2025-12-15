@@ -228,8 +228,8 @@ if gateway.is_available("magic"):
 
 | 工具 | 路径 | 功能 | 使用方式 |
 |------|------|------|---------|
-| **Frontmatter 处理** | `scripts/frontmatter_utils.py` | 验证、生成、关系图 | `python ~/.claude/commands/scripts/frontmatter_utils.py [command]` |
-| **文档关系图** | `scripts/doc_graph_builder.py` | 可视化文档网络 | `python ~/.claude/commands/scripts/doc_graph_builder.py [options]` |
+| **Frontmatter 处理** | `scripts/frontmatter_utils.py` | 验证、生成、关系图 | `python $HOME/.claude/commands/scripts/frontmatter_utils.py [command]` |
+| **文档关系图** | `scripts/doc_graph_builder.py` | 可视化文档网络 | `python $HOME/.claude/commands/scripts/doc_graph_builder.py [options]` |
 
 **核心命令示例**：
 
@@ -237,7 +237,7 @@ if gateway.is_available("magic"):
 
 **AI 执行规则**：
 - ✅ **必须使用**：调用上述脚本工具完成 Frontmatter 相关操作
-- ✅ **优先检查**：执行前确认 `~/.claude/commands/scripts/frontmatter_utils.py` 存在
+- ✅ **优先检查**：执行前确认 `$HOME/.claude/commands/scripts/frontmatter_utils.py` 存在
 - ❌ **绝不允许**：重新实现 Frontmatter 生成/验证功能
 - ❌ **绝不允许**：创建临时脚本 `/tmp/generate_frontmatter.sh` 等替代已有工具
 - ❌ **绝不允许**：在 Bash 中使用 cat/echo 等手动生成 Frontmatter
@@ -430,17 +430,17 @@ OPTIONS:
 **实际执行方式**：
 ```bash
 # AI 应该执行的实际命令（不是伪代码）
-python ~/.claude/commands/scripts/frontmatter_utils.py generate docs/api/new-endpoint.md
+python $HOME/.claude/commands/scripts/frontmatter_utils.py generate docs/api/new-endpoint.md
 
 # 批量生成
-python ~/.claude/commands/scripts/frontmatter_utils.py generate-batch docs/api/
+python $HOME/.claude/commands/scripts/frontmatter_utils.py generate-batch docs/api/
 
 # 验证生成结果
-python ~/.claude/commands/scripts/frontmatter_utils.py validate docs/api/new-endpoint.md
+python $HOME/.claude/commands/scripts/frontmatter_utils.py validate docs/api/new-endpoint.md
 ```
 
 **AI 执行检查清单**：
-- [ ] 确认 `~/.claude/commands/scripts/frontmatter_utils.py` 文件存在
+- [ ] 确认 `$HOME/.claude/commands/scripts/frontmatter_utils.py` 文件存在
 - [ ] 使用 Bash 工具调用脚本，而非重写功能
 - [ ] 检查命令执行返回码（0 = 成功）
 - [ ] 验证生成的 Frontmatter 格式正确
@@ -535,10 +535,10 @@ python ~/.claude/commands/scripts/frontmatter_utils.py validate docs/api/new-end
 # AI 应该执行的实际命令（不是伪代码）
 
 # 验证单个文档
-python ~/.claude/commands/scripts/frontmatter_utils.py validate docs/api/auth.md
+python $HOME/.claude/commands/scripts/frontmatter_utils.py validate docs/api/auth.md
 
 # 批量验证
-python ~/.claude/commands/scripts/frontmatter_utils.py validate-batch docs/
+python $HOME/.claude/commands/scripts/frontmatter_utils.py validate-batch docs/
 
 # 检查命令返回码
 if [ $? -eq 0 ]; then

@@ -1,8 +1,8 @@
 # 知识库 (Knowledge Base)
 
-**版本**: v1.7
+**版本**: v1.8
 **创建日期**: 2025-11-06
-**最后更新**: 2025-12-08
+**最后更新**: 2025-12-14
 **目的**: 项目架构决策、设计模式和技术文档的索引中心
 
 > ℹ️ **注意**: 本文件为纯索引和指针，详细内容已分离到 `docs/knowledge/` 目录以减少维护成本和上下文消耗。
@@ -572,5 +572,55 @@ class MCPCircuitBreaker:
 ---
 
 **最后更新**: 2025-12-08
-**维护者**: Knowledge Base Management System
-**版本**: v1.7 (新增 MCP 集成参考 - 100% 命令覆盖率)
+### 路径管理最佳实践 (NEW - 2025-12-14)
+
+**问题背景**: Doc Guard 工具在多个命令中因路径问题失效，导致强制文档加载步骤失败。
+
+**发现和修复过程**:
+- ✅ **根本原因**:
+  1. 相对路径 (`docs/guides/...`) 仅适用于特定工作目录
+  2. Python 脚本中 `~` 不被展开（bash 特性，Python 字符串不处理）
+  3. 命令可能从任意目录调用（安装后位于 `~/.claude/commands/`）
+- ✅ **解决方案**: 统一使用 `$HOME/.claude/commands/...` 格式
+  - `$HOME` 会被 bash 展开（提供绝对路径）
+  - 与安装目录位置保持一致
+  - 支持任意工作目录调用
+
+**受影响命令文件 (7个) 和修复结果**:
+| 命令文件 | Doc Guard 调用路径修复 | 状态 |
+|---------|----------------------|------|
+| wf_03_prime.md | `$HOME/.claude/commands/docs/guides/wf_03_prime_workflows.md` | ✅ 已修复 |
+| wf_04_ask.md | `$HOME/.claude/commands/docs/guides/wf_04_ask_workflows.md` | ✅ 已修复 |
+| wf_05_code.md | `$HOME/.claude/commands/docs/guides/wf_05_code_workflows.md` | ✅ 已修复 |
+| wf_06_debug.md | `$HOME/.claude/commands/docs/guides/wf_06_debug_workflows.md` | ✅ 已修复 |
+| wf_07_test.md | `$HOME/.claude/commands/docs/guides/wf_07_test_workflows.md` | ✅ 已修复 |
+| wf_08_review.md | `$HOME/.claude/commands/docs/guides/wf_08_review_workflows.md` | ✅ 已修复 |
+| wf_11_commit.md | `$HOME/.claude/commands/docs/guides/wf_11_commit_workflows.md` | ✅ 已修复 |
+
+**最佳实践模式**:
+```bash
+# ✅ 正确做法（统一使用 $HOME）
+python $HOME/.claude/commands/scripts/doc_guard.py \
+  --docs "$HOME/.claude/commands/docs/guides/wf_XX_workflows.md" \
+  --sections ...
+
+# ❌ 错误做法（相对路径）
+python ~/.claude/commands/scripts/doc_guard.py \
+  --docs "docs/guides/wf_XX_workflows.md"  # 仅适用于源码目录
+```
+
+**执行影响**:
+- ✅ **兼容性**: 支持从任意目录调用 workflow 命令
+- ✅ **可靠性**: 消除 "文档不存在" 错误
+- ✅ **维护性**: 统一的绝对路径标准
+- ✅ **性能**: 避免路径解析失败重试
+
+**学习要点**:
+1. **执行上下文**: CLI 命令可能在任意 PWD 执行
+2. **参数扩展**: Python 脚本不自动展开 `~`
+3. **系统设计**: 路径必须基于安装位置，而非源代码位置
+
+**相关参考**:
+- 修复提交: `e622487` - `重新设计 wf_11_commit 命令（Stage 1 准备阶段 + Git Hook 哲学）`
+- 实施过程: 全面实施 7 个命令文件的路径修复
+- 验证方法: `grep -n "python.*doc_guard" *.md | grep -v "$HOME"`

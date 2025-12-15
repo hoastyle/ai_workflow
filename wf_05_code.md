@@ -234,9 +234,9 @@ You are the Development Coordinator directing four coding specialists:
 
 ```bash
 # 强制执行 - 读取工作流指南的关键章节
-python ~/.claude/commands/scripts/doc_guard.py \
-  --docs "docs/guides/wf_05_code_workflows.md" \
-  --sections '{"docs/guides/wf_05_code_workflows.md": ["AI执行协议", "实现模式决策树", "文档决策树", "后续路径决策树"]}'
+python $HOME/.claude/commands/scripts/doc_guard.py \
+  --docs "$HOME/.claude/commands/docs/guides/wf_05_code_workflows.md" \
+  --sections '{"$HOME/.claude/commands/docs/guides/wf_05_code_workflows.md": ["AI执行协议", "实现模式决策树", "文档决策树", "后续路径决策树"]}'
 ```
 
 **如果Doc Guard工具不可用**，降级使用Read工具读取完整文档（警告：token消耗会增加）

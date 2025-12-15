@@ -149,9 +149,9 @@ content = doc_loader.load_sections("docs/guides/large_guide.md", sections=["Step
 
 ```bash
 # 强制执行 - 读取审查工作流指南的关键章节
-python ~/.claude/commands/scripts/doc_guard.py \
-  --docs "~/.claude/commands/docs/guides/wf_08_review_workflows.md" \
-  --sections '{"~/.claude/commands/docs/guides/wf_08_review_workflows.md": ["AI执行协议", "审查维度", "执行检查清单"]}'
+python $HOME/.claude/commands/scripts/doc_guard.py \
+  --docs "$HOME/.claude/commands/docs/guides/wf_08_review_workflows.md" \
+  --sections '{"$HOME/.claude/commands/docs/guides/wf_08_review_workflows.md": ["AI执行协议", "审查维度", "执行检查清单"]}'
 ```
 
 **本步骤为强制性**，确保AI理解：

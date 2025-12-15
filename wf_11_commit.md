@@ -258,9 +258,9 @@ Create git commits with integrated preparation, formatting, and context updates:
 
 ```bash
 # 强制执行 - 读取提交工作流指南的关键章节
-python ~/.claude/commands/scripts/doc_guard.py \
-  --docs "~/.claude/commands/docs/guides/wf_11_commit_workflows.md" \
-  --sections '{"~/.claude/commands/docs/guides/wf_11_commit_workflows.md": ["AI执行协议", "4阶段提交流程", "执行检查清单"]}'
+python $HOME/.claude/commands/scripts/doc_guard.py \
+  --docs "$HOME/.claude/commands/docs/guides/wf_11_commit_workflows.md" \
+  --sections '{"$HOME/.claude/commands/docs/guides/wf_11_commit_workflows.md": ["AI执行协议", "4阶段提交流程", "执行检查清单"]}'
 ```
 
 **本步骤为强制性**，确保AI理解：
@@ -340,11 +340,11 @@ python ~/.claude/commands/scripts/doc_guard.py \
 
    - **Frontmatter 完整性检查**:
      ```bash
-     if [ ! -f ~/.claude/commands/scripts/frontmatter_utils.py ]; then
-       echo "⚠️  Frontmatter script missing: ~/.claude/commands/scripts/frontmatter_utils.py"
+     if [ ! -f $HOME/.claude/commands/scripts/frontmatter_utils.py ]; then
+       echo "⚠️  Frontmatter script missing: $HOME/.claude/commands/scripts/frontmatter_utils.py"
        echo "ℹ️  Skipping Frontmatter validation (script not available)"
      else
-       python ~/.claude/commands/scripts/frontmatter_utils.py validate-batch docs/
+       python $HOME/.claude/commands/scripts/frontmatter_utils.py validate-batch docs/
      fi
      ```
 
