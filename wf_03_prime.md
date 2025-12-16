@@ -7,7 +7,7 @@ reads: [PRD.md, PLANNING.md, TASK.md, CONTEXT.md, KNOWLEDGE.md, CLAUDE.md, PROJE
 writes: []
 prev_commands: [/clear]
 next_commands: [/wf_05_code, /wf_04_ask, /wf_02_task]
-model: haiku
+model: sonnet
 token_budget: medium
 context_loading: smart
 mcp_support:
