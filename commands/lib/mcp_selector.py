@@ -135,39 +135,53 @@ class MCPSelector:
         },
     }
 
+    # Keyword constants (extracted from __init__ for performance)
+    UI_KEYWORDS = [
+        "ui", "界面", "组件", "按钮", "表单", "页面",
+        "component", "button", "form", "page", "layout"
+    ]
+
+    FRAMEWORK_KEYWORDS = [
+        "react", "vue", "django", "express", "flask", "fastapi",
+        "spring", "angular", "next.js", "nuxt", "rails"
+    ]
+
+    RESEARCH_KEYWORDS = [
+        "最新", "最佳实践", "对比", "趋势", "调研",
+        "latest", "best practice", "compare", "trend", "research"
+    ]
+
+    AGENT_SPECIFIC_TOOLS = {
+        "architect-agent": ["context7", "tavily"],
+        "research-agent": ["context7", "tavily"],
+    }
+
+    # Pre-compiled regex patterns for task complexity analysis
+    FEATURE_PATTERNS = {
+        "multifile": re.compile(r"(多个文件|多文件|跨文件|多模块|几个文件)", re.IGNORECASE),
+        "architecture": re.compile(r"(架构|设计|重构|模式|系统)", re.IGNORECASE),
+        "integration": re.compile(r"(集成|API|第三方|外部|接口)", re.IGNORECASE),
+        "algorithm": re.compile(r"(算法|逻辑|计算|复杂|性能)", re.IGNORECASE),
+        "concurrent": re.compile(r"(并发|异步|多线程|并行|concurrent|async)", re.IGNORECASE),
+        "data_migration": re.compile(r"(迁移|数据库|schema|migration)", re.IGNORECASE),
+        "ui_component": re.compile(r"(UI|组件|前端|界面|页面|component)", re.IGNORECASE),
+        "api_design": re.compile(r"(API|endpoint|路由|接口设计)", re.IGNORECASE),
+    }
+
     def __init__(self, gateway=None):
         """
-        Initialize MCP selector with keyword mappings and gateway
+        Initialize MCP selector with gateway
 
         Args:
             gateway: Optional MCP Gateway instance (for availability checking)
+
+        Note:
+            All keyword lists and regex patterns are now class-level constants
+            for better performance (no repeated allocation/compilation).
         """
         self.gateway = gateway
-        # UI task detection keywords
-        self.ui_keywords = [
-            "ui", "界面", "组件", "按钮", "表单", "页面",
-            "component", "button", "form", "page", "layout"
-        ]
 
-        # Framework/library keywords for Context7
-        self.framework_keywords = [
-            "react", "vue", "django", "express", "flask", "fastapi",
-            "spring", "angular", "next.js", "nuxt", "rails"
-        ]
-
-        # Web search/research keywords for Tavily
-        self.research_keywords = [
-            "最新", "最佳实践", "对比", "趋势", "调研",
-            "latest", "best practice", "compare", "trend", "research"
-        ]
-
-        # Agent-specific MCP tools (always enabled for these agents)
-        self.agent_specific_tools: Dict[str, List[str]] = {
-            "architect-agent": ["context7", "tavily"],
-            "research-agent": ["context7", "tavily"],
-        }
-
-        # Cache for selected tools (optimization)
+        # Cache for selected tools (performance optimization)
         self._selection_cache: Dict[str, List[str]] = {}
 
     def select_tools(self, agent, task: Task) -> List[str]:
@@ -203,8 +217,8 @@ class MCPSelector:
             tools.add("serena")
 
         # Agent-specific tools (architect and research)
-        if agent.name in self.agent_specific_tools:
-            tools.update(self.agent_specific_tools[agent.name])
+        if agent.name in self.AGENT_SPECIFIC_TOOLS:
+            tools.update(self.AGENT_SPECIFIC_TOOLS[agent.name])
 
         # Tier 3: Task-conditional MCP
         task_lower = task.description.lower()
@@ -241,7 +255,7 @@ class MCPSelector:
         Returns:
             bool: True if UI-related keywords found
         """
-        return any(kw in task_description for kw in self.ui_keywords)
+        return any(kw in task_description for kw in self.UI_KEYWORDS)
 
     def _has_framework_reference(self, task_description: str) -> bool:
         """
@@ -253,7 +267,7 @@ class MCPSelector:
         Returns:
             bool: True if framework keywords found
         """
-        return any(fw in task_description for fw in self.framework_keywords)
+        return any(fw in task_description for fw in self.FRAMEWORK_KEYWORDS)
 
     def _needs_web_search(self, task_description: str) -> bool:
         """
@@ -265,7 +279,7 @@ class MCPSelector:
         Returns:
             bool: True if research keywords found
         """
-        return any(kw in task_description for kw in self.research_keywords)
+        return any(kw in task_description for kw in self.RESEARCH_KEYWORDS)
 
     # =========================================================================
     # V2 API - Enhanced MCP Selection with Confidence Scoring
@@ -348,20 +362,9 @@ class MCPSelector:
         features = {}
         score = 0.0
 
-        # Feature detection (keyword-based heuristics)
-        feature_patterns = {
-            "multifile": r"(多个文件|多文件|跨文件|多模块|几个文件)",
-            "architecture": r"(架构|设计|重构|模式|系统)",
-            "integration": r"(集成|API|第三方|外部|接口)",
-            "algorithm": r"(算法|逻辑|计算|复杂|性能)",
-            "concurrent": r"(并发|异步|多线程|并行|concurrent|async)",
-            "data_migration": r"(迁移|数据库|schema|migration)",
-            "ui_component": r"(UI|组件|前端|界面|页面|component)",
-            "api_design": r"(API|endpoint|路由|接口设计)",
-        }
-
-        for feature, pattern in feature_patterns.items():
-            if re.search(pattern, task_description, re.IGNORECASE):
+        # Feature detection using pre-compiled regex patterns (performance optimized)
+        for feature, compiled_pattern in self.FEATURE_PATTERNS.items():
+            if compiled_pattern.search(task_description):
                 features[feature] = True
                 score += self.COMPLEXITY_WEIGHTS.get(feature, 0.0)
             else:
@@ -555,12 +558,12 @@ class MCPSelector:
             elif tool == "magic":
                 justifications[tool] = "UI task detected"
             elif tool == "context7":
-                if agent.name in self.agent_specific_tools.get(agent.name, []):
+                if agent.name in self.AGENT_SPECIFIC_TOOLS:
                     justifications[tool] = f"Agent-specific tool for {agent.name}"
                 else:
                     justifications[tool] = "Framework/library reference detected"
             elif tool == "tavily":
-                if agent.name in self.agent_specific_tools.get(agent.name, []):
+                if agent.name in self.AGENT_SPECIFIC_TOOLS:
                     justifications[tool] = f"Agent-specific tool for {agent.name}"
                 else:
                     justifications[tool] = "Research/trend analysis needed"
