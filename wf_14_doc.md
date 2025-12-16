@@ -22,13 +22,25 @@ docs_dependencies:
     - docs/reference/FRONTMATTER.md
   estimated_tokens: 1728
   lazy_load: true
-  note: "仅在需要详细指导时加载（如Frontmatter规范、决策树）"
+  execution_model: "synchronous"
+  note: "指南文档按需加载（DocLoader立即返回）。命令执行是同步的，无需等待。"
 context_rules:
   - "文档从代码中提取，而非凭空生成"
   - "交互式选择，不是批量生成"
   - "支持增量更新，不是全量重写"
   - "自动更新KNOWLEDGE.md索引"
   - "遵循四层文档架构（管理/技术/工作/归档）"
+---
+
+## 🤖 AI 执行提示（重要）
+
+**⚠️ 关键规则**：
+- **Slash commands 是同步执行的**，无需等待"加载完成"
+- 看到 `<command-message>wf_14_doc is running…</command-message>` 时，**立即开始执行**命令步骤
+- **禁止**输出"让我等待命令加载完成"或类似话语
+- `lazy_load: true` 表示使用 DocLoader **按需加载**，所有工具调用都是**立即返回**的
+- 所有步骤应**连续执行**，无暂停点
+
 ---
 
 ## 🔌 MCP 增强能力

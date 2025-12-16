@@ -24,7 +24,8 @@ docs_dependencies:
     - docs/guides/wf_05_code_doc_sync_guide.md
   estimated_tokens: 1243
   lazy_load: true
-  note: "仅在需要深入指导时加载（如Serena使用、文档同步流程）"
+  execution_model: "synchronous"
+  note: "指南文档按需加载（DocLoader立即返回）。命令执行是同步的，无需等待。"
 context_rules:
   - "遵循PLANNING.md的代码标准"
   - "满足PRD需求"
@@ -32,6 +33,15 @@ context_rules:
   - "Ultrathink 优雅实现（Craft, Don't Code）：函数名清晰、抽象自然、错误处理优雅"
   - "✅ 支持 --serena 标志用于复杂修改，精确定位代码位置"
 ---
+
+## 🤖 AI 执行提示（重要）
+
+**⚠️ 关键规则**：
+- **Slash commands 是同步执行的**，无需等待"加载完成"
+- 看到 `<command-message>wf_05_code is running…</command-message>` 时，**立即开始执行** Step 0
+- **禁止**输出"让我等待命令加载完成"或类似话语
+- `lazy_load: true` 表示使用 DocLoader **按需加载**，所有工具调用都是**立即返回**的
+- 所有步骤应**连续执行**，无暂停点
 
 ## 🔌 MCP 增强能力
 
@@ -228,18 +238,23 @@ You are the Development Coordinator directing four coding specialists:
 
 ⚠️ **AI执行强制规则**: 本命令的执行必须严格遵循以下步骤，不得跳过或随意解释。
 
-### Step 0: 读取执行指南（强制）
+### Step 0: 加载工作流指南（立即执行）⚡
 
-**AI必须首先执行此步骤**，读取详细的执行流程文档：
+**重要**: 本步骤是同步的，Doc Guard 工具**立即返回**结果，无需等待。
+
+**立即执行以下命令**来加载详细指导：
 
 ```bash
-# 强制执行 - 读取工作流指南的关键章节
+# 立即执行 - DocLoader 同步返回结果（~400 tokens，vs 完整文档 ~2000 tokens）
 python $HOME/.claude/commands/scripts/doc_guard.py \
   --docs "$HOME/.claude/commands/docs/guides/wf_05_code_workflows.md" \
   --sections "{\"$HOME/.claude/commands/docs/guides/wf_05_code_workflows.md\": [\"AI执行协议\", \"实现模式决策树\", \"文档决策树\", \"后续路径决策树\"]}"
 ```
 
-**如果Doc Guard工具不可用**，降级使用Read工具读取完整文档（警告：token消耗会增加）
+**说明**：
+- ✅ 此命令**立即返回**结果，不存在"等待加载"
+- ✅ 如果 doc_guard 不可用，直接使用 Read 工具
+- ⚠️ 完成后，**立即**进入 Step 0.1（Agent 选择）
 
 ---
 

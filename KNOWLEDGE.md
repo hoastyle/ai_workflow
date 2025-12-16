@@ -505,6 +505,57 @@ related_documents:
 
 详见 [Frontmatter 实例集合](docs/examples/frontmatter_examples.md)
 
+### Q6：AI 为什么会"等待命令加载完成"？(NEW - 2025-12-16)
+
+**症状**: AI 看到 `<command-message>wf_XX is running…</command-message>` 后，输出"让我等待命令加载完成"，没有继续执行任务。
+
+**根本原因**：
+1. **文档措辞误导** - "Step 0: 读取执行指南（强制）"暗示了"加载"过程
+2. **lazy_load 标志误解** - AI 误认为需要等待某个异步加载过程完成
+3. **缺少同步执行说明** - 没有明确说明所有操作都是立即返回的
+
+**lazy_load 的实际机制**：
+- `lazy_load: true` 是一个**策略标志**，告诉 AI "使用 DocLoader 分段加载，而非一次性 Read 全部"
+- 所有操作都是**同步的、立即返回的**
+- DocLoader 工具调用后**立即返回**结果（~400 tokens，vs 完整文档 ~2000 tokens）
+- **不存在**"等待加载"或"后台异步"过程
+
+**解决方案**（已应用到 5 个命令）：
+
+1. **Frontmatter 增强**：
+```yaml
+docs_dependencies:
+  lazy_load: true
+  execution_model: "synchronous"  # 明确同步执行
+  note: "指南文档按需加载（DocLoader立即返回）。命令执行是同步的，无需等待。"
+```
+
+2. **添加 AI 执行提示**：
+```markdown
+## 🤖 AI 执行提示（重要）
+
+**⚠️ 关键规则**：
+- **Slash commands 是同步执行的**，无需等待"加载完成"
+- 看到 `<command-message>` 时，**立即开始执行** Step 0
+- **禁止**输出"让我等待命令加载完成"
+- 所有步骤应**连续执行**，无暂停点
+```
+
+3. **修改 Step 0 标题和描述**：
+```markdown
+### Step 0: 加载工作流指南（立即执行）⚡
+
+**重要**: 本步骤是同步的，Doc Guard 工具**立即返回**结果，无需等待。
+
+**说明**：
+- ✅ 此命令**立即返回**结果，不存在"等待加载"
+- ⚠️ 完成后，**立即**进入下一步骤
+```
+
+**影响命令**: wf_03_prime, wf_05_code, wf_07_test, wf_11_commit, wf_14_doc
+
+**预防措施**: 未来设计命令文档时，避免使用"读取"、"加载"等暗示异步过程的词汇，明确说明"同步执行"和"立即返回"。
+
 ---
 
 ## 🔧 技术模式参考 (NEW - 2025-12-08)

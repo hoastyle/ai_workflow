@@ -18,7 +18,8 @@ docs_dependencies:
     - docs/guides/wf_11_commit_workflows.md
   estimated_tokens: 800
   lazy_load: true
-  note: "仅在需要深入指导时加载（如质量门控选择、MCP验证流程）"
+  execution_model: "synchronous"
+  note: "指南文档按需加载（DocLoader立即返回）。命令执行是同步的，无需等待。"
 context_rules:
   - "自动更新CONTEXT.md会话状态"
   - "遵守PLANNING.md质量标准"
@@ -252,18 +253,25 @@ Create git commits with integrated preparation, formatting, and context updates:
 
 ⚠️ **AI执行强制规则**: 本命令的执行必须严格遵循以下步骤，不得跳过或随意解释。提交前必须通过所有质量门控检查。
 
-### Step 0: 读取执行指南（强制）
+### Step 0: 加载工作流指南（立即执行）⚡
 
-**AI必须首先执行此步骤**，读取详细的提交流程文档：
+**重要**: 本步骤是同步的，Doc Guard 工具**立即返回**结果，无需等待。
+
+**立即执行以下命令**来加载详细指导：
 
 ```bash
-# 强制执行 - 读取提交工作流指南的关键章节
+# 立即执行 - DocLoader 同步返回结果
 python $HOME/.claude/commands/scripts/doc_guard.py \
   --docs "$HOME/.claude/commands/docs/guides/wf_11_commit_workflows.md" \
   --sections "{\"$HOME/.claude/commands/docs/guides/wf_11_commit_workflows.md\": [\"AI执行协议\", \"4阶段提交流程\", \"执行检查清单\"]}"
 ```
 
-**本步骤为强制性**，确保AI理解：
+**说明**：
+- ✅ 此命令**立即返回**结果，不存在"等待加载"
+- ✅ 如果 doc_guard 不可用，直接使用 Read 工具
+- ⚠️ 完成后，**立即**进入后续步骤
+
+**确保AI理解：
 - 4阶段提交流程的顺序和要求
 - 质量门控的决策逻辑和选择策略
 - 必须通过的检查清单项
@@ -737,6 +745,18 @@ git commit --no-verify
 5. **向后兼容**：没有 .pre-commit-config.yaml 的项目仍可工作（基础格式化）
 
 ---
+
+## 🤖 AI 执行提示（重要）
+
+**⚠️ 关键规则**：
+- **Slash commands 是同步执行的**，无需等待"加载完成"
+- 看到 `<command-message>wf_11_commit is running…</command-message>` 时，**立即开始执行** Step 0
+- **禁止**输出"让我等待命令加载完成"或类似话语
+- `lazy_load: true` 表示使用 DocLoader **按需加载**，所有工具调用都是**立即返回**的
+- 所有步骤应**连续执行**，无暂停点
+
+---
+
 
 ## ✅ 执行检查清单（AI必须验证）
 
