@@ -123,30 +123,34 @@ Manage TASK.md to track project progress and maintain task continuity:
 
 ## Process
 
-### Step 0.1: Agent 选择和激活 🤖
+### Step 0.1: Agent 选择和激活 🤖 **[强制执行]**
+
+⚠️ **AI 强制规则**: 此步骤**必须实际执行**，不得跳过或视为示例
 
 **目的**: 自动选择合适的 agent 协助任务管理，提升任务规划和追踪效率
 
 **执行时机**: 在开始任务管理操作（create/update/review）之前
 
-**Agent 协调流程**:
+**执行要求**:
+1. ✅ 必须实际调用 `get_agent_coordinator().intercept()`
+2. ✅ 必须输出 agent 信息（使用 `format_agent_info()`）
+3. ✅ 如果跳过此步骤，视为执行协议违规
 
-```python
+**执行代码** (必须运行):
+
+```bash
+python -c "
 from commands.lib.agent_coordinator import get_agent_coordinator
 
-# 1. 初始化协调器（单例模式）
 coordinator = get_agent_coordinator()
-
-# 2. 拦截命令执行，选择 agent
 agent_context = coordinator.intercept(
-    task_description=f"{mode} 任务管理",  # mode: create/update/review
-    command_name="wf_02_task",
-    auto_activate=True,      # 自动激活高匹配度 agent
-    min_confidence=0.85      # 最低置信度阈值（85%）
+    task_description='任务管理操作',  # 替换为实际模式（create/update/review）
+    command_name='wf_02_task',
+    auto_activate=True,
+    min_confidence=0.85
 )
-
-# 3. 显示 agent 信息
 print(coordinator.format_agent_info(agent_context, verbose=True))
+"
 ```
 
 **输出示例**:

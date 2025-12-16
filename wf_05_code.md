@@ -258,30 +258,33 @@ python $HOME/.claude/commands/scripts/doc_guard.py \
 
 ---
 
-### Step 0.1: Agent 选择和激活 🤖
+### Step 0.1: Agent 选择和激活 🤖 **[强制执行]**
+
+⚠️ **AI 强制规则**: 此步骤**必须实际执行**，不得跳过或视为示例
 
 **目的**: 自动选择合适的 agent 协助实现，提升开发效率和代码质量
 
 **执行时机**: 在读取执行指南之后、开始编码之前
 
-**Agent 协调流程**:
+**执行要求**:
+1. ✅ 必须实际调用 `get_agent_coordinator().intercept()`
+2. ✅ 必须输出 agent 信息（使用 `format_agent_info()`）
+3. ✅ 如果跳过此步骤，视为执行协议违规
 
-```python
+**执行代码** (必须运行):
+```bash
+python -c "
 from commands.lib.agent_coordinator import get_agent_coordinator
 
-# 1. 初始化协调器（单例模式）
 coordinator = get_agent_coordinator()
-
-# 2. 拦截命令执行，选择 agent
 agent_context = coordinator.intercept(
-    task_description=user_task_description,  # 用户提供的功能描述
-    command_name="wf_05_code",
-    auto_activate=True,      # 自动激活高匹配度 agent
-    min_confidence=0.85      # 最低置信度阈值（85%）
+    task_description='修复 wf_04_ask 和 wf_05_code 的 Agent 集成',  # 替换为实际任务描述
+    command_name='wf_05_code',
+    auto_activate=True,
+    min_confidence=0.85
 )
-
-# 3. 显示 agent 信息
 print(coordinator.format_agent_info(agent_context, verbose=True))
+"
 ```
 
 **输出示例**:
@@ -329,6 +332,11 @@ if agent_context['auto_activated']:
 - ℹ️ 显示: "未匹配到合适的 agent，使用标准流程"
 - 继续执行后续步骤，不影响命令功能
 
+**检查清单** (Step 0.1 完成验证):
+- [ ] ✅ 已执行 `python -c "..."` 命令调用 agent coordinator
+- [ ] ✅ 已显示 agent 信息或"未匹配"消息
+- [ ] ✅ 已记录 agent 建议（如果有）用于后续步骤参考
+
 **相关文档**: [AgentCoordinator 使用指南](docs/examples/agent_coordinator_usage.md)
 
 ---
@@ -356,6 +364,10 @@ if agent_context['auto_activated']:
 
 在输出结果前，AI必须确认以下所有项目：
 
+- [ ] ✅ **已执行 Step 0.1 Agent 选择** ← 新增强制项
+  - 运行了 `python -c "..."` 命令
+  - 输出了 agent 信息或"未匹配"消息
+  - 记录了 agent 建议（如果有）
 - [ ] ✅ 已读取 docs/guides/wf_05_code_workflows.md
 - [ ] ✅ 已根据决策树选择实现模式并明确说明理由
 - [ ] ✅ 已遵循 PLANNING.md 开发标准

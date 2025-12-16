@@ -51,11 +51,35 @@ Refactoring Coordinator ensuring project consistency:
 
 ## Process
 
-### Step 0.1: Agent 选择和激活 🤖
+### Step 0.1: Agent 选择和激活 🤖 **[强制执行]**
 
-**目的**: 自动选择合适的 agent 协助重构，提升代码结构改进的质量
+⚠️ **AI 强制规则**: 此步骤**必须实际执行**，不得跳过或视为示例
 
-**执行时机**: 在开始重构规划之前
+**目的**:{1}
+
+**执行时机**:{2}
+
+**执行要求**:
+1. ✅ 必须实际调用 `get_agent_coordinator().intercept()`
+2. ✅ 必须输出 agent 信息（使用 `format_agent_info()`）
+3. ✅ 如果跳过此步骤，视为执行协议违规
+
+**执行代码** (必须运行):
+
+```bash
+python -c "
+from commands.lib.agent_coordinator import get_agent_coordinator
+
+coordinator = get_agent_coordinator()
+agent_context = coordinator.intercept(
+    task_description='代码重构和优化',
+    command_name='wf_09_refactor',
+    auto_activate=True,
+    min_confidence=0.85
+)
+print(coordinator.format_agent_info(agent_context, verbose=True))
+"
+```
 
 **Agent 协调流程**:
 
