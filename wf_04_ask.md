@@ -262,7 +262,7 @@ You are a Senior Systems Architect providing consultation within project context
 # 强制执行 - 读取工作流指南的关键章节
 python $HOME/.claude/commands/scripts/doc_guard.py \
   --docs "$HOME/.claude/commands/docs/guides/wf_04_ask_workflows.md" \
-  --sections '{"$HOME/.claude/commands/docs/guides/wf_04_ask_workflows.md": ["AI执行协议", "MCP模式选择决策树", "咨询类型决策树", "后续路径决策树"]}'
+  --sections "{\"$HOME/.claude/commands/docs/guides/wf_04_ask_workflows.md\": [\"AI执行协议\", \"MCP模式选择决策树\", \"咨询类型决策树\", \"后续路径决策树\"]}"
 ```
 
 **如果Doc Guard工具不可用**，降级使用Read工具读取完整文档（警告：token消耗会增加）

@@ -260,7 +260,7 @@ Create git commits with integrated preparation, formatting, and context updates:
 # 强制执行 - 读取提交工作流指南的关键章节
 python $HOME/.claude/commands/scripts/doc_guard.py \
   --docs "$HOME/.claude/commands/docs/guides/wf_11_commit_workflows.md" \
-  --sections '{"$HOME/.claude/commands/docs/guides/wf_11_commit_workflows.md": ["AI执行协议", "4阶段提交流程", "执行检查清单"]}'
+  --sections "{\"$HOME/.claude/commands/docs/guides/wf_11_commit_workflows.md\": [\"AI执行协议\", \"4阶段提交流程\", \"执行检查清单\"]}"
 ```
 
 **本步骤为强制性**，确保AI理解：

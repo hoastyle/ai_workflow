@@ -121,7 +121,7 @@ Prime the AI assistant with comprehensive project context by reading core projec
 # 强制执行 - 读取工作流指南的关键章节
 python $HOME/.claude/commands/scripts/doc_guard.py \
   --docs "$HOME/.claude/commands/docs/guides/wf_03_prime_workflows.md" \
-  --sections '{"$HOME/.claude/commands/docs/guides/wf_03_prime_workflows.md": ["AI执行协议", "模式选择决策树", "执行流程"]}'
+  --sections "{\"$HOME/.claude/commands/docs/guides/wf_03_prime_workflows.md\": [\"AI执行协议\", \"模式选择决策树\", \"执行流程\"]}"
 ```
 
 **如果Doc Guard工具不可用**，降级使用Read工具读取完整文档（警告：token消耗会增加）
