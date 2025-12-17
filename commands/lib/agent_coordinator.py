@@ -213,6 +213,143 @@ class AgentCoordinator:
                     f"Agent 推荐使用 {agent.available_tools[0]} 而非 /{normalized_cmd}"
         }
 
+    def detect_command_conflict(
+        self,
+        agent: Agent,
+        user_command: str
+    ) -> Dict[str, Any]:
+        """
+        检测 Agent 推荐命令与用户执行命令的冲突
+
+        改进 1️⃣: Agent 命令冲突处理
+        目的：避免 "Agent 激活但无效" 的现象。Agent 的建议必须被尊重和执行
+
+        Args:
+            agent: 激活的 Agent 对象
+            user_command: 用户执行的命令（如 wf_04_ask）
+
+        Returns:
+            {
+                'has_conflict': bool - 是否存在冲突,
+                'recommended_command': str - Agent 推荐的命令,
+                'user_command': str - 用户执行的命令,
+                'match_score': float - Agent 匹配度,
+                'alternative_agents': List - 备选 agents,
+                'conflict_resolution_options': List[str] - 解决冲突的三个选项
+            }
+        """
+        # 规范化命令名
+        normalized_user_cmd = user_command.strip('/').lstrip('wf_')
+
+        # 获取 Agent 推荐的主要工具/命令
+        recommended_tools = agent.available_tools
+        recommended_cmd = recommended_tools[0] if recommended_tools else None
+
+        # 规范化推荐命令
+        if recommended_cmd:
+            normalized_recommended = recommended_cmd.strip('/').lstrip('wf_')
+        else:
+            normalized_recommended = None
+
+        # 检测是否存在冲突
+        has_conflict = (
+            normalized_recommended and
+            normalized_recommended != normalized_user_cmd
+        )
+
+        return {
+            'has_conflict': has_conflict,
+            'recommended_command': recommended_cmd,
+            'user_command': user_command,
+            'agent_match_score': agent.match_score if hasattr(agent, 'match_score') else 0.0,
+            'alternative_agents': [
+                {
+                    'name': alt['name'],
+                    'score': alt['score'],
+                    'tools': alt.get('available_tools', [])
+                }
+                for alt in agent.alternatives if hasattr(agent, 'alternatives')
+            ] if hasattr(agent, 'alternatives') else [],
+            'conflict_resolution_options': [
+                f"1. [推荐] 改用 {recommended_cmd} 进行专业化操作",
+                f"2. 继续 {user_command}，采用当前命令的分析视角",
+                f"3. 同时执行两个，获得完整的 {recommended_cmd} + {user_command} 分析"
+            ] if has_conflict else []
+        }
+
+    def extract_mcp_recommendations(
+        self,
+        agent: Agent,
+        mcp_hints: List[Dict[str, Any]],
+        enforce: bool = True
+    ) -> Dict[str, Any]:
+        """
+        提取并强制使用 Agent 推荐的 MCP 工具
+
+        改进 2️⃣: MCP 工具强制使用
+        目的：使 Agent 的 MCP 推荐真正发挥作用，提升工作流的专业化程度
+
+        Args:
+            agent: 激活的 Agent 对象
+            mcp_hints: 来自 _extract_mcp_hints 的推荐列表
+            enforce: 是否强制使用（默认 True，遵循 Agent 建议）
+
+        Returns:
+            {
+                'should_enable_mcp': bool - 是否应该启用 MCP,
+                'enabled_tools': List[str] - 应该启用的 MCP 工具（按优先级排序），
+                'high_priority_tools': List[Dict] - 高优先级工具（必须启用），
+                'medium_priority_tools': List[Dict] - 中优先级工具（推荐启用），
+                'mcp_justification': str - MCP 使用的理由说明,
+                'tool_descriptions': List[str] - 每个工具的使用说明
+            }
+        """
+        if not agent or not mcp_hints:
+            return {
+                'should_enable_mcp': False,
+                'enabled_tools': [],
+                'high_priority_tools': [],
+                'medium_priority_tools': [],
+                'mcp_justification': '无可用的 MCP 工具推荐',
+                'tool_descriptions': []
+            }
+
+        # 按优先级分类工具
+        high_priority = [h for h in mcp_hints if h.get('priority') == 'high']
+        medium_priority = [h for h in mcp_hints if h.get('priority') == 'medium']
+        low_priority = [h for h in mcp_hints if h.get('priority') == 'low']
+
+        # 确定应该启用的工具（优先级排序）
+        # 策略：启用所有高优先级 + 前 2 个中优先级
+        enabled_tools = [h['tool'] for h in high_priority]
+        enabled_tools.extend([h['tool'] for h in medium_priority[:2]])
+
+        # 构建工具描述列表
+        tool_descriptions = []
+        all_sorted = high_priority + medium_priority + low_priority
+
+        for tool_hint in all_sorted[:3]:  # 最多展示 3 个工具
+            desc = f"- {tool_hint['tool'].upper()}: {tool_hint.get('usage', '未知用途')}"
+            tool_descriptions.append(desc)
+
+        # 生成理由说明
+        agent_role = agent.role if hasattr(agent, 'role') else '专业 Agent'
+        if len(high_priority) > 0:
+            mcp_justification = f"{agent_role} 强烈建议使用 MCP 工具进行专业化分析"
+        elif len(medium_priority) > 0:
+            mcp_justification = f"{agent_role} 推荐使用 MCP 工具以增强分析深度"
+        else:
+            mcp_justification = f"{agent_role} 可选地使用 MCP 工具"
+
+        return {
+            'should_enable_mcp': bool(enabled_tools),
+            'enabled_tools': enabled_tools,
+            'high_priority_tools': high_priority,
+            'medium_priority_tools': medium_priority,
+            'mcp_justification': mcp_justification,
+            'tool_descriptions': tool_descriptions
+        }
+
     def _create_fallback_context(self, command_name: str) -> Dict:
         """无匹配 agent 时的后备上下文"""
         return {
