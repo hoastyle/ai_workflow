@@ -359,6 +359,129 @@ if agent_context['auto_activated']:
 
 ---
 
+### Step 0.2: Agent 命令冲突处理 🔴 **[强制执行]**
+
+⚠️ **AI 强制规则**: 当 Agent 建议与用户命令不同时，必须显式处理冲突
+
+**目的**: 避免 "Agent 激活但无效" 的现象。Agent 的建议必须被尊重和执行
+
+**执行条件**:
+- Agent 成功激活（匹配度 ≥ 85%）
+- Agent 推荐的命令 ≠ 用户执行的命令
+- 例如：用户运行 `/wf_04_ask`，但 Agent 推荐 `/wf_06_debug`
+
+**强制响应逻辑**:
+
+```
+IF agent_activated AND agent_recommended_command != user_command:
+  → 显示冲突警告和匹配度对比
+  → 提供三个选择选项
+  → 根据用户选择执行（或 AI 代表用户做出知情决定）
+```
+
+**输出示例**:
+
+```markdown
+⚠️ Agent 诊断建议
+──────────────────────────────
+你的问题更适合系统化错误诊断，而非架构咨询：
+
+匹配度对比：
+  🟢 debug-agent: 105% ← 最优匹配
+  🟡 architect-agent: ~70%
+  🟡 review-agent: ~60%
+
+你有以下选择：
+1. [推荐] 改用 /wf_06_debug 进行系统化诊断
+2. 继续 /wf_04_ask 用架构咨询视角分析
+3. 同时执行两个，获得完整的诊断 + 咨询
+
+建议：选择 [1] 获得最高效的问题诊断
+```
+
+**执行规则**:
+- 🟢 **如果用户同意 Agent 建议**: 改用推荐的命令执行
+- 🟡 **如果用户坚持原命令**: 继续执行但明确记录"忽略 Agent 建议"
+- 🟢 **如果用户选择同时执行**: 按推荐顺序执行多个命令
+
+**检查清单** (Step 0.2 完成验证):
+- [ ] ✅ 检测到 agent_recommended_command != user_command
+- [ ] ✅ 显示了冲突警告和匹配度对比
+- [ ] ✅ 提供了选择选项或做出了知情决定
+- [ ] ✅ 根据决定执行相应流程
+
+---
+
+### Step 0.3: MCP 工具强制使用 🟠 **[强制执行]**
+
+⚠️ **AI 强制规则**: Agent 推荐的 MCP 工具必须被实际使用
+
+**目的**: 使 Agent 的 MCP 推荐真正发挥作用，提升工作流的专业化程度
+
+**执行条件**:
+- Agent 成功激活（匹配度 ≥ 85%）
+- Agent 提供了 `mcp_hints`（MCP 工具推荐）
+- 用户未明确禁用 MCP（--no-mcp）
+
+**强制使用规则**:
+
+```
+IF agent_activated AND mcp_hints available AND NOT --no-mcp:
+  → 自动启用 agent 推荐的 top-2 MCP 工具
+  → 在后续执行中实际调用这些工具
+  → 在输出中明确显示使用了哪些 MCP 工具
+```
+
+**MCP 工具推荐示例**:
+
+```python
+agent_context['mcp_hints'] = [
+    {
+        'tool': 'sequential-thinking',
+        'confidence': 40%,
+        'reason': '系统化错误分析和推理'
+    },
+    {
+        'tool': 'serena',
+        'confidence': 40%,
+        'reason': '代码理解和问题定位'
+    }
+]
+
+# → 强制使用这两个 MCP 工具在咨询流程中
+```
+
+**改进前后对比**:
+
+```
+❌ 之前：
+  Agent 推荐 MCP 工具，但完全未被使用
+  MCP 工具推荐:
+    - Sequential-thinking (40%)
+    - Serena (40%)
+  ❌ 实际执行时未调用
+
+✅ 之后：
+  Agent 推荐的 MCP 工具自动被启用并使用
+  使用的 MCP 工具:
+    ✅ Sequential-thinking - 进行结构化分析
+    ✅ Serena - 进行代码理解和问题定位
+  结果：工作流更高效和专业化
+```
+
+**实施方式**:
+1. 在 Step 2（MCP 模式选择）中检查 `agent_context['mcp_hints']`
+2. 如果有 Agent 推荐的工具，优先使用（优先级高于用户标志推断）
+3. 在输出中明确说明："使用 Agent 推荐的 Sequential-thinking 进行..."
+
+**检查清单** (Step 0.3 完成验证):
+- [ ] ✅ 检查了 agent_context['mcp_hints'] 是否存在
+- [ ] ✅ 自动启用了推荐的 top-2 MCP 工具
+- [ ] ✅ 在实际执行中调用了这些工具
+- [ ] ✅ 在输出中显示了使用的 MCP 工具和原因
+
+---
+
 ### Step 1-N: 按指南执行
 
 **详细执行流程**: 所有步骤必须严格遵循 [wf_04_ask 工作流指南](docs/guides/wf_04_ask_workflows.md) 中的"AI执行协议"部分
