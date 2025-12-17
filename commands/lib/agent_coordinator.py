@@ -58,7 +58,7 @@ class AgentCoordinator:
         task_description: str,
         command_name: str,
         auto_activate: bool = True,
-        min_confidence: float = 0.85
+        min_confidence: float = 0.65
     ) -> Dict[str, Any]:
         """
         拦截命令执行，选择合适的 agent
@@ -67,7 +67,7 @@ class AgentCoordinator:
             task_description: 用户任务描述
             command_name: 当前执行的命令名（如 wf_05_code）
             auto_activate: 是否自动激活
-            min_confidence: 最低置信度阈值 (默认 0.85)
+            min_confidence: 最低置信度阈值 (默认 0.65，足以激活推荐的 agent)
 
         Returns:
             agent_context: {
@@ -91,6 +91,9 @@ class AgentCoordinator:
         best_match: AgentMatch = matches[0]
 
         # Step 2: 判断是否自动激活
+        # 使用双阈值策略:
+        # - min_confidence (默认 0.65): 推荐激活阈值 - Agent 匹配足够好，应该激活
+        # - 强制激活阈值 0.85: 完全匹配，无条件激活
         should_activate = (
             auto_activate and
             best_match.score >= min_confidence

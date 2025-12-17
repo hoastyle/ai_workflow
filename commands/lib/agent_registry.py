@@ -201,7 +201,31 @@ class AgentRegistry:
         # 1. Keyword matching (max 0.6)
         keyword_score = 0.0
         for keyword in agent.activation_keywords:
-            if keyword.lower() in task_lower:
+            # 智能匹配：支持中文分词和英文单词匹配
+            is_matched = False
+
+            if self._contains_chinese(keyword) or self._contains_chinese(task_lower):
+                # 中文关键词：使用字符匹配（类似场景匹配）
+                import re
+                keyword_clean = re.sub(r'[^\u4e00-\u9fffa-zA-Z0-9]', '', keyword.lower())
+                task_clean = re.sub(r'[^\u4e00-\u9fffa-zA-Z0-9]', '', task_lower)
+
+                # 策略1: 简单包含
+                if keyword_clean in task_clean or task_clean in keyword_clean:
+                    is_matched = True
+                else:
+                    # 策略2: 字符匹配度（至少40%的关键词字符出现在任务中，降低阈值以提高灵敏度）
+                    matched_count = sum(1 for char in keyword_clean if char in task_clean)
+                    if len(keyword_clean) > 0:
+                        match_ratio = matched_count / len(keyword_clean)
+                        is_matched = match_ratio >= 0.4
+            else:
+                # 英文关键词：使用单词匹配
+                keyword_words = set(keyword.lower().split())
+                task_words = set(task_lower.split())
+                is_matched = bool(keyword_words & task_words)
+
+            if is_matched:
                 keyword_score += 0.3
                 matched_kw.append(keyword)
         keyword_score = min(keyword_score, 0.6)
@@ -230,11 +254,11 @@ class AgentRegistry:
                 if scenario_clean in task_clean or task_clean in scenario_clean:
                     is_matched = True
                 else:
-                    # 策略2: 字符匹配度检查（至少70%的场景字符出现在任务中）
+                    # 策略2: 字符匹配度检查（至少60%的场景字符出现在任务中，降低阈值以提高灵敏度）
                     matched_count = sum(1 for char in scenario_clean if char in task_clean)
                     if len(scenario_clean) > 0:
                         match_ratio = matched_count / len(scenario_clean)
-                        is_matched = match_ratio >= 0.7
+                        is_matched = match_ratio >= 0.6
             else:
                 # 英文场景：使用单词交集匹配
                 scenario_words = set(scenario.lower().split())
