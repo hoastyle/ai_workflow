@@ -180,6 +180,14 @@ python $HOME/.claude/commands/scripts/doc_guard.py \
 
 ```bash
 python -c "
+import sys
+import os
+
+# 动态添加安装目录到 Python 路径（支持在任意目录执行命令）
+install_dir = os.path.expanduser('~/.claude/commands')
+if install_dir not in sys.path and os.path.exists(install_dir):
+    sys.path.insert(0, install_dir)
+
 from commands.lib.agent_coordinator import get_agent_coordinator
 
 coordinator = get_agent_coordinator()
