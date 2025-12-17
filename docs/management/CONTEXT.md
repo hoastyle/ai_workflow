@@ -1,25 +1,24 @@
 # CONTEXT.md
 
-**最后会话**: 2025-12-16 15:09
-**Git 基准**: commit 5c45d44
+**最后会话**: 2025-12-17 14:30
+**Git 基准**: commit 57092ad
 
 ## 📍 上下文指针 (Context Pointers)
 
 ### 当前工作焦点
-- 完成任务: MCPSelector 性能优化（常量提取 + 正则预编译）
-- 相关代码: commands/lib/mcp_selector.py (性能优化完成)
-- 相关测试: tests/test_mcp_selector.py (24/24 通过 ✅)
-- 代码审查: 60/70 (85.7%) - 优秀 ✅
+- 完成任务: Agent匹配算法中文分词bug修复 + review-agent增强
+- 相关代码: commands/lib/agent_registry.py (中文匹配修复), commands/agents/review_agent.md (定义增强)
+- 相关文档: KNOWLEDGE.md (Q6常见问题 + 解决方案)
 
 ### 会话状态
-- Git commits (本次会话): 1 commit (5c45d44)
-- 修改文件数: 2 files (mcp_selector.py, TASK.md)
-- 主要变更领域: 性能优化（正则预编译 + 类常量提取）
-- 性能提升: 速度 +20-30%, 内存 -20%
+- Git commits (本次会话): 1 commit (57092ad)
+- 修改文件数: 4 files (KNOWLEDGE.md, review_agent.md, agent_registry.py, fix_agent_step.py)
+- 主要变更领域: Agent系统优化（中文分词bug修复 + 定义增强）
+- 功能提升: 中文任务匹配分数 +61%, 自动激活率显著提升
 
 ### 下次启动时
 - 推荐命令: /wf_03_prime
-- 推荐下一步:
-  1. 参考 TASK.md § Phase 3 Token 优化任务
-  2. 或执行低优先级改进（空值检查、性能测试）
-  3. 或 git push 推送所有提交到远程
+- 推荐下一步: 
+  1. 参考 KNOWLEDGE.md § Q6 了解中文分词修复详情
+  2. 或继续Phase 5的MCP深度集成工作
+  3. 或执行 git push 推送提交到远程
