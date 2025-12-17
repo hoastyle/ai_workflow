@@ -77,7 +77,9 @@ class AgentCoordinator:
                 'alternatives': 备选 agents,
                 'mcp_hints': MCP 使用建议,
                 'collaborators': 协作建议,
-                'command_alignment': 命令对齐检查
+                'command_alignment': 命令对齐检查,
+                'command_conflict': 命令冲突检测结果 (Phase 6),
+                'mcp_enforcement': MCP 强制使用建议 (Phase 6)
             }
         """
         self.task_description = task_description
@@ -103,19 +105,52 @@ class AgentCoordinator:
             self.current_agent = best_match.agent
 
         # Step 3: 构建 agent 上下文
+        mcp_hints = self._extract_mcp_hints(best_match.agent)
+
         context = {
             'agent': best_match.agent,
             'match_score': best_match.score,
             'auto_activated': should_activate,
             'alternatives': [m.agent for m in matches[1:3]],
-            'mcp_hints': self._extract_mcp_hints(best_match.agent),
+            'mcp_hints': mcp_hints,
             'collaborators': self._get_collaborators(best_match.agent),
             'command_alignment': self._check_command_alignment(
                 best_match.agent, command_name
             )
         }
 
-        # Step 4: 记录使用
+        # Step 4: Phase 6 增强 - 命令冲突检测
+        if should_activate:
+            # 在 agent 对象上临时设置 match_score 和 alternatives
+            # 以便 detect_command_conflict 可以访问
+            best_match.agent.match_score = best_match.score
+            best_match.agent.alternatives = [
+                {
+                    'name': m.agent.name,
+                    'score': m.score,
+                    'available_tools': m.agent.available_tools
+                }
+                for m in matches[1:3]
+            ]
+
+            conflict_info = self.detect_command_conflict(
+                best_match.agent,
+                command_name
+            )
+            context['command_conflict'] = conflict_info
+
+            # Step 5: Phase 6 增强 - MCP 强制使用建议
+            mcp_recommendations = self.extract_mcp_recommendations(
+                best_match.agent,
+                mcp_hints,
+                enforce=True
+            )
+            context['mcp_enforcement'] = mcp_recommendations
+        else:
+            context['command_conflict'] = {'has_conflict': False}
+            context['mcp_enforcement'] = {'should_enable_mcp': False}
+
+        # Step 6: 记录使用
         self._record_usage(context)
 
         return context
@@ -399,6 +434,61 @@ class AgentCoordinator:
             f"**专长**: {', '.join(agent.expertise[:3])}",
         ]
 
+        # Phase 6 增强: 命令冲突警告（优先级最高，显示在顶部）
+        if activated and context.get('command_conflict', {}).get('has_conflict'):
+            conflict = context['command_conflict']
+            output.extend([
+                "",
+                "## 🔴 命令冲突检测",
+                "",
+                "**检测到冲突**:",
+                f"- **Agent 推荐**: `{conflict['recommended_command']}`",
+                f"- **当前执行**: `{conflict['user_command']}`",
+                f"- **Agent 匹配度**: {conflict.get('agent_match_score', 0.0):.0%}",
+                "",
+                "**冲突原因**: Agent 认为不同的命令更适合此任务",
+                "",
+                "**解决选项**:"
+            ])
+
+            # 显示三个选项
+            for option in conflict.get('conflict_resolution_options', []):
+                output.append(f"  {option}")
+
+            output.extend([
+                "",
+                "💡 **建议**: 如果不确定，选择选项 1（使用 Agent 推荐）以获得最佳专业化支持",
+                ""
+            ])
+
+        # Phase 6 增强: MCP 强制使用建议
+        if activated and context.get('mcp_enforcement', {}).get('should_enable_mcp'):
+            mcp_enforcement = context['mcp_enforcement']
+            output.extend([
+                "## 🟠 MCP 工具强制使用建议",
+                "",
+                f"**理由**: {mcp_enforcement.get('mcp_justification', '')}",
+                "",
+                "**应启用的工具**:"
+            ])
+
+            for tool in mcp_enforcement.get('enabled_tools', []):
+                output.append(f"  - `{tool}`")
+
+            if mcp_enforcement.get('tool_descriptions'):
+                output.extend([
+                    "",
+                    "**工具说明**:"
+                ])
+                for desc in mcp_enforcement['tool_descriptions']:
+                    output.append(f"  {desc}")
+
+            output.extend([
+                "",
+                "⚠️ **注意**: 这些工具由 Agent 强烈推荐，将在后续步骤中自动使用",
+                ""
+            ])
+
         # MCP 集成提示（V2 格式 - 包含置信度和优先级）
         if context['mcp_hints'] and verbose:
             output.extend([
@@ -440,12 +530,14 @@ class AgentCoordinator:
                 ]
             ])
 
-        # 命令对齐检查
+        # 命令对齐检查（已被命令冲突检测替代，保留以兼容旧代码）
         if not context['command_alignment']['aligned'] and verbose:
-            output.extend([
-                "",
-                f"⚠️ **注意**: {context['command_alignment']['note']}"
-            ])
+            # 如果没有冲突信息，显示传统对齐检查
+            if not context.get('command_conflict', {}).get('has_conflict'):
+                output.extend([
+                    "",
+                    f"⚠️ **注意**: {context['command_alignment']['note']}"
+                ])
 
         # 备选 agents（如果有）
         if context['alternatives'] and verbose:
