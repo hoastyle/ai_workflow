@@ -252,7 +252,7 @@ class AgentCoordinator:
             normalized_recommended = None
 
         # 检测是否存在冲突
-        has_conflict = (
+        has_conflict = bool(
             normalized_recommended and
             normalized_recommended != normalized_user_cmd
         )
