@@ -173,6 +173,11 @@ class AgentRegistry:
 
         return matches[:top_k]
 
+    def _contains_chinese(self, text: str) -> bool:
+        """检测文本是否包含中文字符"""
+        import re
+        return bool(re.search(r'[\u4e00-\u9fff]', text))
+
     def _calculate_match_score(
         self, agent: Agent, task_description: str
     ) -> Tuple[float, List[str], List[str], str]:
@@ -208,12 +213,38 @@ class AgentRegistry:
         # 2. Scenario matching (max 0.4)
         scenario_score = 0.0
         for scenario in agent.activation_scenarios:
-            # Check if any words from scenario appear in task
-            scenario_words = set(scenario.lower().split())
-            task_words = set(task_lower.split())
-            if scenario_words & task_words:  # Intersection
+            # 智能匹配：中文使用模糊匹配，英文使用单词匹配
+            is_matched = False
+
+            if self._contains_chinese(scenario) or self._contains_chinese(task_lower):
+                # 中文场景：使用模糊匹配策略
+                # 策略1: 场景包含在任务中（子串）
+                # 策略2: 提取关键字符，检查足够多的字符出现在任务中
+                import re
+
+                # 移除空格和标点，只保留中文和英文字母数字
+                scenario_clean = re.sub(r'[^\u4e00-\u9fffa-zA-Z0-9]', '', scenario.lower())
+                task_clean = re.sub(r'[^\u4e00-\u9fffa-zA-Z0-9]', '', task_lower)
+
+                # 策略1: 简单包含检查
+                if scenario_clean in task_clean or task_clean in scenario_clean:
+                    is_matched = True
+                else:
+                    # 策略2: 字符匹配度检查（至少70%的场景字符出现在任务中）
+                    matched_count = sum(1 for char in scenario_clean if char in task_clean)
+                    if len(scenario_clean) > 0:
+                        match_ratio = matched_count / len(scenario_clean)
+                        is_matched = match_ratio >= 0.7
+            else:
+                # 英文场景：使用单词交集匹配
+                scenario_words = set(scenario.lower().split())
+                task_words = set(task_lower.split())
+                is_matched = bool(scenario_words & task_words)
+
+            if is_matched:
                 scenario_score += 0.4
                 matched_sc.append(scenario)
+
         scenario_score = min(scenario_score, 0.4)
         score += scenario_score
 

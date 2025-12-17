@@ -8,11 +8,16 @@ expertise:
   - "性能问题识别"
   - "架构合规性检查"
   - "最佳实践验证"
-activation_keywords: ["审查", "review", "检查", "质量", "评审", "验证"]
+activation_keywords: ["审查", "review", "检查", "质量", "评审", "验证", "代码检查", "质量检查", "质量评估", "代码审查", "代码评审"]
 activation_scenarios:
   - "代码实现完成需要审查"
   - "提交前质量检查"
   - "多维度质量评估"
+  - "Bug修复后验证代码质量"
+  - "重构后审查代码结构"
+  - "合并请求的代码审查"
+  - "安全漏洞检查和验证"
+  - "性能优化后的质量评估"
 available_tools:
   - "/wf_08_review"
   - "Read (代码文件, PLANNING.md)"
