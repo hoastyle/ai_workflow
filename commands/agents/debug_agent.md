@@ -8,12 +8,15 @@ expertise:
   - "根因分析 (Root Cause Analysis)"
   - "调试工具使用"
   - "Bug 修复和验证"
-activation_keywords: ["调试", "错误", "bug", "问题", "失败", "异常", "崩溃", "修复"]
+activation_keywords: ["调试", "错误", "bug", "问题", "失败", "异常", "崩溃", "修复", "错误修复", "问题诊断", "bug修复", "调试问题", "异常处理"]
 activation_scenarios:
   - "程序出现错误或异常"
   - "功能行为不符合预期"
   - "性能问题诊断"
   - "日志分析和问题定位"
+  - "代码运行出错需要调试"
+  - "系统异常需要快速定位"
+  - "修复程序中的bug和错误"
 available_tools:
   - "/wf_06_debug"
   - "Read (日志文件, 代码文件, 错误信息)"

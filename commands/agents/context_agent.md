@@ -8,12 +8,15 @@ expertise:
   - "内存管理和优化"
   - "文档索引和按需加载"
   - "SSOT架构维护"
-activation_keywords: ["加载", "上下文", "恢复", "会话", "prime", "初始化"]
+activation_keywords: ["加载", "上下文", "恢复", "会话", "prime", "初始化", "加载上下文", "上下文加载", "会话恢复", "项目加载", "环境初始化"]
 activation_scenarios:
   - "新会话启动"
   - "会话中断后恢复"
   - "上下文丢失需要重新加载"
   - "项目切换"
+  - "启动新的工作会话"
+  - "恢复之前的工作状态"
+  - "重新加载项目上下文信息"
 available_tools:
   - "/wf_03_prime"
   - "Read (CONTEXT.md, PLANNING.md, TASK.md, KNOWLEDGE.md)"

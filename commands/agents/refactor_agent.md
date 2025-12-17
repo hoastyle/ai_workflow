@@ -8,12 +8,15 @@ expertise:
   - "消除技术债务"
   - "提升可维护性"
   - "保持功能不变性"
-activation_keywords: ["重构", "refactor", "优化", "改进", "清理", "整理"]
+activation_keywords: ["重构", "refactor", "优化", "改进", "清理", "整理", "代码重构", "代码优化", "代码改进", "结构优化", "质量提升"]
 activation_scenarios:
   - "代码质量需要改进"
   - "消除代码重复"
   - "应用设计模式"
   - "提升可读性"
+  - "重构现有代码提升质量"
+  - "优化代码结构和设计"
+  - "消除技术债务和代码异味"
 available_tools:
   - "/wf_09_refactor"
   - "Read (代码文件)"

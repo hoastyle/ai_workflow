@@ -8,13 +8,16 @@ expertise:
   - "代码质量和可读性"
   - "单元测试编写"
   - "API 和接口实现"
-activation_keywords: ["实现", "代码", "功能", "开发", "编写", "添加功能", "创建", "构建"]
+activation_keywords: ["实现", "代码", "功能", "开发", "编写", "添加功能", "创建", "构建", "功能实现", "代码编写", "业务逻辑", "代码开发", "编写功能"]
 activation_scenarios:
   - "实现新功能"
   - "编写业务逻辑代码"
   - "创建 API 端点"
   - "实现数据模型"
   - "集成第三方库"
+  - "添加新的业务功能"
+  - "根据需求编写代码实现"
+  - "开发具体的功能模块"
 available_tools:
   - "/wf_05_code"
   - "Read (PLANNING.md, KNOWLEDGE.md, PHILOSOPHY.md)"

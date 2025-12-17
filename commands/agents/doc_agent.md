@@ -8,12 +8,15 @@ expertise:
   - "技术文档维护"
   - "文档架构设计"
   - "Frontmatter 元数据管理"
-activation_keywords: ["文档", "documentation", "说明", "注释", "README", "API文档"]
+activation_keywords: ["文档", "documentation", "说明", "注释", "README", "API文档", "文档生成", "生成文档", "文档维护", "技术文档", "使用说明"]
 activation_scenarios:
   - "生成项目文档"
   - "更新 API 文档"
   - "维护技术文档"
   - "创建使用指南"
+  - "为代码编写技术文档"
+  - "生成API接口说明文档"
+  - "维护和更新项目文档"
 available_tools:
   - "/wf_14_doc"
   - "/wf_13_doc_maintain"

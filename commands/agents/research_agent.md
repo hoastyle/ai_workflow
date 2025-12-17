@@ -8,12 +8,15 @@ expertise:
   - "最佳实践研究"
   - "竞品分析"
   - "技术趋势追踪"
-activation_keywords: ["研究", "调研", "评估", "对比", "方案", "技术选型", "开源"]
+activation_keywords: ["研究", "调研", "评估", "对比", "方案", "技术选型", "开源", "技术调研", "方案研究", "技术评估", "开源方案", "方案对比"]
 activation_scenarios:
   - "技术方案调研"
   - "开源库评估"
   - "竞品分析"
   - "最佳实践研究"
+  - "深度调研技术方案和选型"
+  - "评估不同开源库的优劣"
+  - "研究技术趋势和最佳实践"
 available_tools:
   - "/wf_04_research"
   - "Read (PLANNING.md, KNOWLEDGE.md)"
