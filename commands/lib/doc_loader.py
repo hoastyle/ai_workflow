@@ -245,17 +245,36 @@ class DocLoader:
         Normalize document path (handle relative/absolute paths)
 
         Args:
-            doc_path: Input path
+            doc_path: Input path (can be relative, absolute, or use ~)
 
         Returns:
             Absolute path
-        """
-        if os.path.isabs(doc_path):
-            return doc_path
 
-        # Assume relative to project root (where commands/ exists)
-        project_root = Path(__file__).parent.parent.parent
-        return str(project_root / doc_path)
+        Behavior:
+            - Absolute paths: returned as-is
+            - Paths with ~: expanded to user home directory
+            - Relative paths: resolved relative to current working directory (NOT project root)
+
+        Examples:
+            >>> _normalize_path("/abs/path/file.md")
+            "/abs/path/file.md"
+
+            >>> _normalize_path("~/docs/file.md")
+            "/home/user/docs/file.md"
+
+            >>> _normalize_path("docs/file.md")  # CWD is /project
+            "/project/docs/file.md"  # NOT ~/.claude/commands/docs/file.md
+        """
+        # Expand ~ to user home directory
+        expanded_path = os.path.expanduser(doc_path)
+
+        # If absolute, return as-is
+        if os.path.isabs(expanded_path):
+            return expanded_path
+
+        # Relative path: resolve relative to current working directory
+        # This allows workflow to work in ANY project directory
+        return str(Path.cwd() / expanded_path)
 
     def _extract_section_with_serena(self, doc_path: str, section: str) -> str:
         """
