@@ -1,10 +1,10 @@
 # 项目规划 (Project Planning)
 
 **项目名称**: AI Workflow Command System
-**版本**: v1.0
+**版本**: v1.1
 **创建日期**: 2025-12-05
-**最后更新**: 2025-12-05
-**状态**: Phase 2 进行中（SuperClaude 优化）
+**最后更新**: 2025-12-21
+**状态**: Phase 2 进行中（SuperClaude 优化 + 双 CLAUDE.md 架构）
 
 ---
 
@@ -698,6 +698,65 @@ python scripts/frontmatter_utils.py validate-batch docs/ | grep "size"
 - docs/adr/: 架构决策记录（优先级=中）
 - docs/reference/: 参考文档（优先级=高）
 - docs/integration/: MCP 集成（优先级=高）
+
+### 双 CLAUDE.md 架构 (NEW - 2025-12-21)
+
+**设计目标**: 区分全局 AI 执行规则和源码项目开发规则
+
+本项目采用**双文件模式**管理 AI 执行规则：
+
+| 文件 | 位置 | 作用范围 | 职责 |
+|------|------|---------|------|
+| **CLAUDE.md** | 源码目录 (本 repo) → 安装到 `~/.claude/` | 全局（所有使用 workflow 的项目） | 通用 AI 执行规则、配置层级、文档路由、MCP 集成 |
+| **CLAUDE_DEV.md** | 源码目录 (本 repo) | 仅源码项目开发 | workflow 开发规则、目录关系、部署流程、贡献指南 |
+
+**职责分离**:
+
+**CLAUDE.md（全局规则）** 包含：
+- ✅ 语言规范（全局默认策略）
+- ✅ 项目管理文档（推荐结构）
+- ✅ AI 执行规则（文件权限矩阵、会话生命周期）
+- ✅ 文档管理规则（四层架构、智能加载）
+- ✅ MCP 集成和 Agent 系统说明
+- ✅ 技术选型规范（优先开源）
+- ✅ 开发标准（代码质量、Git 提交）
+- ✅ 命令索引和快速参考
+
+**CLAUDE_DEV.md（源码开发规则）** 包含：
+- ✅ 源码目录/安装目录/使用目录三者关系
+- ✅ workflow 开发者工作流（修复 bug、添加功能）
+- ✅ 部署流程说明（make install、make uninstall）
+- ✅ 目录结构说明（commands/、docs/、scripts/）
+- ✅ 贡献指南和开发环境设置
+
+**部署流程**:
+```bash
+# install.sh 行为
+cp CLAUDE.md ~/.claude/CLAUDE.md  # 安装全局规则
+# 不复制 CLAUDE_DEV.md（仅用于源码目录）
+
+# uninstall.sh 行为
+rm -f ~/.claude/CLAUDE.md  # 删除全局规则
+```
+
+**使用场景**:
+
+1. **用户在任意项目中使用 workflow**:
+   - AI 加载 `~/.claude/CLAUDE.md`（全局规则）
+   - 规则清晰，无源码项目特定内容
+
+2. **开发者在源码目录开发 workflow**:
+   - AI 同时参考 `CLAUDE.md` 和 `CLAUDE_DEV.md`
+   - 理解源码目录/安装目录关系
+   - 遵循 workflow 开发标准
+
+**架构决策记录**: 详见 ADR（待创建）`docs/adr/2025-12-21-dual-claude-md-architecture.md`
+
+**相关文档**:
+- [CLAUDE.md](../../CLAUDE.md) - 全局 AI 执行规则
+- [CLAUDE_DEV.md](../../CLAUDE_DEV.md) - workflow 开发规则
+- [README.md § 开发者重要提示](../../README.md#⚠️-开发者重要提示)
+- [CONTRIBUTING.md § 开发环境设置](../../CONTRIBUTING.md#开发环境设置)
 
 ### AI 上下文优化策略
 

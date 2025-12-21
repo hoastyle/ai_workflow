@@ -62,6 +62,24 @@ cd ai_workflow
 
 ---
 
+## ⚠️ 开发者重要提示
+
+**如果你要修复或扩展 workflow 本身（而非使用 workflow 开发项目）**，请务必理解以下关系：
+
+| 你的工作 | 工作目录 | 说明 |
+|---------|---------|------|
+| 🔧 **修复 workflow bug** | 本 repo (`/path/to/commands`) | ✅ 在此修改源码，然后 `make install` |
+| 🚀 **使用 workflow** | 任意项目目录 | ✅ 执行 `/wf_*` 命令，自动从 `~/.claude/commands/` 加载 |
+
+**关键区别**:
+- 本 repo 是**源码目录**（开发 workflow 系统）
+- `~/.claude/commands/` 是**安装目录**（存放可执行命令）
+- 你的项目目录是**使用目录**（调用 workflow 命令）
+
+**详细说明**: 参见 [CLAUDE.md § 注意事项](./CLAUDE.md#注意事项)
+
+---
+
 ## 🚀 快速开始
 
 ### 新项目初始化

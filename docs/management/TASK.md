@@ -1,9 +1,9 @@
 # 任务追踪 (Task Management)
 
-**版本**: v3.3 (项目完成 - 100% 完成, 24/24 tasks)
+**版本**: v3.5 (Phase 7 进行中 - 72% 完成, 24/33 tasks)
 **创建日期**: 2025-12-03
-**最后更新**: 2025-12-16
-**状态**: ✅ 项目完成 (100% - 24/24 tasks, 所有任务已完成)
+**最后更新**: 2025-12-21
+**状态**: ⏳ Phase 7 进行中 (72% - 24/33 tasks, Phase 1-5 完成, Phase 7 新增 9 tasks)
 
 **关键背景**:
 - 项目目标: 构建/优化 AI Workflow 命令系统 (wf_01 - wf_14)
@@ -22,7 +22,8 @@
 | **Phase 3** | 3 | 3 | 100% | ✅ 完成 (Token优化完成 - 79% 节省) |
 | **Phase 4** | 3 | 3 | 100% | ✅ 完成 (Agent架构完成 - 10 agents) |
 | **Phase 5** | 2 | 2 | 100% | ✅ 完成 (MCP 深度集成 - 14/14 命令 100% 覆盖, Agent-MCP 协同完成) |
-| **总计** | 24 | 24 | 100% | ✅ **项目完成** |
+| **Phase 7** | 9 | 0 | 0% | ⏳ 进行中 (双 CLAUDE 架构 + Phase 6 遗留问题修复) |
+| **总计** | 33 | 24 | 72% | ⏳ **Phase 7 进行中** |
 
 **关键里程碑**:
 - ✅ Phase 1: 智能上下文加载 + Confidence Check + Token预算 (完成 - 4/4)
@@ -33,6 +34,7 @@
 - ✅ Phase 3: Token 紧急优化 (完成 - 节省31k+ tokens, 79% reduction)
 - ✅ Phase 4: Agent 架构设计 (完成 - 10 agents + 自动激活 + 协调引擎)
 - ✅ Phase 5: MCP 深度集成 (完成 - 14/14 命令100%覆盖 + Agent-MCP 协同模式实现)
+- ⏳ Phase 7: 双 CLAUDE 架构实现 + Phase 6 遗留问题修复 (进行中 - 0/9)
 
 ---
 
@@ -1016,7 +1018,658 @@ Phase 2 (Workflow 优化 - 进行中)
 
 ---
 
+## 🚀 Phase 7: 双 CLAUDE 架构实现 + 遗留问题修复 (NEW - 2025-12-21)
+
+**目标**: 实现反转后的双 CLAUDE.md 架构，解决 Phase 6 遗留问题
+
+**优先级**: 🔴 **最高** - 架构优化 + 功能完整性
+**工作量**: 16-20 小时 (5-7 个工作日)
+**复杂度**: 中高
+**预期影响**:
+- 架构清晰，符合 Claude Code 默认行为
+- Agent 系统真正发挥价值
+- 代码质量和性能提升
+
+**关键问题**:
+- 📝 PLANNING.md 中的双 CLAUDE 架构设计方向需要反转
+- 🔄 本地有 4 个文件的未提交改动（CLAUDE.md 等）
+- 🚨 Phase 6 的 Agent 激活-执行断裂问题尚未实现修复
+- 🧪 缺少 Agent 中文分词的单元测试覆盖
+- ⚡ 正则表达式性能优化待实施
+
+**架构反转的必要性**:
+
+PLANNING.md § 702-760 中的设计需要反转，因为：
+- ❌ 原设计: CLAUDE.md → 全局规则, CLAUDE_DEV.md → 源码开发
+- ✅ 正确设计: CLAUDE.md → 源码开发, CLAUDE_DEPLOY.md → 全局规则模板
+
+**理由**: Claude Code 默认读取当前目录的 CLAUDE.md
+- 在源码目录应读取源码开发规则 ✅
+- 在用户项目应读取全局规则（~/.claude/CLAUDE.md）✅
+
+---
+
+### Task 7.1: 修复本地改动并提交 🔴
+
+**状态**: ⏳ 进行中
+**优先级**: 🔴 最高 (阻塞其他工作)
+**工作量**: 1 小时
+**复杂度**: 低
+**依赖**: 无
+
+**本地改动详情**:
+- CLAUDE.md: +64 行（源码目录 vs 安装目录说明增强）
+- CONTRIBUTING.md: +8 行
+- README.md: +18 行
+- docs/management/PLANNING.md: +65 行
+
+**任务内容**:
+- [ ] 运行 `/wf_08_review` 审查所有改动
+- [ ] 修复任何格式或内容问题
+- [ ] 运行 `/wf_11_commit` 提交更改
+  ```bash
+  # 预期提交信息
+  [docs] 增强CLAUDE.md源码目录说明和项目文档更新
+
+  - 增强"源码目录 vs 安装目录"的三目录关系说明
+  - 添加工作流程图和实际场景示例
+  - 更新CONTRIBUTING.md和README.md
+  - 完善PLANNING.md的双CLAUDE架构设计
+  ```
+
+**验收标准**:
+- ✅ 所有改动已提交到 git
+- ✅ CONTEXT.md 已自动更新
+- ✅ 本地工作目录干净 (git status clean)
+- ✅ commit message 清晰准确
+
+**相关文件**:
+- CLAUDE.md
+- CONTRIBUTING.md
+- README.md
+- docs/management/PLANNING.md
+
+**优先级**: 🔴 最高
+**Effort**: Small (1 小时)
+**Dependencies**: 无
+**Status**: ⏳ 进行中
+**Related**: Task 7.2 (双架构实现依赖干净基线)
+
+---
+
+### Task 7.2: 反转双 CLAUDE 架构设计 🔴
+
+**状态**: 待开始
+**优先级**: 🔴 最高 (架构关键)
+**工作量**: 3-4 小时
+**复杂度**: 中等
+**依赖**: Task 7.1 (本地改动提交)
+
+**架构反转方案**:
+
+| 步骤 | 操作 | 说明 |
+|------|------|------|
+| 1️⃣ | 创建 CLAUDE_DEPLOY.md | 从当前 CLAUDE.md 提取全局规则 |
+| 2️⃣ | 调整 CLAUDE.md | 改为纯源码开发规则 |
+| 3️⃣ | 更新 PLANNING.md § 702-760 | 反转表格和说明 |
+| 4️⃣ | 更新 install.sh | cp CLAUDE_DEPLOY.md ~/.claude/CLAUDE.md |
+
+**具体任务**:
+
+**Step 1: 创建 CLAUDE_DEPLOY.md** (~400-500 行)
+- [ ] 从当前 CLAUDE.md 提取以下内容:
+  - ✅ 配置层级说明（项目级 > 全局 > 内置）
+  - ✅ 文档路由规则
+  - ✅ 设计哲学补充 (Ultrathink)
+  - ✅ 语言规范（全局默认策略）
+  - ✅ 项目管理文档（推荐结构）
+  - ✅ AI 执行规则（文件权限矩阵、会话生命周期）
+  - ✅ 文档管理规则（四层架构、智能加载、Frontmatter）
+  - ✅ MCP 集成和增强功能
+  - ✅ 技术选型规范（优先开源）
+  - ✅ 命令索引（简化版）
+  - ✅ 开发标准（代码质量、Git 提交、时间点管理）
+  - ✅ 快速参考
+
+- [ ] **不包含**（移除源码特定内容）:
+  - ❌ "注意事项 § 源码目录 vs 安装目录"（这是源码开发相关）
+
+**Step 2: 调整 CLAUDE.md 为源码开发规则** (~300-400 行)
+- [ ] 保留当前的"源码目录 vs 安装目录"部分（+64 行）
+- [ ] 添加以下内容:
+  - ✅ workflow 开发者工作流（修复 bug、添加功能、测试）
+  - ✅ 部署流程说明（make install、make update、make uninstall）
+  - ✅ 目录结构说明（commands/、docs/、scripts/、tests/）
+  - ✅ 贡献指南和开发环境设置
+  - ✅ 源码项目的 Git 工作流（特殊要求）
+  - ✅ 代码审查标准（workflow 项目特定）
+
+- [ ] 在开头添加说明:
+  ```markdown
+  # CLAUDE.md (Workflow 源码开发规则)
+
+  > ⚠️ **重要**: 本文件用于 workflow 源码项目的开发
+  >
+  > - **当前场景**: 开发 AI Workflow 命令系统本身
+  > - **全局规则**: 见 CLAUDE_DEPLOY.md（部署后变为 ~/.claude/CLAUDE.md）
+  > - **用户项目**: 使用 workflow 的项目应参考 ~/.claude/CLAUDE.md
+  ```
+
+**Step 3: 更新 PLANNING.md § 702-760**
+- [ ] 反转表格:
+  ```markdown
+  | 文件 | 位置 | 作用范围 | 职责 |
+  |------|------|---------|------|
+  | **CLAUDE.md** | 源码目录 (本 repo) | 源码开发者 | 源码开发规则、目录关系、部署流程 |
+  | **CLAUDE_DEPLOY.md** | 源码目录 → 部署到 `~/.claude/CLAUDE.md` | 全局（所有使用 workflow 的项目） | 通用 AI 执行规则、语言规范、MCP 集成 |
+  ```
+
+- [ ] 更新职责分离说明
+- [ ] 更新部署流程示例
+- [ ] 更新使用场景说明
+
+**Step 4: 更新 install.sh**
+- [ ] 修改复制命令:
+  ```bash
+  # 原: cp CLAUDE.md ~/.claude/CLAUDE.md
+  # 改为:
+  cp CLAUDE_DEPLOY.md ~/.claude/CLAUDE.md
+  ```
+- [ ] 添加日志说明双文件用途
+
+**验收标准**:
+- ✅ CLAUDE_DEPLOY.md 创建完成（400-500 行）
+- ✅ CLAUDE.md 调整完成（300-400 行）
+- ✅ PLANNING.md 更新完成
+- ✅ install.sh 修改并测试通过
+- ✅ 两个文件职责边界清晰
+- ✅ 符合 Claude Code 默认行为
+
+**相关文件**:
+- CLAUDE_DEPLOY.md (新建)
+- CLAUDE.md (重构)
+- docs/management/PLANNING.md (修改 § 702-760)
+- install.sh (修改)
+
+**优先级**: 🔴 最高
+**Effort**: Medium (3-4 小时)
+**Dependencies**: Task 7.1 ✅
+**Status**: 待开始
+**Related**: Task 7.3 (ADR 记录), Task 7.4 (部署测试)
+
+---
+
+### Task 7.3: 创建 ADR - 双 CLAUDE 架构反转决策 📋
+
+**状态**: 待开始
+**优先级**: 🔴 最高 (架构记录)
+**工作量**: 1-1.5 小时
+**复杂度**: 低
+**依赖**: Task 7.2 (架构实现)
+
+**ADR 文件**: `docs/adr/2025-12-21-dual-claude-architecture-reversal.md`
+
+**具体任务**:
+- [ ] 创建 ADR 文件，包含标准章节:
+
+  **1. 背景**:
+  - 为什么需要分离全局规则和源码开发规则
+  - Claude Code 默认读取 CLAUDE.md 的行为
+
+  **2. 问题描述**:
+  - PLANNING.md 原设计的问题（CLAUDE.md → 全局）
+  - 违反最小惊讶原则
+  - 开发者在源码目录会读到"全局规则"而非"开发规则"
+
+  **3. 决策**:
+  - 反转架构: CLAUDE.md → 源码开发, CLAUDE_DEPLOY.md → 全局模板
+
+  **4. 方案对比**:
+  ```markdown
+  | 方案 | CLAUDE.md 用途 | 优势 | 劣势 |
+  |------|----------------|------|------|
+  | 原设计 | 全局规则 | 清晰的 DEPLOY 命名 | 违反默认行为 ❌ |
+  | **反转设计** | 源码开发 | 符合 Claude Code 默认 ✅ | DEPLOY 后缀稍长 |
+  ```
+
+  **5. 选择的方案及理由**:
+  - Claude Code 默认读取当前目录的 CLAUDE.md
+  - 开发者期望: 源码目录 → 开发规则 ✅
+  - 用户期望: 项目目录 → 全局规则（~/.claude/CLAUDE.md）✅
+
+  **6. 影响**:
+  - 开发者体验改善
+  - 部署流程清晰（DEPLOY 后缀明确）
+  - 用户使用无变化
+
+  **7. 替代方案**:
+  - 单文件 with 注释分区
+  - 三文件模式（CLAUDE.md + CLAUDE_GLOBAL.md + CLAUDE_DEV.md）
+
+**验收标准**:
+- ✅ ADR 文件创建且符合模板
+- ✅ 清晰说明了反转的必要性
+- ✅ 记录了 Claude Code 默认行为的考虑
+- ✅ 文档链接到 CLAUDE.md 和 CLAUDE_DEPLOY.md
+
+**相关文件**:
+- docs/adr/2025-12-21-dual-claude-architecture-reversal.md (新建)
+
+**优先级**: 🔴 最高
+**Effort**: Small (1-1.5 小时)
+**Dependencies**: Task 7.2 ✅
+**Status**: 待开始
+
+---
+
+### Task 7.4: 部署和测试双 CLAUDE 架构 🧪
+
+**状态**: 待开始
+**优先级**: 🟠 高 (验证)
+**工作量**: 1 小时
+**复杂度**: 低
+**依赖**: Task 7.2 (架构实现)
+
+**具体任务**:
+- [ ] 测试 install.sh
+  - [ ] 运行 `make install`
+  - [ ] 验证 ~/.claude/CLAUDE.md 存在
+  - [ ] 验证内容来自 CLAUDE_DEPLOY.md
+  - [ ] 验证 CLAUDE.md 保留在源码目录
+
+- [ ] 测试场景 1: 源码目录开发
+  ```bash
+  cd /path/to/commands
+  # 验证 Claude Code 读取 ./CLAUDE.md
+  # 获得源码开发规则
+  ```
+
+- [ ] 测试场景 2: 用户项目使用
+  ```bash
+  cd /tmp/test-project
+  # 验证 Claude Code 读取 ~/.claude/CLAUDE.md
+  # 获得全局规则
+  ```
+
+- [ ] 测试 uninstall.sh
+  - [ ] 运行 `make uninstall`
+  - [ ] 验证 ~/.claude/CLAUDE.md 被删除
+  - [ ] 验证源码目录的 CLAUDE.md 未被影响
+
+**验收标准**:
+- ✅ install.sh 正确部署 CLAUDE_DEPLOY.md
+- ✅ 两个场景的行为符合预期
+- ✅ uninstall.sh 正确清理
+- ✅ 无任何副作用
+
+**优先级**: 🟠 高
+**Effort**: Small (1 小时)
+**Dependencies**: Task 7.2 ✅
+**Status**: 待开始
+
+---
+
+### Task 7.5: Phase 6 改进 1 - Agent 命令冲突处理 🔴
+
+**状态**: 待开始
+**优先级**: 🔴 最高 (功能完整性)
+**工作量**: 2-3 小时
+**复杂度**: 中等
+**依赖**: Task 7.1 (干净基线)
+
+**问题描述**:
+- Agent 虽然成功激活（匹配度 65-89%），但建议的命令被忽视
+- 用户命令与 Agent 推荐命令不一致时无冲突处理机制
+- 导致 Agent 激活后"完全无效"
+
+**具体任务**:
+- [ ] 在 `commands/lib/agent_coordinator.py` 中实现 `detect_command_conflict()` 方法
+  - 比对 `agent_recommended_command` 与 `user_command`
+  - 返回冲突标志和匹配度对比信息
+  - 代码行数: ~40-50 行
+
+- [ ] 在命令执行流程中集成冲突检测
+  - 如果冲突存在，显示三个选择选项
+  - 根据用户选择执行相应流程
+  - 明确记录决策原因
+
+- [ ] 更新命令文件的 Step 0.2 部分
+  - wf_06_debug.md
+  - wf_05_code.md
+  - wf_07_test.md
+  - wf_08_review.md
+  - wf_09_refactor.md
+  - 每个文件: ~70-100 行
+  - (wf_04_ask.md 和 wf_02_task.md 已完成)
+
+**验收标准**:
+- ✅ 正确检测 agent 建议与用户命令的冲突
+- ✅ 显示清晰的冲突警告和三个选择选项
+- ✅ 根据选择执行相应流程
+- ✅ 完整的单元测试覆盖 (≥80%)
+- ✅ 所有场景测试通过
+
+**相关文件**:
+- commands/lib/agent_coordinator.py (修改/新增方法)
+- wf_*.md (5个命令文件，Step 0.2 部分)
+- tests/test_agent_coordinator_conflict.py (单元测试)
+
+**优先级**: 🔴 最高
+**Effort**: Medium (2-3 小时)
+**Dependencies**: Task 7.1 ✅
+**Status**: 待开始
+**Related**: Phase 6 § 改进 1
+
+---
+
+### Task 7.6: Phase 6 改进 2 - MCP 工具强制使用 🟠
+
+**状态**: 待开始
+**优先级**: 🟠 高 (功能完整性)
+**工作量**: 2-3 小时
+**复杂度**: 中等
+**依赖**: Task 7.5 (冲突处理基础)
+
+**问题描述**:
+- Agent 推荐的 MCP 工具虽然识别，但从不实际被调用
+- MCP 增强能力未发挥作用
+- 工作流缺少 Agent-MCP 协同的实现
+
+**具体任务**:
+- [ ] 在 `commands/lib/agent_coordinator.py` 中实现或增强 `extract_mcp_recommendations()` 方法
+  - 按优先级分类 MCP 工具（高/中/低）
+  - 根据 Agent 置信度自动决定启用哪些工具
+  - 代码行数: ~80-100 行
+
+- [ ] 在命令执行的 Step 2（MCP 模式选择）或 Step 0.3 中检查并启用推荐工具
+  - 自动启用 Agent top-2 推荐工具
+  - 优先级高于用户标志推断
+  - 显示清晰的启用理由
+
+- [ ] 在输出中明确显示使用的 MCP 工具
+  - 新增 "## 使用的 MCP 工具" 章节
+  - 显示每个工具的用途和置信度
+  - 说明工具由 Agent 推荐
+
+**验收标准**:
+- ✅ Agent 推荐的 MCP 工具被自动启用
+- ✅ 工具在实际执行中被调用
+- ✅ 输出中清晰显示使用了哪些工具
+- ✅ 完整的单元测试覆盖 (≥85%)
+- ✅ 性能无退化
+
+**相关文件**:
+- commands/lib/agent_coordinator.py (增强方法)
+- 各命令执行逻辑 (Step 0.3 或 Step 2 修改)
+- tests/test_mcp_recommendations.py (单元测试)
+
+**优先级**: 🟠 高
+**Effort**: Medium (2-3 小时)
+**Dependencies**: Task 7.5 ✅
+**Status**: 待开始
+**Related**: Phase 6 § 改进 2
+
+---
+
+### Task 7.7: Phase 6 改进 3 - Agent 协作路由显示 🟡
+
+**状态**: 待开始
+**优先级**: 🟡 中 (用户体验)
+**工作量**: 1-1.5 小时
+**复杂度**: 低
+**依赖**: Task 7.5 (冲突处理基础)
+
+**问题描述**:
+- Agent 的协作建议（后续 Agent 路径）未被显示
+- 用户不清楚应该如何继续工作流程
+- 工作流连贯性缺失
+
+**具体任务**:
+- [ ] 在 `agent_coordinator.py` 中定义协作路由格式
+  - 推荐的后续 Agent 序列
+  - 每个 Agent 的职责和作用
+
+- [ ] 在命令的后续路径决策（Step 6）中显示协作建议
+  - 新增 "## 🔄 推荐协作路由" 章节
+  - 显示 Agent 建议的执行顺序
+  - 说明每个 Agent 的作用
+
+- [ ] 让用户明确理解应该如何继续
+
+**验收标准**:
+- ✅ 清晰显示 Agent 的协作建议
+- ✅ 用户可以选择遵循或跳过
+- ✅ 提升工作流连贯性
+
+**优先级**: 🟡 中
+**Effort**: Small (1-1.5 小时)
+**Dependencies**: Task 7.5 ✅
+**Status**: 待开始
+**Related**: Phase 6 § 改进 3
+
+---
+
+### Task 7.8: 添加 Agent 中文分词单元测试 🧪
+
+**状态**: 待开始
+**优先级**: 🔴 最高 (测试覆盖)
+**工作量**: 2 小时
+**复杂度**: 中等
+**依赖**: Task 7.1 (干净基线)
+
+**背景**:
+来自 /wf_08_review 的代码审查建议，Agent 中文分词算法虽然功能正确但缺少关键的单元测试
+
+**相关代码**: commands/lib/agent_registry.py:176-272
+
+**具体任务**:
+- [ ] 创建 `tests/test_agent_registry_chinese.py`
+- [ ] 编写中文关键词匹配测试（40% 阈值边界）
+  - 测试正好 40% 的边界情况
+  - 测试略高于 40% 的通过情况
+  - 测试略低于 40% 的失败情况
+
+- [ ] 编写中文场景匹配测试（60% 阈值边界）
+  - 测试正好 60% 的边界情况
+  - 测试场景匹配的权重计算
+
+- [ ] 编写混合语言场景测试
+  - 中英文混合的任务描述
+  - 验证中文分词不影响英文匹配
+
+- [ ] 编写空字符串和特殊字符测试
+  - 空任务描述
+  - 纯标点符号
+  - 特殊 Unicode 字符
+
+- [ ] 验证回归：英文匹配未受影响
+  - 运行现有英文测试套件
+  - 确认通过率 100%
+
+**验收标准**:
+- ✅ 覆盖率 ≥80%（agent_registry.py 中新增代码）
+- ✅ 所有边界 case 通过
+- ✅ 回归测试全部通过
+- ✅ 测试文档清晰
+
+**相关文件**:
+- tests/test_agent_registry_chinese.py (新建)
+- commands/lib/agent_registry.py (测试目标)
+
+**优先级**: 🔴 最高
+**Effort**: Small (2 小时)
+**Dependencies**: Task 7.1 ✅
+**Status**: 待开始
+**Related**: Phase 6 § 代码质量
+
+---
+
+### Task 7.9: 正则表达式预编译优化 ⚡
+
+**状态**: 待开始
+**优先级**: 🟠 高 (性能)
+**工作量**: 1.5 小时
+**复杂度**: 低
+**依赖**: Task 7.1 (干净基线)
+
+**背景**:
+来自 /wf_08_review 的代码审查建议，多次编译相同正则表达式影响性能
+
+**相关代码**: commands/lib/agent_registry.py 中的多个正则表达式
+
+**具体任务**:
+- [ ] 识别所有在 agent_registry.py 中使用的正则表达式
+  - 查找所有 `re.compile()` 调用
+  - 查找所有 `re.search()`, `re.match()`, `re.findall()` 调用
+
+- [ ] 将其改为模块级别的预编译正则对象
+  ```python
+  # 在文件顶部定义
+  CHINESE_CHAR_PATTERN = re.compile(r'[\u4e00-\u9fff]+')
+  WHITESPACE_PATTERN = re.compile(r'\s+')
+  # 等等
+  ```
+
+- [ ] 在初始化时编译一次，避免重复编译
+
+- [ ] 添加性能测试基准 (benchmark)
+  - 编写 `tests/benchmark_agent_registry.py`
+  - 测试优化前后的性能差异
+  - 目标: ≥20% 性能提升
+
+- [ ] 验证性能改进
+  - 运行 benchmark
+  - 对比优化前后的结果
+
+**验收标准**:
+- ✅ 所有正则表达式预编译
+- ✅ 性能基准测试通过
+- ✅ 无功能回归
+- ✅ 代码可读性未降低
+
+**相关文件**:
+- commands/lib/agent_registry.py (优化)
+- tests/benchmark_agent_registry.py (新建)
+
+**优先级**: 🟠 高
+**Effort**: Small (1.5 小时)
+**Dependencies**: Task 7.1 ✅
+**Status**: 待开始
+**Related**: Phase 6 § 代码质量
+
+---
+
+### Phase 7 总体完成标准
+
+完成 Phase 7 后，项目应该达到：
+
+**架构层面**:
+- ✅ 双 CLAUDE 架构反转完成，符合 Claude Code 默认行为
+- ✅ CLAUDE.md: 源码开发规则（源码目录默认读取）
+- ✅ CLAUDE_DEPLOY.md: 全局规则模板（部署到 ~/.claude/CLAUDE.md）
+- ✅ 部署流程清晰且测试通过
+- ✅ ADR 记录架构决策
+
+**功能层面**:
+- ✅ Agent 命令冲突处理机制完全实现
+- ✅ MCP 工具强制使用机制完全实现
+- ✅ Agent 协作路由显示机制实现
+- ✅ Agent 激活后有明确的后续动作
+- ✅ 工作流效率提升 20-30%
+
+**质量层面**:
+- ✅ Agent 中文分词单元测试覆盖率 ≥80%
+- ✅ 正则表达式预编译优化完成
+- ✅ 性能提升 ≥20%
+- ✅ 所有单元测试通过
+- ✅ 无功能回归
+
+**文档层面**:
+- ✅ PLANNING.md 更新完成
+- ✅ ADR 创建完成
+- ✅ README.md 和 CONTRIBUTING.md 更新
+- ✅ 所有文档保持一致性
+
+---
+
+## 📊 Phase 7 进度追踪
+
+| 任务 | 优先级 | 工作量 | 状态 | 进度 |
+|------|--------|--------|------|------|
+| Task 7.1: 修复本地改动 | 🔴 最高 | 1h | ⏳ 进行中 | 0% |
+| Task 7.2: 反转双 CLAUDE 架构 | 🔴 最高 | 3-4h | 待开始 | 0% |
+| Task 7.3: 创建 ADR | 🔴 最高 | 1-1.5h | 待开始 | 0% |
+| Task 7.4: 部署和测试 | 🟠 高 | 1h | 待开始 | 0% |
+| Task 7.5: Agent 冲突处理 | 🔴 最高 | 2-3h | 待开始 | 0% |
+| Task 7.6: MCP 强制使用 | 🟠 高 | 2-3h | 待开始 | 0% |
+| Task 7.7: 协作路由显示 | 🟡 中 | 1-1.5h | 待开始 | 0% |
+| Task 7.8: 中文分词测试 | 🔴 最高 | 2h | 待开始 | 0% |
+| Task 7.9: 正则优化 | 🟠 高 | 1.5h | 待开始 | 0% |
+
+**总计**: 9 个任务, 16-20 小时, 进度 0%
+
+---
+
+## 🎯 Phase 7 推荐执行路径
+
+### 路径 1: 顺序执行（推荐）⭐
+
+```
+Day 1 (6-7h):
+1. Task 7.1: 修复本地改动 (1h)
+2. Task 7.2: 反转双 CLAUDE 架构 (3-4h)
+3. Task 7.3: 创建 ADR (1-1.5h)
+4. Task 7.4: 部署和测试 (1h)
+
+Day 2-3 (6-7h):
+5. Task 7.5: Agent 冲突处理 (2-3h)
+6. Task 7.6: MCP 强制使用 (2-3h)
+7. Task 7.7: 协作路由显示 (1-1.5h)
+
+Day 4 (3-4h):
+8. Task 7.8: 中文分词测试 (2h)
+9. Task 7.9: 正则优化 (1.5h)
+
+Day 5 (1-2h):
+10. 最终审查和提交
+```
+
+### 路径 2: 并行执行（快速）
+
+```
+并行组 A (架构):
+- Task 7.1-7.4 (顺序执行，6-7h)
+
+并行组 B (功能):
+- Task 7.5-7.7 (顺序执行，5-6h)
+
+并行组 C (质量):
+- Task 7.8-7.9 (可并行，3-4h)
+
+总工期: 3-4 个工作日
+```
+
+---
+
+## 📝 依赖关系图
+
+```
+Task 7.1 (本地改动提交)
+  ├─→ Task 7.2 (双 CLAUDE 架构) ──┬─→ Task 7.3 (ADR)
+  │                              └─→ Task 7.4 (部署测试)
+  │
+  ├─→ Task 7.5 (Agent 冲突) ──┬─→ Task 7.6 (MCP 强制)
+  │                           └─→ Task 7.7 (协作路由)
+  │
+  ├─→ Task 7.8 (中文测试)
+  └─→ Task 7.9 (正则优化)
+                ↓
+          最终审查和提交
+```
+
+---
+
 **维护者**: AI Workflow System
-**版本**: v3.4 (Phase 6 Agent 激活-执行修复完成)
-**最后更新**: 2025-12-17
-**分析依据**: 553811ac60121d0d4 (Agent 激活-执行断裂问题分析)
+**版本**: v3.5 (Phase 7 双 CLAUDE 架构 + Phase 6 遗留问题修复)
+**最后更新**: 2025-12-21
+**分析依据**: PLANNING.md § 702-760 (双 CLAUDE 架构设计反转)

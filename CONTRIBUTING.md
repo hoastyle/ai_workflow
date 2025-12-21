@@ -36,6 +36,14 @@
 
 ## 开发环境设置
 
+> ⚠️ **重要提示**: 你正在**workflow 源码目录**中工作
+>
+> - 本 repo 是 workflow 系统的**源码目录**，用于开发和修复 workflow 本身
+> - 修改后需要运行 `make install` 才能更新到 `~/.claude/commands/`（**安装目录**）
+> - 使用 workflow 的项目在**任意目录**中执行 `/wf_*` 命令
+>
+> **详细说明**: 参见 [CLAUDE.md § 注意事项](./CLAUDE.md#注意事项)
+
 ### 环境要求
 - Git 2.0+
 - Python 3.7+ (用于pre-commit)
