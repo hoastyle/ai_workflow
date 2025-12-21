@@ -49,7 +49,8 @@ VERBOSE=0
 
 # Project structure
 PROJECT_ROOT="${SCRIPT_DIR}"
-CLAUDE_MD_SOURCE="${PROJECT_ROOT}/CLAUDE.md"
+CLAUDE_DEPLOY_SOURCE="${PROJECT_ROOT}/CLAUDE_DEPLOY.md"
+CLAUDE_MD_SOURCE="${CLAUDE_DEPLOY_SOURCE}"  # Deploy CLAUDE_DEPLOY.md as ~/.claude/CLAUDE.md (global config)
 
 # Declare arrays for tracking
 declare -a INSTALLED_COMMANDS
@@ -182,10 +183,10 @@ validate_installation_environment() {
     fi
     verbose "Found $cmd_count command files in project root"
 
-    if [[ ! -f "$CLAUDE_MD_SOURCE" ]]; then
-        exit_with_error "CLAUDE.md not found: $CLAUDE_MD_SOURCE"
+    if [[ ! -f "$CLAUDE_DEPLOY_SOURCE" ]]; then
+        exit_with_error "CLAUDE_DEPLOY.md not found: $CLAUDE_DEPLOY_SOURCE"
     fi
-    verbose "Found CLAUDE.md: $CLAUDE_MD_SOURCE"
+    verbose "Found CLAUDE_DEPLOY.md: $CLAUDE_DEPLOY_SOURCE"
 
     # Check write permission
     if ! check_write_permission "$INSTALL_DIR"; then
@@ -352,27 +353,33 @@ install_commands() {
 
 install_claude_md() {
     echo ""
-    info "Installing CLAUDE.md..."
+    info "Installing global CLAUDE configuration (CLAUDE_DEPLOY.md -> ~/.claude/CLAUDE.md)..."
 
     if [[ $DRY_RUN -eq 1 ]]; then
-        info "[DRY RUN] Would install: CLAUDE.md -> $INSTALL_DIR/CLAUDE.md"
+        info "[DRY RUN] Would deploy: CLAUDE_DEPLOY.md -> $INSTALL_DIR/CLAUDE.md"
         return 0
+    fi
+
+    # Deploy CLAUDE_DEPLOY.md as the global ~/.claude/CLAUDE.md
+    if [[ ! -f "$CLAUDE_MD_SOURCE" ]]; then
+        error "CLAUDE_DEPLOY.md not found at: $CLAUDE_MD_SOURCE"
+        return 1
     fi
 
     if [[ $INSTALL_METHOD == "link" ]]; then
         if ! install_file_link "$CLAUDE_MD_SOURCE" "$INSTALL_DIR/CLAUDE.md"; then
-            error "Failed to install CLAUDE.md"
+            error "Failed to deploy CLAUDE_DEPLOY.md as CLAUDE.md"
             return 1
         fi
     else
         if ! install_file_copy "$CLAUDE_MD_SOURCE" "$INSTALL_DIR/CLAUDE.md"; then
-            error "Failed to install CLAUDE.md"
+            error "Failed to deploy CLAUDE_DEPLOY.md as CLAUDE.md"
             return 1
         fi
     fi
 
     add_to_manifest "$INSTALL_DIR/CLAUDE.md"  # Track installed file
-    success "Installed CLAUDE.md"
+    success "Deployed CLAUDE_DEPLOY.md as ~/.claude/CLAUDE.md (global configuration)"
     return 0
 }
 

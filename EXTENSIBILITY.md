@@ -249,4 +249,3 @@ declare -a SCRIPT_FILES=("script1.sh" "script2.py")  # 缺少 script3.sh
 
 **最后更新**: 2025-11-21
 **设计原则**: 配置驱动、零修改扩展、逐步演进
-
