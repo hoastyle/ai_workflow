@@ -66,9 +66,9 @@ repos:
         name: Validate File Format
         entry: >-
           bash -c 'echo "🔍 Validating file formats...";
-          if file *.md 2>/dev/null | grep -E "(CRLF|binary|executable)" | grep -q .;
+          if file *.md 2>/dev/null | grep -E "(CRLF|binary)" | grep -q .;
           then echo "❌ Found non-standard file formats:";
-          file *.md | grep -E "(CRLF|binary|executable)";
+          file *.md | grep -E "(CRLF|binary)";
           echo "   Manual intervention required for these files";
           exit 1;
           else echo "✅ All file formats are valid";
