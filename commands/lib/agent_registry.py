@@ -27,6 +27,23 @@ from typing import Dict, List, Optional, Tuple
 from dataclasses import dataclass
 from pathlib import Path
 
+# ==================== 正则表达式预编译优化 (Task 7.9) ====================
+# 目的：避免每次调用时重新编译正则表达式，提升性能 ≥20%
+#
+# 性能影响：
+# - 直接使用 re.search/re.sub: 每次调用都重新编译 O(n)
+# - 预编译后使用 compiled_pattern.search(): 直接使用已编译对象 O(1)
+# - 预期性能提升：20-30% (取决于调用频率和正则复杂度)
+
+# 中文字符检测：匹配 U+4E00-U+9FFF 范围内的 CJK 统一表意文字
+PATTERN_CHINESE = re.compile(r'[\u4e00-\u9fff]')
+
+# Frontmatter 解析：匹配 --- 包围的 YAML 块
+PATTERN_FRONTMATTER = re.compile(r'^---\n(.*?)\n---\n', re.DOTALL)
+
+# 清理文本：删除除了中文、英文、数字外的所有字符
+PATTERN_CLEANUP_TEXT = re.compile(r'[^\u4e00-\u9fffa-zA-Z0-9]')
+
 
 @dataclass
 class Agent:
@@ -175,8 +192,8 @@ class AgentRegistry:
 
     def _contains_chinese(self, text: str) -> bool:
         """检测文本是否包含中文字符"""
-        import re
-        return bool(re.search(r'[\u4e00-\u9fff]', text))
+        # 使用预编译的正则表达式 (Task 7.9 优化)
+        return bool(PATTERN_CHINESE.search(text))
 
     def _calculate_match_score(
         self, agent: Agent, task_description: str
@@ -206,9 +223,9 @@ class AgentRegistry:
 
             if self._contains_chinese(keyword) or self._contains_chinese(task_lower):
                 # 中文关键词：使用字符匹配（类似场景匹配）
-                import re
-                keyword_clean = re.sub(r'[^\u4e00-\u9fffa-zA-Z0-9]', '', keyword.lower())
-                task_clean = re.sub(r'[^\u4e00-\u9fffa-zA-Z0-9]', '', task_lower)
+                # 使用预编译的正则表达式 (Task 7.9 优化)
+                keyword_clean = PATTERN_CLEANUP_TEXT.sub('', keyword.lower())
+                task_clean = PATTERN_CLEANUP_TEXT.sub('', task_lower)
 
                 # 策略1: 简单包含
                 if keyword_clean in task_clean or task_clean in keyword_clean:
@@ -244,11 +261,11 @@ class AgentRegistry:
                 # 中文场景：使用模糊匹配策略
                 # 策略1: 场景包含在任务中（子串）
                 # 策略2: 提取关键字符，检查足够多的字符出现在任务中
-                import re
+                # 使用预编译的正则表达式 (Task 7.9 优化)
 
                 # 移除空格和标点，只保留中文和英文字母数字
-                scenario_clean = re.sub(r'[^\u4e00-\u9fffa-zA-Z0-9]', '', scenario.lower())
-                task_clean = re.sub(r'[^\u4e00-\u9fffa-zA-Z0-9]', '', task_lower)
+                scenario_clean = PATTERN_CLEANUP_TEXT.sub('', scenario.lower())
+                task_clean = PATTERN_CLEANUP_TEXT.sub('', task_lower)
 
                 # 策略1: 简单包含检查
                 if scenario_clean in task_clean or task_clean in scenario_clean:
