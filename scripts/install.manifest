@@ -25,6 +25,7 @@ declare -ga COMMAND_FILES=(
 # Global configuration files
 declare -ga CONFIG_FILES=(
     "CLAUDE.md"
+    "doc_limits.yaml"
 )
 
 # Utility scripts to install to ~/.claude/scripts/
@@ -40,6 +41,8 @@ declare -ga SCRIPT_FILES=(
     "doc_guard.py"
     "diagnose_mcp.sh"
     "wf_03_prime_launcher.py"
+    "archive_smart.py"
+    "check_doc_size.sh"
 )
 
 # Optional documentation files (installed with --include-docs)

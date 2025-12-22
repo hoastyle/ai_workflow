@@ -432,6 +432,63 @@ install_scripts() {
     return 0
 }
 
+install_config_files() {
+    echo ""
+    info "Installing configuration files..."
+
+    local config_count=0
+    local fail_count=0
+
+    for config_file in "${CONFIG_FILES[@]}"; do
+        # Skip CLAUDE.md as it's handled by install_claude_md()
+        if [[ "$config_file" == "CLAUDE.md" ]]; then
+            continue
+        fi
+
+        local source_file="$PROJECT_ROOT/$config_file"
+
+        if [[ ! -f "$source_file" ]]; then
+            verbose "Config file not found: $config_file"
+            continue
+        fi
+
+        local target="$COMMANDS_DIR/$config_file"
+
+        if [[ $DRY_RUN -eq 1 ]]; then
+            info "[DRY RUN] Would install: $config_file"
+            ((config_count++))
+        else
+            # Create parent directory if needed
+            local target_dir=$(dirname "$target")
+            mkdir -p "$target_dir"
+
+            if [[ $INSTALL_METHOD == "link" ]]; then
+                if install_file_link "$source_file" "$target"; then
+                    ((config_count++))
+                    add_to_manifest "$target"  # Track installed file
+                else
+                    warning "Failed to install: $config_file"
+                    ((fail_count++))
+                fi
+            else
+                if install_file_copy "$source_file" "$target"; then
+                    ((config_count++))
+                    add_to_manifest "$target"  # Track installed file
+                else
+                    warning "Failed to install: $config_file"
+                    ((fail_count++))
+                fi
+            fi
+        fi
+    done
+
+    if [[ $config_count -gt 0 ]]; then
+        success "Installed $config_count configuration file(s)"
+    fi
+
+    return 0
+}
+
 install_documentation() {
     if [[ $INCLUDE_DOCS -eq 0 ]]; then
         return 0
@@ -916,6 +973,7 @@ main() {
     # Installation
     install_commands || exit 1
     install_claude_md || exit 1
+    install_config_files || exit 1  # Configuration files (e.g., doc_limits.yaml)
     install_scripts || exit 1
     install_guides || exit 1  # Critical - guides are referenced by commands
     install_examples || exit 1  # Critical - examples are referenced by wf_14_doc command
