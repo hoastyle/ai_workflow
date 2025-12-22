@@ -1,10 +1,10 @@
 # 项目规划 (Project Planning)
 
 **项目名称**: AI Workflow Command System
-**版本**: v1.1
+**版本**: v1.2
 **创建日期**: 2025-12-05
-**最后更新**: 2025-12-21
-**状态**: Phase 7 双 CLAUDE 架构实现进行中
+**最后更新**: 2025-12-22
+**状态**: Phase 7 文档管理优化 (Phase 2-3) 进行中
 
 ---
 
@@ -154,14 +154,156 @@ last_updated: "YYYY-MM-DD"
 | 管理层 | 根目录 + docs/management/ | PRD, PLANNING, TASK, CONTEXT, KNOWLEDGE | ✅ prime 自动 | <100KB |
 | 技术层 | docs/ | guides, examples, adr, reference, integration | 🔍 按需 | <500 行 |
 | 工作层 | docs/research/ | 临时探索 | ❌ 不加载 | 清理 |
-| 归档层 | docs/archive/ | 历史 | ❌ 不加载 | 归档 |
+| 归档层 | docs/archives/ | 历史存档 | ❌ 不加载 | 归档 |
+
+### 文档行数限制规范 (Phase 2)
+
+**核心原则**: 防止文档过大影响可读性和加载性能
+
+#### 行数限制配置
+
+| 文档 | 行数限制 | 当前状态 | 存档策略 | 理由 |
+|------|---------|---------|---------|------|
+| **TASK.md** | 200 行 | 222 行 ⚠️ | 按阶段存档 | 持续增长，历史任务价值低 |
+| **PLANNING.md** | 300 行 | 236 行 ✅ | 按季度存档 | 架构演进历史有价值 |
+| **CONTEXT.md** | 50 行 | 25 行 ✅ | 按周存档 | 指针文档，零冗余 |
+| **KNOWLEDGE.md** | 200 行 | 149 行 ✅ | 不存档 | 纯索引，增长缓慢 |
+| **PRD.md** | 无限制 | N/A | 不存档 | 需求定义，基本不变 |
+
+#### 存档目录结构
+
+```
+docs/
+├── management/ (活跃文档 - 行数受限)
+│   ├── TASK.md (≤200 行)
+│   ├── PLANNING.md (≤300 行)
+│   ├── CONTEXT.md (≤50 行)
+│   └── PRD.md (无限制)
+│
+├── archives/ (历史存档 - 无限制)
+│   ├── tasks/ (TASK.md 历史)
+│   │   ├── index.md (存档索引)
+│   │   ├── 2025-q4-phases-1-5.md
+│   │   └── 2025-q3-initial-setup.md
+│   │
+│   ├── planning/ (PLANNING.md 历史架构)
+│   │   ├── index.md
+│   │   └── 2025-11-architecture-v1.md
+│   │
+│   └── context/ (CONTEXT.md 历史会话)
+│       ├── index.md
+│       └── 2025-12-week-*.md
+```
+
+#### 存档触发条件
+
+1. **自动触发**: 文档行数超过限制的 80%
+2. **手动触发**: 通过 `/wf_13_doc_maintain archive <文档>` 命令
+3. **阶段性触发**: 每个 Phase 完成时
+
+#### 存档内容规则
+
+**TASK.md 示例**:
+- **保留**: 项目概览、当前阶段、最近 1-2 个阶段
+- **存档**: 更早的阶段任务（完整详情）
+- **索引**: 在主文档中保留指向存档的链接
+
+**PLANNING.md 示例**:
+- **保留**: 当前架构、技术栈、开发标准
+- **存档**: 历史架构版本、过时的决策
+- **索引**: 在 KNOWLEDGE.md 中维护 ADR 链接
+
+**CONTEXT.md 示例**:
+- **保留**: 最近 2 周的会话指针
+- **存档**: 更早的会话记录（按周）
+- **索引**: 在存档 index.md 中提供快速查找
+
+### 自动化检查和存档机制 (Phase 3)
+
+#### 配置文件
+
+**位置**: `.claude/doc_limits.yaml`
+
+```yaml
+document_limits:
+  "docs/management/TASK.md": 200
+  "docs/management/PLANNING.md": 300
+  "docs/management/CONTEXT.md": 50
+  "KNOWLEDGE.md": 200
+
+archive_rules:
+  TASK.md:
+    keep_recent: 2  # 保留最近2个Phase
+    archive_path: "docs/archives/tasks"
+    archive_by: "phase"  # 按阶段存档
+
+  PLANNING.md:
+    keep_recent: 1  # 保留当前版本
+    archive_path: "docs/archives/planning"
+    archive_by: "quarter"  # 按季度存档
+
+  CONTEXT.md:
+    keep_recent_weeks: 2  # 保留最近2周
+    archive_path: "docs/archives/context"
+    archive_by: "week"  # 按周存档
+```
+
+#### 自动检查脚本
+
+**位置**: `scripts/check_doc_size.sh`
+
+**功能**:
+1. 读取 `.claude/doc_limits.yaml` 配置
+2. 检查每个文档的当前行数
+3. 如果超过限制的 80%，发出警告
+4. 提供存档建议
+
+**集成点**:
+- `/wf_11_commit`: 提交前检查（警告）
+- `/wf_02_task update`: 更新任务时检查
+- `/wf_13_doc_maintain`: 文档维护专用
+
+#### 存档命令
+
+**手动存档**:
+```bash
+/wf_13_doc_maintain archive TASK.md
+# → 自动将历史Phase移至 docs/archives/tasks/
+# → 更新主文档的索引链接
+# → 生成或更新 index.md
+```
+
+**批量检查**:
+```bash
+/wf_13_doc_maintain check
+# → 检查所有文档大小
+# → 显示超限文档列表
+# → 提供存档建议
+```
+
+#### 实施优先级
+
+**P0 - 立即实施** (本周):
+1. TASK.md 存档（当前 222 行，超限）
+2. 创建存档目录结构
+3. 更新 KNOWLEDGE.md 添加档案索引
+
+**P1 - 近期实施** (下周):
+4. 创建 `.claude/doc_limits.yaml` 配置文件
+5. 开发 `scripts/check_doc_size.sh` 检查脚本
+
+**P2 - 长期实施** (下下周):
+6. 集成到 `/wf_11_commit` 命令
+7. 扩展 `/wf_13_doc_maintain` 命令
+8. 建立定期审查机制
 
 ### 文档生命周期
 
 1. **创建**: `/wf_14_doc` 生成 + Frontmatter
 2. **维护**: `/wf_11_commit` 更新时间戳
-3. **整理**: 定期 `/wf_13_doc_maintain`
-4. **归档**: 6个月未更新 → archive/
+3. **监控**: 自动检查脚本监控文档大小
+4. **存档**: 超限时通过 `/wf_13_doc_maintain` 存档
+5. **归档**: 6个月未更新 → archives/
 
 ---
 
@@ -209,13 +351,14 @@ last_updated: "YYYY-MM-DD"
 
 ## 🎯 技术决策 (ADR)
 
-| 决策 | ADR 文件 |
-|------|----------|
-| 双 CLAUDE 架构反转 | 2025-12-21 (待创建) |
-| 约束驱动文档生成 | 2025-11-24 |
-| MCP 集成策略 | 2025-11-21 |
-| 开源优先 | 2025-11-13 |
-| Serena 三层角色 | 2025-11-23 |
+| 决策 | ADR 文件 | 状态 |
+|------|----------|------|
+| 文档行数限制和存档机制 | 2025-12-21 (待创建) | 📝 规划中 |
+| 双 CLAUDE 架构反转 | 2025-12-21 (待创建) | 📝 规划中 |
+| 约束驱动文档生成 | 2025-11-24 | ✅ 已完成 |
+| MCP 集成策略 | 2025-11-21 | ✅ 已完成 |
+| 开源优先 | 2025-11-13 | ✅ 已完成 |
+| Serena 三层角色 | 2025-11-23 | ✅ 已完成 |
 
 详见 [docs/adr/](../adr/)
 
@@ -230,7 +373,3 @@ last_updated: "YYYY-MM-DD"
 **技术**: [docs/guides/](../guides/) | [docs/examples/](../examples/) | [docs/adr/](../adr/)
 
 ---
-
-**维护者**: AI Workflow System
-**版本**: v1.1
-**最后更新**: 2025-12-21

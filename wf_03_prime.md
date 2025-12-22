@@ -160,8 +160,62 @@ python $HOME/.claude/commands/scripts/doc_guard.py \
 3. 按模式加载文档（使用Doc Guard）
 4. 生成标准化输出
 5. 添加模式切换提示
+6. 文档健康检查 🆕 (Phase 7.5)
 
 **所有详细规范**: 必须参照 [工作流指南](docs/guides/wf_03_prime_workflows.md)
+
+---
+
+### Step 6: 文档健康检查 (NEW - Phase 7.5)
+
+**目的**: 在会话启动时自动检查文档大小，及时提醒存档
+
+**执行**:
+```bash
+echo ""
+echo "## 📊 文档健康检查"
+echo ""
+
+# 检查 check_doc_size.sh 是否存在
+if [ -f "./scripts/check_doc_size.sh" ]; then
+    # 执行检查
+    ./scripts/check_doc_size.sh
+
+    # 如果有超限文档，提供建议
+    if [ $? -ne 0 ]; then
+        echo ""
+        echo "💡 建议: 运行 /wf_13_doc_maintain check 查看详情"
+        echo "   或使用 /wf_13_doc_maintain archive <文档> 执行存档"
+    fi
+else
+    echo "✅ 文档健康检查工具未配置（跳过）"
+fi
+
+echo ""
+```
+
+**输出示例**:
+```
+## 📊 文档健康检查
+
+✅ CONTEXT.md: 25/50 行 (50%)
+⚠️ TASK.md: 428/200 行 (214%) - 超限
+⚠️ PLANNING.md: 375/300 行 (125%) - 超限
+✅ KNOWLEDGE.md: 149/200 行 (75%)
+
+建议:
+  - 运行 /wf_13_doc_maintain archive TASK.md
+  - 运行 /wf_13_doc_maintain archive PLANNING.md
+
+💡 建议: 运行 /wf_13_doc_maintain check 查看详情
+   或使用 /wf_13_doc_maintain archive <文档> 执行存档
+```
+
+**降级处理**:
+- 如果 check_doc_size.sh 不存在：显示"未配置"并跳过
+- 如果执行失败：不影响其他步骤
+
+---
 
 ### 执行检查清单（AI必须验证）
 
@@ -201,6 +255,11 @@ python $HOME/.claude/commands/scripts/doc_guard.py \
 
 ## 🔗 关键文档索引
 - 快速访问路径
+
+## 📊 文档健康检查 🆕 (Phase 7.5)
+- 运行 check_doc_size.sh 检查文档大小
+- 显示超限文档列表
+- 提供存档建议
 ```
 
 **详细格式规范、Serena MCP 输出和模式选择**: 参见 [工作流指南](docs/guides/wf_03_prime_workflows.md)

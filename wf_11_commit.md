@@ -361,6 +361,41 @@ python $HOME/.claude/commands/scripts/doc_guard.py \
    - 确认所有修改已正确暂存
    - 准备进入提交流程（验证将通过 git hooks 自动执行）
 
+8. **文档大小检查** 🆕 (Phase 7.5):
+   - **执行文档大小闭环检查**:
+     ```bash
+     echo "📋 检查文档大小..."
+     if ! ./scripts/check_doc_size.sh; then
+         echo "⚠️ 警告: 某些文档接近或超过大小限制"
+         echo "   建议运行: /wf_13_doc_maintain check"
+         echo "   存档命令: /wf_13_doc_maintain archive <文档>"
+         echo ""
+     fi
+     ```
+   - **检查逻辑**:
+     * 读取 doc_limits.yaml 配置（如果存在）
+     * 检查管理文档行数（TASK.md, PLANNING.md, CONTEXT.md, KNOWLEDGE.md）
+     * 如果超过限制 70%，显示警告
+     * 如果超过限制 80%，发出违规提示
+     * **不阻止提交** - 仅警告和建议
+   - **输出示例**:
+     ```
+     📊 文档大小检查
+
+     ✅ CONTEXT.md: 25/50 行 (50%)
+     ⚠️ TASK.md: 428/200 行 (214%) - 超限
+     ⚠️ PLANNING.md: 375/300 行 (125%) - 超限
+     ✅ KNOWLEDGE.md: 149/200 行 (75%)
+
+     建议:
+       - 运行 /wf_13_doc_maintain archive TASK.md
+       - 运行 /wf_13_doc_maintain archive PLANNING.md
+     ```
+   - **降级处理**:
+     * 如果 check_doc_size.sh 不存在：跳过检查
+     * 如果 doc_limits.yaml 不存在：使用默认值或跳过
+     * 检查失败不影响提交流程
+
 ---
 
 ### 📊 Stage 2: Analysis & Generation (分析和更新)

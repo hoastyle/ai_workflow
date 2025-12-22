@@ -1,0 +1,87 @@
+# 文档管理配置文件
+# 版本: v1.0
+# 创建日期: 2025-12-21
+# 用途: 定义各文档的行数限制和存档规则
+
+# ============================================
+# 文档行数限制配置
+# ============================================
+# 格式: "文档路径": 行数限制
+# 说明: 超过限制的 80% 时会触发警告
+
+document_limits:
+  "docs/management/TASK.md": 200
+  "docs/management/PLANNING.md": 300
+  "docs/management/CONTEXT.md": 50
+  "KNOWLEDGE.md": 200
+
+# ============================================
+# 存档规则配置
+# ============================================
+# 每个文档可以定义独立的存档策略
+
+archive_rules:
+  # TASK.md 存档规则
+  TASK.md:
+    keep_recent: 2                      # 保留最近 N 个阶段
+    archive_path: "docs/archives/tasks" # 存档目录路径
+    archive_by: "phase"                 # 存档方式: phase (阶段)
+
+  # PLANNING.md 存档规则
+  PLANNING.md:
+    keep_recent: 1                         # 保留最近 N 个版本
+    archive_path: "docs/archives/planning" # 存档目录路径
+    archive_by: "quarter"                  # 存档方式: quarter (季度)
+
+  # CONTEXT.md 存档规则
+  CONTEXT.md:
+    keep_recent_weeks: 2                   # 保留最近 N 周
+    archive_path: "docs/archives/context"  # 存档目录路径
+    archive_by: "week"                     # 存档方式: week (周)
+
+# ============================================
+# 存档触发条件
+# ============================================
+# 定义何时触发存档操作
+
+archive_triggers:
+  # 自动触发阈值（文档大小超过限制的百分比）
+  auto_threshold: 0.8  # 80%
+
+  # 警告阈值（开始发出警告的百分比）
+  warning_threshold: 0.7  # 70%
+
+# ============================================
+# 通知配置
+# ============================================
+# 控制警告和通知的输出方式
+
+notifications:
+  # 是否在超限时显示警告
+  show_warnings: true
+
+  # 是否在警告中包含存档建议
+  include_suggestions: true
+
+  # 警告消息格式
+  warning_format: "⚠️ {file} 接近限制 ({current}/{limit} 行, {percentage}%)"
+
+  # 建议消息格式
+  suggestion_format: "   建议: 运行 /wf_13_doc_maintain archive {basename}"
+
+# ============================================
+# 高级选项
+# ============================================
+
+advanced:
+  # 是否在检查时跳过被 git ignore 的文件
+  skip_gitignored: false
+
+  # 是否递归检查子目录
+  recursive_check: false
+
+  # 检查失败时的退出码
+  exit_code_on_violation: 1
+
+  # 日志级别: info, warning, error
+  log_level: "warning"

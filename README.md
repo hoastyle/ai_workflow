@@ -1,5 +1,11 @@
 # Claude Code Workflow Commands
 
+**项目名称**: Claude Code Workflow Commands
+**版本**: v1.2
+**创建日期**: 2025-12-05
+**最后更新**: 2025-12-22
+**维护状态**: 活跃开发中
+
 高频使用场景优化的闭环工作流系统，为 Claude Code 提供项目规划、任务管理和开发最佳实践的完整集成。
 
 ---
@@ -162,6 +168,39 @@ project/
 ├── CLAUDE.md                # AI执行规则
 ├── wf_*.md                  # 工作流命令
 └── ...
+```
+
+---
+
+## 🛠️ 脚本工具 (Scripts)
+
+### 核心工具脚本
+
+本系统提供多个自动化工具脚本，帮助维护和优化项目：
+
+| 脚本 | 用途 | 使用场景 |
+|------|------|---------|
+| **[scripts/check_doc_size.sh](scripts/check_doc_size.sh)** | 检查文档大小，防止上下文爆炸 | 文档管理、优化上下文加载 |
+| **[scripts/archive_smart.py](scripts/archive_smart.py)** | 智能归档工具，自动整理旧文档 | 文档生命周期管理、历史清理 |
+
+### 使用说明
+
+#### 文档大小检查
+```bash
+# 检查所有文档大小
+./scripts/check_doc_size.sh
+
+# 检查特定文档
+./scripts/check_doc_size.sh docs/management/PLANNING.md
+```
+
+#### 智能归档
+```bash
+# 智能归档旧文档
+python scripts/archive_smart.py --action archive --age 30
+
+# 查看归档建议
+python scripts/archive_smart.py --action suggest --threshold 100
 ```
 
 ---

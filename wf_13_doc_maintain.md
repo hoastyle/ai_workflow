@@ -21,7 +21,15 @@ context_rules:
 **依赖链**: /wf_11_commit (多次) → **当前（定期维护）** → /wf_03_prime (重新加载)
 
 ## Usage
-`/wf_13_doc_maintain [--auto] [--dry-run]`
+```bash
+# 原有维护命令
+/wf_13_doc_maintain [--auto] [--dry-run]
+
+# 新增子命令（Phase 7.5）
+/wf_13_doc_maintain check                    # 检查文档大小
+/wf_13_doc_maintain archive <文档>           # 存档指定文档
+/wf_13_doc_maintain batch [--dry-run]        # 批量存档超限文档
+```
 
 ## Purpose
 Maintain project documentation architecture to ensure:
@@ -31,6 +39,122 @@ Maintain project documentation architecture to ensure:
 - Duplicate content is detected and consolidated
 - Orphaned documents are discovered and linked properly
 - AI context cost remains optimized (management layer < 100KB)
+- **NEW (Phase 7.5)**: Document size limits enforced via闭环检查
+
+---
+
+## 🆕 文档大小闭环维护子命令 (Phase 7.5)
+
+### `check` - 检查文档大小
+
+**用途**: 检查所有管理文档是否超过行数限制
+
+**实现**:
+```bash
+# 执行 check_doc_size.sh 脚本
+./scripts/check_doc_size.sh
+
+# 读取 doc_limits.yaml 配置
+# 检查各文档行数
+# 如果超过限制 80%，发出警告
+# 提供存档建议
+```
+
+**输出示例**:
+```
+📊 文档大小检查
+
+✅ CONTEXT.md: 25/50 行 (50%)
+⚠️ TASK.md: 428/200 行 (214%) - 超限
+⚠️ PLANNING.md: 375/300 行 (125%) - 超限
+✅ KNOWLEDGE.md: 149/200 行 (75%)
+
+建议:
+  - 运行 /wf_13_doc_maintain archive TASK.md
+  - 运行 /wf_13_doc_maintain archive PLANNING.md
+```
+
+---
+
+### `archive <文档>` - 存档指定文档
+
+**用途**: 执行智能存档流程，将历史内容移至存档目录
+
+**实现**:
+```bash
+# 使用 archive_smart.py 执行存档
+python scripts/archive_smart.py --file "$DOC_FILE"
+
+# 验证结果
+./scripts/check_doc_size.sh "$DOC_FILE"
+
+# 自动更新 KNOWLEDGE.md 索引
+# 添加指向存档文件的链接
+```
+
+**执行流程**:
+1. 识别文档结构（Phase、Section、Version）
+2. 确定存档边界（保留最近 N 个）
+3. 生成存档文件名（按规则）
+4. 原子操作执行（备份-操作-验证-提交）
+5. 自动回滚（如果失败）
+6. 更新 KNOWLEDGE.md 索引
+
+**输出示例**:
+```
+📦 开始存档 TASK.md...
+
+✅ 已识别文档结构: 7 个 Phase
+✅ 保留最近 2 个 Phase (Phase 6-7, 50 行)
+✅ 存档 5 个 Phase (Phase 1-5, 150 行)
+✅ 已生成存档: docs/archives/tasks/2025-q4-phases-1-5.md
+✅ 已更新 KNOWLEDGE.md 索引
+✅ 文档健康检查通过 (50/200 行, 25%)
+
+💾 请提交更改:
+   git add docs/management/TASK.md docs/archives/tasks/...
+   /wf_11_commit "[docs] Archive TASK.md phases 1-5"
+```
+
+**接受标准**:
+- [ ] 存档文件正确生成
+- [ ] 主文档行数回到安全范围
+- [ ] KNOWLEDGE.md 索引已更新
+- [ ] 提供 Git 提交建议
+
+---
+
+### `batch [--dry-run]` - 批量存档
+
+**用途**: 一次性处理所有超限文档
+
+**实现**:
+```bash
+# 检查所有文档
+./scripts/check_doc_size.sh
+
+# 识别超限文档
+# 对每个超限文档调用 archive_smart.py
+
+# 如果 --dry-run，只显示计划
+# 否则执行存档并更新索引
+```
+
+**输出示例**:
+```
+📊 检查所有文档...
+⚠️ 发现 2 个超限文档:
+   - TASK.md (428/200 行, 214%)
+   - PLANNING.md (375/300 行, 125%)
+
+📦 开始批量存档...
+✅ TASK.md 存档完成
+✅ PLANNING.md 存档完成
+
+💾 请提交更改: [命令列表]
+```
+
+---
 
 ## Process
 
