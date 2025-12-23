@@ -25,6 +25,7 @@ from pathlib import Path
 from datetime import datetime
 
 from .agent_registry import AgentRegistry, Agent, AgentMatch
+from .agent_decision_engine import AgentDecisionEngine, DecisionResult
 
 
 class AgentCoordinator:
@@ -51,6 +52,7 @@ class AgentCoordinator:
         self.current_agent: Optional[Agent] = None
         self.task_description: str = ""
         self.usage_stats: List[Dict] = []
+        self.decision_engine = AgentDecisionEngine()  # Phase 2.1: 初始化决策引擎
         self._initialized = True
 
     def intercept(
@@ -139,6 +141,25 @@ class AgentCoordinator:
             )
             context['command_conflict'] = conflict_info
 
+            # Step 4.5: Phase 2.1 集成 - 使用决策引擎进行决策
+            # 如果检测到冲突，使用 AgentDecisionEngine 生成决策
+            if conflict_info.get('has_conflict'):
+                decision_result = self.make_agent_decision(
+                    agent=best_match.agent,
+                    user_command=command_name,
+                    match_score=best_match.score,
+                    decision_mode="auto"
+                )
+                context['agent_decision'] = {
+                    'final_command': decision_result.final_command,
+                    'decision_mode': decision_result.decision_mode,
+                    'match_score': decision_result.match_score,
+                    'options': decision_result.options,
+                    'reason': decision_result.reason
+                }
+            else:
+                context['agent_decision'] = None
+
             # Step 5: Phase 6 增强 - MCP 强制使用建议
             mcp_recommendations = self.extract_mcp_recommendations(
                 best_match.agent,
@@ -149,6 +170,7 @@ class AgentCoordinator:
         else:
             context['command_conflict'] = {'has_conflict': False}
             context['mcp_enforcement'] = {'should_enable_mcp': False}
+            context['agent_decision'] = None
 
         # Step 6: 记录使用
         self._record_usage(context)
@@ -312,6 +334,45 @@ class AgentCoordinator:
             ] if has_conflict else []
         }
 
+    def make_agent_decision(
+        self,
+        agent: Agent,
+        user_command: str,
+        match_score: float,
+        decision_mode: str = "auto"
+    ) -> DecisionResult:
+        """
+        使用 AgentDecisionEngine 做出决策
+
+        Phase 2.1 集成: 使用决策引擎进行智能决策
+
+        Args:
+            agent: 激活的 Agent 对象
+            user_command: 用户执行的命令
+            match_score: Agent 匹配度
+            decision_mode: 决策模式 ("auto", "prompt", "force_agent", "force_user")
+
+        Returns:
+            DecisionResult: 决策引擎的决策结果
+        """
+        # 构建 agent_context 用于决策引擎
+        agent_context = {
+            "agent_id": agent.name,
+            "agent_name": agent.role,
+            "recommendation": agent.available_tools[0] if agent.available_tools else "",
+            "confidence": match_score,
+            "expertise": agent.expertise
+        }
+
+        # 使用决策引擎进行决策
+        decision_result = self.decision_engine.decide(
+            agent_context=agent_context,
+            user_command=user_command,
+            decision_mode=decision_mode
+        )
+
+        return decision_result
+
     def extract_mcp_recommendations(
         self,
         agent: Agent,
@@ -460,6 +521,28 @@ class AgentCoordinator:
                 "💡 **建议**: 如果不确定，选择选项 1（使用 Agent 推荐）以获得最佳专业化支持",
                 ""
             ])
+
+            # Phase 2.1 集成: 显示决策引擎结果
+            if context.get('agent_decision'):
+                decision = context['agent_decision']
+                output.extend([
+                    "## 🤖 Agent 决策引擎分析",
+                    "",
+                    f"**决策模式**: {decision['decision_mode']}",
+                    f"**匹配度评分**: {decision['match_score']:.0%}",
+                    f"**建议命令**: `{decision['final_command']}`" if decision['final_command'] else "**等待用户选择**",
+                    f"**决策理由**: {decision['reason']}",
+                    ""
+                ])
+
+                # 如果是 prompt 模式，显示三个选项
+                if decision['decision_mode'] == 'prompt' and decision.get('options'):
+                    output.extend([
+                        "**三个选项**:"
+                    ])
+                    for i, opt in enumerate(decision['options'], 1):
+                        output.append(f"  {i}. **{opt['label']}**: {opt['description']}")
+                    output.append("")
 
         # Phase 6 增强: MCP 强制使用建议
         if activated and context.get('mcp_enforcement', {}).get('should_enable_mcp'):
