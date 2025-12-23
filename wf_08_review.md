@@ -1,7 +1,10 @@
 ---
 command: /wf_08_review
+index: 08
 phase: "质量保证"
 description: "代码审查协调器，多维度质量检查，集成 Ultrathink 设计优雅度评审，支持 Serena MCP 引用完整性检查"
+reads: [PLANNING.md(开发标准), TASK.md(任务确认), KNOWLEDGE.md(设计模式)]
+writes: [代码文件(修复建议), TASK.md(审查记录)]
 model: sonnet
 prev_commands: [/wf_05_code, /wf_07_test, /wf_09_refactor]
 next_commands: [/wf_09_refactor, /wf_11_commit]
