@@ -1,6 +1,6 @@
 # AI 工具知识库 (AI Tools Knowledge Base)
 
-**版本**: v2.0
+**版本**: v2.1 (Claude Code 优先)
 **创建日期**: 2025-12-05
 **最后更新**: 2025-12-29
 **状态**: 活跃维护中
@@ -9,13 +9,33 @@
 
 ---
 
+## 🚀 快速开始
+
+### 一键安装
+
+```bash
+# 克隆仓库
+git clone https://github.com/yourusername/ai_workflow.git
+cd ai_workflow
+
+# 运行安装脚本
+bash scripts/install_knowledge_base.sh
+```
+
+安装后，Claude Code 将自动读取知识库，并能访问所有 MCP 工具和最佳实践文档。
+
+**详细安装指南**: [INSTALL.md](INSTALL.md)
+
+---
+
 ## 🎯 项目定位
 
 本知识库专注于收集和整理：
 
-- **设计哲学和原则** - Ultrathink 设计思维框架
+- **设计哲学和原则** - Ultrathink 设计思维框架（6 个核心原则）
 - **开发最佳实践** - 文档架构、AI 协作模式、代码质量规范
 - **MCP 集成经验** - Model Context Protocol 的使用指南和故障排查
+- **AIRIS MCP Gateway** - 统一访问 13 个 MCP 服务器的 112 个工具
 - **架构决策记录** - 17 个技术决策的"为什么"和权衡
 - **工具和脚本** - DocLoader、AgentCoordinator 等可复用工具
 
