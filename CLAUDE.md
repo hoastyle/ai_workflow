@@ -104,26 +104,25 @@
 
 **何时使用**: 当需要使用 MCP 服务器时
 
-**可用 MCP**:
-- **Serena** - 语义代码理解、项目内存
-- **Context7** - 官方库文档查询
-- **Sequential-thinking** - 结构化推理
-- **Tavily** - Web 搜索
-- **Magic** - UI 组件生成
+**两种集成方式**:
 
-**Gateway 模式**:
-```python
-from src.mcp.gateway import get_mcp_gateway
-gateway = get_mcp_gateway()
-if gateway.is_available("serena"):
-    tool = gateway.get_tool("serena", "find_symbol")
-    result = tool.call(name="MyClass")
-```
+1. **AIRIS MCP Gateway** (推荐) - 统一接口访问 13 个 MCP 服务器
+   - 三步工作流: airis-find → airis-schema → airis-exec
+   - 112 个工具，HOT/COLD 模式优化
+   - 文档: [docs/airis-mcp-gateway/README.md](docs/airis-mcp-gateway/README.md)
 
-**快速链接**:
-- [快速开始](mcp-integration/quick-start.md)
-- [Serena 指南](mcp-integration/README.md)
-- [故障排查](mcp-integration/troubleshooting.md)
+2. **传统 MCP** - 直接集成单个服务器
+   - Gateway 模式: `get_mcp_gateway()`
+   - 文档: [mcp-integration/](mcp-integration/)
+
+**可用 MCP 服务器** (通过 Gateway):
+- **HOT 模式** (4): airis-agent, memory, gateway-control, airis-commands
+- **COLD 模式** (9): serena, playwright, tavily, context7, morphllm, magic, chrome-devtools, fetch, sequential-thinking
+
+**快速参考**:
+- [快速参考卡片](docs/airis-mcp-gateway/QUICK_REFERENCE.md)
+- [工具索引](docs/airis-mcp-gateway/TOOL_INDEX.md)
+- [服务器文档](docs/airis-mcp-gateway/servers/)
 
 ### 卡片 4: 技术选型
 

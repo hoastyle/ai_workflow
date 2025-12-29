@@ -65,7 +65,34 @@
 
 ## 🔌 MCP 集成索引
 
-### MCP 服务器
+### AIRIS MCP Gateway 集成
+
+> **NEW**: 通过 AIRIS MCP Gateway 统一访问 13 个 MCP 服务器的 112 个工具
+
+| 资源 | 说明 | 链接 |
+|------|------|------|
+| **完整指南** | AIRIS MCP Gateway 使用指南 | [docs/airis-mcp-gateway/README.md](docs/airis-mcp-gateway/README.md) |
+| **快速参考** | 常用工具和参数速查 | [docs/airis-mcp-gateway/QUICK_REFERENCE.md](docs/airis-mcp-gateway/QUICK_REFERENCE.md) |
+| **工具索引** | 112 个工具按字母排序 | [docs/airis-mcp-gateway/TOOL_INDEX.md](docs/airis-mcp-gateway/TOOL_INDEX.md) |
+| **服务器文档** | 8 个核心服务器详细说明 | [docs/airis-mcp-gateway/servers/](docs/airis-mcp-gateway/servers/) |
+
+**覆盖的 MCP 服务器** (13 个):
+- **HOT 模式** (4): airis-agent, memory, gateway-control, airis-commands
+- **COLD 模式** (9): serena, playwright, tavily, context7, morphllm, magic, chrome-devtools, fetch, sequential-thinking
+
+**三步工作流**:
+```typescript
+// Step 1: 发现工具
+airis-find(query: "keyword")
+
+// Step 2: 查看参数
+airis-schema(tool: "server:tool_name")
+
+// Step 3: 执行工具
+airis-exec(tool: "server:tool_name", arguments: {...})
+```
+
+### MCP 服务器（传统集成）
 
 | MCP | 功能 | 配置文件 | 指南 |
 |-----|------|----------|------|
@@ -232,10 +259,16 @@ result = coord.coordinate_agent(
 |------|------|
 | **最佳实践文档** | 3 |
 | **MCP 集成文档** | 4 |
+| **AIRIS MCP Gateway 文档** | 11 (NEW) |
 | **架构决策记录** | 17 |
 | **工具库** | 5 |
 | **参考文档** | 3 |
 | **归档文档** | 30+ |
+
+**AIRIS MCP Gateway 覆盖**:
+- 核心指南: 3 个 (README, QUICK_REFERENCE, TOOL_INDEX)
+- 服务器文档: 8 个 (Serena, Memory, Tavily, Playwright, Context7, Magic, MorphLLM, Fetch)
+- 工具总数: 112 个 across 13 个 MCP 服务器
 
 ---
 
