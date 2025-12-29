@@ -1,11 +1,35 @@
 # AI 工具知识库 (AI Tools Knowledge Base)
 
-**版本**: v2.1 (Claude Code 优先)
+**版本**: v2.2 (Claude Code 优先 + CLAUDE.md 分离)
 **创建日期**: 2025-12-05
 **最后更新**: 2025-12-29
 **状态**: 活跃维护中
 
 > 本仓库已从 Workflow 命令系统转型为 AI 工具和开发最佳实践的知识库。
+
+---
+
+## 📋 文件说明（重要）
+
+本仓库包含三个 CLAUDE.md 相关文件，各有不同用途：
+
+| 文件 | 角色 | 受众 | 位置 |
+|------|------|------|------|
+| **CLAUDE.md** | 🔵 仓库开发指南 | 贡献者、维护者 | 仅在源码仓库 |
+| **CLAUDE_KBASE.md** | 🟢 知识库入口源文件 | 使用知识库的开发者 | 源码 → 安装时重命名为 CLAUDE.md |
+| **CLAUDE_DEPLOY.md** | 🟡 全局 Workflow 配置 | 所有项目通用配置 | 可选安装到 ~/.claude/ |
+
+**安装后的文件映射**:
+```
+源码仓库                     安装后
+CLAUDE.md         →         (仅在源码)
+CLAUDE_KBASE.md   →         ~/.claude/knowledge-base/CLAUDE.md
+CLAUDE_DEPLOY.md  →         ~/.claude/CLAUDE_DEPLOY.md (可选)
+```
+
+**重要**:
+- 📚 如果你是**使用知识库的用户**，安装后查看 `~/.claude/knowledge-base/CLAUDE.md`
+- 🔧 如果你是**开发这个仓库的贡献者**，查看源码中的 `CLAUDE.md`
 
 ---
 

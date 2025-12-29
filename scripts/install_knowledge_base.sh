@@ -23,8 +23,8 @@ echo "安装目录: $INSTALL_DIR"
 echo ""
 
 # 检查源目录
-if [ ! -f "$SOURCE_DIR/CLAUDE.md" ]; then
-    echo -e "${RED}错误: 未找到 CLAUDE.md，请确保在正确的目录运行脚本${NC}"
+if [ ! -f "$SOURCE_DIR/CLAUDE_KBASE.md" ]; then
+    echo -e "${RED}错误: 未找到 CLAUDE_KBASE.md，请确保在正确的目录运行脚本${NC}"
     exit 1
 fi
 
@@ -43,7 +43,7 @@ mkdir -p "$INSTALL_DIR"
 
 # 复制核心文件
 echo "复制核心文件..."
-cp "$SOURCE_DIR/CLAUDE.md" "$INSTALL_DIR/"
+cp "$SOURCE_DIR/CLAUDE_KBASE.md" "$INSTALL_DIR/CLAUDE.md"  # 重命名：知识库入口
 cp "$SOURCE_DIR/KNOWLEDGE.md" "$INSTALL_DIR/"
 cp "$SOURCE_DIR/PHILOSOPHY.md" "$INSTALL_DIR/"
 cp "$SOURCE_DIR/README.md" "$INSTALL_DIR/"
