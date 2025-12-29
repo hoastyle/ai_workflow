@@ -1,0 +1,100 @@
+# MCP 集成配置文件
+# 版本: 1.0
+# 日期: 2025-11-21
+
+mcp:
+  enabled: true
+  auto_install: false  # 用户需要手动安装
+  fallback_on_error: true  # MCP 失败时优雅降级
+
+servers:
+  sequential_thinking:
+    name: "Sequential-thinking"
+    purpose: "结构化多步推理和分析"
+    enabled: true
+    auto_activate: true
+    keywords:
+      - "为什么"
+      - "权衡"
+      - "对比"
+      - "架构决策"
+    manual_flags:
+      - "--think"
+    port: 3001
+    timeout: 30
+
+  context7:
+    name: "Context7"
+    purpose: "官方库文档查询"
+    enabled: true
+    auto_activate: true
+    keywords:
+      - "React"
+      - "Django"
+      - "Spring"
+      - "FastAPI"
+      - "Node.js"
+      - "Rust"
+      - "Go"
+    manual_flags:
+      - "--c7"
+    port: 3002
+    timeout: 15
+
+  serena:
+    name: "Serena"
+    purpose: "语义代码理解和项目内存"
+    enabled: true
+    auto_activate: true
+    activate_in_commands:
+      - "wf_03_prime"
+      - "wf_06_debug"
+    manual_flags:
+      - "--deep"
+    port: 3003
+    timeout: 20
+
+  tavily:
+    name: "Tavily"
+    purpose: "Web 搜索和实时信息"
+    enabled: true
+    auto_activate: false
+    manual_flags:
+      - "--research"
+    port: 3004
+    timeout: 25
+    requires_api_key: false
+
+  magic:
+    name: "Magic"
+    purpose: "UI 组件生成"
+    enabled: true
+    auto_activate: false
+    manual_flags:
+      - "--ui"
+    port: 3005
+    timeout: 20
+    requires_api_key: true
+    api_key_env: "TWENTYFIRST_API_KEY"
+
+caching:
+  enabled: true
+  default_ttl: 3600  # 1 小时
+
+  ttl_by_server:
+    sequential_thinking: 3600  # 1 小时
+    context7: 86400  # 24 小时
+    tavily: 1800  # 30 分钟
+    serena: 0  # 会话级 (无缓存)
+    magic: -1  # 永久缓存
+
+performance:
+  parallel_requests: true
+  max_concurrent: 3
+  fallback_timeout: 5
+
+logging:
+  enabled: true
+  level: "INFO"  # DEBUG, INFO, WARNING, ERROR
+  log_mcp_calls: true
+  log_results: true

@@ -1,149 +1,243 @@
-# 知识库 (Knowledge Base)
+# 知识库索引 (Knowledge Base Index)
 
-**版本**: v1.9-optimized
+**版本**: v2.0 (AI 工具知识库)
 **创建日期**: 2025-11-06
-**最后更新**: 2025-12-21
-**目的**: 项目架构决策、设计模式和技术文档的索引中心
+**最后更新**: 2025-12-29
+**目的**: AI 工具和开发最佳实践的知识库索引中心
 
-> ℹ️ **说明**: 本文件为纯索引和指针。详细内容已分离到各文件。
+> 本仓库已从 Workflow 命令系统转型为 AI 工具知识库。历史内容已归档到 `archive/` 目录。
 
 ---
 
-## 📚 文档索引
+## 📚 知识库结构
 
-### 管理层文档
+### 核心内容区域
 
-| 主题 | 路径 | 优先级 |
-|------|------|--------|
-| 项目需求 | [docs/management/PRD.md](docs/management/PRD.md) | 高 |
-| 技术规划 | [docs/management/PLANNING.md](docs/management/PLANNING.md) | 高 |
-| 任务追踪 | [docs/management/TASK.md](docs/management/TASK.md) | 高 |
-| 会话上下文 | [docs/management/CONTEXT.md](docs/management/CONTEXT.md) | 高 |
-| AI执行规则 | [CLAUDE.md](CLAUDE.md) | 中 |
-| 设计哲学 | [PHILOSOPHY.md](PHILOSOPHY.md) | 中 |
+| 区域 | 路径 | 说明 |
+|------|------|------|
+| **最佳实践** | [best-practices/](best-practices/) | 设计哲学、文档架构、AI 协作模式 |
+| **MCP 集成** | [mcp-integration/](mcp-integration/) | MCP 服务器使用指南和故障排查 |
+| **架构决策** | [docs/adr/](docs/adr/) | 17 个架构决策记录 (ADR) |
+| **参考文档** | [docs/reference/](docs/reference/) | Frontmatter、Markdown 格式等规范 |
+| **工具库** | [commands/lib/](commands/lib/) | DocLoader、AgentCoordinator 等工具 |
 
-### MCP 集成参考
+### 归档内容
 
-| 命令 | MCP 服务器 | 优先级 |
-|------|-----------|--------|
-| wf_01_planning | Context7 + Tavily | 高 |
-| wf_02_task | Serena | 高 |
-| wf_03_prime | Serena | 高 |
-| wf_04_ask | Sequential-thinking + Context7 + Tavily | 高 |
-| wf_04_research | Context7 + Tavily | 高 |
-| wf_05_code | Serena + Magic | 高 |
-| wf_06_debug | Sequential-thinking + Serena | 高 |
-| wf_07_test | Serena + Sequential-thinking | 高 |
-| wf_08_review | Serena + Sequential-thinking | 高 |
-| wf_09_refactor | Serena | 中 |
-| wf_10_optimize | Serena | 中 |
-| wf_11_commit | Serena | 高 |
-| wf_12_deploy_check | Playwright | 高 |
-| wf_14_doc | Magic | 高 |
+| 区域 | 路径 | 说明 |
+|------|------|------|
+| **Workflow 命令** | [archive/workflow-commands/](archive/workflow-commands/) | 14 个 wf_ 命令文件 |
+| **Workflow 指南** | [archive/workflow-guides/](archive/workflow-guides/) | 工作流使用指南和示例 |
+| **项目历史** | [archive/project-history/](archive/project-history/) | PRD、TASK、CONTEXT 等历史文档 |
 
-**Gateway 使用模式**:
+---
+
+## 🎯 最佳实践索引
+
+### 设计哲学和原则
+
+| 主题 | 文档 | 核心价值 |
+|------|------|----------|
+| **Ultrathink 设计思维** | [best-practices/philosophy.md](best-practices/philosophy.md) | 6 个核心原则：质疑假设、明确权衡、持续打磨 |
+| **文档架构设计** | [best-practices/document-architecture.md](best-practices/document-architecture.md) | 四层文档架构、SSOT 原则、约束驱动文档生成 |
+| **AI 协作模式** | [best-practices/ai-collaboration.md](best-practices/ai-collaboration.md) | 上下文管理、约束驱动交互、质量门控 |
+
+### 核心设计原则
+
+**1. Ultrathink 设计思维** (来自 [PHILOSOPHY.md](PHILOSOPHY.md))
+- Think Different - 质疑假设，追求最优
+- Balance Trade-offs - 明确权衡，记录决策
+- Iterate to Excellence - 持续打磨
+- Context Aware - 理解环境
+- Document Decisions - 沉淀学习
+- Test Assumptions - 验证假设
+
+**2. 约束驱动文档生成** (来自 [ADR 2025-11-18](docs/adr/2025-11-18-constraint-driven-documentation-generation.md))
+- 三阶段门控：决策 → 估计 → 验证
+- 成本约束：文档大小 < 500 行，增长率 < 30%
+- Frontmatter：7 个必需字段 + 关系网络
+
+**3. 优先开源方案** (来自 [ADR 2025-11-13](docs/adr/2025-11-13-prioritize-opensource-in-architecture.md))
+- 优先开源，成熟优先，标准优先
+- 记录决策理由和权衡
+- 通过 PoC 验证关键假设
+
+---
+
+## 🔌 MCP 集成索引
+
+### MCP 服务器
+
+| MCP | 功能 | 配置文件 | 指南 |
+|-----|------|----------|------|
+| **Serena** | 语义代码理解、项目内存 | [src/mcp/configs/serena.json](src/mcp/configs/serena.json) | [mcp-integration/](mcp-integration/) |
+| **Context7** | 官方库文档查询 | [src/mcp/configs/context7.json](src/mcp/configs/context7.json) | [mcp-integration/](mcp-integration/) |
+| **Sequential-thinking** | 结构化多步推理 | [src/mcp/configs/sequential-thinking.json](src/mcp/configs/sequential-thinking.json) | - |
+| **Tavily** | Web 搜索 | [src/mcp/configs/tavily.json](src/mcp/configs/tavily.json) | - |
+| **Magic** | UI 组件生成 | [src/mcp/configs/magic.json](src/mcp/configs/magic.json) | - |
+
+### MCP 使用指南
+
+| 主题 | 文档 |
+|------|------|
+| **MCP 架构** | [mcp-integration/MCP_ARCHITECTURE.md](mcp-integration/MCP_ARCHITECTURE.md) |
+| **快速开始** | [mcp-integration/quick-start.md](mcp-integration/quick-start.md) |
+| **Serena 指南** | [mcp-integration/README.md](mcp-integration/README.md) |
+| **故障排查** | [mcp-integration/troubleshooting.md](mcp-integration/troubleshooting.md) |
+
+### Gateway 使用模式
+
 ```python
 from src.mcp.gateway import get_mcp_gateway
+
 gateway = get_mcp_gateway()
-if gateway.is_available("mcp_server_name"):
-    tool = gateway.get_tool("mcp_server_name", "tool_name")
-    result = tool.call(**parameters)
+
+# 检查 MCP 可用性
+if gateway.is_available("serena"):
+    # 获取工具
+    tool = gateway.get_tool("serena", "find_symbol")
+    # 调用工具
+    result = tool.call(name="MyClass")
 ```
 
-**MCP 服务器**:
-- **Serena**: 语义代码理解、符号操作、项目内存
-- **Context7**: 官方库文档查询
-- **Sequential-thinking**: 结构化多步推理
-- **Tavily**: Web 搜索和实时信息
-- **Playwright**: 浏览器自动化和 E2E 测试
-- **Magic**: UI 组件生成
+---
 
-### 技术层文档 (按需加载)
+## 📖 架构决策记录 (ADR)
 
-| 主题 | 路径 | 优先级 |
-|------|------|--------|
-| **AgentCoordinator 使用指南** | [docs/examples/agent_coordinator_usage.md](docs/examples/agent_coordinator_usage.md) | 最高 |
-| **DocLoader 使用指南** | [docs/examples/doc_loader_usage.md](docs/examples/doc_loader_usage.md) | 最高 |
-| **DocLoader 集成示例** | [docs/examples/wf_integration_example.md](docs/examples/wf_integration_example.md) | 最高 |
-| 文档生成快速指南 | [docs/examples/doc_generation_quick_guide.md](docs/examples/doc_generation_quick_guide.md) | 高 |
-| 文档维护流程 | [docs/guides/doc_maintenance_process.md](docs/guides/doc_maintenance_process.md) | 高 |
-| wf_03_prime 工作流 | [docs/guides/wf_03_prime_workflows.md](docs/guides/wf_03_prime_workflows.md) | 高 |
-| wf_04_research 工作流 | [docs/guides/wf_04_research_workflows.md](docs/guides/wf_04_research_workflows.md) | 高 |
-| wf_05_code 工作流 | [docs/guides/wf_05_code_workflows.md](docs/guides/wf_05_code_workflows.md) | 高 |
-| 部署兼容性指南 | [docs/guides/deployment_compatibility_guide.md](docs/guides/deployment_compatibility_guide.md) | 高 |
-| 命令执行一致性策略 | [docs/guides/command_consistency_strategy.md](docs/guides/command_consistency_strategy.md) | 最高 |
-| Frontmatter 规范 | [docs/reference/FRONTMATTER.md](docs/reference/FRONTMATTER.md) | 高 |
-| Markdown 格式约束 | [docs/reference/MARKDOWN_STYLE.md](docs/reference/MARKDOWN_STYLE.md) | 高 |
+### 核心决策
 
-### Agent System
+| 日期 | 主题 | ADR |
+|------|------|-----|
+| 2025-11-07 | 智能文档生成 vs 模板驱动 | [2025-11-07-intelligent-doc-generation-over-template-based.md](docs/adr/2025-11-07-intelligent-doc-generation-over-template-based.md) |
+| 2025-11-13 | 优先开源方案的架构原则 | [2025-11-13-prioritize-opensource-in-architecture.md](docs/adr/2025-11-13-prioritize-opensource-in-architecture.md) |
+| 2025-11-15 | CONTEXT.md 指针文档模式 | [2025-11-15-context-md-pointer-document.md](docs/adr/2025-11-15-context-md-pointer-document.md) |
+| 2025-11-15 | 工作流文档生成 SSOT | [2025-11-15-workflow-document-generation-ssot.md](docs/adr/2025-11-15-workflow-document-generation-ssot.md) |
+| 2025-11-18 | 约束驱动文档生成 | [2025-11-18-constraint-driven-documentation-generation.md](docs/adr/2025-11-18-constraint-driven-documentation-generation.md) |
+| 2025-11-21 | MCP 集成策略 | [2025-11-21-mcp-integration-strategy.md](docs/adr/2025-11-21-mcp-integration-strategy.md) |
+| 2025-12-03 | SuperClaude 优化总结 | [2025-12-03-superclaude-optimization-learnings.md](docs/adr/2025-12-03-superclaude-optimization-learnings.md) |
+| 2025-12-08 | Agent 系统架构 | [2025-12-08-agent-system-architecture.md](docs/adr/2025-12-08-agent-system-architecture.md) |
+| 2025-12-23 | Agent 执行系统重构 | [2025-12-23-agent-execution-system-redesign.md](docs/adr/2025-12-23-agent-execution-system-redesign.md) |
 
-| 组件 | 路径 | 优先级 |
-|------|------|--------|
-| **AgentRegistry** | [commands/lib/agent_registry.py](commands/lib/agent_registry.py) | 高 |
-| **TaskAnalyzer** | [commands/lib/task_analyzer.py](commands/lib/task_analyzer.py) | 高 |
-| **AgentRouter** | [commands/lib/agent_router.py](commands/lib/agent_router.py) | 高 |
-| **CoordinationEngine** | [commands/lib/coordination_engine.py](commands/lib/coordination_engine.py) | 高 |
+### ADR 分类
 
-### 并行审查和执行示例
+**文档和架构**:
+- 智能文档生成、SSOT 原则、约束驱动生成
+- 四层文档架构、CONTEXT.md 指针模式
 
-| 主题 | 路径 | 优先级 |
-|------|------|--------|
-| 多代理审查概览 | [docs/examples/multi_agent_review_overview.md](docs/examples/multi_agent_review_overview.md) | 高 |
-| 并行审查概览 | [docs/examples/parallel_review_overview.md](docs/examples/parallel_review_overview.md) | 高 |
-| 并行执行概览 | [docs/examples/parallel_execution_overview.md](docs/examples/parallel_execution_overview.md) | 高 |
-| Agent协调示例 | [docs/examples/agent_coordination_examples.md](docs/examples/agent_coordination_examples.md) | 高 |
+**技术选型**:
+- 优先开源方案
+- 使用现有工具而非重新实现
 
-### 文档生成工作流
+**MCP 集成**:
+- MCP 集成策略
+- Serena 三层角色模型
+- MCP 和文档互补架构
 
-| 主题 | 路径 | 优先级 |
-|------|------|--------|
-| 文档模板库 | [docs/examples/doc_templates/](docs/examples/doc_templates/) | 高 |
-| 约束驱动工作流 | [docs/examples/doc_generation_workflow.md](docs/examples/doc_generation_workflow.md) | 高 |
-| /wf_14_doc 示例 | [docs/examples/wf_14_doc_examples.md](docs/examples/wf_14_doc_examples.md) | 中 |
+**Agent 系统**:
+- Agent 系统架构
+- Agent 执行系统重构
 
-### 知识库文档
-
-- 📋 [设计模式](docs/knowledge/DESIGN_PATTERNS.md)
-- 📝 [文档最佳实践](docs/knowledge/DOCUMENTATION_PRACTICES.md)
-- 🐛 [常见问题](docs/knowledge/FAQ.md)
-- 🆕 [版本历史](docs/knowledge/CHANGELOG.md)
+**性能优化**:
+- SuperClaude 优化总结
+- 命令优化策略
 
 ---
 
-## 🏗️ 架构决策记录 (ADR)
+## 🛠️ 工具和脚本索引
 
-| 日期 | 标题 | 状态 |
+### 核心工具
+
+| 工具 | 路径 | 说明 |
 |------|------|------|
-| 2025-12-21 | 双 CLAUDE 架构反转 | Proposed |
-| 2025-12-17 | Agent 中文支持改进 | Accepted |
-| 2025-12-12 | 命令执行一致性策略 | Accepted |
-| 2025-12-08 | Agent System 架构 | Accepted |
-| 2025-12-01 | MCP 深度集成 | Accepted |
+| **DocLoader** | [commands/lib/doc_loader.py](commands/lib/doc_loader.py) | 智能文档加载（摘要/章节模式） |
+| **AgentCoordinator** | [commands/lib/agent_coordinator.py](commands/lib/agent_coordinator.py) | 多 Agent 协调器 |
+| **AgentDecisionEngine** | [commands/lib/agent_decision_engine.py](commands/lib/agent_decision_engine.py) | Agent 决策引擎 |
+| **DocGuard** | [scripts/doc_guard.py](scripts/doc_guard.py) | 文档读取保护工具 |
+| **FrontmatterUtils** | [scripts/frontmatter_utils.py](scripts/frontmatter_utils.py) | Frontmatter 验证和管理 |
 
-详见 [docs/adr/](docs/adr/)
+### 使用示例
+
+**DocLoader**:
+```python
+from commands.lib.doc_loader import DocLoader
+
+loader = DocLoader()
+
+# 摘要模式（100-300行文档）
+summary = loader.load_summary(doc_path, max_lines=50)
+
+# 章节模式（300-800行文档）
+content = loader.load_sections(
+    doc_path,
+    sections=["Step 3", "MCP Integration"]
+)
+```
+
+**AgentCoordinator**:
+```python
+from commands.lib.agent_coordinator import AgentCoordinator
+
+coord = AgentCoordinator()
+result = coord.coordinate_agent(
+    agent_name="architect",
+    task="设计用户认证系统",
+    context={"requirements": [...]}
+)
+```
 
 ---
 
-## 📊 项目统计
+## 📖 参考文档
 
-- **命令数**: 14 个 (wf_01 - wf_14)
-- **Agent 数**: 10 个 (PM, Architect, Code, Debug, Test, Review, Refactor, Doc, Research, Context)
-- **MCP 服务器**: 6 个 (Serena, Context7, Sequential-thinking, Tavily, Playwright, Magic)
-- **MCP 命令覆盖**: 14/14 (100%)
-- **技术文档**: 113 个
-- **ADR**: 14 个
+### 核心文档
+
+| 文档 | 用途 |
+|------|------|
+| [README.md](README.md) | 项目介绍和快速开始 |
+| [PHILOSOPHY.md](PHILOSOPHY.md) | Ultrathink 设计哲学 |
+| [CLAUDE.md](CLAUDE.md) | AI 执行规则（源码开发规范） |
+| [CLAUDE_DEPLOY.md](CLAUDE_DEPLOY.md) | AI 执行规则（全局部署规范） |
+| [DOC_ARCHITECTURE.md](DOC_ARCHITECTURE.md) | 文档架构设计 |
+
+### 规范文档
+
+| 文档 | 用途 |
+|------|------|
+| [docs/reference/FRONTMATTER.md](docs/reference/FRONTMATTER.md) | Frontmatter 元数据规范 |
+| [docs/reference/MARKDOWN_STYLE.md](docs/reference/MARKDOWN_STYLE.md) | Markdown 格式约束 |
+| [docs/adr/README.md](docs/adr/README.md) | ADR 模板和指南 |
 
 ---
 
-## 🚀 快速导航
+## 🎯 快速导航
 
-**新用户**: 从 [README.md](README.md) 开始
-**开发者**: 查看 [CLAUDE.md](CLAUDE.md) 执行规则
-**架构师**: 参考 [PLANNING.md](docs/management/PLANNING.md)
-**项目经理**: 查看 [TASK.md](docs/management/TASK.md)
+### 我想...
+
+**了解设计哲学** → [best-practices/philosophy.md](best-practices/philosophy.md)
+
+**学习文档架构** → [best-practices/document-architecture.md](best-practices/document-architecture.md)
+
+**查看 MCP 集成** → [mcp-integration/](mcp-integration/)
+
+**查阅架构决策** → [docs/adr/](docs/adr/)
+
+**使用工具库** → [commands/lib/](commands/lib/)
+
+**查看历史内容** → [archive/](archive/)
 
 ---
 
-**维护者**: AI Workflow System
-**版本**: v1.9-optimized (精简版本)
-**最后更新**: 2025-12-21
+## 📊 知识库统计
+
+| 类型 | 数量 |
+|------|------|
+| **最佳实践文档** | 3 |
+| **MCP 集成文档** | 4 |
+| **架构决策记录** | 17 |
+| **工具库** | 5 |
+| **参考文档** | 3 |
+| **归档文档** | 30+ |
+
+---
+
+**最后更新**: 2025-12-29
+**版本**: v2.0 (AI 工具知识库)
