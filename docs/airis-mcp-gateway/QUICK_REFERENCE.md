@@ -1,8 +1,22 @@
 # AIRIS MCP Gateway 快速参考
 
-**版本**: v2.0
-**最后更新**: 2025-12-29
+**版本**: v2.1
+**最后更新**: 2025-12-30
 **目的**: 快速查询常用工具和参数
+
+---
+
+## ⚡ HOT vs COLD 模式
+
+| 模式 | 响应速度 | 服务器（13 个） | 说明 |
+|------|---------|----------------|------|
+| **🔥 HOT** | 即时（<100ms） | airis-agent, memory, gateway-control, airis-commands, **serena** | Gateway 启动时常驻，立即响应 |
+| **❄️ COLD** | 首次慢（2-10s）<br>后续快（<500ms） | playwright, tavily, context7, morphllm, magic, chrome-devtools, fetch, sequential-thinking | 按需启动，节省资源 |
+
+**选择建议**:
+- ✅ 频繁使用 → 改为 HOT 模式（修改 `mcp-config.json`）
+- ✅ 偶尔使用 → 保持 COLD 模式（节省资源）
+- ⚠️ COLD 模式首次调用需等待 2-10 秒（正常行为）
 
 ---
 

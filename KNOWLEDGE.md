@@ -1,8 +1,8 @@
 # 知识库索引 (Knowledge Base Index)
 
-**版本**: v2.0 (AI 工具知识库)
+**版本**: v2.1
 **创建日期**: 2025-11-06
-**最后更新**: 2025-12-29
+**最后更新**: 2025-12-30
 **目的**: AI 工具和开发最佳实践的知识库索引中心
 
 > 本仓库已从 Workflow 命令系统转型为 AI 工具知识库。历史内容已归档到 `archive/` 目录。
@@ -67,14 +67,16 @@
 
 ### AIRIS MCP Gateway 集成
 
-> **NEW**: 通过 AIRIS MCP Gateway 统一访问 13 个 MCP 服务器的 112 个工具
+> **NEW (2025-12-30)**: 新增快速入门指南和最佳实践文档，完善实际配置示例
 
 | 资源 | 说明 | 链接 | 优先级 |
 |------|------|------|--------|
-| **完整指南** | AIRIS MCP Gateway 使用指南 | [docs/airis-mcp-gateway/README.md](docs/airis-mcp-gateway/README.md) | ⭐⭐⭐ |
+| **快速入门** | 5-10分钟新手入门指南（NEW） | [docs/airis-mcp-gateway/GETTING_STARTED.md](docs/airis-mcp-gateway/GETTING_STARTED.md) | ⭐⭐⭐⭐ |
+| **完整指南** | AIRIS MCP Gateway 使用指南（更新：添加实际配置示例） | [docs/airis-mcp-gateway/README.md](docs/airis-mcp-gateway/README.md) | ⭐⭐⭐ |
+| **最佳实践** | 三步工作流、错误处理、性能优化（NEW） | [docs/airis-mcp-gateway/BEST_PRACTICES.md](docs/airis-mcp-gateway/BEST_PRACTICES.md) | ⭐⭐⭐ |
 | **故障排查** | 常见问题和解决方案（含参数陷阱） | [docs/airis-mcp-gateway/TROUBLESHOOTING.md](docs/airis-mcp-gateway/TROUBLESHOOTING.md) | ⭐⭐⭐ |
 | **参数陷阱** | 常见参数命名错误和正确用法速查 | [docs/airis-mcp-gateway/PARAMETER_TRAPS.md](docs/airis-mcp-gateway/PARAMETER_TRAPS.md) | ⭐⭐⭐ |
-| **快速参考** | 常用工具和参数速查 | [docs/airis-mcp-gateway/QUICK_REFERENCE.md](docs/airis-mcp-gateway/QUICK_REFERENCE.md) | ⭐⭐ |
+| **快速参考** | 常用工具和参数速查（更新：HOT/COLD模式说明） | [docs/airis-mcp-gateway/QUICK_REFERENCE.md](docs/airis-mcp-gateway/QUICK_REFERENCE.md) | ⭐⭐ |
 | **工具索引** | 112 个工具按字母排序 | [docs/airis-mcp-gateway/TOOL_INDEX.md](docs/airis-mcp-gateway/TOOL_INDEX.md) | ⭐⭐ |
 | **服务器文档** | 8 个核心服务器详细说明 | [docs/airis-mcp-gateway/servers/](docs/airis-mcp-gateway/servers/) | ⭐ |
 | **文档缺失分析** | 文档完成进度和后续工作 | [docs/airis-mcp-gateway/DOCUMENTATION_GAP_ANALYSIS.md](docs/airis-mcp-gateway/DOCUMENTATION_GAP_ANALYSIS.md) | ⭐ |
@@ -260,20 +262,21 @@ result = coord.coordinate_agent(
 
 | 类型 | 数量 |
 |------|------|
-| **最佳实践文档** | 3 |
-| **MCP 集成文档** | 4 |
-| **AIRIS MCP Gateway 文档** | 13 (NEW) |
+| **最佳实践文档** | 4 |
+| **MCP 集成文档** | 15+ |
+| **AIRIS MCP Gateway 文档** | 15 (NEW: +2 新增，+2 更新) |
 | **架构决策记录** | 17 |
-| **工具库** | 5 |
+| **工具库** | 5+ |
 | **参考文档** | 3 |
 | **归档文档** | 30+ |
 
-**AIRIS MCP Gateway 覆盖**:
-- 核心指南: 3 个 (README, QUICK_REFERENCE, TOOL_INDEX)
+**AIRIS MCP Gateway 覆盖** (更新):
+- 核心指南: 5 个 (README, GETTING_STARTED, BEST_PRACTICES, QUICK_REFERENCE, TOOL_INDEX)
+- 专项文档: 3 个 (TROUBLESHOOTING, PARAMETER_TRAPS, DOCUMENTATION_GAP_ANALYSIS)
 - 服务器文档: 8 个 (Serena, Memory, Tavily, Playwright, Context7, Magic, MorphLLM, Fetch)
 - 工具总数: 112 个 across 13 个 MCP 服务器
 
 ---
 
-**最后更新**: 2025-12-29
-**版本**: v2.0 (AI 工具知识库)
+**最后更新**: 2025-12-30
+**版本**: v2.1

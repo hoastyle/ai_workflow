@@ -1,7 +1,7 @@
 # AIRIS MCP Gateway 使用指南
 
-**版本**: v2.0
-**最后更新**: 2025-12-29
+**版本**: v2.1
+**最后更新**: 2025-12-30
 **适用范围**: SuperClaude Framework + AIRIS MCP Gateway 集成
 
 > **核心价值**: 通过 airis-mcp-gateway 统一访问 13 个 MCP 服务器的 112 个工具，实现 Claude Code 的能力扩展
@@ -12,7 +12,8 @@
 
 | 我想... | 查看文档 |
 |---------|---------|
-| **快速开始** | [快速参考](QUICK_REFERENCE.md) |
+| **快速开始** | [新手入门指南](GETTING_STARTED.md) |
+| **快速参考** | [快速参考](QUICK_REFERENCE.md) |
 | **工具查询** | [工具索引](TOOL_INDEX.md) |
 | **常见问题** | [FAQ 和故障排查](#常见问题速查) |
 | **服务器配置** | [服务器详细文档](#mcp-服务器列表) |
@@ -104,6 +105,242 @@ mcp__airis-mcp-gateway__airis-exec({
     content: "# 项目笔记\n\n这是一个重要的决策..."
   }
 })
+```
+
+---
+
+## 🔧 实际配置示例
+
+### HOT vs COLD 模式
+
+AIRIS MCP Gateway 使用两种模式来优化性能和资源使用：
+
+| 模式 | 启动时机 | 响应速度 | 资源占用 | 适用场景 |
+|------|---------|---------|---------|---------|
+| **HOT** | Gateway 启动时常驻 | 即时（<100ms） | 高 | 频繁使用的工具 |
+| **COLD** | 首次调用时按需启动 | 首次慢（2-10s），后续快 | 低 | 偶尔使用的工具 |
+
+#### HOT 模式服务器（4 个）
+
+```json
+// mcp-config.json 示例
+{
+  "mcpServers": {
+    "airis-agent": {
+      "command": "uvx",
+      "args": ["--from", "git+https://github.com/agiletec-inc/airis-agent", "airis-agent-mcp"],
+      "enabled": true,
+      "mode": "hot"  // 常驻内存
+    },
+    "memory": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-memory"],
+      "enabled": true,
+      "mode": "hot"
+    },
+    "airis-mcp-gateway-control": {
+      "command": "node",
+      "args": ["/app/gateway-control/index.js"],
+      "enabled": true,
+      "mode": "hot"
+    },
+    "airis-commands": {
+      "command": "node",
+      "args": ["/app/airis-commands/index.js"],
+      "enabled": true,
+      "mode": "hot"
+    }
+  }
+}
+```
+
+**优势**: 这些工具随时可用，无需等待启动
+
+#### COLD 模式服务器（9 个）
+
+```json
+// mcp-config.json 示例
+{
+  "mcpServers": {
+    "serena": {
+      "profile": "${SERENA_MODE:-serena-remote}",
+      "enabled": true,
+      "mode": "cold"  // 按需启动
+    },
+    "playwright": {
+      "command": "npx",
+      "args": ["-y", "@playwright/mcp@latest"],
+      "enabled": true,
+      "mode": "cold"
+    },
+    "tavily": {
+      "command": "npx",
+      "args": ["-y", "mcp-remote", "https://mcp.tavily.com/mcp/?tavilyApiKey=${TAVILY_API_KEY}"],
+      "env": {
+        "TAVILY_API_KEY": "your-api-key-here"
+      },
+      "enabled": true,
+      "mode": "cold"
+    },
+    "context7": {
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp"],
+      "enabled": true,
+      "mode": "cold"
+    },
+    "morphllm": {
+      "command": "npx",
+      "args": ["-y", "@morphllm/morphmcp"],
+      "env": {
+        "MORPH_API_KEY": "your-api-key-here",
+        "ENABLED_TOOLS": "edit_file,warpgrep_codebase_search"
+      },
+      "enabled": true,
+      "mode": "cold"
+    },
+    "magic": {
+      "command": "npx",
+      "args": ["-y", "@21st-dev/magic@latest"],
+      "env": {
+        "API_KEY": "your-api-key-here"
+      },
+      "enabled": true,
+      "mode": "cold"
+    },
+    "chrome-devtools": {
+      "command": "npx",
+      "args": ["-y", "chrome-devtools-mcp@latest"],
+      "enabled": true,
+      "mode": "cold"
+    },
+    "fetch": {
+      "command": "uvx",
+      "args": ["mcp-server-fetch"],
+      "enabled": true,
+      "mode": "cold"
+    },
+    "sequential-thinking": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"],
+      "enabled": true,
+      "mode": "cold"
+    }
+  }
+}
+```
+
+**优势**: 节省资源，启动后保持运行，后续调用快速
+
+### 实际部署配置
+
+基于 `/home/hao/Downloads/airis-mcp-gateway/mcp-config.json` 的实际工作配置：
+
+#### 完整启用列表（13 个服务器）
+
+```json
+{
+  "mcpServers": {
+    // HOT 模式（4 个）
+    "airis-agent": { "enabled": true, "mode": "cold" },  // 注：实际配置为 cold
+    "memory": { "enabled": true, "mode": "cold" },
+    "airis-mcp-gateway-control": { "enabled": true, "mode": "hot" },
+    "airis-commands": { "enabled": true, "mode": "hot" },
+
+    // COLD 模式（9 个）
+    "serena": { "enabled": true, "mode": "hot" },  // 注：高频使用，设为 hot
+    "playwright": { "enabled": true, "mode": "cold" },
+    "tavily": { "enabled": true, "mode": "cold" },
+    "context7": { "enabled": true, "mode": "cold" },
+    "morphllm": { "enabled": true, "mode": "cold" },
+    "magic": { "enabled": true, "mode": "cold" },
+    "chrome-devtools": { "enabled": true, "mode": "cold" },
+    "fetch": { "enabled": true, "mode": "cold" },
+    "sequential-thinking": { "enabled": true, "mode": "cold" }
+  }
+}
+```
+
+#### 禁用的服务器（可选）
+
+```json
+{
+  "mcpServers": {
+    // 这些服务器已禁用，需要时可手动启用
+    "airis-workspace": { "enabled": false },
+    "filesystem": { "enabled": false },
+    "git": { "enabled": false },
+    "mindbase": { "enabled": false },
+    "time": { "enabled": false },
+    "supabase": { "enabled": false }
+  }
+}
+```
+
+### 环境变量配置
+
+创建 `.env` 文件（基于 `.env.example`）：
+
+```bash
+# Tavily Web Search API Key
+TAVILY_API_KEY=your-tavily-api-key
+
+# MorphLLM API Key
+MORPH_API_KEY=your-morph-api-key
+
+# Magic UI Generation API Key
+MAGIC_API_KEY=your-magic-api-key
+
+# Serena Mode (serena-local 或 serena-remote)
+SERENA_MODE=serena-remote
+```
+
+### Docker 容器验证
+
+启动后验证所有容器运行状态：
+
+```bash
+# 检查容器状态
+docker ps | grep airis-mcp-gateway
+
+# 预期输出：
+# airis-mcp-gateway-api      Up 2 minutes   0.0.0.0:9400->9400/tcp
+# airis-mcp-gateway-db       Up 2 minutes   5432/tcp
+# airis-mcp-gateway-serena   Up 2 minutes   8000/tcp
+
+# 查看日志（确认服务器正常启动）
+docker compose logs -f api
+
+# 健康检查
+curl -s http://localhost:9400/api/tools/status | jq '.roster.summary'
+
+# 预期输出：
+# {
+#   "hot_count": 4,
+#   "cold_count": 9,
+#   "total_enabled": 13
+# }
+```
+
+### 调整服务器模式
+
+如果某个 COLD 模式服务器频繁使用，可改为 HOT 模式：
+
+```json
+{
+  "mcpServers": {
+    "playwright": {
+      "command": "npx",
+      "args": ["-y", "@playwright/mcp@latest"],
+      "enabled": true,
+      "mode": "hot"  // 从 cold 改为 hot
+    }
+  }
+}
+```
+
+**重启生效**:
+```bash
+docker compose restart api
 ```
 
 ---
