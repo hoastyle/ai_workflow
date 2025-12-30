@@ -1,137 +1,74 @@
-# AI Workflow 项目概览
+# AI 工具知识库 (ai_workflow) - 项目概览
 
-## 核心定位
-为 Claude Code 提供项目规划、任务管理和开发最佳实践的完整集成工作流系统
+**版本**: v2.2 (Claude Code 优先 + CLAUDE.md 分离)
+**项目类型**: AI 工具知识库和最佳实践集合
+**主要定位**: 为 Claude Code 提供设计哲学、最佳实践、MCP 集成指南和工具库
+**最后更新**: 2025-12-30
 
-## 关键特性
-- **会话连续性**: CONTEXT.md跨/clear边界保持工作状态
-- **自动化追踪**: 开发周期全程自动更新TASK.md
-- **质量保证**: 内置格式化、测试、代码审查
-- **文档驱动**: PRD → PLANNING → TASK 完整追溯链
-- **四层架构**: 管理/技术/工作/归档 + 按需加载
-- **约束驱动文档** (v3.4): 从代码提取，非凭空编造
+## 项目定位
 
-## 技术栈
-| 类别 | 技术 |
-|------|------|
-| 核心系统 | Markdown闭环工作流 |
-| 集成框架 | Claude Code Slash Commands |
-| MCP服务器 | Serena, Context7, Sequential-thinking, Tavily, Magic |
-| 验证系统 | pre-commit hooks，自动格式化 |
-| 配置存储 | JSON (src/mcp/configs/) |
+### 历史演变
+- v1.0-v3.4: Workflow 命令系统（14 个 wf_* 命令）
+- v4.0+ (2025-12): 转型为 AI 工具知识库
 
-## 项目结构
-```
-ai_workflow/
-├── wf_*.md (14个)        # 工作流命令
-├── KNOWLEDGE.md          # 知识库+文档索引
-├── CLAUDE.md             # AI执行规则
-├── *.md (7个)            # 核心文档
-├── docs/
-│   ├── management/       # 管理层（5个）
-│   ├── adr/              # 架构决策记录
-│   ├── guides/           # 工作流指导
-│   ├── examples/         # 使用示例
-│   ├── reference/        # 参考文档
-│   └── integration/      # MCP集成
-├── scripts/              # 自动化脚本
-└── src/mcp/configs/      # MCP配置
-```
+### 当前角色
+为 Claude Code 和 AI 辅助开发提供：
+1. **设计哲学和原则** - Ultrathink 设计思维框架（6 个核心原则）
+2. **开发最佳实践** - 文档架构、AI 协作模式、代码质量规范
+3. **MCP 集成经验** - Model Context Protocol 的使用指南和故障排查
+4. **AIRIS MCP Gateway** - 统一访问 13 个 MCP 服务器的 112 个工具
+5. **架构决策记录** - 17 个技术决策的"为什么"和权衡
+6. **工具和脚本** - DocLoader、AgentCoordinator 等可复用工具
 
-## 工作流命令（14个）
-| 分组 | 命令 | 功能 | 关键特性 |
-|------|------|------|---------|
-| **基础设施** | /wf_01_planning | 项目规划 | 创建/更新PLANNING.md |
-|  | /wf_02_task | 任务管理 | create/update/list |
-|  | /wf_03_prime | 上下文加载 | 智能按需加载 ⭐ |
-| **开发实现** | /wf_04_ask | 架构咨询 | --review-codebase, --think, --c7 |
-|  | /wf_05_code | 功能实现 | Step 8文档决策树 |
-|  | /wf_06_debug | 调试修复 | --quick, --deep |
-| **质量保证** | /wf_07_test | 测试开发 | --coverage |
-|  | /wf_08_review | 代码审查 | Dimension 6文档约束 |
-|  | /wf_09_refactor | 代码重构 | - |
-|  | /wf_10_optimize | 性能优化 | - |
-| **运维部署** | /wf_11_commit | 提交代码 | 自动更新CONTEXT.md + Frontmatter验证 |
-|  | /wf_12_deploy_check | 部署检查 | - |
-| **文档管理** | /wf_13_doc_maintain | 文档维护 | 清理+链接检查 |
-|  | /wf_14_doc | 智能文档生成 | 约束驱动三阶段门控 ⭐ |
-| **支持** | /wf_99_help | 帮助系统 | - |
+## 核心内容区域
 
-## 管理文档体系
-| 文件 | 职责 | 权限 | 特性 |
-|------|------|------|------|
-| PRD.md | 项目需求 | 只读 | 权威数据源 |
-| PLANNING.md | 技术架构 | 读写 | 技术栈决策+开发标准 |
-| TASK.md | 任务追踪 | 读写 | 进度管理+状态追踪 |
-| CONTEXT.md | 会话指针 | 只读 | /wf_11_commit自动管理 |
-
-## 知识库系统
-- **KNOWLEDGE.md** - ADR索引、问题方案、设计模式、**文档索引中心**
-- **docs/adr/** - 架构决策详情
-- **docs/knowledge/** - 知识内容
-
-## 约束驱动文档生成 (v3.4)
-| 约束类型 | 规则 |
-|---------|------|
-| 文档大小 | < 500行/文件 |
-| 索引大小 | KNOWLEDGE.md < 200行 |
-| 增长率 | 单次 < 30% |
-| 元数据 | 必需7个Frontmatter字段 |
-| 分层 | 管理/技术/工作/归档 |
-
-**三阶段门控**:
-1. Phase 1: `/wf_05_code` Step 8 - 文档决策树
-2. Phase 2: `/wf_14_doc` - 成本估计+约束检查
-3. Phase 3: `/wf_08_review` Dimension 6 - 验证
-
-## 开发规范
-| 类别 | 规则 |
-|------|------|
-| 语言 | 中文交互、英文代码 |
-| 格式化 | 自动（Black/Prettier） |
-| 行尾 | Unix LF |
-| 尾部空格 | 零容忍（pre-commit） |
-| 提交格式 | [type] subject |
-| 提交类型 | [feat]/[fix]/[docs]/[refactor]/[test] |
-
-## 标准工作流
-**功能开发**: `/wf_03_prime` → `/wf_05_code` → `/wf_07_test` → `/wf_08_review` → `/wf_11_commit`
-**Bug修复**: `/wf_06_debug` → `/wf_07_test` → `/wf_11_commit`
-**文档生成**: `/wf_05_code` → `/wf_08_review` → `/wf_14_doc` → `/wf_13_doc_maintain` → `/wf_11_commit`
-
-## MCP 配置
-| MCP | 配置文件 | 功能 |
-|-----|---------|------|
-| Serena | src/mcp/configs/serena.json | 语义代码理解 |
-| Context7 | src/mcp/configs/context7.json | 官方库文档 |
-| Sequential-thinking | src/mcp/configs/sequential-thinking.json | 结构化推理 |
-| Tavily | src/mcp/configs/tavily.json | Web搜索 |
-| Magic | src/mcp/configs/magic.json | UI组件生成 |
-
-## 核心文档快速参考
-| 文件 | 用途 | 权限 |
+| 区域 | 路径 | 说明 |
 |------|------|------|
-| COMMANDS.md | 14个命令完整参考 | 读取 |
-| WORKFLOWS.md | 场景化工作流 | 读取 |
-| TROUBLESHOOTING.md | 故障排查 | 读取 |
-| CLAUDE.md | AI执行规则 | 读取 |
-| README.md | 项目介绍 | 读取 |
-| KNOWLEDGE.md | 知识库+索引 | 读写 |
+| **最佳实践** | best-practices/ | 设计哲学、文档架构、AI 协作模式 |
+| **MCP 集成** | mcp-integration/ | MCP 服务器使用指南和故障排查 |
+| **架构决策** | docs/adr/ | 17 个架构决策记录 (ADR) |
+| **AIRIS Gateway文档** | docs/airis-mcp-gateway/ | 完整的 Gateway 使用指南 |
+| **参考文档** | docs/reference/ | Frontmatter、Markdown 格式等规范 |
+| **工具库** | commands/lib/ | DocLoader、AgentCoordinator 等工具 |
+| **实用脚本** | scripts/ | 安装、验证、文档保护工具 |
+| **归档内容** | archive/ | 历史 workflow 命令和文档 |
 
-## 版本历史
-- **v3.4** (2025-11-24): 约束驱动文档生成完善版、三阶段门控、100% Frontmatter检查
-- **v3.3** (2025-11-21): 智能文档生成、MCP集成
-- **v3.2** (2025-11-06): Ultrathink设计哲学
-- **v3.1**: 四层文档架构、智能按需加载
+## 知识库统计
 
-## 核心最佳实践
-1. **会话开始**: `/wf_03_prime` ⭐
-2. **提交前**: `/wf_08_review`（含Dimension 6）
-3. **让命令处理一切**: `/wf_11_commit`（自动格式化+CONTEXT.md更新）
-4. **PRD只读**: 需求修改需授权
-5. **文档约束**: 遵守大小和增长率规范
-6. **测试覆盖率**: `/wf_07_test --coverage`
+| 类型 | 数量 |
+|------|------|
+| 最佳实践文档 | 4 |
+| MCP 集成文档 | 15+ |
+| AIRIS MCP Gateway 文档 | 13 (NEW: +2) |
+| 架构决策记录 | 17 |
+| 参考文档 | 3 |
+| 工具库 | 5+ |
+| 归档文档 | 30+ |
 
----
-**最后更新**: 2025-12-06
-**Token节省**: ~456 tokens（通过表格化和紧凑布局）
+## 最新更新 (2025-12-30)
+
+### 新增文档
+1. **PARAMETER_TRAPS.md** (3,300+ 行)
+   - MCP 工具参数陷阱速查
+   - 覆盖 9 个 MCP 服务器的常见参数错误
+   - 包含错误示例、正确用法、验证方法
+
+2. **TROUBLESHOOTING.md 更新**
+   - 新增"问题 5: 参数验证错误"章节
+   - 高频参数陷阱速查表
+   - 链接到 PARAMETER_TRAPS.md
+
+### 文档整合
+- 更新 DOCUMENTATION_GAP_ANALYSIS.md
+- 更新 KNOWLEDGE.md 索引
+- 消除重复内容，职责分离
+
+## 项目价值
+
+- **设计思维**: Ultrathink 六大原则指导架构决策
+- **约束驱动**: 文档生成三阶段门控防止内容爆炸
+- **MCP 集成**: 统一访问 112 个 MCP 工具的完整指南
+- **参数陷阱文档**: 避免 90% 的常见参数命名错误
+- **实践导向**: 所有内容来自真实项目经验，而非理论
+
+**主要用户**: Claude Code、AI 开发者、架构师

@@ -1,148 +1,167 @@
-# 代码风格和约定
+# 代码风格和约定 (Code Style & Conventions)
 
-## 语言规范速查表
-| 场景 | 语言 | 示例 |
-|------|------|------|
-| 交互沟通 | 中文（默认） | - |
-| 代码命名 | 英文 | function_name, ClassName |
-| 代码注释 | 英文 | // This function handles... |
-| 提交信息 | [type] subject | [feat] Add user auth |
-| 项目文档 | 中文（默认） | README.md, PLANNING.md |
+## Python 代码风格
 
-## 代码格式规范
-| 工具 | 语言 | 执行方式 |
-|------|------|---------|
-| Black | Python | /wf_11_commit自动 |
-| Prettier | JS/TS | /wf_11_commit自动 |
-| clang-format | C++ | /wf_11_commit自动 |
-| gofmt | Go | /wf_11_commit自动 |
+### 基本原则
+- 遵循 PEP 8 标准
+- 使用 type hints (Python 3.8+ 语法)
+- 添加 docstrings 到所有公共函数和类
 
-## 严格规范（零容忍）
-| 规则 | 标准 | 验证 | 修复 |
-|------|------|------|------|
-| 行尾 | Unix LF | pre-commit | 自动 |
-| 尾部空格 | 禁止 | pre-commit（拒绝提交） | pre-commit run --all-files |
-| 文件编码 | UTF-8 | pre-commit | 自动 |
+### 命名约定
+- 类名: PascalCase (DocLoader, AgentCoordinator)
+- 函数/方法: snake_case (load_summary, get_mcp_gateway)
+- 常量: UPPER_SNAKE_CASE
+- 私有属性: _leading_underscore
 
-## Git 提交规范
-**格式**: `[type] subject`
+### 文档字符串
+```python
+def function_name(param1: str, param2: int) -> dict:
+    """
+    简要说明函数功能。
+    
+    Args:
+        param1: 参数 1 说明
+        param2: 参数 2 说明
+    
+    Returns:
+        返回值说明
+    """
+    pass
+```
 
-| 类型 | 用途 | 示例 |
-|------|------|------|
-| [feat] | 新功能 | [feat] Add login API |
-| [fix] | Bug修复 | [fix] Resolve timeout |
-| [docs] | 文档更新 | [docs] Update README |
-| [refactor] | 代码重构 | [refactor] Improve handler |
-| [test] | 测试添加 | [test] Add validator tests |
+### 文件结构
+```python
+#!/usr/bin/env python3
+"""
+模块级文档字符串
+"""
 
-## Markdown 格式规范
-| 元素 | 正确 ✅ | 错误 ❌ |
-|------|--------|--------|
-| 编号 | `Step 1:`, `1.`, `### 步骤 1` | `1️⃣:` (emoji+冒号重叠) |
-| 标题层级 | `#`, `##`, `###` | - |
-| 列表 | `-`, `1.` | - |
-| 代码块 | ` ```language ``` ` | - |
-| 链接 | `[text](url)` | - |
+# 导入顺序：标准库 → 第三方库 → 本地模块
+import os
+import sys
 
-## Frontmatter 必需字段（7个）
-```yaml
+from typing import List, Dict
+
+from .local_module import something
+
+# 常量定义
+DEFAULT_TIMEOUT = 30
+
+# 类定义
+class ClassName:
+    pass
+
+# 函数定义
+def function_name():
+    pass
+```
+
+## Bash 脚本风格
+
+### 基本原则
+- 使用 `set -e` (遇到错误立即退出)
+- 添加注释说明复杂逻辑
+- 使用颜色输出提升可读性
+
+### 标准模板
+```bash
+#!/bin/bash
+set -e  # 遇到错误立即退出
+
+# 颜色定义
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m'  # No Color
+
+# 函数定义
+function print_success() {
+    echo -e "${GREEN}✓ $1${NC}"
+}
+
+function print_error() {
+    echo -e "${RED}✗ $1${NC}"
+}
+
+# 帮助信息
+if [[ "$1" == "-h" ]] || [[ "$1" == "--help" ]]; then
+    echo "Usage: $0 [options]"
+    exit 0
+fi
+
+# 主逻辑
+```
+
+## Markdown 文档风格
+
+### Frontmatter (必需)
+```markdown
 ---
 title: "文档标题"
 description: "一句话描述"
-type: "技术设计|系统集成|API参考|教程|故障排查|架构决策"
-status: "草稿|完成|待审查"
-priority: "高|中|低"
+type: "技术设计 | 架构决策 | 最佳实践"
+status: "草稿 | 完成"
+priority: "高 | 中 | 低"
 created_date: "YYYY-MM-DD"
 last_updated: "YYYY-MM-DD"
+related_documents: []
+related_code: []
 ---
 ```
 
-**检查点**: /wf_11_commit自动验证
+### 标题层级
+- # (H1): 文档主标题（每个文件只有一个）
+- ## (H2): 主要章节
+- ### (H3): 子章节
+- #### (H4): 细分内容
 
-## 文档分层和约束
-| 层级 | 位置 | 约束 | 用途 |
-|------|------|------|------|
-| 管理层 | docs/management/ | 5个固定文件 | PRD, PLANNING, TASK, CONTEXT, INDEX |
-| 技术层 | docs/ | < 500行/文件 | API文档、架构设计 |
-| 工作层 | docs/research/ | 临时 | Spike、原型 |
-| 归档层 | docs/archive/ | 历史 | 废弃文档 |
+### 链接格式
+- 使用相对路径: `[text](../path/to/file.md)`
+- 不使用绝对路径
 
-## 约束驱动文档规范 (v3.4)
-| 约束类型 | 限制 | 检查命令 |
-|---------|------|---------|
-| 索引大小 | KNOWLEDGE.md < 200行 | /wf_11_commit |
-| 单文件大小 | < 500行 | /wf_08_review Dimension 6 |
-| 单次增长率 | < 30% | /wf_14_doc Phase 2 |
-| Frontmatter | 必需7个字段 | /wf_11_commit |
+### 代码块
+\`\`\`python
+# 指定语言
+code here
+\`\`\`
 
-### 文档类型分类
-| 类型 | 位置 | 约束 | 说明 |
-|------|------|------|------|
-| Type A（架构） | PLANNING.md | < 50行 | 为什么+架构影响 |
-| Type B（ADR） | docs/adr/ | < 200行 | 遵循ADR模板 |
-| Type C（功能） | docs/ | < 500行 | API、部署文档 |
-| Type D（问题） | KNOWLEDGE.md | < 50行 | FAQ、最佳实践 |
-| Type E（无文档） | - | - | 代码优化 |
+## Git 提交规范
 
-## Pre-commit Hooks自动检查
-- 尾部空格检测（零容忍）
-- 文件格式验证
-- 行尾统一（LF）
-- Markdown链接验证
-- 命令参考一致性
+### 提交信息格式
+```
+[type] 简短描述 (不超过 50 字)
 
-## 质量检查流程
-```bash
-# 代码审查
-/wf_08_review
+详细描述（可选）：
+- 变更点 1
+- 变更点 2
 
-# 测试覆盖率
-/wf_07_test --coverage
-
-# 格式检查
-pre-commit run --all-files
-
-# 提交（自动格式化）
-/wf_11_commit "提交信息"
+相关问题: #123
 ```
 
-## 日期管理规范
-**核心原则**: 绝不手动输入，总是使用命令
+### Type 类型
+- `feat`: 新功能
+- `fix`: Bug 修复
+- `docs`: 文档更新
+- `refactor`: 代码重构
+- `test`: 测试相关
+- `release`: 版本发布
 
-```bash
-TODAY=$(date +%Y-%m-%d)              # 今天
-TIMESTAMP=$(date +%Y-%m-%d\ %H:%M:%S) # 完整时间戳
-```
+## 文件组织
 
-| 日期类型 | 规则 |
-|---------|------|
-| 创建日期 | 创建时固定，永不修改 |
-| 最后更新 | 每次编辑自动更新为当前日期 |
-| ADR决策日期 | 决策当天的日期 |
+### 目录命名
+- 使用小写和短横线: `best-practices/`, `mcp-integration/`
+- 避免空格和特殊字符
 
-## 常用工具命令
-| 操作 | 命令 |
-|------|------|
-| 状态查询 | git status, git log --oneline -10 |
-| 代码审查 | /wf_08_review |
-| 运行测试 | /wf_07_test "组件" |
-| 覆盖率分析 | /wf_07_test --coverage |
-| 文档生成 | /wf_14_doc |
-| 文档维护 | /wf_13_doc_maintain |
-| 提交代码 | /wf_11_commit "消息" |
+### 文件命名
+- Markdown: 小写和短横线 `document-architecture.md`
+- Python: 小写和下划线 `doc_loader.py`
+- Bash: 小写和下划线 `install_knowledge_base.sh`
 
-## 常见问题修复表
-| 问题 | 修复方案 |
-|------|---------|
-| 尾部空格 | pre-commit run --all-files |
-| 行尾混乱 | pre-commit run --all-files |
-| 格式不统一 | /wf_11_commit（自动处理） |
-| Markdown格式错误 | 查看 docs/reference/MARKDOWN_STYLE.md |
-| Frontmatter缺失 | python scripts/frontmatter_utils.py generate |
+## 最佳实践
 
-## 设计原则参考
-详见 PHILOSOPHY.md（Ultrathink 6原则）
-
----
-**最后更新**: 2025-12-06
-**Token节省**: ~390 tokens（通过表格化和移除冗余示例）
+1. **代码注释**: 使用英文
+2. **文档内容**: 使用中文
+3. **函数长度**: 单个函数 < 50 行
+4. **文件长度**: Python 模块 < 500 行，文档 < 500 行
+5. **错误处理**: 总是包含 try-except 块
+6. **日志输出**: 使用清晰的级别 (INFO, WARNING, ERROR)

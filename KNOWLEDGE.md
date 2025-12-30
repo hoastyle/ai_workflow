@@ -69,12 +69,15 @@
 
 > **NEW**: 通过 AIRIS MCP Gateway 统一访问 13 个 MCP 服务器的 112 个工具
 
-| 资源 | 说明 | 链接 |
-|------|------|------|
-| **完整指南** | AIRIS MCP Gateway 使用指南 | [docs/airis-mcp-gateway/README.md](docs/airis-mcp-gateway/README.md) |
-| **快速参考** | 常用工具和参数速查 | [docs/airis-mcp-gateway/QUICK_REFERENCE.md](docs/airis-mcp-gateway/QUICK_REFERENCE.md) |
-| **工具索引** | 112 个工具按字母排序 | [docs/airis-mcp-gateway/TOOL_INDEX.md](docs/airis-mcp-gateway/TOOL_INDEX.md) |
-| **服务器文档** | 8 个核心服务器详细说明 | [docs/airis-mcp-gateway/servers/](docs/airis-mcp-gateway/servers/) |
+| 资源 | 说明 | 链接 | 优先级 |
+|------|------|------|--------|
+| **完整指南** | AIRIS MCP Gateway 使用指南 | [docs/airis-mcp-gateway/README.md](docs/airis-mcp-gateway/README.md) | ⭐⭐⭐ |
+| **故障排查** | 常见问题和解决方案（含参数陷阱） | [docs/airis-mcp-gateway/TROUBLESHOOTING.md](docs/airis-mcp-gateway/TROUBLESHOOTING.md) | ⭐⭐⭐ |
+| **参数陷阱** | 常见参数命名错误和正确用法速查 | [docs/airis-mcp-gateway/PARAMETER_TRAPS.md](docs/airis-mcp-gateway/PARAMETER_TRAPS.md) | ⭐⭐⭐ |
+| **快速参考** | 常用工具和参数速查 | [docs/airis-mcp-gateway/QUICK_REFERENCE.md](docs/airis-mcp-gateway/QUICK_REFERENCE.md) | ⭐⭐ |
+| **工具索引** | 112 个工具按字母排序 | [docs/airis-mcp-gateway/TOOL_INDEX.md](docs/airis-mcp-gateway/TOOL_INDEX.md) | ⭐⭐ |
+| **服务器文档** | 8 个核心服务器详细说明 | [docs/airis-mcp-gateway/servers/](docs/airis-mcp-gateway/servers/) | ⭐ |
+| **文档缺失分析** | 文档完成进度和后续工作 | [docs/airis-mcp-gateway/DOCUMENTATION_GAP_ANALYSIS.md](docs/airis-mcp-gateway/DOCUMENTATION_GAP_ANALYSIS.md) | ⭐ |
 
 **覆盖的 MCP 服务器** (13 个):
 - **HOT 模式** (4): airis-agent, memory, gateway-control, airis-commands
@@ -259,7 +262,7 @@ result = coord.coordinate_agent(
 |------|------|
 | **最佳实践文档** | 3 |
 | **MCP 集成文档** | 4 |
-| **AIRIS MCP Gateway 文档** | 11 (NEW) |
+| **AIRIS MCP Gateway 文档** | 13 (NEW) |
 | **架构决策记录** | 17 |
 | **工具库** | 5 |
 | **参考文档** | 3 |
