@@ -1,3 +1,18 @@
+---
+title: "AIRIS MCP Gateway 工具索引"
+description: "所有 112 个工具的完整列表和分类"
+type: "API参考"
+status: "完成"
+priority: "中"
+created_date: "2025-12-29"
+last_updated: "2025-12-31"
+related_documents:
+  - "README.md"
+  - "PARAMETER_TRAPS.md"
+  - "GETTING_STARTED.md"
+related_code: []
+---
+
 # MCP 工具快速查询索引
 
 **目的**: 按工具名称、功能和常见用途快速定位文档

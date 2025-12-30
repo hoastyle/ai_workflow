@@ -1,7 +1,7 @@
 ---
 title: "MCP 工具参数陷阱速查"
 description: "常见参数命名错误和正确用法的快速参考"
-type: "技术参考"
+type: "API参考"
 status: "完成"
 priority: "高"
 created_date: "2025-12-30"
@@ -450,16 +450,142 @@ async function standardWorkflow() {
 
 ---
 
+### Sequential-Thinking MCP 服务器
+
+#### create_thinking_session
+
+**常见错误**:
+- `name` ❌
+- `title` ❌
+
+**正确参数**:
+- `topic` ✅ (必需) - 思考主题
+
+**正确用法**:
+```typescript
+await airis-exec({
+    tool: "sequential-thinking:create_thinking_session",
+    arguments: {
+        topic: "数据库性能优化方案"
+    }
+});
+```
+
+---
+
+### Chrome-DevTools MCP 服务器
+
+#### navigate
+
+**常见错误**:
+- `address` ❌
+- `target` ❌
+
+**正确参数**:
+- `url` ✅ (必需) - 目标URL
+
+**正确用法**:
+```typescript
+await airis-exec({
+    tool: "chrome-devtools:navigate",
+    arguments: {
+        url: "https://example.com"
+    }
+});
+```
+
+---
+
+### AIRIS-Commands MCP 服务器
+
+#### airis_config_set_enabled
+
+**常见错误**:
+- `name` ❌
+- `server` ❌
+- `enable` ❌ (单数)
+
+**正确参数**:
+- `server_name` ✅ (必需)
+- `enabled` ✅ (必需) - 布尔值
+
+**正确用法**:
+```typescript
+await airis-exec({
+    tool: "airis-commands:airis_config_set_enabled",
+    arguments: {
+        server_name: "playwright",
+        enabled: true
+    }
+});
+```
+
+---
+
+### MindBase MCP 服务器 (Docker Gateway)
+
+⚠️ **特别说明**: MindBase 不在 AIRIS Gateway 的 13 个 ProcessManager 管理的服务器中，而是由 **Docker Gateway** (airis-mcp-gateway-core) 专门管理。
+
+#### store_memory
+
+**常见错误**:
+- `text` ❌
+- `data` ❌
+
+**正确参数**:
+- `content` ✅ (必需)
+- `metadata` (可选)
+
+**正确用法**:
+```typescript
+await airis-exec({
+    tool: "mindbase:store_memory",
+    arguments: {
+        content: "记忆内容"
+    }
+});
+```
+
+---
+
+### Time MCP 服务器 (Docker Gateway)
+
+⚠️ **特别说明**: Time 不在 AIRIS Gateway 的 13 个 ProcessManager 管理的服务器中，而是由 **Docker Gateway** 内置支持。
+
+#### get_current_time
+
+**常见错误**:
+- `tz` ❌
+- `zone` ❌
+- `time_zone` ❌ (下划线)
+
+**正确参数**:
+- `timezone` ✅ (必需) - IANA 时区名
+
+**正确用法**:
+```typescript
+await airis-exec({
+    tool: "time:get_current_time",
+    arguments: {
+        timezone: "America/New_York"  // IANA 格式
+    }
+});
+```
+
+---
+
 ## 🎓 参数命名模式总结
 
 ### 常见模式分类
 
 | 命名模式 | 示例工具 | 参数风格 |
 |---------|---------|---------|
-| **简洁派** | Mindbase | `name`, `content` |
+| **简洁派** | Mindbase (外部) | `name`, `content` |
 | **描述派** | Serena | `memory_file_name`, `name_path_pattern` |
 | **冗长派** | Magic | `absolutePathToCurrentFile` |
 | **统一派** | MorphLLM, AIRIS Agent | `repo_path` (一致使用) |
+
+**注意**: Mindbase 不在 AIRIS Gateway 的 13 个 ProcessManager 管理的服务器中，而是由 Docker Gateway (airis-mcp-gateway-core) 专门管理。本文档包含 Mindbase 仅作为参数命名模式的对比参考。
 
 ### 参数命名规律
 

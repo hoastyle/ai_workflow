@@ -1,3 +1,25 @@
+---
+title: "AIRIS MCP Gateway 文档缺失分析报告"
+description: "分析文档完整性和优化建议"
+type: "架构决策"
+status: "完成"
+priority: "中"
+created_date: "2025-12-30"
+last_updated: "2025-12-31"
+related_documents:
+  - path: "PARAMETER_TRAPS.md"
+    type: "补充"
+    description: "基于本分析创建的参数陷阱文档"
+  - path: "TROUBLESHOOTING.md"
+    type: "补充"
+    description: "基于本分析创建的故障排查文档"
+  - path: "README.md"
+    type: "参考"
+    description: "主要使用指南"
+related_code: []
+tags: ["documentation", "gap-analysis", "quality-assurance"]
+---
+
 # 文档缺失分析报告
 
 **日期**: 2025-12-30

@@ -2,7 +2,7 @@
 
 **版本**: v2.1
 **创建日期**: 2025-11-06
-**最后更新**: 2025-12-30
+**最后更新**: 2025-12-31
 **目的**: AI 工具和开发最佳实践的知识库索引中心
 
 > 本仓库已从 Workflow 命令系统转型为 AI 工具知识库。历史内容已归档到 `archive/` 目录。
@@ -67,7 +67,7 @@
 
 ### AIRIS MCP Gateway 集成
 
-> **NEW (2025-12-30)**: 新增快速入门指南和最佳实践文档，完善实际配置示例
+> **UPDATE (2025-12-31)**: 完成 Frontmatter 覆盖率优化，从 56% 提升到 100%，所有 23 个文档验证通过
 
 | 资源 | 说明 | 链接 | 优先级 |
 |------|------|------|--------|
@@ -78,7 +78,7 @@
 | **参数陷阱** | 常见参数命名错误和正确用法速查 | [docs/airis-mcp-gateway/PARAMETER_TRAPS.md](docs/airis-mcp-gateway/PARAMETER_TRAPS.md) | ⭐⭐⭐ |
 | **快速参考** | 常用工具和参数速查（更新：HOT/COLD模式说明） | [docs/airis-mcp-gateway/QUICK_REFERENCE.md](docs/airis-mcp-gateway/QUICK_REFERENCE.md) | ⭐⭐ |
 | **工具索引** | 112 个工具按字母排序 | [docs/airis-mcp-gateway/TOOL_INDEX.md](docs/airis-mcp-gateway/TOOL_INDEX.md) | ⭐⭐ |
-| **服务器文档** | 8 个核心服务器详细说明 | [docs/airis-mcp-gateway/servers/](docs/airis-mcp-gateway/servers/) | ⭐ |
+| **服务器文档** | 15 个服务器完整说明（100% Frontmatter 覆盖） | [docs/airis-mcp-gateway/servers/](docs/airis-mcp-gateway/servers/) | ⭐ |
 | **文档缺失分析** | 文档完成进度和后续工作 | [docs/airis-mcp-gateway/DOCUMENTATION_GAP_ANALYSIS.md](docs/airis-mcp-gateway/DOCUMENTATION_GAP_ANALYSIS.md) | ⭐ |
 
 **覆盖的 MCP 服务器** (13 个):

@@ -1,3 +1,22 @@
+---
+title: "Fetch MCP 服务器"
+description: "HTTP 请求和 Web 内容获取工具"
+type: "技术设计"
+status: "完成"
+priority: "中"
+created_date: "2025-12-29"
+last_updated: "2025-12-31"
+related_documents:
+  - path: "../PARAMETER_TRAPS.md"
+    type: "参考"
+    description: "Fetch 参数使用指南"
+  - path: "../QUICK_REFERENCE.md"
+    type: "参考"
+    description: "快速参考指南"
+related_code: []
+tags: ["fetch", "http", "web-scraping", "cold-mode"]
+---
+
 # Fetch MCP 使用注意事项
 
 **版本**: 1.0

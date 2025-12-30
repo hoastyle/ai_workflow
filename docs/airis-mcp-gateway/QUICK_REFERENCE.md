@@ -1,3 +1,18 @@
+---
+title: "AIRIS MCP Gateway 快速参考"
+description: "常用工具和参数的快速查询手册"
+type: "API参考"
+status: "完成"
+priority: "高"
+created_date: "2025-12-29"
+last_updated: "2025-12-31"
+related_documents:
+  - "README.md"
+  - "PARAMETER_TRAPS.md"
+  - "GETTING_STARTED.md"
+related_code: []
+---
+
 # AIRIS MCP Gateway 快速参考
 
 **版本**: v2.1
@@ -10,7 +25,7 @@
 
 | 模式 | 响应速度 | 服务器（13 个） | 说明 |
 |------|---------|----------------|------|
-| **🔥 HOT** | 即时（<100ms） | airis-agent, memory, gateway-control, airis-commands, **serena** | Gateway 启动时常驻，立即响应 |
+| **🔥 HOT** | 即时（<100ms） | airis-agent, memory, gateway-control, airis-commands, **serena**, **serena** | Gateway 启动时常驻，立即响应 |
 | **❄️ COLD** | 首次慢（2-10s）<br>后续快（<500ms） | playwright, tavily, context7, morphllm, magic, chrome-devtools, fetch, sequential-thinking | 按需启动，节省资源 |
 
 **选择建议**:

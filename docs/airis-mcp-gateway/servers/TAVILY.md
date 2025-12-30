@@ -1,3 +1,22 @@
+---
+title: "Tavily MCP 服务器"
+description: "AI 优化的 Web 搜索和研究工具"
+type: "技术设计"
+status: "完成"
+priority: "高"
+created_date: "2025-12-29"
+last_updated: "2025-12-31"
+related_documents:
+  - path: "../PARAMETER_TRAPS.md"
+    type: "参考"
+    description: "Tavily 参数使用指南"
+  - path: "../QUICK_REFERENCE.md"
+    type: "参考"
+    description: "快速参考指南"
+related_code: []
+tags: ["tavily", "web-search", "research", "cold-mode"]
+---
+
 # Tavily MCP 使用注意事项
 
 **版本**: 1.0

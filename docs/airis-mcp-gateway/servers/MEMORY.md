@@ -1,3 +1,25 @@
+---
+title: "Memory MCP 服务器"
+description: "知识管理和实体记忆存储工具"
+type: "技术设计"
+status: "完成"
+priority: "高"
+created_date: "2025-12-29"
+last_updated: "2025-12-31"
+related_documents:
+  - path: "../PARAMETER_TRAPS.md"
+    type: "参考"
+    description: "Memory 参数陷阱（observations 数组）"
+  - path: "../QUICK_REFERENCE.md"
+    type: "参考"
+    description: "快速参考指南"
+  - path: "MINDBASE.md"
+    type: "对比"
+    description: "MindBase vs Memory 对比说明"
+related_code: []
+tags: ["memory", "knowledge-graph", "hot-mode", "entity-storage"]
+---
+
 # Memory MCP 使用注意事项
 
 **版本**: 1.0

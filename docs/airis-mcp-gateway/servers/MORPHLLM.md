@@ -1,3 +1,25 @@
+---
+title: "MorphLLM MCP 服务器"
+description: "代码语义搜索和查询工具"
+type: "技术设计"
+status: "完成"
+priority: "中"
+created_date: "2025-12-29"
+last_updated: "2025-12-31"
+related_documents:
+  - path: "../PARAMETER_TRAPS.md"
+    type: "参考"
+    description: "MorphLLM 参数使用指南"
+  - path: "../QUICK_REFERENCE.md"
+    type: "参考"
+    description: "快速参考指南"
+  - path: "SERENA.md"
+    type: "对比"
+    description: "Serena vs MorphLLM 功能对比"
+related_code: []
+tags: ["morphllm", "semantic-search", "code-query", "cold-mode"]
+---
+
 # MorphLLM MCP 使用注意事项
 
 **版本**: 1.0

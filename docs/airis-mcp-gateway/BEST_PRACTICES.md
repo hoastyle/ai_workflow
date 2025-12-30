@@ -81,17 +81,18 @@ airis-find({ query: "" })
 
 **原则**: 根据使用频率选择模式
 
-**HOT 模式（4 个服务器）**:
+**HOT 模式（5 个服务器）**:
 - airis-agent
 - memory
 - gateway-control
 - airis-commands
+- **serena** (高频使用，实际配置为 HOT)
 
 **优势**: 即时响应（<100ms）
 **成本**: 持续占用内存
 
-**COLD 模式（9 个服务器）**:
-- serena, playwright, tavily, context7, morphllm, magic, chrome-devtools, fetch, sequential-thinking
+**COLD 模式（8 个服务器）**:
+- playwright, tavily, context7, morphllm, magic, chrome-devtools, fetch, sequential-thinking
 
 **优势**: 节省资源
 **成本**: 首次调用需 2-10 秒

@@ -1,3 +1,22 @@
+---
+title: "AIRIS MCP Gateway 文档迁移总结"
+description: "记录从源仓库到知识库的文档迁移过程"
+type: "系统集成"
+status: "完成"
+priority: "低"
+created_date: "2025-12-29"
+last_updated: "2025-12-31"
+related_documents:
+  - path: "README.md"
+    type: "迁移结果"
+    description: "迁移后的主要文档"
+  - path: "servers/"
+    type: "迁移结果"
+    description: "迁移后的服务器文档"
+related_code: []
+tags: ["migration", "documentation", "history"]
+---
+
 # AIRIS MCP Gateway 文档迁移总结
 
 **迁移日期**: 2025-12-29

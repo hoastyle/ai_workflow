@@ -1,7 +1,26 @@
+---
+title: "Serena MCP 服务器"
+description: "语义代码理解和项目内存管理工具"
+type: "技术设计"
+status: "完成"
+priority: "高"
+created_date: "2025-12-29"
+last_updated: "2025-12-31"
+related_documents:
+  - path: "../PARAMETER_TRAPS.md"
+    type: "参考"
+    description: "Serena 参数陷阱和最佳实践"
+  - path: "../QUICK_REFERENCE.md"
+    type: "参考"
+    description: "快速参考指南"
+related_code: []
+tags: ["serena", "code-understanding", "memory", "hot-mode"]
+---
+
 # Serena MCP 使用注意事项
 
 **版本**: 1.0
-**最后更新**: 2025-12-29
+**最后更新**: 2025-12-31
 **适用范围**: AIRIS MCP Gateway 中的 Serena MCP 服务器
 
 ---

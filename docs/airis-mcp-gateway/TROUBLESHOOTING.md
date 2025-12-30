@@ -1,7 +1,7 @@
 ---
 title: "AIRIS MCP Gateway 故障排查指南"
 description: "完整的故障排查步骤、常见问题解决方案和调试技巧"
-type: "技术参考"
+type: "故障排查"
 status: "完成"
 priority: "高"
 created_date: "2025-12-30"
